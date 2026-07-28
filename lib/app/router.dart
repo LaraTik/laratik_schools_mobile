@@ -8,6 +8,9 @@ import '../core/logging.dart';
 import '../features/people/ui/student_create_screen.dart';
 import '../features/people/ui/student_detail_screen.dart';
 import '../features/people/ui/students_list_screen.dart';
+import '../features/staff/ui/staff_create_screen.dart';
+import '../features/staff/ui/staff_detail_screen.dart';
+import '../features/staff/ui/staff_list_screen.dart';
 import '../ui/design_tokens.dart';
 
 /// Top-level navigation destinations. The shell renders these in a bottom
@@ -121,8 +124,22 @@ GoRouter buildRouter({
           GoRoute(
             path: '/shell/staff',
             name: 'staff',
-            builder: (context, state) =>
-                const _TabPlaceholder(tab: ShellTab.staff),
+            builder: (context, state) => const StaffListScreen(),
+            routes: [
+              GoRoute(
+                path: 'new',
+                name: 'staff_new',
+                builder: (context, state) => const StaffCreateScreen(),
+              ),
+              GoRoute(
+                path: ':id',
+                name: 'staff_detail',
+                builder: (context, state) {
+                  final id = state.pathParameters['id'] ?? '';
+                  return StaffDetailScreen(staffId: id);
+                },
+              ),
+            ],
           ),
           GoRoute(
             path: '/shell/guardians',
