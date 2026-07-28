@@ -1,0 +1,55 @@
+name: laratik_schools_mobile
+description: Greenfield Flutter mobile app for the Laratik Schools platform.
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.5.0
+  flutter: ">=3.24.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # Generated v1 contract client from the laratik_schools backend.
+  # Pinned by the BACKEND_CONTRACT_SHA file; CI fails on drift.
+  laratik_schools_api:
+    path: ../laratik_schools/contracts/dart
+
+  # Routing + state (provisional; locked in via ADR after the Phase 0 spike).
+  go_router: ^14.2.7
+  riverpod: ^2.5.1
+  freezed_annotation: ^2.4.4
+  json_annotation: ^4.9.0
+
+  # Functional plumbing (Result<T, E> defined in lib/core/result.dart).
+  equatable: ^2.0.5
+
+  # Platform — networking, crypto, prefs, device info.
+  http: ^1.2.2
+  crypto: ^3.0.5
+  shared_preferences: ^2.3.2
+  device_info_plus: ^10.1.2
+  package_info_plus: ^8.0.2
+  uuid: ^4.5.1
+
+  # Internationalization.
+  intl: ^0.19.0
+
+  # Accessibility / UX.
+  flutter_semantics: ^0.0.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+  build_runner: ^2.4.13
+  freezed: ^2.5.7
+  json_serializable: ^6.8.0
+  mocktail: ^1.0.4
+  contract_checker: ^0.1.0
+
+flutter:
+  uses-material-design: true

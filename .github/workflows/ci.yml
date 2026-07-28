@@ -1,0 +1,95 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# Cancel in-flight runs for the same ref.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  static-and-test:
+    name: Flutter analyze + test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Shallow clone of the sibling backend so the path: dep can resolve.
+          # This only fetches the laratik_schools repo at the pinned SHA.
+          fetch-depth: 0
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.5'
+          channel: stable
+          cache: true
+
+      - name: Show tool versions
+        run: |
+          flutter --version
+          dart --version
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Verify BACKEND_CONTRACT_SHA matches the sibling repo
+        env:
+          BACKEND_CONTRACT_SHA: ${{ steps.contract.outputs.sha }}
+        run: |
+          expected=$(cat BACKEND_CONTRACT_SHA)
+          actual=$(git -C ../laratik_schools rev-parse HEAD)
+          if [ "$expected" != "$actual" ]; then
+            echo "::error::Backend contract drift detected."
+            echo "  pinned:   $expected"
+            echo "  actual:   $actual"
+            echo "Update BACKEND_CONTRACT_SHA after regenerating contracts/dart."
+            exit 1
+          fi
+          echo "Backend contract SHA matches: $expected"
+
+      - name: Analyze
+        run: flutter analyze --fatal-infos --fatal-warnings
+
+      - name: Test
+        run: flutter test --reporter expanded
+
+      - name: Format check
+        run: dart format --output=none --set-exit-if-changed lib test
+
+  contract-drift:
+    name: Backend contract drift check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check that the sibling laratik_schools repo exists
+        run: |
+          if [ ! -d "../laratik_schools" ]; then
+            echo "::error::Sibling laratik_schools repo not found at ../laratik_schools."
+            exit 1
+          fi
+          echo "Sibling laratik_schools repo present at $(realpath ../laratik_schools)."
+
+      - name: Verify pinned SHA matches the sibling repo
+        run: |
+          expected=$(cat BACKEND_CONTRACT_SHA)
+          actual=$(git -C ../laratik_schools rev-parse HEAD)
+          echo "Expected (pinned in BACKEND_CONTRACT_SHA): $expected"
+          echo "Actual   (sibling laratik_schools HEAD):   $actual"
+          if [ "$expected" != "$actual" ]; then
+            echo "::error::Drift detected. Update BACKEND_CONTRACT_SHA and regenerate contracts/dart."
+            exit 1
+          fi

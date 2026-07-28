@@ -1,0 +1,55 @@
+# Dart / Flutter
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+pubspec.lock
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.classpath
+.project
+.settings/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Coverage
+coverage/
+*.lcov
+
+# Test outputs
+test/.test_session/
+.dart_tool/test/
+
+# Generated
+**/*.g.dart
+**/*.freezed.dart
+**/*.mocks.dart
+
+# Secrets
+*.env
+.env.local
+*.keystore
+*.jks
+key.properties
+google-services.json
+firebase_options.dart
+
+# Build artefacts
+*.apk
+*.aab
+*.ipa
+*.app
+*.dSYM/
+*.dSYM.zip
+*.framework
+*.app.zip
