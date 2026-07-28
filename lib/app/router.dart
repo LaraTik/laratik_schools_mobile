@@ -7,6 +7,8 @@ import '../core/clock.dart';
 import '../core/logging.dart';
 import '../features/academics/ui/academics_screen.dart';
 import '../features/academics/ui/subject_create_screen.dart';
+import '../features/assessment/ui/exam_attempt_screen.dart';
+import '../features/assessment/ui/exams_list_screen.dart';
 import '../features/attendance/ui/attendance_capture_screen.dart';
 import '../features/attendance/ui/attendance_list_screen.dart';
 import '../features/guardians/ui/guardian_create_screen.dart';
@@ -183,6 +185,40 @@ GoRouter buildRouter({
                   final id = state.pathParameters['id'] ?? '';
                   return AttendanceCaptureScreen(classGroupId: id);
                 },
+              ),
+            ],
+          ),
+          GoRoute(
+            path: '/shell/academics',
+            name: 'academics',
+            builder: (context, state) => const AcademicsScreen(),
+            routes: [
+              GoRoute(
+                path: 'subjects/new',
+                name: 'subject_new',
+                builder: (context, state) => const SubjectCreateScreen(),
+              ),
+              GoRoute(
+                path: 'exams',
+                name: 'exams',
+                builder: (context, state) => const ExamsListScreen(),
+                routes: [
+                  GoRoute(
+                    path: ':id',
+                    name: 'exam_attempt',
+                    builder: (context, state) {
+                      final id = state.pathParameters['id'] ?? '';
+                      return ExamAttemptScreen(
+                        examPlanId: id,
+                        // The student id is supplied via the deep link
+                        // query (?student=...) until the boot context
+                        // exposes the current user; see the dashboard
+                        // for the typical operator path.
+                        studentId: state.uri.queryParameters['student'] ?? '',
+                      );
+                    },
+                  ),
+                ],
               ),
             ],
           ),
