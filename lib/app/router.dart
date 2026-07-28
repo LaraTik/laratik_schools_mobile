@@ -7,6 +7,8 @@ import '../core/clock.dart';
 import '../core/logging.dart';
 import '../features/academics/ui/academics_screen.dart';
 import '../features/academics/ui/subject_create_screen.dart';
+import '../features/attendance/ui/attendance_capture_screen.dart';
+import '../features/attendance/ui/attendance_list_screen.dart';
 import '../features/guardians/ui/guardian_create_screen.dart';
 import '../features/guardians/ui/guardian_detail_screen.dart';
 import '../features/guardians/ui/guardians_list_screen.dart';
@@ -17,45 +19,46 @@ import '../features/staff/ui/staff_create_screen.dart';
 import '../features/staff/ui/staff_detail_screen.dart';
 import '../features/staff/ui/staff_list_screen.dart';
 import '../ui/design_tokens.dart';
+import 'dashboard_screen.dart';
 
 /// Top-level navigation destinations. The shell renders these in a bottom
 /// navigation bar. Order matters — left-to-right is the operator's mental
 /// model (most-used first, admin surfaces last). Capped at 5 entries per
-/// the Laratik UI rules; settings / profile live behind the dashboard
-/// AppBar overflow instead of taking a tab.
-enum ShellTab { dashboard, students, staff, guardians, academics }
+/// the Laratik UI rules; the Home dashboard lives on the AppBar action of
+/// every tab instead of taking a slot.
+enum ShellTab { students, staff, guardians, academics, attendance }
 
 extension ShellTabX on ShellTab {
   String get label => switch (this) {
-        ShellTab.dashboard => 'Home',
         ShellTab.students => 'Students',
         ShellTab.staff => 'Staff',
         ShellTab.guardians => 'Guardians',
         ShellTab.academics => 'Academics',
+        ShellTab.attendance => 'Attendance',
       };
 
   IconData get icon => switch (this) {
-        ShellTab.dashboard => Icons.dashboard_outlined,
         ShellTab.students => Icons.school_outlined,
         ShellTab.staff => Icons.badge_outlined,
         ShellTab.guardians => Icons.people_outline,
         ShellTab.academics => Icons.menu_book_outlined,
+        ShellTab.attendance => Icons.fact_check_outlined,
       };
 
   IconData get activeIcon => switch (this) {
-        ShellTab.dashboard => Icons.dashboard,
         ShellTab.students => Icons.school,
         ShellTab.staff => Icons.badge,
         ShellTab.guardians => Icons.people,
         ShellTab.academics => Icons.menu_book,
+        ShellTab.attendance => Icons.fact_check,
       };
 
   String get route => switch (this) {
-        ShellTab.dashboard => '/shell',
         ShellTab.students => '/shell/students',
         ShellTab.staff => '/shell/staff',
         ShellTab.guardians => '/shell/guardians',
         ShellTab.academics => '/shell/academics',
+        ShellTab.attendance => '/shell/attendance',
       };
 }
 
@@ -105,8 +108,7 @@ GoRouter buildRouter({
           GoRoute(
             path: '/shell',
             name: 'dashboard',
-            builder: (context, state) =>
-                const _TabPlaceholder(tab: ShellTab.dashboard),
+            builder: (context, state) => const DashboardScreen(),
           ),
           GoRoute(
             path: '/shell/students',
@@ -169,10 +171,19 @@ GoRouter buildRouter({
             ],
           ),
           GoRoute(
-            path: '/shell/more',
-            name: 'more',
-            builder: (context, state) =>
-                const _TabPlaceholder(tab: ShellTab.more),
+            path: '/shell/attendance',
+            name: 'attendance',
+            builder: (context, state) => const AttendanceListScreen(),
+            routes: [
+              GoRoute(
+                path: 'capture/:id',
+                name: 'attendance_capture',
+                builder: (context, state) {
+                  final id = state.pathParameters['id'] ?? '';
+                  return AttendanceCaptureScreen(classGroupId: id);
+                },
+              ),
+            ],
           ),
         ],
       ),
@@ -216,14 +227,13 @@ class _ShellScaffold extends StatelessWidget {
   }
 
   ShellTab _activeTabFor(String location) {
+    if (location == '/shell' || location == '/shell/') {
+      return ShellTab.students;
+    }
     for (final tab in ShellTab.values) {
-      if (tab == ShellTab.dashboard) {
-        if (location == '/shell' || location == '/shell/') return tab;
-        continue;
-      }
       if (location.startsWith(tab.route)) return tab;
     }
-    return ShellTab.dashboard;
+    return ShellTab.students;
   }
 }
 
