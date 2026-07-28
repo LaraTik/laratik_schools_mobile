@@ -16,35 +16,65 @@ permissions:
   contents: read
 
 jobs:
+  pin-version:
+    name: Extract pinned Flutter version
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    outputs:
+      version: ${{ steps.pin.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: pin
+        name: Read .fvmrc
+        run: |
+          if [ ! -f .fvmrc ]; then
+            echo "::error::Missing .fvmrc. This repo uses FVM (see docs/adr/0006)."
+            exit 1
+          fi
+          version=$(jq -r '.flutter' .fvmrc)
+          if [ -z "$version" ] || [ "$version" = "null" ]; then
+            echo "::error::.fvmrc did not declare a flutter version."
+            exit 1
+          fi
+          echo "Pinned Flutter version: $version"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
   static-and-test:
-    name: Flutter analyze + test
+    name: Flutter analyze + test (pinned via .fvmrc)
+    needs: pin-version
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
         with:
-          # Shallow clone of the sibling backend so the path: dep can resolve.
-          # This only fetches the laratik_schools repo at the pinned SHA.
           fetch-depth: 0
 
-      - name: Setup Flutter
+      - name: Install jq (for FVM pin + drift check)
+        run: sudo apt-get install -y jq
+
+      - name: Setup Flutter (version from .fvmrc)
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.5'
+          flutter-version: ${{ needs.pin-version.outputs.version }}
           channel: stable
           cache: true
 
-      - name: Show tool versions
+      - name: Assert installed Flutter matches the FVM pin
         run: |
-          flutter --version
-          dart --version
+          expected=$(jq -r '.flutter' .fvmrc)
+          actual=$(flutter --version | head -n 1 | awk '{print $2}')
+          if [ "$expected" != "$actual" ]; then
+            echo "::error::Installed Flutter $actual does not match .fvmrc pin $expected."
+            exit 1
+          fi
+          echo "Flutter $actual matches the FVM pin."
 
       - name: Install dependencies
         run: flutter pub get
 
       - name: Verify BACKEND_CONTRACT_SHA matches the sibling repo
-        env:
-          BACKEND_CONTRACT_SHA: ${{ steps.contract.outputs.sha }}
         run: |
           expected=$(cat BACKEND_CONTRACT_SHA)
           actual=$(git -C ../laratik_schools rev-parse HEAD)
@@ -74,6 +104,9 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Install jq
+        run: sudo apt-get install -y jq
 
       - name: Check that the sibling laratik_schools repo exists
         run: |

@@ -46,7 +46,7 @@ laratik_schools_mobile/
 │       ├── governance/            # Phase 1+
 │       └── operations/            # Phase 1+
 ├── test/                          # cross-cutting smoke + integration tests
-├── docs/adr/                      # 5 Phase 0 decisions (see ADRs)
+├── docs/adr/                      # Phase 0 decisions (see ADRs 0001-0006)
 ├── pubspec.yaml
 ├── analysis_options.yaml
 ├── BACKEND_CONTRACT_SHA           # pinned contract revision; CI fails on drift
@@ -70,27 +70,42 @@ and a contract-freshness commit is required.
 
 ## Quick start
 
+The toolchain is pinned via [FVM](https://fvm.app). `.fvmrc` is the single
+source of truth for the Flutter version; both local dev and CI read it.
+
 ```bash
-# 1. Install Flutter 3.24.5 stable (Dart 3.5+).
-#    Windows: git clone https://github.com/flutter/flutter.git -b stable D:\tools\flutter
+# 1. Install FVM (one-time, on the dev machine). Requires Dart on PATH.
+dart pub global activate fvm
+
 # 2. Get the backend SDK in place — it lives in the sibling laratik_schools repo.
-# 3. Fetch packages.
-flutter pub get
-# 4. Run the foundation tests.
-flutter test
+#    Required for the `laratik_schools_api` path: dep and the CI contract check.
+
+# 3. From the project root, install the pinned Flutter and fetch packages.
+fvm install                # reads 3.35.7 from .fvmrc
+fvm flutter pub get
+
+# 4. Run the foundation tests (analyze + test, no build).
+fvm flutter analyze
+fvm flutter test
+
 # 5. Open the app against a non-production site (after OAuth + boot are wired).
-flutter run --dart-define=SITE=laratik.localhost
+fvm flutter run --dart-define=SITE=laratik.localhost
 ```
+
+> The toolchain is pinned to **Flutter 3.35.7 stable** (ADR 0006). CI uses
+> the same pin by reading `.fvmrc`. If `flutter --version` reports a
+> different version locally, run `fvm install` again.
 
 ## Phase 0 decisions
 
-Five ADRs are recorded in `docs/adr/`:
+Six ADRs are recorded in `docs/adr/`:
 
 1. `0001-os-support-matrix.md` — Android 8+, iOS 15+.
-2. `0002-flutter-dart-pin.md` — Flutter 3.24.0+, Dart 3.5+.
+2. `0002-flutter-dart-pin.md` — *Superseded by 0006.* Original Flutter 3.24.5 / Dart 3.5+ pin.
 3. `0003-app-identifiers.md` — `io.laratik.schools` bundle id, `laratik-mobile` OAuth client.
 4. `0004-package-choices.md` — go_router, riverpod, http, crypto, etc.
 5. `0005-branding-store-telemetry.md` — calm indigo brand, no third-party telemetry in the foundation.
+6. `0006-fvm-and-flutter-3-35-7.md` — Adopt FVM, pin Flutter 3.35.7 to match the four sibling repos; CI reads `.fvmrc`.
 
 ## License
 

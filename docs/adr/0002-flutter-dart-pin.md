@@ -1,7 +1,7 @@
 # ADR 0002: Flutter / Dart Pin
 
-- Status: Accepted
-- Date: 2026-07-27
+- Status: Superseded by ADR 0006
+- Date: 2026-07-27 (superseded 2026-07-28)
 - Phase: 0 (foundation)
 
 ## Context

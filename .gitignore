@@ -8,6 +8,11 @@ build/
 .pub/
 pubspec.lock
 
+# FVM (Flutter Version Management)
+# .fvmrc is tracked (the version pin). The SDK cache and the per-project
+# symlink to the cached version are per-machine and not tracked.
+.fvm/
+
 # IDE
 .idea/
 .vscode/

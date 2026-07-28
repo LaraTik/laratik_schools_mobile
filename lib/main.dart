@@ -6,14 +6,26 @@
 library;
 
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app/app.dart';
 import 'app/bootstrap.dart';
+import 'features/people/data/person_providers.dart';
 
 Future<void> main() async {
   // Composition root: build the immutable AppDependencies and pass them down.
   // No business logic lives in main(); the bootstrap is testable in isolation.
   WidgetsFlutterBinding.ensureInitialized();
   final deps = await bootstrap();
-  runApp(LaratikSchoolsApp(deps: deps));
+
+  // Hand the typed API client to the Riverpod graph so feature providers
+  // (People, Boot, …) can resolve the same client the bootstrap owns.
+  runApp(
+    ProviderScope(
+      overrides: [
+        apiClientProvider.overrideWithValue(deps.api),
+      ],
+      child: LaratikSchoolsApp(deps: deps),
+    ),
+  );
 }
