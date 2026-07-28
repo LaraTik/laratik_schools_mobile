@@ -120,6 +120,13 @@ class _QuickStartGrid extends StatelessWidget {
         tone: LsChipTone.info,
         onTap: () => context.go('/shell/academics/subjects/new'),
       ),
+      _QuickItem(
+        label: 'Notifications',
+        description: 'Inbox + announcements',
+        icon: Icons.notifications_outlined,
+        tone: LsChipTone.warning,
+        onTap: () => context.go('/shell/notifications'),
+      ),
     ];
     if (isWide) {
       return Row(

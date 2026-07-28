@@ -48,7 +48,7 @@ Foundation picks (already in `pubspec.yaml`):
 | UUID | `uuid: ^4.5.1` | Stable `installation_id` generation. |
 | Lints | `flutter_lints: ^4.0.0` | Official team preset. |
 | Test doubles | `mocktail: ^1.0.4` | No codegen, no `MockitoBuilder` ceremony. |
-| Contract drift helper | `contract_checker: ^0.1.0` | TBD — placeholder. The actual drift check runs in CI; this dep is removed if it never gets used. |
+| Contract drift helper | *(removed 2026-07-28)* | Placeholder was never published. The actual drift check runs in CI via `BACKEND_CONTRACT_SHA`; this dep is gone. |
 
 Explicit non-choices for the foundation:
 

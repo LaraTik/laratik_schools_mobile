@@ -11,6 +11,7 @@ import '../features/assessment/ui/exam_attempt_screen.dart';
 import '../features/assessment/ui/exams_list_screen.dart';
 import '../features/attendance/ui/attendance_capture_screen.dart';
 import '../features/attendance/ui/attendance_list_screen.dart';
+import '../features/communication/ui/notifications_screen.dart';
 import '../features/guardians/ui/guardian_create_screen.dart';
 import '../features/guardians/ui/guardian_detail_screen.dart';
 import '../features/guardians/ui/guardians_list_screen.dart';
@@ -112,6 +113,13 @@ GoRouter buildRouter({
             path: '/shell',
             name: 'dashboard',
             builder: (context, state) => const DashboardScreen(),
+            routes: [
+              GoRoute(
+                path: 'notifications',
+                name: 'notifications',
+                builder: (context, state) => const NotificationsScreen(),
+              ),
+            ],
           ),
           GoRoute(
             path: '/shell/students',
