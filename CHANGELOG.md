@@ -91,6 +91,75 @@ and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
   Students, Staff, Guardians, More). Students is live; the other four
   surface a "coming in the next release" placeholder for now.
 
+## [0.3.0+1] - 2026-07-28
+
+### Added
+
+- Phase 1.1 — Staff feature end-to-end:
+  - `lib/features/staff/data/staff_member.dart` — typed `StaffMember` that
+    narrows `get_school_staff` rows; surfaces staff_role, branch, ERPNext
+    employee link.
+  - `lib/features/staff/data/staff_form_payload.dart` + `staff_repository.dart` +
+    `staff_providers.dart` (Riverpod wiring).
+  - `lib/features/staff/ui/{staff_list,staff_detail,staff_create}_screen.dart`
+    + `lib/features/staff/ui/widgets/staff_card.dart`.
+  - Router: `/shell/staff`, `/shell/staff/new`, `/shell/staff/:id`.
+- Phase 1.2 — Guardians feature end-to-end:
+  - `lib/features/guardians/data/{guardian,guardian_form_payload,guardian_repository,
+    guardian_providers}.dart`.
+  - `lib/features/guardians/ui/{guardians_list,guardian_detail,guardian_create}_screen.dart`
+    + `lib/features/guardians/ui/widgets/guardian_card.dart`. The Guardian
+    model preserves the `linked_students` link rows; the list shows a
+    student-count chip and the detail shows the children list.
+  - Router: `/shell/guardians`, `/shell/guardians/new`,
+    `/shell/guardians/:id`.
+- Phase 1.3 — Academics surface (Subjects, Timetable, Branches):
+  - `lib/features/academics/data/{subject,academics_repository,academics_providers}.dart`.
+    Subject, TimetableSlot, and Branch typed models; TimetableSlot exposes
+    an `isRenderable` flag so the schedule grid can skip rows missing the
+    day-of-week or time fields.
+  - `lib/features/academics/ui/academics_screen.dart` — three-tab
+    `DefaultTabController` (Subjects / Timetable / Branches); Subjects and
+    Timetable get pull-to-refresh and load-more; the day-ordered Timetable
+    grid groups slots Monday..Sunday and falls back to "Unscheduled".
+  - `lib/features/academics/ui/subject_create_screen.dart`.
+  - Router: `/shell/academics`, `/shell/academics/subjects/new`.
+- Phase 1.4 — Attendance capture + dashboard home:
+  - `lib/features/attendance/data/{attendance_record,attendance_repository,
+    attendance_providers}.dart`. `AttendanceStatus` + `AttendanceTone` for
+    the well-known Present / Absent / Late / Excused values; the repository
+    reuses `PersonRepository` for the roster read and auto-mints the
+    idempotency key per mark.
+  - `lib/features/attendance/ui/widgets/{attendance_status_segment,
+    attendance_mark_row}.dart` — 4-way segment selector + 64dp row.
+  - `lib/features/attendance/ui/{attendance_capture,attendance_list}_screen.dart`
+    — operator-first capture with live P / A / L / E counters, mark-all
+    shortcuts, batch submit, and a read-only history with pull-to-refresh.
+  - `lib/app/dashboard_screen.dart` — operator landing with a 2x2 (or 4-up
+    on wide screens) quick-start grid of the most-used create / capture
+    actions; today's date in the AppBar; live counters deferred to Phase 2
+    alongside the operations health wiring.
+- Bottom nav restructured (cap at 5 tabs per the Laratik UI rules): Home
+  moves off the nav and onto the initial `/shell` route; the five
+  feature tabs are now Students / Staff / Guardians / Academics /
+  Attendance.
+
+### Tests
+
+- `test/features/staff/staff_repository_test.dart` — list mapping with
+  cursor, role + search client-side filters, create returning the staff
+  id and ERPNext employee link.
+- `test/features/guardians/guardian_repository_test.dart` — list mapping,
+  linked-students extraction, relation + search filters, create
+  returning the guardian id.
+- `test/features/academics/academics_repository_test.dart` — subject
+  parsing with department + credit_hours, create returning the new
+  subject id, timetable slot parsing with `isRenderable` flag.
+- `test/features/attendance/attendance_repository_test.dart` —
+  `AttendanceStatus` tone mapping + neutral fallback, list parsing,
+  roster load with default Present, submit returning the new attendance
+  record id.
+
 ### Tests
 
 - `test/features/people/person_test.dart` — `Person.fromJson` parsing,
