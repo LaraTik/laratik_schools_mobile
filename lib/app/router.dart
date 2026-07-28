@@ -5,6 +5,8 @@ import 'package:laratik_schools_api/laratik_schools_api.dart';
 import '../auth/session.dart';
 import '../core/clock.dart';
 import '../core/logging.dart';
+import '../features/academics/ui/academics_screen.dart';
+import '../features/academics/ui/subject_create_screen.dart';
 import '../features/guardians/ui/guardian_create_screen.dart';
 import '../features/guardians/ui/guardian_detail_screen.dart';
 import '../features/guardians/ui/guardians_list_screen.dart';
@@ -18,8 +20,10 @@ import '../ui/design_tokens.dart';
 
 /// Top-level navigation destinations. The shell renders these in a bottom
 /// navigation bar. Order matters — left-to-right is the operator's mental
-/// model (most-used first, admin surfaces last).
-enum ShellTab { dashboard, students, staff, guardians, more }
+/// model (most-used first, admin surfaces last). Capped at 5 entries per
+/// the Laratik UI rules; settings / profile live behind the dashboard
+/// AppBar overflow instead of taking a tab.
+enum ShellTab { dashboard, students, staff, guardians, academics }
 
 extension ShellTabX on ShellTab {
   String get label => switch (this) {
@@ -27,7 +31,7 @@ extension ShellTabX on ShellTab {
         ShellTab.students => 'Students',
         ShellTab.staff => 'Staff',
         ShellTab.guardians => 'Guardians',
-        ShellTab.more => 'More',
+        ShellTab.academics => 'Academics',
       };
 
   IconData get icon => switch (this) {
@@ -35,7 +39,7 @@ extension ShellTabX on ShellTab {
         ShellTab.students => Icons.school_outlined,
         ShellTab.staff => Icons.badge_outlined,
         ShellTab.guardians => Icons.people_outline,
-        ShellTab.more => Icons.menu,
+        ShellTab.academics => Icons.menu_book_outlined,
       };
 
   IconData get activeIcon => switch (this) {
@@ -43,7 +47,7 @@ extension ShellTabX on ShellTab {
         ShellTab.students => Icons.school,
         ShellTab.staff => Icons.badge,
         ShellTab.guardians => Icons.people,
-        ShellTab.more => Icons.menu_open,
+        ShellTab.academics => Icons.menu_book,
       };
 
   String get route => switch (this) {
@@ -51,7 +55,7 @@ extension ShellTabX on ShellTab {
         ShellTab.students => '/shell/students',
         ShellTab.staff => '/shell/staff',
         ShellTab.guardians => '/shell/guardians',
-        ShellTab.more => '/shell/more',
+        ShellTab.academics => '/shell/academics',
       };
 }
 
