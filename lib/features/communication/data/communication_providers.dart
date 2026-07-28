@@ -11,13 +11,13 @@ final communicationRepositoryProvider = Provider<CommunicationRepository>((ref) 
 });
 
 class NotificationsListController
-    extends AutoDisposeAsyncNotifier<AsyncValue<NotificationPage>> {
+    extends AutoDisposeAsyncNotifier<NotificationPage> {
   String? _cursor;
   bool _unreadOnly = false;
   static const int _pageSize = 50;
 
   @override
-  Future<AsyncValue<NotificationPage>> build() async {
+  Future<NotificationPage> build() async {
     _cursor = null;
     return _fetchPage(reset: true);
   }
@@ -31,21 +31,21 @@ class NotificationsListController
     final current = state.value;
     if (current == null || !current.hasMore) return;
     final next = await _fetchPage(reset: false);
-    state = next.whenData(
-      (page) => NotificationPage(
-        items: [...current.items, ...page.items],
-        nextCursor: page.nextCursor,
+    state = AsyncValue.data(
+      NotificationPage(
+        items: [...current.items, ...next.items],
+        nextCursor: next.nextCursor,
       ),
     );
   }
 
   Future<void> refresh() async {
     _cursor = null;
-    state = const AsyncLoading();
-    state = await _fetchPage(reset: true);
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() => _fetchPage(reset: true));
   }
 
-  Future<AsyncValue<NotificationPage>> _fetchPage({required bool reset}) async {
+  Future<NotificationPage> _fetchPage({required bool reset}) async {
     final repo = ref.read(communicationRepositoryProvider);
     final result = await repo.listNotifications(
       cursor: reset ? null : _cursor,
@@ -55,14 +55,14 @@ class NotificationsListController
     return switch (result) {
       Ok(:final value) => () {
           _cursor = value.nextCursor;
-          return AsyncData(value);
+          return value;
         }(),
-      Err(:final error) => AsyncError(error, StackTrace.current),
+      Err(:final error) => throw error,
     };
   }
 }
 
 final notificationsListProvider = AsyncNotifierProvider.autoDispose<
-    NotificationsListController, AsyncValue<NotificationPage>>(
+    NotificationsListController, NotificationPage>(
   NotificationsListController.new,
 );

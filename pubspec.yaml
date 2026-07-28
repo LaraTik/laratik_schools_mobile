@@ -27,6 +27,7 @@ dependencies:
 
   # Functional plumbing (Result<T, E> defined in lib/core/result.dart).
   equatable: ^2.0.5
+  meta: ^1.16.0
 
   # Platform — networking, crypto, prefs, device info, system browser.
   http: ^1.2.2

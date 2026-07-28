@@ -5,6 +5,7 @@ import '../../../core/result.dart';
 import '../../people/data/person_failure.dart';
 import 'guardian.dart';
 import 'guardian_form_payload.dart';
+import 'package:meta/meta.dart';
 
 @immutable
 class GuardianPage {
@@ -57,9 +58,9 @@ class GuardianRepository {
       final response = await _api.getGuardianSetupContext();
       final data = response.data;
       if (response.error != null || data == null) {
-        return Err(_failureFromApi(response.error, data));
+        return Err(error: _failureFromApi(response.error));
       }
-      return Ok(<String, Object?>{
+      return Ok(value: <String, Object?>{
         'defaults': data.defaults ?? const <String, Object?>{},
         'doctype': data.doctype ?? 'School Guardian',
         'feature': data.feature ?? 'guardians',
@@ -68,7 +69,7 @@ class GuardianRepository {
         'required_roles': data.requiredRoles ?? const <String>[],
       });
     } on Exception catch (e) {
-      return Err(_exceptionFailure(e));
+      return Err(error: _exceptionFailure(e));
     }
   }
 
@@ -85,19 +86,19 @@ class GuardianRepository {
       );
       final data = response.data;
       if (response.error != null || data == null) {
-        return Err(_failureFromApi(response.error, data));
+        return Err(error: _failureFromApi(response.error));
       }
       final rows = data.guardians ?? const <JsonMap>[];
       final guardians = rows
           .where((row) => _matchesFilters(row, search, relation))
           .map(Guardian.fromJson)
           .toList(growable: false);
-      return Ok(GuardianPage(
+      return Ok(value: GuardianPage(
         guardians: guardians,
         nextCursor: _nextCursorFromResponse(response, rows.length),
       ));
     } on Exception catch (e) {
-      return Err(_exceptionFailure(e));
+      return Err(error: _exceptionFailure(e));
     }
   }
 
@@ -111,20 +112,20 @@ class GuardianRepository {
       );
       final data = response.data;
       if (response.error != null) {
-        return Err(_failureFromApi(response.error, data));
+        return Err(error: _failureFromApi(response.error));
       }
       final rows = data?.guardians ?? const <JsonMap>[];
       final match = rows.firstWhere(
         (row) => (row['name'] ?? '').toString() == guardianId,
         orElse: () => <String, Object?>{'name': guardianId},
       );
-      return Ok(GuardianProfile(
+      return Ok(value: GuardianProfile(
         guardian: Guardian.fromJson(match),
         summary: const <String, Object?>{},
         raw: <String, Object?>{'guardian': guardianId},
       ));
     } on Exception catch (e) {
-      return Err(_exceptionFailure(e));
+      return Err(error: _exceptionFailure(e));
     }
   }
 
@@ -139,15 +140,15 @@ class GuardianRepository {
       );
       final data = response.data;
       if (response.error != null) {
-        return Err(_failureFromApi(response.error, data));
+        return Err(error: _failureFromApi(response.error));
       }
       if (data == null) {
-        return const Err(PersonFailure(
+        return const Err(error: PersonFailure(
           code: 'EMPTY_RESPONSE',
           message: 'The server returned no data for the new guardian.',
         ));
       }
-      return Ok(GuardianCreationResult(
+      return Ok(value: GuardianCreationResult(
         schoolGuardian: data.schoolGuardian ?? '',
         guardianName: data.guardianName ?? '',
         status: data.status ?? 'Active',
@@ -157,7 +158,7 @@ class GuardianRepository {
             .toList(growable: false),
       ));
     } on Exception catch (e) {
-      return Err(_exceptionFailure(e));
+      return Err(error: _exceptionFailure(e));
     }
   }
 
@@ -193,12 +194,12 @@ class GuardianRepository {
     return null;
   }
 
-  PersonFailure _failureFromApi(ApiError? error, JsonMap? data) {
+  PersonFailure _failureFromApi(ApiError? error) {
     if (error == null) {
       return const PersonFailure(
         code: 'EMPTY_RESPONSE',
         message: 'The server returned no data.',
-      );
+        );
     }
     return PersonFailure(
       code: error.code,

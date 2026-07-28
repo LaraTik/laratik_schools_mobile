@@ -4,6 +4,7 @@ import 'package:uuid/uuid.dart';
 import '../../../core/result.dart';
 import '../../people/data/person_failure.dart';
 import 'exam.dart';
+import 'package:meta/meta.dart';
 
 @immutable
 class ExamPlanPage {
@@ -17,28 +18,52 @@ class ExamPlanPage {
 class EligibilityResult {
   const EligibilityResult({
     required this.eligible,
-    required this.reason,
     required this.examPlanId,
-    required this.studentId,
   });
   final bool eligible;
-  final String reason;
   final String examPlanId;
-  final String studentId;
+}
+
+@immutable
+class StartAttemptResult {
+  const StartAttemptResult({
+    required this.attemptId,
+    required this.status,
+    required this.endsAt,
+    required this.revision,
+    required this.questions,
+    required this.questionOrder,
+  });
+  final String attemptId;
+  final String status;
+  final String? endsAt;
+  final int? revision;
+  final List<ExamQuestion> questions;
+  final List<String> questionOrder;
+}
+
+@immutable
+class AttemptStatus {
+  const AttemptStatus({
+    required this.attemptId,
+    required this.status,
+  });
+  final String attemptId;
+  final String status;
 }
 
 @immutable
 class AttemptResult {
   const AttemptResult({
     required this.attemptId,
-    required this.status,
+    required this.state,
     required this.score,
-    required this.totalMarks,
+    required this.maxScore,
   });
   final String attemptId;
-  final String status;
+  final String state;
   final double? score;
-  final int? totalMarks;
+  final double? maxScore;
 }
 
 class AssessmentRepository {
@@ -62,20 +87,19 @@ class AssessmentRepository {
       );
       final data = response.data;
       if (response.error != null || data == null) {
-        return Err(_failureFromApi(response.error, data));
+        return Err(error: _failureFromApi(response.error));
       }
       final rows = data.plans ?? const <JsonMap>[];
       final plans = rows
-          .where((row) =>
-              _matchesFilters(row, subject, publishedOnly))
+          .where((row) => _matchesFilters(row, subject, publishedOnly))
           .map(ExamPlan.fromJson)
           .toList(growable: false);
-      return Ok(ExamPlanPage(
+      return Ok(value: ExamPlanPage(
         plans: plans,
         nextCursor: _nextCursorFromMeta(response.meta),
       ));
     } on Exception catch (e) {
-      return Err(_exceptionFailure(e));
+      return Err(error: _exceptionFailure(e));
     }
   }
 
@@ -85,33 +109,31 @@ class AssessmentRepository {
   }) async {
     try {
       final response = await _api.getSchoolOnlineExamEligibility(
-        payload: <String, Object?>{
-          'exam_plan': examPlanId,
-          'school_student': studentId,
-        },
+        examPlan: examPlanId,
+        schoolStudent: studentId,
       );
       final data = response.data;
       if (response.error != null) {
-        return Err(_failureFromApi(response.error, data));
+        return Err(error: _failureFromApi(response.error));
       }
       if (data == null) {
-        return const Err(PersonFailure(
+        return const Err(error: PersonFailure(
           code: 'EMPTY_RESPONSE',
           message: 'The server returned no eligibility data.',
         ));
       }
-      return Ok(EligibilityResult(
-        eligible: data.eligible == 'true' || data.eligible == '1',
-        reason: data.reason ?? '',
-        examPlanId: examPlanId,
-        studentId: studentId,
+      return Ok(value: EligibilityResult(
+        eligible: data.eligible ?? false,
+        examPlanId: data.examPlan ?? examPlanId,
       ));
     } on Exception catch (e) {
-      return Err(_exceptionFailure(e));
+      return Err(error: _exceptionFailure(e));
     }
   }
 
-  Future<Result<AttemptResult, PersonFailure>> startAttempt({
+  /// Start a new attempt. The server returns the question set inline
+  /// so the attempt screen does not need a follow-up fetch.
+  Future<Result<StartAttemptResult, PersonFailure>> startAttempt({
     required String examPlanId,
     required String studentId,
   }) async {
@@ -125,76 +147,86 @@ class AssessmentRepository {
       );
       final data = response.data;
       if (response.error != null) {
-        return Err(_failureFromApi(response.error, data));
+        return Err(error: _failureFromApi(response.error));
       }
       if (data == null) {
-        return const Err(PersonFailure(
+        return const Err(error: PersonFailure(
           code: 'EMPTY_RESPONSE',
           message: 'The server returned no attempt data.',
         ));
       }
-      return Ok(AttemptResult(
+      final questions = (data.questions ?? const <JsonMap>[])
+          .map(ExamQuestion.fromJson)
+          .toList(growable: false);
+      return Ok(value: StartAttemptResult(
         attemptId: data.attempt ?? '',
         status: data.status ?? 'In Progress',
-        score: null,
-        totalMarks: null,
+        endsAt: data.endsAt,
+        revision: data.revision,
+        questions: questions,
+        questionOrder: data.questionOrder ?? const <String>[],
       ));
     } on Exception catch (e) {
-      return Err(_exceptionFailure(e));
+      return Err(error: _exceptionFailure(e));
     }
   }
 
-  Future<Result<bool, PersonFailure>> autosave({
+  Future<Result<AttemptStatus, PersonFailure>> autosave({
     required String attemptId,
+    required int revision,
     required Map<String, Object?> answers,
   }) async {
     try {
       final response = await _api.autosaveSchoolExamAttempt(
         payload: <String, Object?>{
           'attempt': attemptId,
+          'revision': revision,
           'answers': answers,
         },
         idempotencyKey: _uuid.v4(),
       );
       if (response.error != null) {
-        return Err(_failureFromApi(response.error, response.data));
+        return Err(error: _failureFromApi(response.error));
       }
-      return const Ok(true);
+      return Ok(value: AttemptStatus(
+        attemptId: attemptId,
+        status: 'In Progress',
+      ));
     } on Exception catch (e) {
-      return Err(_exceptionFailure(e));
+      return Err(error: _exceptionFailure(e));
     }
   }
 
-  Future<Result<AttemptResult, PersonFailure>> submit({
+  Future<Result<AttemptStatus, PersonFailure>> submit({
     required String attemptId,
+    required int revision,
     required Map<String, Object?> answers,
   }) async {
     try {
       final response = await _api.submitSchoolExamAttempt(
         payload: <String, Object?>{
           'attempt': attemptId,
+          'revision': revision,
           'answers': answers,
         },
         idempotencyKey: _uuid.v4(),
       );
       final data = response.data;
       if (response.error != null) {
-        return Err(_failureFromApi(response.error, data));
+        return Err(error: _failureFromApi(response.error));
       }
       if (data == null) {
-        return const Err(PersonFailure(
+        return const Err(error: PersonFailure(
           code: 'EMPTY_RESPONSE',
           message: 'The server returned no submission data.',
         ));
       }
-      return Ok(AttemptResult(
+      return Ok(value: AttemptStatus(
         attemptId: data.attempt ?? attemptId,
         status: data.status ?? 'Submitted',
-        score: null,
-        totalMarks: null,
       ));
     } on Exception catch (e) {
-      return Err(_exceptionFailure(e));
+      return Err(error: _exceptionFailure(e));
     }
   }
 
@@ -205,36 +237,40 @@ class AssessmentRepository {
       );
       final data = response.data;
       if (response.error != null) {
-        return Err(_failureFromApi(response.error, data));
+        return Err(error: _failureFromApi(response.error));
       }
       if (data == null) {
-        return const Err(PersonFailure(
+        return const Err(error: PersonFailure(
           code: 'EMPTY_RESPONSE',
           message: 'The server returned no result data.',
         ));
       }
-      return Ok(AttemptResult(
+      return Ok(value: AttemptResult(
         attemptId: data.attempt ?? attemptId,
-        status: data.status ?? 'Graded',
-        score: _toDouble(data.score),
-        totalMarks: data.totalMarks,
+        state: data.state ?? 'Graded',
+        score: data.score,
+        maxScore: data.maxScore,
       ));
     } on Exception catch (e) {
-      return Err(_exceptionFailure(e));
+      return Err(error: _exceptionFailure(e));
     }
   }
 
-  Future<Result<bool, PersonFailure>> abandon(String attemptId) async {
+  Future<Result<AttemptStatus, PersonFailure>> abandon(String attemptId) async {
     try {
       final response = await _api.abandonSchoolExamAttempt(
         attempt: attemptId,
+        idempotencyKey: _uuid.v4(),
       );
       if (response.error != null) {
-        return Err(_failureFromApi(response.error, response.data));
+        return Err(error: _failureFromApi(response.error));
       }
-      return const Ok(true);
+      return Ok(value: AttemptStatus(
+        attemptId: attemptId,
+        status: 'Abandoned',
+      ));
     } on Exception catch (e) {
-      return Err(_exceptionFailure(e));
+      return Err(error: _exceptionFailure(e));
     }
   }
 
@@ -265,13 +301,7 @@ class AssessmentRepository {
     return null;
   }
 
-  double? _toDouble(Object? v) {
-    if (v is num) return v.toDouble();
-    if (v is String) return double.tryParse(v);
-    return null;
-  }
-
-  PersonFailure _failureFromApi(ApiError? error, JsonMap? data) {
+  PersonFailure _failureFromApi(ApiError? error) {
     if (error == null) {
       return const PersonFailure(
         code: 'EMPTY_RESPONSE',

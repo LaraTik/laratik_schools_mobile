@@ -8,6 +8,7 @@ import '../../../ui/widgets/ls_empty_state.dart';
 import '../../../ui/widgets/ls_status_chip.dart';
 import '../../people/data/person_failure.dart';
 import '../data/communication_providers.dart';
+import '../data/communication_repository.dart';
 import '../data/notification.dart';
 
 class NotificationsScreen extends ConsumerStatefulWidget {
@@ -105,7 +106,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
       body: RefreshIndicator(
         onRefresh: () => ref.read(notificationsListProvider.notifier).refresh(),
         child: asyncPage.when(
-          data: (page) => _buildList(page.value, tokens),
+          data: (page) => _buildList(page, tokens),
           loading: () => const LsStateView.loading(
             title: 'Loading notifications',
             message: 'Fetching the latest inbox from the server.',
@@ -116,8 +117,8 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     );
   }
 
-  Widget _buildList(NotificationPage? page, DesignTokens tokens) {
-    final items = page?.items ?? const <NotificationItem>[];
+  Widget _buildList(NotificationPage page, DesignTokens tokens) {
+    final items = page.items;
     if (items.isEmpty) {
       return ListView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -134,7 +135,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     return ListView.separated(
       controller: _scrollController,
       padding: EdgeInsets.only(bottom: tokens.space.xl),
-      itemCount: items.length + (page?.hasMore == true ? 1 : 0),
+      itemCount: items.length + (page.hasMore ? 1 : 0),
       separatorBuilder: (_, __) => Divider(
         height: 1,
         color: tokens.surface.outlineVariant,

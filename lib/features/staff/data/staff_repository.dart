@@ -5,6 +5,7 @@ import '../../../core/result.dart';
 import '../../people/data/person_failure.dart';
 import 'staff_form_payload.dart';
 import 'staff_member.dart';
+import 'package:meta/meta.dart';
 
 @immutable
 class StaffPage {
@@ -61,9 +62,9 @@ class StaffRepository {
       final response = await _api.getStaffSetupContext();
       final data = response.data;
       if (response.error != null || data == null) {
-        return Err(_failureFromApi(response.error, data));
+        return Err(error: _failureFromApi(response.error));
       }
-      return Ok(<String, Object?>{
+      return Ok(value: <String, Object?>{
         'defaults': data.defaults ?? const <String, Object?>{},
         'doctype': data.doctype ?? 'School Staff',
         'feature': data.feature ?? 'staff',
@@ -72,7 +73,7 @@ class StaffRepository {
         'required_roles': data.requiredRoles ?? const <String>[],
       });
     } on Exception catch (e) {
-      return Err(_exceptionFailure(e));
+      return Err(error: _exceptionFailure(e));
     }
   }
 
@@ -90,19 +91,19 @@ class StaffRepository {
       );
       final data = response.data;
       if (response.error != null || data == null) {
-        return Err(_failureFromApi(response.error, data));
+        return Err(error: _failureFromApi(response.error));
       }
       final rows = data.staff ?? const <JsonMap>[];
       final staff = rows
           .where((row) => _matchesFilters(row, search, staffRole, branchId))
           .map(StaffMember.fromJson)
           .toList(growable: false);
-      return Ok(StaffPage(
+      return Ok(value: StaffPage(
         staff: staff,
         nextCursor: _nextCursorFromResponse(response, rows.length),
       ));
     } on Exception catch (e) {
-      return Err(_exceptionFailure(e));
+      return Err(error: _exceptionFailure(e));
     }
   }
 
@@ -116,20 +117,20 @@ class StaffRepository {
       );
       final data = response.data;
       if (response.error != null) {
-        return Err(_failureFromApi(response.error, data));
+        return Err(error: _failureFromApi(response.error));
       }
       final rows = data?.staff ?? const <JsonMap>[];
       final match = rows.firstWhere(
         (row) => (row['name'] ?? '').toString() == staffId,
         orElse: () => <String, Object?>{'name': staffId},
       );
-      return Ok(StaffProfile(
+      return Ok(value: StaffProfile(
         member: StaffMember.fromJson(match),
         summary: const <String, Object?>{},
         raw: <String, Object?>{'staff': staffId},
       ));
     } on Exception catch (e) {
-      return Err(_exceptionFailure(e));
+      return Err(error: _exceptionFailure(e));
     }
   }
 
@@ -144,15 +145,15 @@ class StaffRepository {
       );
       final data = response.data;
       if (response.error != null) {
-        return Err(_failureFromApi(response.error, data));
+        return Err(error: _failureFromApi(response.error));
       }
       if (data == null) {
-        return const Err(PersonFailure(
+        return const Err(error: PersonFailure(
           code: 'EMPTY_RESPONSE',
           message: 'The server returned no data for the new staff member.',
         ));
       }
-      return Ok(StaffCreationResult(
+      return Ok(value: StaffCreationResult(
         schoolStaff: data.schoolStaff ?? '',
         staffName: data.staffName ?? '',
         staffRole: data.staffRole,
@@ -164,7 +165,7 @@ class StaffRepository {
             .toList(growable: false),
       ));
     } on Exception catch (e) {
-      return Err(_exceptionFailure(e));
+      return Err(error: _exceptionFailure(e));
     }
   }
 
@@ -211,12 +212,12 @@ class StaffRepository {
     return null;
   }
 
-  PersonFailure _failureFromApi(ApiError? error, JsonMap? data) {
+  PersonFailure _failureFromApi(ApiError? error) {
     if (error == null) {
       return const PersonFailure(
         code: 'EMPTY_RESPONSE',
         message: 'The server returned no data.',
-      );
+        );
     }
     return PersonFailure(
       code: error.code,

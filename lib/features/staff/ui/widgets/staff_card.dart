@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../ui/design_tokens.dart';
-import '../../../ui/widgets/ls_status_chip.dart';
+import '../../../../ui/design_tokens.dart';
+import '../../../../ui/widgets/ls_status_chip.dart';
 import '../../data/staff_member.dart';
 
 /// Row tile for the staff list. Mirrors `PersonCard` but for staff; the

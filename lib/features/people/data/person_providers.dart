@@ -68,13 +68,12 @@ final studentsFilterProvider =
 
 /// The student list. Async notifier so the screen can `ref.watch` and
 /// receive loading / data / error transitions in a single source of truth.
-class StudentsListController
-    extends AutoDisposeAsyncNotifier<AsyncValue<PersonPage>> {
+class StudentsListController extends AutoDisposeAsyncNotifier<PersonPage> {
   String? _cursor;
   static const int _pageSize = 50;
 
   @override
-  Future<AsyncValue<PersonPage>> build() async {
+  Future<PersonPage> build() async {
     // Re-fetch whenever the filter changes.
     final filter = ref.watch(studentsFilterProvider);
     _cursor = null;
@@ -86,10 +85,10 @@ class StudentsListController
     if (current == null || !current.hasMore) return;
     final filter = ref.read(studentsFilterProvider);
     final next = await _fetchPage(filter: filter, reset: false);
-    state = next.whenData(
-      (page) => PersonPage(
-        people: [...current.people, ...page.people],
-        nextCursor: page.nextCursor,
+    state = AsyncValue.data(
+      PersonPage(
+        people: [...current.people, ...next.people],
+        nextCursor: next.nextCursor,
       ),
     );
   }
@@ -97,11 +96,11 @@ class StudentsListController
   Future<void> refresh() async {
     final filter = ref.read(studentsFilterProvider);
     _cursor = null;
-    state = const AsyncLoading();
-    state = await _fetchPage(filter: filter, reset: true);
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() => _fetchPage(filter: filter, reset: true));
   }
 
-  Future<AsyncValue<PersonPage>> _fetchPage({
+  Future<PersonPage> _fetchPage({
     required StudentsFilter filter,
     required bool reset,
   }) async {
@@ -116,15 +115,15 @@ class StudentsListController
     return switch (result) {
       Ok(:final value) => () {
           _cursor = value.nextCursor;
-          return AsyncData(value);
+          return value;
         }(),
-      Err(:final error) => AsyncError(error, StackTrace.current),
+      Err(:final error) => throw error,
     };
   }
 }
 
 final studentsListProvider = AsyncNotifierProvider.autoDispose<
-    StudentsListController, AsyncValue<PersonPage>>(
+    StudentsListController, PersonPage>(
   StudentsListController.new,
 );
 
@@ -151,10 +150,7 @@ extension AppDependenciesRiverpod on AppDependencies {
   /// Override the [apiClientProvider] in a `ProviderScope.overrides`
   /// so the People feature (and any other feature) can pull the typed
   /// client from a single source of truth.
-  void installInScope(ProviderContainer container) {
-    container.updateOverrides([
-      ...container.overrides,
-      apiClientProvider.overrideWithValue(api),
-    ]);
-  }
+  List<Override> get riverpodPeopleOverrides => [
+        apiClientProvider.overrideWithValue(api),
+      ];
 }

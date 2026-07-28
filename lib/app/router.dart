@@ -282,44 +282,6 @@ class _ShellScaffold extends StatelessWidget {
   }
 }
 
-class _TabPlaceholder extends StatelessWidget {
-  const _TabPlaceholder({required this.tab});
-  final ShellTab tab;
-
-  @override
-  Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.all(tokens.space.xl),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(tab.icon, size: 48, color: tokens.text.tertiary),
-            SizedBox(height: tokens.space.md),
-            Text(
-              tab.label,
-              style: tokens.typography.titleLarge.copyWith(
-                color: tokens.text.primary,
-              ),
-            ),
-            SizedBox(height: tokens.space.xs),
-            Text(
-              'Coming in the next release.',
-              style: tokens.typography.bodyMedium.copyWith(
-                color: tokens.text.secondary,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class _SplashScreen extends StatelessWidget {
   const _SplashScreen();
 

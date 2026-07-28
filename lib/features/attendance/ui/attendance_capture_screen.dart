@@ -10,6 +10,7 @@ import '../../../ui/widgets/ls_status_chip.dart';
 import '../../people/data/person_failure.dart';
 import '../data/attendance_providers.dart';
 import '../data/attendance_record.dart';
+import '../data/attendance_repository.dart';
 import 'widgets/attendance_mark_row.dart';
 import 'widgets/attendance_status_segment.dart';
 
@@ -146,9 +147,10 @@ class _AttendanceCaptureScreenState
       ),
       body: asyncRoster.when(
         data: (result) => switch (result) {
-          Ok(:final value) => _seedDefault(value) == _buildRoster(value, tokens)
-              ? _buildRoster(value, tokens)
-              : _buildRoster(value, tokens),
+          Ok(:final value) => () {
+              _seedDefault(value);
+              return _buildRoster(value, tokens);
+            }(),
           Err(:final error) => LsStateView.error(
               icon: Icons.error_outline,
               title: 'Could not load the roster',

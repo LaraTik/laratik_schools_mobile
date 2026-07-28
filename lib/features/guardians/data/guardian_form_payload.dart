@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:laratik_schools_api/laratik_schools_api.dart';
+import 'package:meta/meta.dart';
 
 @immutable
 class GuardianFormPayload extends Equatable {
@@ -129,7 +130,7 @@ class GuardianFormPayload extends Equatable {
 
   static const Object _noChange = Object();
 
-  static T? _resolved<T>(Object marker, T? current) {
+  static T? _resolved<T>(Object? marker, T? current) {
     if (identical(marker, _noChange)) return current;
     return marker as T?;
   }

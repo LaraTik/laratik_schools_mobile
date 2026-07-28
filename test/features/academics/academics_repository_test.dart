@@ -1,47 +1,43 @@
+// SPDX-License-Identifier: Proprietary
+// Tests for the Academics repository.
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:laratik_schools_api/laratik_schools_api.dart';
 import 'package:laratik_schools_mobile/core/result.dart';
 import 'package:laratik_schools_mobile/features/academics/data/academics_repository.dart';
-import 'package:laratik_schools_mobile/features/academics/data/subject.dart';
 import 'package:laratik_schools_mobile/features/people/data/person_failure.dart';
 
-class _FakeAcademicsApi implements LaratikSchoolsApiClient {
-  ApiEnvelope<GetSchoolSubjectsData>? subjectsResponse;
-  ApiEnvelope<GetSchoolTimetableSlotsData>? slotsResponse;
-  ApiEnvelope<GetSchoolBranchesData>? branchesResponse;
-  ApiEnvelope<CreateSchoolSubjectData>? createSubjectResponse;
-
-  @override
-  dynamic noSuchMethod(Invocation invocation) =>
-      super.noSuchMethod(invocation);
-}
+import '../../helpers/mock_api_client.dart';
 
 void main() {
+  AcademicsRepository makeRepo(FakeLaratikSchoolsTransport transport) =>
+      AcademicsRepository(api: LaratikSchoolsApiClient(transport));
+
   group('AcademicsRepository.listSubjects', () {
     test('parses rows and filters by department and search', () async {
-      final api = _FakeAcademicsApi()
-        ..subjectsResponse = ApiEnvelope<GetSchoolSubjectsData>(
-          data: const GetSchoolSubjectsData(subjects: <JsonMap>[
-            <String, Object?>{
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondOnce(
+        LaratikSchoolsApiMethods.getSchoolSubjects,
+        envelopeOk({
+          'subjects': [
+            {
               'name': 'EDU-SUB-2026-00001',
               'subject_name': 'Mathematics',
               'subject_code': 'MATH-101',
               'department': 'Sciences',
               'credit_hours': 4,
             },
-            <String, Object?>{
+            {
               'name': 'EDU-SUB-2026-00002',
               'subject_name': 'Arabic',
               'subject_code': 'ARB-101',
               'department': 'Humanities',
               'credit_hours': 3,
             },
-          ]),
-          error: null,
-          meta: const ApiMeta(apiVersion: 'v1', requestId: 'req-1'),
-          warnings: const <Object?>[],
-        );
-      final repo = AcademicsRepository(api: api);
+          ],
+        }),
+      );
+      final repo = makeRepo(transport);
       final result = await repo.listSubjects(department: 'Sciences');
       final page = (result as Ok<SubjectPage, PersonFailure>).value;
       expect(page.subjects, hasLength(1));
@@ -52,18 +48,16 @@ void main() {
 
   group('AcademicsRepository.createSubject', () {
     test('returns the new subject id', () async {
-      final api = _FakeAcademicsApi()
-        ..createSubjectResponse = ApiEnvelope<CreateSchoolSubjectData>(
-          data: const CreateSchoolSubjectData(
-            subject: 'EDU-SUB-2026-00010',
-            subjectName: 'Mathematics',
-            status: 'Active',
-          ),
-          error: null,
-          meta: const ApiMeta(apiVersion: 'v1', requestId: 'req-1'),
-          warnings: const <Object?>[],
-        );
-      final repo = AcademicsRepository(api: api);
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondOnce(
+        LaratikSchoolsApiMethods.createSchoolSubject,
+        envelopeOk({
+          'school_subject': 'EDU-SUB-2026-00010',
+          'subject_name': 'Mathematics',
+          'status': 'Active',
+        }),
+      );
+      final repo = makeRepo(transport);
       final result = await repo.createSubject(
         subjectName: 'Mathematics',
         subjectCode: 'MATH-101',
@@ -80,10 +74,12 @@ void main() {
 
   group('AcademicsRepository.listTimetable', () {
     test('parses slots and exposes a renderable flag', () async {
-      final api = _FakeAcademicsApi()
-        ..slotsResponse = ApiEnvelope<GetSchoolTimetableSlotsData>(
-          data: const GetSchoolTimetableSlotsData(slots: <JsonMap>[
-            <String, Object?>{
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondOnce(
+        LaratikSchoolsApiMethods.getSchoolTimetableSlots,
+        envelopeOk({
+          'slots': [
+            {
               'name': 'EDU-TTL-2026-00001',
               'day_of_week': 'Monday',
               'start_time': '08:00',
@@ -93,19 +89,16 @@ void main() {
               'class_group': 'A',
               'room': 'B-101',
             },
-            <String, Object?>{
+            {
               'name': 'EDU-TTL-2026-00002',
-              // Missing day_of_week — should be isRenderable=false.
               'start_time': '09:00',
               'end_time': '10:00',
               'subject': 'Arabic',
             },
-          ]),
-          error: null,
-          meta: const ApiMeta(apiVersion: 'v1', requestId: 'req-1'),
-          warnings: const <Object?>[],
-        );
-      final repo = AcademicsRepository(api: api);
+          ],
+        }),
+      );
+      final repo = makeRepo(transport);
       final result = await repo.listTimetable();
       final page = (result as Ok<TimetablePage, PersonFailure>).value;
       expect(page.slots, hasLength(2));

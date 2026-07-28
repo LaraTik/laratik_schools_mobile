@@ -9,7 +9,6 @@ import '../../../ui/widgets/ls_button.dart';
 import '../../../ui/widgets/ls_empty_state.dart';
 import '../../../ui/widgets/ls_status_chip.dart';
 import '../../../ui/widgets/ls_text_field.dart';
-import '../../people/data/person_failure.dart';
 import '../data/staff_form_payload.dart';
 import '../data/staff_providers.dart';
 import '../data/staff_repository.dart';
@@ -32,7 +31,10 @@ class _StaffCreateScreenState extends ConsumerState<StaffCreateScreen> {
   late final TextEditingController _countryController;
   late final TextEditingController _dateOfJoiningController;
   late final TextEditingController _notesController;
-  StaffFormPayload _payload = const StaffFormPayload(firstName: '');
+  StaffFormPayload _payload = const StaffFormPayload(
+    firstName: '',
+    lastName: '',
+  );
   bool _submitting = false;
   String? _generalError;
   Map<String, List<String>> _fieldErrors = const {};
@@ -291,7 +293,7 @@ class _StaffCreateScreenState extends ConsumerState<StaffCreateScreen> {
               errorText: _errorFor('last_name'),
               onChanged: (_) => _onFieldChanged(),
             ),
-          ], tokens: tokens),
+          ], tokens),
           SizedBox(height: tokens.space.md),
           _SectionLabel('Role', tokens: tokens),
           LsTextField(
@@ -319,7 +321,7 @@ class _StaffCreateScreenState extends ConsumerState<StaffCreateScreen> {
               errorText: _errorFor('phone'),
               onChanged: (_) => _onFieldChanged(),
             ),
-          ], tokens: tokens),
+          ], tokens),
           SizedBox(height: tokens.space.md),
           _SectionLabel('Country & nationality', tokens: tokens),
           _buildFieldsColumnOrRow([
@@ -335,7 +337,7 @@ class _StaffCreateScreenState extends ConsumerState<StaffCreateScreen> {
               errorText: _errorFor('country'),
               onChanged: (_) => _onFieldChanged(),
             ),
-          ], tokens: tokens),
+          ], tokens),
           SizedBox(height: tokens.space.md),
           _SectionLabel('Joining date', tokens: tokens),
           LsTextField(

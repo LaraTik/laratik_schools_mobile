@@ -5,10 +5,9 @@ import 'package:go_router/go_router.dart';
 import '../../../core/result.dart';
 import '../../../ui/design_tokens.dart';
 import '../../../ui/widgets/ls_button.dart';
-import '../../../ui/widgets/ls_empty_state.dart';
 import '../../../ui/widgets/ls_text_field.dart';
-import '../../people/data/person_failure.dart';
 import '../data/academics_providers.dart';
+import '../data/academics_repository.dart';
 
 class SubjectCreateScreen extends ConsumerStatefulWidget {
   const SubjectCreateScreen({super.key});
@@ -185,7 +184,7 @@ class _SubjectCreateScreenState extends ConsumerState<SubjectCreateScreen> {
                 hint: 'Sciences, Humanities, …',
                 onChanged: (_) {},
               ),
-            ], tokens: tokens),
+            ], tokens),
             SizedBox(height: tokens.space.md),
             _buildFieldsColumnOrRow([
               LsTextField(
@@ -200,7 +199,7 @@ class _SubjectCreateScreenState extends ConsumerState<SubjectCreateScreen> {
                 keyboardType: TextInputType.number,
                 onChanged: (_) {},
               ),
-            ], tokens: tokens),
+            ], tokens),
             SizedBox(height: tokens.space.md),
             LsTextField(
               label: 'Description',

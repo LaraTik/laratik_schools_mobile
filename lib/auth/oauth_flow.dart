@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
-import 'package:laratik_schools_api/laratik_schools_api.dart';
 
 import '../core/clock.dart';
 import '../core/logging.dart';
@@ -89,7 +88,7 @@ class OauthFlow {
   final http.Client _httpClient;
 
   Future<OauthResult> run({PkceGenerator? pkce}) async {
-    final generator = pkce ?? const PkceGenerator();
+    final generator = pkce ?? PkceGenerator();
     final pkcePair = generator.generate();
     final state = OauthState.generate();
     final request = AuthorizationRequest(
@@ -220,16 +219,34 @@ class OauthFlow {
         message: 'Could not reach the token endpoint.',
         detail: e.message,
       );
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      // ignore: avoid_print
+      print('OauthFlow._exchange exception: $e\n$st');
       return OauthFailure(code: 'EXCEPTION', message: e.toString());
     }
   }
 
   String? _redact(String raw) {
     // Drop anything that looks like a token in the detail field.
+    // Match `access_token` / `refresh_token` followed by the usual
+    // boundary punctuation (quote, colon, equals, whitespace) and the
+    // token value. Non-raw to allow embedded double-quotes; single
+    // quotes use the hex escape so the string literal stays a single
+    // line.
+    // Non-raw string so we can mix the JSON quote and the form-encoded
+    // punctuation around an OAuth2 token in one literal. The token
+    // value itself can be A-Z / a-z / 0-9 / . / _.
+    final accessPattern = RegExp(
+      r'access_token[\s:=]+[A-Za-z0-9._-]+',
+      caseSensitive: false,
+    );
+    final refreshPattern = RegExp(
+      r'refresh_token[\s:=]+[A-Za-z0-9._-]+',
+      caseSensitive: false,
+    );
     final scrubbed = raw
-        .replaceAll(RegExp(r'(?i)access_token[\'":\s]*[A-Za-z0-9._-]+'), '***')
-        .replaceAll(RegExp(r'(?i)refresh_token[\'":\s]*[A-Za-z0-9._-]+'), '***');
+        .replaceAll(accessPattern, '***')
+        .replaceAll(refreshPattern, '***');
     if (scrubbed.length > 200) {
       return '${scrubbed.substring(0, 200)}…';
     }

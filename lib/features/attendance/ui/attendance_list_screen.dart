@@ -8,6 +8,7 @@ import '../../../ui/widgets/ls_empty_state.dart';
 import '../../people/data/person_failure.dart';
 import '../data/attendance_providers.dart';
 import '../data/attendance_record.dart';
+import '../data/attendance_repository.dart';
 import 'widgets/attendance_status_segment.dart';
 
 /// Read-only history. Tapping a class group chip on the dashboard (Phase
@@ -85,7 +86,7 @@ class _AttendanceListScreenState
       body: RefreshIndicator(
         onRefresh: () => ref.read(attendanceListProvider.notifier).refresh(),
         child: asyncPage.when(
-          data: (page) => _buildList(page.value, tokens),
+          data: (page) => _buildList(page, tokens),
           loading: () => const LsStateView.loading(
             title: 'Loading attendance',
             message: 'Fetching the latest records from the server.',
@@ -96,8 +97,8 @@ class _AttendanceListScreenState
     );
   }
 
-  Widget _buildList(AttendancePage? page, DesignTokens tokens) {
-    final records = page?.records ?? const <AttendanceRecord>[];
+  Widget _buildList(AttendancePage page, DesignTokens tokens) {
+    final records = page.records;
     if (records.isEmpty) {
       return ListView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -119,7 +120,7 @@ class _AttendanceListScreenState
     return ListView.separated(
       controller: _scrollController,
       padding: EdgeInsets.only(bottom: tokens.space.xl),
-      itemCount: records.length + (page?.hasMore == true ? 1 : 0),
+      itemCount: records.length + (page.hasMore ? 1 : 0),
       separatorBuilder: (_, __) => Divider(
         height: 1,
         color: tokens.surface.outlineVariant,

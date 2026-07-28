@@ -123,5 +123,5 @@ Future<SessionStore> _defaultSessionFactory(
   RedactingLogger logger,
   Clock clock,
 ) async {
-  return InMemorySessionStore(clock: clock, logger: logger);
+  return SessionStore.inMemory(clock: clock, logger: logger);
 }

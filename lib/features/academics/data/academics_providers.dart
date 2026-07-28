@@ -10,15 +10,14 @@ final academicsRepositoryProvider = Provider<AcademicsRepository>((ref) {
   return AcademicsRepository(api: ref.watch(apiClientProvider));
 });
 
-class SubjectsListController
-    extends AutoDisposeAsyncNotifier<AsyncValue<SubjectPage>> {
+class SubjectsListController extends AutoDisposeAsyncNotifier<SubjectPage> {
   String? _cursor;
   String _search = '';
   String? _department;
   static const int _pageSize = 50;
 
   @override
-  Future<AsyncValue<SubjectPage>> build() async {
+  Future<SubjectPage> build() async {
     _cursor = null;
     return _fetchPage(reset: true);
   }
@@ -37,21 +36,21 @@ class SubjectsListController
     final current = state.value;
     if (current == null || !current.hasMore) return;
     final next = await _fetchPage(reset: false);
-    state = next.whenData(
-      (page) => SubjectPage(
-        subjects: [...current.subjects, ...page.subjects],
-        nextCursor: page.nextCursor,
+    state = AsyncValue.data(
+      SubjectPage(
+        subjects: [...current.subjects, ...next.subjects],
+        nextCursor: next.nextCursor,
       ),
     );
   }
 
   Future<void> refresh() async {
     _cursor = null;
-    state = const AsyncLoading();
-    state = await _fetchPage(reset: true);
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() => _fetchPage(reset: true));
   }
 
-  Future<AsyncValue<SubjectPage>> _fetchPage({required bool reset}) async {
+  Future<SubjectPage> _fetchPage({required bool reset}) async {
     final repo = ref.read(academicsRepositoryProvider);
     final result = await repo.listSubjects(
       cursor: reset ? null : _cursor,
@@ -62,27 +61,26 @@ class SubjectsListController
     return switch (result) {
       Ok(:final value) => () {
           _cursor = value.nextCursor;
-          return AsyncData(value);
+          return value;
         }(),
-      Err(:final error) => AsyncError(error, StackTrace.current),
+      Err(:final error) => throw error,
     };
   }
 }
 
-final subjectsListProvider = AsyncNotifierProvider.autoDispose<
-    SubjectsListController, AsyncValue<SubjectPage>>(
+final subjectsListProvider =
+    AsyncNotifierProvider.autoDispose<SubjectsListController, SubjectPage>(
   SubjectsListController.new,
 );
 
-class TimetableListController
-    extends AutoDisposeAsyncNotifier<AsyncValue<TimetablePage>> {
+class TimetableListController extends AutoDisposeAsyncNotifier<TimetablePage> {
   String? _cursor;
   String? _branch;
   String? _academicYear;
   static const int _pageSize = 100;
 
   @override
-  Future<AsyncValue<TimetablePage>> build() async {
+  Future<TimetablePage> build() async {
     _cursor = null;
     return _fetchPage(reset: true);
   }
@@ -91,15 +89,15 @@ class TimetableListController
     final current = state.value;
     if (current == null || !current.hasMore) return;
     final next = await _fetchPage(reset: false);
-    state = next.whenData(
-      (page) => TimetablePage(
-        slots: [...current.slots, ...page.slots],
-        nextCursor: page.nextCursor,
+    state = AsyncValue.data(
+      TimetablePage(
+        slots: [...current.slots, ...next.slots],
+        nextCursor: next.nextCursor,
       ),
     );
   }
 
-  Future<AsyncValue<TimetablePage>> _fetchPage({required bool reset}) async {
+  Future<TimetablePage> _fetchPage({required bool reset}) async {
     final repo = ref.read(academicsRepositoryProvider);
     final result = await repo.listTimetable(
       cursor: reset ? null : _cursor,
@@ -110,15 +108,15 @@ class TimetableListController
     return switch (result) {
       Ok(:final value) => () {
           _cursor = value.nextCursor;
-          return AsyncData(value);
+          return value;
         }(),
-      Err(:final error) => AsyncError(error, StackTrace.current),
+      Err(:final error) => throw error,
     };
   }
 }
 
-final timetableListProvider = AsyncNotifierProvider.autoDispose<
-    TimetableListController, AsyncValue<TimetablePage>>(
+final timetableListProvider =
+    AsyncNotifierProvider.autoDispose<TimetableListController, TimetablePage>(
   TimetableListController.new,
 );
 

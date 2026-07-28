@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../ui/design_tokens.dart';
+import '../../../../ui/design_tokens.dart';
 import '../../data/attendance_record.dart';
 import 'attendance_status_segment.dart';
 

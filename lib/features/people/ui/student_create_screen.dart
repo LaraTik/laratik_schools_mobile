@@ -9,7 +9,6 @@ import '../../../ui/widgets/ls_button.dart';
 import '../../../ui/widgets/ls_empty_state.dart';
 import '../../../ui/widgets/ls_status_chip.dart';
 import '../../../ui/widgets/ls_text_field.dart';
-import '../data/person_failure.dart';
 import '../data/person_providers.dart';
 import '../data/person_repository.dart';
 import '../data/student_form_payload.dart';
@@ -40,7 +39,10 @@ class _StudentCreateScreenState extends ConsumerState<StudentCreateScreen> {
   late final TextEditingController _dateOfBirthController;
   late final TextEditingController _gradeController;
   late final TextEditingController _notesController;
-  StudentFormPayload _payload = const StudentFormPayload(firstName: '');
+  StudentFormPayload _payload = const StudentFormPayload(
+    firstName: '',
+    lastName: '',
+  );
   bool _submitting = false;
   String? _generalError;
   Map<String, List<String>> _fieldErrors = const {};
@@ -333,7 +335,7 @@ class _StudentCreateScreenState extends ConsumerState<StudentCreateScreen> {
               errorText: _errorFor('last_name'),
               onChanged: (_) => _onFieldChanged(),
             ),
-          ], tokens: tokens),
+          ], tokens),
           SizedBox(height: tokens.space.md),
           _SectionLabel('Date of birth', tokens: tokens),
           LsTextField(
@@ -360,7 +362,7 @@ class _StudentCreateScreenState extends ConsumerState<StudentCreateScreen> {
               errorText: _errorFor('country'),
               onChanged: (_) => _onFieldChanged(),
             ),
-          ], tokens: tokens),
+          ], tokens),
           SizedBox(height: tokens.space.md),
           _SectionLabel('Guardian', tokens: tokens),
           _buildFieldsColumnOrRow([
@@ -379,7 +381,7 @@ class _StudentCreateScreenState extends ConsumerState<StudentCreateScreen> {
               errorText: _errorFor('guardian_phone'),
               onChanged: (_) => _onFieldChanged(),
             ),
-          ], tokens: tokens),
+          ], tokens),
           SizedBox(height: tokens.space.md),
           _SectionLabel('Enrollment', tokens: tokens),
           LsTextField(

@@ -8,6 +8,7 @@ import '../../../ui/widgets/ls_empty_state.dart';
 import '../../../ui/widgets/ls_status_chip.dart';
 import '../../people/data/person_failure.dart';
 import '../data/assessment_providers.dart';
+import '../data/assessment_repository.dart';
 import '../data/exam.dart';
 
 class ExamsListScreen extends ConsumerStatefulWidget {
@@ -74,7 +75,7 @@ class _ExamsListScreenState extends ConsumerState<ExamsListScreen> {
       body: RefreshIndicator(
         onRefresh: () => ref.read(examPlansListProvider.notifier).refresh(),
         child: asyncPage.when(
-          data: (page) => _buildList(page.value, tokens),
+          data: (page) => _buildList(page, tokens),
           loading: () => const LsStateView.loading(
             title: 'Loading exams',
             message: 'Fetching the published exam plans.',
@@ -85,8 +86,8 @@ class _ExamsListScreenState extends ConsumerState<ExamsListScreen> {
     );
   }
 
-  Widget _buildList(ExamPlanPage? page, DesignTokens tokens) {
-    final plans = page?.plans ?? const <ExamPlan>[];
+  Widget _buildList(ExamPlanPage page, DesignTokens tokens) {
+    final plans = page.plans;
     if (plans.isEmpty) {
       return ListView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -103,7 +104,7 @@ class _ExamsListScreenState extends ConsumerState<ExamsListScreen> {
     return ListView.separated(
       controller: _scrollController,
       padding: EdgeInsets.only(bottom: tokens.space.xl),
-      itemCount: plans.length + (page?.hasMore == true ? 1 : 0),
+      itemCount: plans.length + (page.hasMore ? 1 : 0),
       separatorBuilder: (_, __) => Divider(
         height: 1,
         color: tokens.surface.outlineVariant,

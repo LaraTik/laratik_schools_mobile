@@ -22,7 +22,7 @@ class PkcePair {
 }
 
 class PkceGenerator {
-  const PkceGenerator({Random? random}) : _random = random ?? _defaultRandom;
+  PkceGenerator({Random? random}) : _random = random ?? _defaultRandom;
 
   final Random _random;
 

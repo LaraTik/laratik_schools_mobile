@@ -5,6 +5,7 @@ import '../../../core/result.dart';
 import 'person.dart';
 import 'person_failure.dart';
 import 'student_form_payload.dart';
+import 'package:meta/meta.dart';
 
 /// Paged result of a list call. The cursor is opaque and must be returned
 /// verbatim on the next call to keep server-side keyset pagination stable.
@@ -46,9 +47,9 @@ class PersonRepository {
       final response = await _api.getStudentSetupContext();
       final data = response.data;
       if (response.error != null || data == null) {
-        return Err(_failureFromApi(response.error, data));
+        return Err(error: _failureFromApi(response.error));
       }
-      return Ok(<String, Object?>{
+      return Ok(value: <String, Object?>{
         'defaults': data.defaults ?? const <String, Object?>{},
         'doctype': data.doctype ?? 'School Student',
         'feature': data.feature ?? 'students',
@@ -57,7 +58,7 @@ class PersonRepository {
         'required_roles': data.requiredRoles ?? const <String>[],
       });
     } on Exception catch (e) {
-      return Err(_exceptionFailure(e));
+      return Err(error: _exceptionFailure(e));
     }
   }
 
@@ -79,19 +80,19 @@ class PersonRepository {
       );
       final data = response.data;
       if (response.error != null || data == null) {
-        return Err(_failureFromApi(response.error, data));
+        return Err(error: _failureFromApi(response.error));
       }
       final rows = data.students ?? const <JsonMap>[];
       final people = rows
           .where((row) => _matchesFilters(row, search, gradeId, classGroupId))
           .map(Person.fromJson)
           .toList(growable: false);
-      return Ok(PersonPage(
+      return Ok(value: PersonPage(
         people: people,
         nextCursor: _nextCursorFromResponse(response, rows.length),
       ));
     } on Exception catch (e) {
-      return Err(_exceptionFailure(e));
+      return Err(error: _exceptionFailure(e));
     }
   }
 
@@ -106,12 +107,12 @@ class PersonRepository {
       );
       final data = response.data;
       if (response.error != null || data == null) {
-        return Err(_failureFromApi(response.error, data));
+        return Err(error: _failureFromApi(response.error));
       }
       final student = data.student != null && data.student!.isNotEmpty
           ? data.student
           : studentId;
-      return Ok(PersonProfile(
+      return Ok(value: PersonProfile(
         person: Person.fromJson(<String, Object?>{'name': student}),
         summary: data.summary ?? const <String, Object?>{},
         attendanceRecordsId: data.attendanceRecords,
@@ -135,7 +136,7 @@ class PersonRepository {
         }),
       ));
     } on Exception catch (e) {
-      return Err(_exceptionFailure(e));
+      return Err(error: _exceptionFailure(e));
     }
   }
 
@@ -152,15 +153,15 @@ class PersonRepository {
       );
       final data = response.data;
       if (response.error != null) {
-        return Err(_failureFromApi(response.error, data));
+        return Err(error: _failureFromApi(response.error));
       }
       if (data == null) {
-        return const Err(PersonFailure(
+        return const Err(error: PersonFailure(
           code: 'EMPTY_RESPONSE',
           message: 'The server returned no data for the new student.',
         ));
       }
-      return Ok(PersonCreationResult(
+      return Ok(value: PersonCreationResult(
         schoolStudent: data.schoolStudent ?? '',
         studentName: data.studentName ?? '',
         erpnextCustomer: data.erpnextCustomer,
@@ -176,7 +177,7 @@ class PersonRepository {
             .toList(growable: false),
       ));
     } on Exception catch (e) {
-      return Err(_exceptionFailure(e));
+      return Err(error: _exceptionFailure(e));
     }
   }
 
@@ -222,12 +223,12 @@ class PersonRepository {
     return null;
   }
 
-  PersonFailure _failureFromApi(ApiError? error, JsonMap? data) {
+  PersonFailure _failureFromApi(ApiError? error) {
     if (error == null) {
       return const PersonFailure(
         code: 'EMPTY_RESPONSE',
         message: 'The server returned no data.',
-      );
+        );
     }
     return PersonFailure(
       code: error.code,

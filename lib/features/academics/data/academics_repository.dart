@@ -4,6 +4,7 @@ import 'package:uuid/uuid.dart';
 import '../../../core/result.dart';
 import '../../people/data/person_failure.dart';
 import 'subject.dart';
+import 'package:meta/meta.dart';
 
 @immutable
 class SubjectPage {
@@ -62,19 +63,19 @@ class AcademicsRepository {
       );
       final data = response.data;
       if (response.error != null || data == null) {
-        return Err(_failureFromApi(response.error, data));
+        return Err(error: _failureFromApi(response.error));
       }
       final rows = data.subjects ?? const <JsonMap>[];
       final subjects = rows
           .where((row) => _matchesSubjectFilters(row, search, department))
           .map(Subject.fromJson)
           .toList(growable: false);
-      return Ok(SubjectPage(
+      return Ok(value: SubjectPage(
         subjects: subjects,
         nextCursor: _nextCursorFromMeta(response.meta),
       ));
     } on Exception catch (e) {
-      return Err(_exceptionFailure(e));
+      return Err(error: _exceptionFailure(e));
     }
   }
 
@@ -105,21 +106,21 @@ class AcademicsRepository {
       );
       final data = response.data;
       if (response.error != null) {
-        return Err(_failureFromApi(response.error, data));
+        return Err(error: _failureFromApi(response.error));
       }
       if (data == null) {
-        return const Err(PersonFailure(
+        return const Err(error: PersonFailure(
           code: 'EMPTY_RESPONSE',
           message: 'The server returned no data for the new subject.',
         ));
       }
-      return Ok(SubjectCreationResult(
-        subjectId: data.subject ?? '',
+      return Ok(value: SubjectCreationResult(
+        subjectId: data.schoolSubject ?? '',
         subjectName: data.subjectName ?? subjectName,
         status: data.status ?? 'Active',
       ));
     } on Exception catch (e) {
-      return Err(_exceptionFailure(e));
+      return Err(error: _exceptionFailure(e));
     }
   }
 
@@ -136,7 +137,7 @@ class AcademicsRepository {
       );
       final data = response.data;
       if (response.error != null || data == null) {
-        return Err(_failureFromApi(response.error, data));
+        return Err(error: _failureFromApi(response.error));
       }
       final rows = data.slots ?? const <JsonMap>[];
       final slots = rows
@@ -144,12 +145,12 @@ class AcademicsRepository {
               _matchesSlotFilters(row, branch, academicYear))
           .map(TimetableSlot.fromJson)
           .toList(growable: false);
-      return Ok(TimetablePage(
+      return Ok(value: TimetablePage(
         slots: slots,
         nextCursor: _nextCursorFromMeta(response.meta),
       ));
     } on Exception catch (e) {
-      return Err(_exceptionFailure(e));
+      return Err(error: _exceptionFailure(e));
     }
   }
 
@@ -164,16 +165,16 @@ class AcademicsRepository {
       );
       final data = response.data;
       if (response.error != null || data == null) {
-        return Err(_failureFromApi(response.error, data));
+        return Err(error: _failureFromApi(response.error));
       }
       final rows = data.branches ?? const <JsonMap>[];
       final branches = rows.map(Branch.fromJson).toList(growable: false);
-      return Ok(BranchPage(
+      return Ok(value: BranchPage(
         branches: branches,
         nextCursor: _nextCursorFromMeta(response.meta),
       ));
     } on Exception catch (e) {
-      return Err(_exceptionFailure(e));
+      return Err(error: _exceptionFailure(e));
     }
   }
 
@@ -227,12 +228,12 @@ class AcademicsRepository {
     return null;
   }
 
-  PersonFailure _failureFromApi(ApiError? error, JsonMap? data) {
+  PersonFailure _failureFromApi(ApiError? error) {
     if (error == null) {
       return const PersonFailure(
         code: 'EMPTY_RESPONSE',
         message: 'The server returned no data.',
-      );
+        );
     }
     return PersonFailure(
       code: error.code,

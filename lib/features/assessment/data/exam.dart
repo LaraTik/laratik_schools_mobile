@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:laratik_schools_api/laratik_schools_api.dart';
+import 'package:meta/meta.dart';
 
 /// The wire shape of an exam plan is opaque; the model narrows the well-
 /// known fields the mobile client cares about. The full row is preserved

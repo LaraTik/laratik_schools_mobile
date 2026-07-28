@@ -9,6 +9,7 @@ import '../../../ui/widgets/ls_empty_state.dart';
 import '../../../ui/widgets/ls_status_chip.dart';
 import '../../people/data/person_failure.dart';
 import '../data/staff_providers.dart';
+import '../data/staff_repository.dart';
 
 class StaffDetailScreen extends ConsumerWidget {
   const StaffDetailScreen({required this.staffId, super.key});

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../ui/design_tokens.dart';
-import '../../../ui/widgets/ls_status_chip.dart';
+import '../../../../ui/design_tokens.dart';
+import '../../../../ui/widgets/ls_status_chip.dart';
 import '../../data/attendance_record.dart';
 
 /// 4-way status selector: Present / Absent / Late / Excused.

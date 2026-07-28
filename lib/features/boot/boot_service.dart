@@ -5,6 +5,7 @@ import '../../core/clock.dart';
 import '../../core/logging.dart';
 import '../../core/result.dart';
 import 'boot_context.dart';
+import 'package:meta/meta.dart';
 
 /// Fetches and caches the role-aware boot context.
 ///
@@ -42,13 +43,13 @@ class BootService {
       final permissionData = permissionResponse.data;
 
       if (bootResponse.error != null) {
-        return Err(_failureFromApi(bootResponse.error!, 'boot'));
+        return Err(error: _failureFromApi(bootResponse.error!, 'boot'));
       }
       if (permissionResponse.error != null) {
-        return Err(_failureFromApi(permissionResponse.error!, 'permission'));
+        return Err(error: _failureFromApi(permissionResponse.error!, 'permission'));
       }
       if (bootData == null || permissionData == null) {
-        return const Err(BootFailure(
+        return const Err(error: BootFailure(
           code: 'EMPTY_RESPONSE',
           message: 'Boot or permission response had no data.',
         ));
@@ -68,7 +69,7 @@ class BootService {
         'roles_count': context.roles.length,
         'capabilities_count': context.capabilities.length,
       });
-      return Ok(context);
+      return Ok(value: context);
     } on Exception catch (e, st) {
       _logger.logTransportFailure(
         method: 'laratik.boot',
@@ -77,7 +78,7 @@ class BootService {
         error: e,
         stack: st,
       );
-      return Err(BootFailure(
+      return Err(error: BootFailure(
         code: 'EXCEPTION',
         message: e.toString(),
       ));

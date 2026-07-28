@@ -1,58 +1,70 @@
 import 'package:laratik_schools_api/laratik_schools_api.dart';
+import 'package:meta/meta.dart';
 
-import '../../core/result.dart';
-import '../people/data/person_failure.dart';
+import '../../../core/result.dart';
+import '../../people/data/person_failure.dart';
 
+/// The v1 `get_school_mobile_version_policy` envelope, narrowed to the
+/// fields the mobile client needs. The forward-compatible `raw` map on
+/// the SDK data class is preserved on the wire; this model picks out
+/// the well-known fields and folds the rest into [VersionPolicy]'s
+/// derived helpers.
 @immutable
 class VersionPolicy {
   const VersionPolicy({
     required this.minimumVersion,
     required this.recommendedVersion,
-    required this.updateMode,
-    required this.storeUrl,
-    required this.effectiveFrom,
-    required this.effectiveTo,
+    required this.action,
+    required this.rolloutEligible,
     required this.rolloutPercent,
-    this.releaseChannel,
+    this.storeUrl,
   });
 
-  factory VersionPolicy.fromJson(JsonMap json) {
+  factory VersionPolicy.fromData(GetSchoolMobileVersionPolicyData data) {
     return VersionPolicy(
-      minimumVersion: (json['minimum_version'] ?? '').toString(),
-      recommendedVersion: (json['recommended_version'] ?? '').toString(),
-      updateMode: (json['update_mode'] ?? 'Soft').toString(),
-      storeUrl: (json['store_url'] ?? '').toString(),
-      effectiveFrom: (json['effective_from'] ?? '').toString(),
-      effectiveTo: (json['effective_to'] ?? '').toString(),
-      rolloutPercent: int.tryParse('${json['rollout_percent'] ?? 0}') ?? 0,
-      releaseChannel: json['release_channel']?.toString(),
+      minimumVersion: data.minimumVersion ?? '',
+      recommendedVersion: data.recommendedVersion ?? '',
+      action: data.action,
+      rolloutEligible: data.rolloutEligible,
+      rolloutPercent: data.rolloutPercent,
+      storeUrl: data.storeUrl,
     );
   }
 
+  /// Lowest app version still allowed to call the API. Empty string
+  /// means "no minimum enforced".
   final String minimumVersion;
-  final String recommendedVersion;
-  final String updateMode;
-  final String storeUrl;
-  final String effectiveFrom;
-  final String effectiveTo;
-  final int rolloutPercent;
-  final String? releaseChannel;
 
-  bool get isForced => updateMode.toLowerCase() == 'force';
+  /// Soft-target version. The store card points here when an update
+  /// is available.
+  final String recommendedVersion;
+
+  /// `soft` | `force` | `none` — drives the [isForced] flag and the
+  /// update card copy.
+  final String action;
+
+  /// True if the current installation is in the rollout window.
+  final bool rolloutEligible;
+
+  /// 0..100 percent of the user base currently included.
+  final int rolloutPercent;
+
+  /// App-store / play-store deep link for the latest published build.
+  final String? storeUrl;
+
+  bool get isForced => action.toLowerCase() == 'force';
 }
 
 @immutable
 class DeviceRegistrationResult {
   const DeviceRegistrationResult({
-    required this.installationId,
-    required this.appVersion,
-    required this.platform,
+    required this.device,
     required this.status,
+    this.pushToken,
   });
-  final String installationId;
-  final String appVersion;
-  final String platform;
+  final String device;
   final String status;
+  final String? pushToken;
 }
 
 class DeviceService {
@@ -60,25 +72,28 @@ class DeviceService {
 
   final LaratikSchoolsApiClient _api;
 
-  Future<Result<VersionPolicy, PersonFailure>> fetchVersionPolicy() async {
+  Future<Result<VersionPolicy, PersonFailure>> fetchVersionPolicy({
+    String? platform,
+    String? releaseChannel,
+    String? installedVersion,
+    String? installationId,
+  }) async {
     try {
-      final response = await _api.getSchoolMobileVersionPolicy();
+      final response = await _api.getSchoolMobileVersionPolicy(
+        platform: platform,
+        releaseChannel: releaseChannel,
+        installedVersion: installedVersion,
+        installationId: installationId,
+      );
       final data = response.data;
       if (response.error != null || data == null) {
-        return Err(_failureFromApi(response.error, data));
+        return Err(error: _failureFromApi(response.error));
       }
-      return Ok(VersionPolicy(
-        minimumVersion: data.minimumVersion ?? '',
-        recommendedVersion: data.recommendedVersion ?? '',
-        updateMode: data.updateMode ?? 'Soft',
-        storeUrl: data.storeUrl ?? '',
-        effectiveFrom: data.effectiveFrom ?? '',
-        effectiveTo: data.effectiveTo ?? '',
-        rolloutPercent: data.rolloutPercent ?? 0,
-        releaseChannel: data.releaseChannel,
-      ));
+      return Ok(value: VersionPolicy.fromData(data));
     } on Exception catch (e) {
-      return Err(PersonFailure(code: 'EXCEPTION', message: e.toString()));
+      return Err(
+        error: PersonFailure(code: 'EXCEPTION', message: e.toString()),
+      );
     }
   }
 
@@ -90,54 +105,67 @@ class DeviceService {
     String? releaseChannel,
   }) async {
     try {
+      // The v1 contract takes a `RegisterSchoolMobileDevicePayload`
+      // that requires a `pushToken` and a `pushTokenFingerprint`.
+      // The mobile client never has the raw push token at this
+      // layer — the system push plugin holds it and surfaces a
+      // fingerprint via the OS. We pass an empty placeholder when
+      // nothing is available yet and let the server reconcile when
+      // the bootstrap completes.
       final response = await _api.registerSchoolMobileDevice(
-        payload: <String, Object?>{
-          'installation_id': installationId,
-          'app_version': appVersion,
-          'platform': platform,
-          if (pushToken != null && pushToken.isNotEmpty) 'push_token': pushToken,
-          if (releaseChannel != null && releaseChannel.isNotEmpty)
-            'release_channel': releaseChannel,
-        },
+        payload: RegisterSchoolMobileDevicePayload(
+          appVersion: appVersion,
+          installationId: installationId,
+          platform: platform,
+          pushToken: pushToken ?? '',
+          releaseChannel: releaseChannel,
+        ),
         idempotencyKey: installationId,
       );
       final data = response.data;
       if (response.error != null) {
-        return Err(_failureFromApi(response.error, data));
+        return Err(error: _failureFromApi(response.error));
       }
       if (data == null) {
-        return const Err(PersonFailure(
-          code: 'EMPTY_RESPONSE',
-          message: 'The server returned no data for the device registration.',
-        ));
+        return const Err(
+          error: PersonFailure(
+            code: 'EMPTY_RESPONSE',
+            message: 'The server returned no data for the device registration.',
+          ),
+        );
       }
-      return Ok(DeviceRegistrationResult(
-        installationId: data.installationId ?? installationId,
-        appVersion: data.appVersion ?? appVersion,
-        platform: data.platform ?? platform,
-        status: data.status ?? 'Active',
-      ));
+      return Ok(
+        value: DeviceRegistrationResult(
+          device: data.device,
+          status: data.status,
+          pushToken: data.pushToken,
+        ),
+      );
     } on Exception catch (e) {
-      return Err(PersonFailure(code: 'EXCEPTION', message: e.toString()));
+      return Err(
+        error: PersonFailure(code: 'EXCEPTION', message: e.toString()),
+      );
     }
   }
 
   Future<Result<bool, PersonFailure>> revoke(String installationId) async {
     try {
       final response = await _api.revokeSchoolMobileDevice(
-        installationId: installationId,
+        payload: RevokeSchoolMobileDevicePayload(installationId: installationId),
+        idempotencyKey: installationId,
       );
-      final data = response.data;
       if (response.error != null) {
-        return Err(_failureFromApi(response.error, data));
+        return Err(error: _failureFromApi(response.error));
       }
-      return Ok((data?.status ?? 'Revoked').toLowerCase() != 'active');
+      return const Ok(value: true);
     } on Exception catch (e) {
-      return Err(PersonFailure(code: 'EXCEPTION', message: e.toString()));
+      return Err(
+        error: PersonFailure(code: 'EXCEPTION', message: e.toString()),
+      );
     }
   }
 
-  PersonFailure _failureFromApi(ApiError? error, JsonMap? data) {
+  PersonFailure _failureFromApi(ApiError? error) {
     if (error == null) {
       return const PersonFailure(
         code: 'EMPTY_RESPONSE',

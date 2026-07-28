@@ -40,14 +40,15 @@ class RedactingLogger {
   ];
 
   void debug(String message, {Map<String, Object?>? context}) =>
-      _emit(LogLevel.debug, message, context);
+      _emit(LogLevel.debug, message, context: context);
   void info(String message, {Map<String, Object?>? context}) =>
-      _emit(LogLevel.info, message, context);
+      _emit(LogLevel.info, message, context: context);
   void warn(String message, {Map<String, Object?>? context}) =>
-      _emit(LogLevel.warn, message, context);
+      _emit(LogLevel.warn, message, context: context);
   void error(String message,
           {Map<String, Object?>? context, Object? error, StackTrace? stackTrace}) =>
-      _emit(LogLevel.error, message, context, error: error, stackTrace: stackTrace);
+      _emit(LogLevel.error, message,
+          context: context, error: error, stackTrace: stackTrace);
 
   // ============================================================================
   // Structured convenience loggers. Domain layers should prefer these over

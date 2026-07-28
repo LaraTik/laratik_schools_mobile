@@ -9,6 +9,7 @@ import '../../../ui/widgets/ls_search_bar.dart';
 import '../data/person.dart';
 import '../data/person_failure.dart';
 import '../data/person_providers.dart';
+import '../data/person_repository.dart';
 import 'widgets/person_card.dart';
 
 /// Students list. Server-paginated keyset (default 50 per page), case-
@@ -130,11 +131,11 @@ class _StudentsListScreenState extends ConsumerState<StudentsListScreen> {
   }
 
   Widget _buildList(
-    AsyncValue<PersonPage> page,
+    PersonPage page,
     bool filterIsEmpty,
     DesignTokens tokens,
   ) {
-    final people = page.value?.people ?? const <Person>[];
+    final people = page.people;
     if (people.isEmpty) {
       return ListView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -162,7 +163,7 @@ class _StudentsListScreenState extends ConsumerState<StudentsListScreen> {
     return ListView.separated(
       controller: _scrollController,
       padding: EdgeInsets.only(bottom: tokens.space.xl),
-      itemCount: people.length + (page.value?.hasMore == true ? 1 : 0),
+      itemCount: people.length + (page.hasMore ? 1 : 0),
       separatorBuilder: (_, __) => Divider(
         height: 1,
         color: tokens.surface.outlineVariant,

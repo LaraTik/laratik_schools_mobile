@@ -10,7 +10,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app/app.dart';
 import 'app/bootstrap.dart';
-import 'features/people/data/person_providers.dart';
 
 Future<void> main() async {
   // Composition root: build the immutable AppDependencies and pass them down.

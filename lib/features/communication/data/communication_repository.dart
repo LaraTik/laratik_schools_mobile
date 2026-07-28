@@ -3,6 +3,7 @@ import 'package:laratik_schools_api/laratik_schools_api.dart';
 import '../../../core/result.dart';
 import '../../people/data/person_failure.dart';
 import 'notification.dart';
+import 'package:meta/meta.dart';
 
 @immutable
 class NotificationPage {
@@ -37,19 +38,19 @@ class CommunicationRepository {
       );
       final data = response.data;
       if (response.error != null || data == null) {
-        return Err(_failureFromApi(response.error, data));
+        return Err(error: _failureFromApi(response.error));
       }
       final rows = data.notifications ?? const <JsonMap>[];
       final items = rows
           .where((row) => !unreadOnly || _isUnread(row))
           .map(NotificationItem.fromJson)
           .toList(growable: false);
-      return Ok(NotificationPage(
+      return Ok(value: NotificationPage(
         items: items,
         nextCursor: _nextCursorFromMeta(response.meta),
       ));
     } on Exception catch (e) {
-      return Err(_exceptionFailure(e));
+      return Err(error: _exceptionFailure(e));
     }
   }
 
@@ -64,18 +65,18 @@ class CommunicationRepository {
       );
       final data = response.data;
       if (response.error != null || data == null) {
-        return Err(_failureFromApi(response.error, data));
+        return Err(error: _failureFromApi(response.error));
       }
-      final rows = data.logs ?? data.entries ?? const <JsonMap>[];
+      final rows = data.logs ?? const <JsonMap>[];
       final entries = rows
           .map(CommunicationLogEntry.fromJson)
           .toList(growable: false);
-      return Ok(CommunicationLogPage(
+      return Ok(value: CommunicationLogPage(
         entries: entries,
         nextCursor: _nextCursorFromMeta(response.meta),
       ));
     } on Exception catch (e) {
-      return Err(_exceptionFailure(e));
+      return Err(error: _exceptionFailure(e));
     }
   }
 
@@ -98,12 +99,12 @@ class CommunicationRepository {
     return null;
   }
 
-  PersonFailure _failureFromApi(ApiError? error, JsonMap? data) {
+  PersonFailure _failureFromApi(ApiError? error) {
     if (error == null) {
       return const PersonFailure(
         code: 'EMPTY_RESPONSE',
         message: 'The server returned no data.',
-      );
+        );
     }
     return PersonFailure(
       code: error.code,

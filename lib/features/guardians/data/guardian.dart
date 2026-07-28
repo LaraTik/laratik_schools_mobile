@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:laratik_schools_api/laratik_schools_api.dart';
+import 'package:meta/meta.dart';
 
 /// A row from the `get_school_guardians` list.
 ///

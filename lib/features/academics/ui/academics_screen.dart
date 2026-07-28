@@ -10,6 +10,7 @@ import '../../../ui/widgets/ls_search_bar.dart';
 import '../../../ui/widgets/ls_status_chip.dart';
 import '../../people/data/person_failure.dart';
 import '../data/academics_providers.dart';
+import '../data/academics_repository.dart';
 import '../data/subject.dart';
 
 /// Academics surface: three tabs (Subjects, Timetable, Branches) sharing
@@ -122,7 +123,7 @@ class _SubjectsTabState extends ConsumerState<_SubjectsTab> {
         ),
         Expanded(
           child: asyncPage.when(
-            data: (page) => _buildList(page.value, tokens),
+            data: (page) => _buildList(page, tokens),
             loading: () =>
                 const LsStateView.loading(title: 'Loading subjects'),
             error: (err, _) => LsStateView.error(
@@ -142,8 +143,8 @@ class _SubjectsTabState extends ConsumerState<_SubjectsTab> {
     );
   }
 
-  Widget _buildList(SubjectPage? page, DesignTokens tokens) {
-    final subjects = page?.subjects ?? const <Subject>[];
+  Widget _buildList(SubjectPage page, DesignTokens tokens) {
+    final subjects = page.subjects;
     if (subjects.isEmpty) {
       return LsStateView.empty(
         icon: Icons.menu_book_outlined,
@@ -159,7 +160,7 @@ class _SubjectsTabState extends ConsumerState<_SubjectsTab> {
     return ListView.separated(
       controller: _scrollController,
       padding: EdgeInsets.only(bottom: tokens.space.xl),
-      itemCount: subjects.length + (page?.hasMore == true ? 1 : 0),
+      itemCount: subjects.length + (page.hasMore ? 1 : 0),
       separatorBuilder: (_, __) => Divider(
         height: 1,
         color: tokens.surface.outlineVariant,
@@ -262,7 +263,7 @@ class _TimetableTabState extends ConsumerState<_TimetableTab> {
     );
     final asyncPage = ref.watch(timetableListProvider);
     return asyncPage.when(
-      data: (page) => _buildGrid(page.value, tokens),
+      data: (page) => _buildGrid(page, tokens),
       loading: () => const LsStateView.loading(title: 'Loading timetable'),
       error: (err, _) => LsStateView.error(
         icon: Icons.error_outline,
@@ -272,8 +273,8 @@ class _TimetableTabState extends ConsumerState<_TimetableTab> {
     );
   }
 
-  Widget _buildGrid(TimetablePage? page, DesignTokens tokens) {
-    final slots = page?.slots ?? const <TimetableSlot>[];
+  Widget _buildGrid(TimetablePage page, DesignTokens tokens) {
+    final slots = page.slots;
     final byDay = _groupByDay(slots);
     if (slots.isEmpty) {
       return LsStateView.empty(

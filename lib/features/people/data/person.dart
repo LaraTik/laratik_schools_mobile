@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:laratik_schools_api/laratik_schools_api.dart';
+import 'package:meta/meta.dart';
 
 /// A row from the `get_school_students` list.
 ///
@@ -126,6 +127,16 @@ class Person extends Equatable {
   bool get hasGuardianWarning => (guardianName ?? '').isEmpty;
   bool get hasCountryWarning =>
       countryWasDefaulted || residentialCountryMismatch;
+
+  /// The school's local student number. The wire shape can carry this
+  /// on either `school_student_number` (the v1 normalized name) or
+  /// fall back to the document name. The list rows show this so the
+  /// operator can scan for a known number without opening the detail.
+  String? get schoolStudentNumber {
+    final raw = this.raw['school_student_number'];
+    if (raw is String && raw.isNotEmpty) return raw;
+    return id.isEmpty ? null : id;
+  }
 
   @override
   List<Object?> get props => [

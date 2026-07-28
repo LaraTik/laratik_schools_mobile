@@ -39,6 +39,8 @@ class _ExamAttemptScreenState extends ConsumerState<ExamAttemptScreen> {
   final Map<String, Set<String>> _multiSelect = {};
   String? _singleChoice;
   String? _attemptId;
+  int? _revision;
+  List<ExamQuestion> _questions = const [];
   String? _autosaveStatus;
   Timer? _autosaveTimer;
   bool _submitting = false;
@@ -78,6 +80,8 @@ class _ExamAttemptScreenState extends ConsumerState<ExamAttemptScreen> {
         setState(() {
           _started = true;
           _attemptId = value.attemptId;
+          _revision = value.revision;
+          _questions = value.questions;
         });
       case Err(:final error):
         setState(() => _error = error.message);
@@ -85,10 +89,11 @@ class _ExamAttemptScreenState extends ConsumerState<ExamAttemptScreen> {
   }
 
   Future<void> _autosave() async {
-    if (_attemptId == null) return;
+    if (_attemptId == null || _revision == null) return;
     final repo = ref.read(assessmentRepositoryProvider);
     final result = await repo.autosave(
       attemptId: _attemptId!,
+      revision: _revision!,
       answers: _currentAnswers(),
     );
     if (!mounted) return;
@@ -101,7 +106,7 @@ class _ExamAttemptScreenState extends ConsumerState<ExamAttemptScreen> {
   }
 
   Future<void> _submit() async {
-    if (_attemptId == null || _submitting) return;
+    if (_attemptId == null || _revision == null || _submitting) return;
     setState(() {
       _submitting = true;
       _error = null;
@@ -109,6 +114,7 @@ class _ExamAttemptScreenState extends ConsumerState<ExamAttemptScreen> {
     final repo = ref.read(assessmentRepositoryProvider);
     final result = await repo.submit(
       attemptId: _attemptId!,
+      revision: _revision!,
       answers: _currentAnswers(),
     );
     if (!mounted) return;
@@ -117,7 +123,11 @@ class _ExamAttemptScreenState extends ConsumerState<ExamAttemptScreen> {
       _submitted = result is Ok;
     });
     if (result is Err) {
-      setState(() => _error = (result as Err).error.message);
+      setState(() {
+        if (result case Err(:final error)) {
+          _error = error.message;
+        }
+      });
     } else {
       _autosaveTimer?.cancel();
     }
@@ -216,9 +226,7 @@ class _ExamAttemptScreenState extends ConsumerState<ExamAttemptScreen> {
     return LsStateView.empty(
       icon: Icons.block,
       title: 'Not eligible',
-      message: value.reason.isEmpty
-          ? 'The server says you cannot take this exam.'
-          : value.reason,
+      message: 'The server says you cannot take this exam.',
       action: LsButton.secondary(
         label: 'Back to exams',
         icon: Icons.arrow_back,
@@ -317,20 +325,22 @@ class _ExamAttemptScreenState extends ConsumerState<ExamAttemptScreen> {
   }
 
   Widget _buildQuestions(DesignTokens tokens) {
-    // Phase 5 question rendering is intentionally generic: the wire
-    // shape is opaque (forward-compatible), so we render a placeholder
-    // question set with text input. Future iterations narrow the
-    // question type and add per-type widgets.
-    final questions = _placeholderQuestions();
+    if (_questions.isEmpty) {
+      return const LsStateView.empty(
+        icon: Icons.help_outline,
+        title: 'No questions',
+        message: 'The server did not return any questions for this attempt.',
+      );
+    }
     return Column(
       children: [
         Expanded(
           child: ListView.separated(
             padding: EdgeInsets.all(tokens.space.md),
-            itemCount: questions.length,
+            itemCount: _questions.length,
             separatorBuilder: (_, __) => SizedBox(height: tokens.space.md),
             itemBuilder: (context, index) {
-              final q = questions[index];
+              final q = _questions[index];
               return _QuestionCard(
                 question: q,
                 textController: _textControllers.putIfAbsent(
@@ -439,27 +449,6 @@ class _ExamAttemptScreenState extends ConsumerState<ExamAttemptScreen> {
     if (confirm == true) {
       await _abandon();
     }
-  }
-
-  List<ExamQuestion> _placeholderQuestions() {
-    // The v1 get_school_online_exam_eligibility returns the question
-    // set as opaque rows; the SDK exposes the eligibility check and
-    // the start / autosave / submit / result / abandon calls. The
-    // question surface lands in a follow-up that narrows the
-    // get_school_questions + get_school_exam_plans responses; for
-    // Phase 5 we render a single placeholder so the attempt loop is
-    // exercisable end-to-end.
-    return [
-      ExamQuestion(
-        id: 'q-1',
-        questionText: 'Open-ended response',
-        questionType: ExamQuestion.typeText,
-        marks: 10,
-        options: const <JsonMap>[],
-        required: true,
-        raw: const <String, Object?>{},
-      ),
-    ];
   }
 }
 
@@ -593,14 +582,14 @@ final currentPersonProvider = FutureProvider.autoDispose
   final page = await repo.listStudents(search: id);
   return switch (page) {
     Ok(:final value) when value.people.isNotEmpty =>
-      Ok(value.people.firstWhere(
+      Ok(value: value.people.firstWhere(
         (p) => p.id == id,
         orElse: () => value.people.first,
       )),
-    Ok() => Err(const PersonFailure(
+    Ok() => Err(error: const PersonFailure(
         code: 'NOT_FOUND',
         message: 'Student not found.',
       )),
-    Err(:final error) => Err(error),
+    Err(:final error) => Err(error: error),
   };
 });

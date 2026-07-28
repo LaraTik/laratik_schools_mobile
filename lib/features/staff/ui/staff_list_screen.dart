@@ -9,6 +9,7 @@ import '../../../ui/widgets/ls_search_bar.dart';
 import '../../people/data/person_failure.dart';
 import '../data/staff_member.dart';
 import '../data/staff_providers.dart';
+import '../data/staff_repository.dart';
 import 'widgets/staff_card.dart';
 
 class StaffListScreen extends ConsumerStatefulWidget {
@@ -121,11 +122,11 @@ class _StaffListScreenState extends ConsumerState<StaffListScreen> {
   }
 
   Widget _buildList(
-    AsyncValue<StaffPage> page,
+    StaffPage page,
     bool filterIsEmpty,
     DesignTokens tokens,
   ) {
-    final staff = page.value?.staff ?? const <StaffMember>[];
+    final staff = page.staff;
     if (staff.isEmpty) {
       return ListView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -153,7 +154,7 @@ class _StaffListScreenState extends ConsumerState<StaffListScreen> {
     return ListView.separated(
       controller: _scrollController,
       padding: EdgeInsets.only(bottom: tokens.space.xl),
-      itemCount: staff.length + (page.value?.hasMore == true ? 1 : 0),
+      itemCount: staff.length + (page.hasMore ? 1 : 0),
       separatorBuilder: (_, __) => Divider(
         height: 1,
         color: tokens.surface.outlineVariant,

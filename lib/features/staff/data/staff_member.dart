@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:laratik_schools_api/laratik_schools_api.dart';
+import 'package:meta/meta.dart';
 
 /// A row from the `get_school_staff` list.
 ///
@@ -78,6 +79,14 @@ class StaffMember extends Equatable {
   final JsonMap raw;
 
   bool get isActive => status.toLowerCase() == 'active';
+
+  /// The school's local staff number, used for QR badges and operator
+  /// scan-and-search. Wire shape first, document name as fallback.
+  String? get schoolStaffNumber {
+    final raw = this.raw['school_staff_number'];
+    if (raw is String && raw.isNotEmpty) return raw;
+    return id.isEmpty ? null : id;
+  }
 
   /// Best-effort role classification for the chip tone. The wire carries
   /// whatever string the server emits, so unknown values fall back to

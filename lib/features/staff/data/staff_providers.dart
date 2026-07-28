@@ -54,13 +54,12 @@ class StaffFilter {
 final staffFilterProvider =
     StateProvider<StaffFilter>((ref) => const StaffFilter());
 
-class StaffListController
-    extends AutoDisposeAsyncNotifier<AsyncValue<StaffPage>> {
+class StaffListController extends AutoDisposeAsyncNotifier<StaffPage> {
   String? _cursor;
   static const int _pageSize = 50;
 
   @override
-  Future<AsyncValue<StaffPage>> build() async {
+  Future<StaffPage> build() async {
     final filter = ref.watch(staffFilterProvider);
     _cursor = null;
     return _fetchPage(filter: filter, reset: true);
@@ -71,10 +70,10 @@ class StaffListController
     if (current == null || !current.hasMore) return;
     final filter = ref.read(staffFilterProvider);
     final next = await _fetchPage(filter: filter, reset: false);
-    state = next.whenData(
-      (page) => StaffPage(
-        staff: [...current.staff, ...page.staff],
-        nextCursor: page.nextCursor,
+    state = AsyncValue.data(
+      StaffPage(
+        staff: [...current.staff, ...next.staff],
+        nextCursor: next.nextCursor,
       ),
     );
   }
@@ -82,11 +81,11 @@ class StaffListController
   Future<void> refresh() async {
     final filter = ref.read(staffFilterProvider);
     _cursor = null;
-    state = const AsyncLoading();
-    state = await _fetchPage(filter: filter, reset: true);
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() => _fetchPage(filter: filter, reset: true));
   }
 
-  Future<AsyncValue<StaffPage>> _fetchPage({
+  Future<StaffPage> _fetchPage({
     required StaffFilter filter,
     required bool reset,
   }) async {
@@ -101,15 +100,15 @@ class StaffListController
     return switch (result) {
       Ok(:final value) => () {
           _cursor = value.nextCursor;
-          return AsyncData(value);
+          return value;
         }(),
-      Err(:final error) => AsyncError(error, StackTrace.current),
+      Err(:final error) => throw error,
     };
   }
 }
 
 final staffListProvider = AsyncNotifierProvider.autoDispose<
-    StaffListController, AsyncValue<StaffPage>>(
+    StaffListController, StaffPage>(
   StaffListController.new,
 );
 

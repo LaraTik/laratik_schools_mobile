@@ -3,7 +3,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import '../ui/design_tokens.dart';
 import 'bootstrap.dart';
-import 'router.dart';
 
 /// Root widget. Owns the MaterialApp + theme + locale + router; the rest of the
 /// composition is in `bootstrap.dart` and the per-feature packages.

@@ -1,30 +1,24 @@
+// SPDX-License-Identifier: Proprietary
+// Tests for the Attendance repository.
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:laratik_schools_api/laratik_schools_api.dart';
 import 'package:laratik_schools_mobile/core/result.dart';
-import 'package:laratik_schools_mobile/features/attendance/data/attendance_providers.dart';
 import 'package:laratik_schools_mobile/features/attendance/data/attendance_record.dart';
 import 'package:laratik_schools_mobile/features/attendance/data/attendance_repository.dart';
 import 'package:laratik_schools_mobile/features/people/data/person_failure.dart';
 import 'package:laratik_schools_mobile/features/people/data/person_repository.dart';
 
-class _FakeAttendanceApi implements LaratikSchoolsApiClient {
-  ApiEnvelope<GetSchoolAttendanceRecordsData>? listResponse;
-  ApiEnvelope<CreateSchoolAttendanceRecordData>? createResponse;
-
-  @override
-  dynamic noSuchMethod(Invocation invocation) =>
-      super.noSuchMethod(invocation);
-}
-
-class _FakePersonApi implements LaratikSchoolsApiClient {
-  ApiEnvelope<GetSchoolStudentsData>? studentsResponse;
-
-  @override
-  dynamic noSuchMethod(Invocation invocation) =>
-      super.noSuchMethod(invocation);
-}
+import '../../helpers/mock_api_client.dart';
 
 void main() {
+  AttendanceRepository makeRepo(FakeLaratikSchoolsTransport transport) =>
+      AttendanceRepository(
+        api: LaratikSchoolsApiClient(transport),
+        personRepository:
+            PersonRepository(api: LaratikSchoolsApiClient(transport)),
+      );
+
   group('AttendanceStatus.fromWire', () {
     test('maps the four well-known tones and falls back to neutral', () {
       expect(AttendanceStatus.fromWire('Present').tone, AttendanceTone.present);
@@ -37,11 +31,14 @@ void main() {
   });
 
   group('AttendanceRepository.listRecords', () {
-    test('parses rows and maps attendance_status into AttendanceStatus', () async {
-      final api = _FakeAttendanceApi()
-        ..listResponse = ApiEnvelope<GetSchoolAttendanceRecordsData>(
-          data: const GetSchoolAttendanceRecordsData(records: <JsonMap>[
-            <String, Object?>{
+    test('parses rows and maps attendance_status into AttendanceStatus',
+        () async {
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondOnce(
+        LaratikSchoolsApiMethods.getSchoolAttendanceRecords,
+        envelopeOk({
+          'records': [
+            {
               'name': 'EDU-ATT-2026-00001',
               'school_student': 'EDU-STU-2026-00001',
               'student_name': 'Layla Hassan',
@@ -49,7 +46,7 @@ void main() {
               'attendance_status': 'Present',
               'class_group': 'A',
             },
-            <String, Object?>{
+            {
               'name': 'EDU-ATT-2026-00002',
               'school_student': 'EDU-STU-2026-00002',
               'student_name': 'Ahmad Saleh',
@@ -57,15 +54,10 @@ void main() {
               'attendance_status': 'Absent',
               'class_group': 'A',
             },
-          ]),
-          error: null,
-          meta: const ApiMeta(apiVersion: 'v1', requestId: 'req-1'),
-          warnings: const <Object?>[],
-        );
-      final repo = AttendanceRepository(
-        api: api,
-        personRepository: PersonRepository(api: api),
+          ],
+        }),
       );
+      final repo = makeRepo(transport);
       final result = await repo.listRecords();
       final page = (result as Ok<AttendancePage, PersonFailure>).value;
       expect(page.records, hasLength(2));
@@ -76,28 +68,27 @@ void main() {
 
   group('AttendanceRepository.loadRoster', () {
     test('wraps students in AttendanceMark with default Present', () async {
-      final api = _FakePersonApi()
-        ..studentsResponse = ApiEnvelope<GetSchoolStudentsData>(
-          data: const GetSchoolStudentsData(students: <JsonMap>[
-            <String, Object?>{
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondOnce(
+        LaratikSchoolsApiMethods.getSchoolStudents,
+        envelopeOk({
+          'students': [
+            {
               'name': 'EDU-STU-2026-00001',
               'first_name': 'Layla',
               'last_name': 'Hassan',
+              'class_group': 'A',
             },
-            <String, Object?>{
+            {
               'name': 'EDU-STU-2026-00002',
               'first_name': 'Ahmad',
               'last_name': 'Saleh',
+              'class_group': 'A',
             },
-          ]),
-          error: null,
-          meta: const ApiMeta(apiVersion: 'v1', requestId: 'req-1'),
-          warnings: const <Object?>[],
-        );
-      final repo = AttendanceRepository(
-        api: api,
-        personRepository: PersonRepository(api: api),
+          ],
+        }),
       );
+      final repo = makeRepo(transport);
       final result = await repo.loadRoster(classGroupId: 'A');
       expect(result, isA<Ok<List<AttendanceMark>, PersonFailure>>());
       final roster = (result as Ok<List<AttendanceMark>, PersonFailure>).value;
@@ -109,23 +100,18 @@ void main() {
 
   group('AttendanceRepository.submitMark', () {
     test('returns the new attendance record id', () async {
-      final api = _FakeAttendanceApi()
-        ..createResponse = ApiEnvelope<CreateSchoolAttendanceRecordData>(
-          data: const CreateSchoolAttendanceRecordData(
-            attendanceRecord: 'EDU-ATT-2026-00010',
-            attendanceStatus: 'Present',
-            schoolStudent: 'EDU-STU-2026-00001',
-            studentName: 'Layla Hassan',
-            status: 'Submitted',
-          ),
-          error: null,
-          meta: const ApiMeta(apiVersion: 'v1', requestId: 'req-1'),
-          warnings: const <Object?>[],
-        );
-      final repo = AttendanceRepository(
-        api: api,
-        personRepository: PersonRepository(api: api),
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondOnce(
+        LaratikSchoolsApiMethods.createSchoolAttendanceRecord,
+        envelopeOk({
+          'attendance_record': 'EDU-ATT-2026-00010',
+          'attendance_status': 'Present',
+          'school_student': 'EDU-STU-2026-00001',
+          'student_name': 'Layla Hassan',
+          'status': 'Submitted',
+        }),
       );
+      final repo = makeRepo(transport);
       final result = await repo.submitMark(
         mark: const AttendanceMark(
           studentId: 'EDU-STU-2026-00001',

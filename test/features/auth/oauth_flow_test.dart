@@ -1,32 +1,40 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
-import 'package:laratik_schools_api/laratik_schools_api.dart';
 import 'package:laratik_schools_mobile/auth/oauth_flow.dart';
 import 'package:laratik_schools_mobile/auth/session.dart';
 import 'package:laratik_schools_mobile/core/clock.dart';
 import 'package:laratik_schools_mobile/core/logging.dart';
 
 class _StubLauncher implements OauthBrowserLauncher {
-  _StubLauncher({this.redirect, this.injectState});
+  _StubLauncher({this.redirect});
   Uri? redirect;
-  final String? injectState;
   Uri? lastUrl;
 
   @override
   Future<Uri?> open(Uri authorizeUrl) async {
     lastUrl = authorizeUrl;
-    if (redirect == null) return null;
-    if (injectState != null) {
-      // Replace the state with our injected value to exercise mismatch paths.
-      final replaced = redirect!.replace(
-        queryParameters: <String, String>{
-          ...redirect!.queryParameters,
-          'state': injectState!,
-        },
-      );
-      return replaced;
-    }
     return redirect;
+  }
+}
+
+/// A launcher that captures the state from the actual authorize URL the
+/// flow generated and uses it to rewrite the redirect's state. Lets the
+/// tests pass without having to duplicate the PKCE + state logic.
+class _StateCapturingLauncher implements OauthBrowserLauncher {
+  _StateCapturingLauncher(this._redirect);
+  final Uri _redirect;
+  Uri? lastUrl;
+
+  @override
+  Future<Uri?> open(Uri authorizeUrl) async {
+    lastUrl = authorizeUrl;
+    final actualState = authorizeUrl.queryParameters['state'];
+    return _redirect.replace(
+      queryParameters: <String, String>{
+        ..._redirect.queryParameters,
+        'state': actualState ?? '__placeholder__',
+      },
+    );
   }
 }
 
@@ -91,17 +99,14 @@ void main() {
       final clock = FixedClock(DateTime.utc(2026, 7, 27));
       final logger = RedactingLogger(clock: clock);
       final session = SessionStore.inMemory(clock: clock, logger: logger);
-      final launcher = _StubLauncher(redirect: Uri.parse(
-        'laratik://oauth/callback?code=auth-code-1&state=PLACEHOLDER',
-      ));
-      // Replace PLACEHOLDER with the actual state at open() time so the
-      // parser accepts the redirect.
-      launcher.injectState = '__placeholder__';
+      final launcher = _StateCapturingLauncher(
+        Uri.parse('laratik://oauth/callback?code=auth-code-1&state=PLACEHOLDER'),
+      );
       final flow = _buildFlow(
         session: session,
         clock: clock,
         logger: logger,
-        launcher: _StubWithStateCapture(launcher: launcher),
+        launcher: launcher,
         httpClient: _TokenClient(),
       );
       final result = await flow.run();
@@ -140,10 +145,8 @@ void main() {
       final clock = FixedClock(DateTime.utc(2026, 7, 27));
       final logger = RedactingLogger(clock: clock);
       final session = SessionStore.inMemory(clock: clock, logger: logger);
-      final launcher = _StubWithStateCapture(
-        launcher: _StubLauncher(redirect: Uri.parse(
-          'laratik://oauth/callback?code=auth-code-1&state=__placeholder__',
-        )),
+      final launcher = _StateCapturingLauncher(
+        Uri.parse('laratik://oauth/callback?code=auth-code-1&state=PLACEHOLDER'),
       );
       final flow = _buildFlow(
         session: session,
@@ -151,7 +154,7 @@ void main() {
         logger: logger,
         launcher: launcher,
         httpClient: _TokenClient(
-          body: 'access_token=at-1&refresh_token=rt-1',
+          body: '{"error": "server_failure"}',
           status: 500,
         ),
       );
@@ -183,26 +186,4 @@ void main() {
       expect(params['scope'], 'openid');
     });
   });
-}
-
-/// A launcher that captures the state from the actual authorize URL the
-/// flow generated and uses it to rewrite the redirect's state. Lets the
-/// tests pass without having to duplicate the PKCE + state logic.
-class _StubWithStateCapture implements OauthBrowserLauncher {
-  _StubWithStateCapture({required this.launcher});
-  final _StubLauncher launcher;
-  Uri? lastUrl;
-
-  @override
-  Future<Uri?> open(Uri authorizeUrl) async {
-    lastUrl = authorizeUrl;
-    if (launcher.redirect == null) return null;
-    final actualState = authorizeUrl.queryParameters['state'];
-    return launcher.redirect!.replace(
-      queryParameters: <String, String>{
-        ...launcher.redirect!.queryParameters,
-        'state': actualState ?? '__placeholder__',
-      },
-    );
-  }
 }

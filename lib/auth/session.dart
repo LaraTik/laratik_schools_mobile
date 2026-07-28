@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -223,33 +222,5 @@ class _FakePrefs implements SharedPreferences {
       '_FakePrefs only implements setString / getString / remove for tests; '
       'called ${invocation.memberName}',
     );
-  }
-}
-
-/// Convenience for tests that need a Clock that is also Random-seedable.
-@visibleForTesting
-class FixedClock extends SystemClock {
-  FixedClock(DateTime now) : super(() => now);
-}
-
-/// A tiny [Random] that always emits the same sequence — for tests.
-@visibleForTesting
-class StubRandom implements Random {
-  StubRandom(this._values) : _index = 0;
-  final List<int> _values;
-  int _index;
-
-  @override
-  bool nextBool() => nextInt(2) == 1;
-
-  @override
-  double nextDouble() => nextInt(1 << 32) / (1 << 32);
-
-  @override
-  int nextInt(int max) {
-    if (max <= 0) throw ArgumentError.value(max, 'max', 'must be > 0');
-    final v = _values[_index % _values.length];
-    _index++;
-    return v.abs() % max;
   }
 }

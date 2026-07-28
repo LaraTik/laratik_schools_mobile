@@ -9,6 +9,7 @@ import '../../../ui/widgets/ls_search_bar.dart';
 import '../../people/data/person_failure.dart';
 import '../data/guardian.dart';
 import '../data/guardian_providers.dart';
+import '../data/guardian_repository.dart';
 import 'widgets/guardian_card.dart';
 
 class GuardiansListScreen extends ConsumerStatefulWidget {
@@ -122,11 +123,11 @@ class _GuardiansListScreenState extends ConsumerState<GuardiansListScreen> {
   }
 
   Widget _buildList(
-    AsyncValue<GuardianPage> page,
+    GuardianPage page,
     bool filterIsEmpty,
     DesignTokens tokens,
   ) {
-    final guardians = page.value?.guardians ?? const <Guardian>[];
+    final guardians = page.guardians;
     if (guardians.isEmpty) {
       return ListView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -154,7 +155,7 @@ class _GuardiansListScreenState extends ConsumerState<GuardiansListScreen> {
     return ListView.separated(
       controller: _scrollController,
       padding: EdgeInsets.only(bottom: tokens.space.xl),
-      itemCount: guardians.length + (page.value?.hasMore == true ? 1 : 0),
+      itemCount: guardians.length + (page.hasMore ? 1 : 0),
       separatorBuilder: (_, __) => Divider(
         height: 1,
         color: tokens.surface.outlineVariant,

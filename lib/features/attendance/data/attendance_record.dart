@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:laratik_schools_api/laratik_schools_api.dart';
+import 'package:meta/meta.dart';
 
 /// Attendance status. The wire shape is a free string; the well-known
 /// values are mapped to a [AttendanceTone] for the UI. Unknown values

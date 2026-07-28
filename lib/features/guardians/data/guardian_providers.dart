@@ -48,13 +48,12 @@ class GuardianFilter {
 final guardianFilterProvider =
     StateProvider<GuardianFilter>((ref) => const GuardianFilter());
 
-class GuardianListController
-    extends AutoDisposeAsyncNotifier<AsyncValue<GuardianPage>> {
+class GuardianListController extends AutoDisposeAsyncNotifier<GuardianPage> {
   String? _cursor;
   static const int _pageSize = 50;
 
   @override
-  Future<AsyncValue<GuardianPage>> build() async {
+  Future<GuardianPage> build() async {
     final filter = ref.watch(guardianFilterProvider);
     _cursor = null;
     return _fetchPage(filter: filter, reset: true);
@@ -65,10 +64,10 @@ class GuardianListController
     if (current == null || !current.hasMore) return;
     final filter = ref.read(guardianFilterProvider);
     final next = await _fetchPage(filter: filter, reset: false);
-    state = next.whenData(
-      (page) => GuardianPage(
-        guardians: [...current.guardians, ...page.guardians],
-        nextCursor: page.nextCursor,
+    state = AsyncValue.data(
+      GuardianPage(
+        guardians: [...current.guardians, ...next.guardians],
+        nextCursor: next.nextCursor,
       ),
     );
   }
@@ -76,11 +75,11 @@ class GuardianListController
   Future<void> refresh() async {
     final filter = ref.read(guardianFilterProvider);
     _cursor = null;
-    state = const AsyncLoading();
-    state = await _fetchPage(filter: filter, reset: true);
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() => _fetchPage(filter: filter, reset: true));
   }
 
-  Future<AsyncValue<GuardianPage>> _fetchPage({
+  Future<GuardianPage> _fetchPage({
     required GuardianFilter filter,
     required bool reset,
   }) async {
@@ -94,15 +93,15 @@ class GuardianListController
     return switch (result) {
       Ok(:final value) => () {
           _cursor = value.nextCursor;
-          return AsyncData(value);
+          return value;
         }(),
-      Err(:final error) => AsyncError(error, StackTrace.current),
+      Err(:final error) => throw error,
     };
   }
 }
 
 final guardianListProvider = AsyncNotifierProvider.autoDispose<
-    GuardianListController, AsyncValue<GuardianPage>>(
+    GuardianListController, GuardianPage>(
   GuardianListController.new,
 );
 

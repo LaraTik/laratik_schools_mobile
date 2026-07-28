@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:meta/meta.dart';
 
 import '../../../core/result.dart';
 import '../../people/data/person_failure.dart';
@@ -14,14 +15,14 @@ final attendanceRepositoryProvider = Provider<AttendanceRepository>((ref) {
 });
 
 class AttendanceListController
-    extends AutoDisposeAsyncNotifier<AsyncValue<AttendancePage>> {
+    extends AutoDisposeAsyncNotifier<AttendancePage> {
   String? _cursor;
   String? _classGroup;
   String? _date;
   static const int _pageSize = 50;
 
   @override
-  Future<AsyncValue<AttendancePage>> build() async {
+  Future<AttendancePage> build() async {
     _cursor = null;
     return _fetchPage(reset: true);
   }
@@ -30,10 +31,10 @@ class AttendanceListController
     final current = state.value;
     if (current == null || !current.hasMore) return;
     final next = await _fetchPage(reset: false);
-    state = next.whenData(
-      (page) => AttendancePage(
-        records: [...current.records, ...page.records],
-        nextCursor: page.nextCursor,
+    state = AsyncValue.data(
+      AttendancePage(
+        records: [...current.records, ...next.records],
+        nextCursor: next.nextCursor,
       ),
     );
   }
@@ -50,11 +51,11 @@ class AttendanceListController
 
   Future<void> refresh() async {
     _cursor = null;
-    state = const AsyncLoading();
-    state = await _fetchPage(reset: true);
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() => _fetchPage(reset: true));
   }
 
-  Future<AsyncValue<AttendancePage>> _fetchPage({required bool reset}) async {
+  Future<AttendancePage> _fetchPage({required bool reset}) async {
     final repo = ref.read(attendanceRepositoryProvider);
     final result = await repo.listRecords(
       cursor: reset ? null : _cursor,
@@ -65,15 +66,15 @@ class AttendanceListController
     return switch (result) {
       Ok(:final value) => () {
           _cursor = value.nextCursor;
-          return AsyncData(value);
+          return value;
         }(),
-      Err(:final error) => AsyncError(error, StackTrace.current),
+      Err(:final error) => throw error,
     };
   }
 }
 
 final attendanceListProvider = AsyncNotifierProvider.autoDispose<
-    AttendanceListController, AsyncValue<AttendancePage>>(
+    AttendanceListController, AttendancePage>(
   AttendanceListController.new,
 );
 

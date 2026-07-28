@@ -5,6 +5,7 @@ import '../../../core/result.dart';
 import '../../people/data/person_failure.dart';
 import '../../people/data/person_repository.dart';
 import 'attendance_record.dart';
+import 'package:meta/meta.dart';
 
 @immutable
 class AttendancePage {
@@ -64,19 +65,19 @@ class AttendanceRepository {
       );
       final data = response.data;
       if (response.error != null || data == null) {
-        return Err(_failureFromApi(response.error, data));
+        return Err(error: _failureFromApi(response.error));
       }
       final rows = data.records ?? const <JsonMap>[];
       final records = rows
           .where((row) => _matchesFilters(row, classGroup, date))
           .map(AttendanceRecord.fromJson)
           .toList(growable: false);
-      return Ok(AttendancePage(
+      return Ok(value: AttendancePage(
         records: records,
         nextCursor: _nextCursorFromMeta(response.meta),
       ));
     } on Exception catch (e) {
-      return Err(_exceptionFailure(e));
+      return Err(error: _exceptionFailure(e));
     }
   }
 
@@ -93,7 +94,7 @@ class AttendanceRepository {
       classGroupId: classGroupId,
     );
     return switch (result) {
-      Ok(:final value) => Ok(value.people
+      Ok(:final value) => Ok(value: value.people
           .map((p) => AttendanceMark(
                 studentId: p.id,
                 studentName: p.fullName,
@@ -101,7 +102,7 @@ class AttendanceRepository {
                 guardianName: p.guardianName,
               ))
           .toList(growable: false)),
-      Err(:final error) => Err(error),
+      Err(:final error) => Err(error: error),
     };
   }
 
@@ -128,22 +129,22 @@ class AttendanceRepository {
       );
       final data = response.data;
       if (response.error != null) {
-        return Err(_failureFromApi(response.error, data));
+        return Err(error: _failureFromApi(response.error));
       }
       if (data == null) {
-        return const Err(PersonFailure(
+        return const Err(error: PersonFailure(
           code: 'EMPTY_RESPONSE',
           message: 'The server returned no data for the new attendance record.',
         ));
       }
-      return Ok(AttendanceMarkResult(
+      return Ok(value: AttendanceMarkResult(
         attendanceRecord: data.attendanceRecord ?? '',
         studentName: data.studentName ?? mark.studentName,
         attendanceStatus: data.attendanceStatus ?? mark.status.value,
         status: data.status ?? 'Submitted',
       ));
     } on Exception catch (e) {
-      return Err(_exceptionFailure(e));
+      return Err(error: _exceptionFailure(e));
     }
   }
 
@@ -199,12 +200,12 @@ class AttendanceRepository {
     return null;
   }
 
-  PersonFailure _failureFromApi(ApiError? error, JsonMap? data) {
+  PersonFailure _failureFromApi(ApiError? error) {
     if (error == null) {
       return const PersonFailure(
         code: 'EMPTY_RESPONSE',
         message: 'The server returned no data.',
-      );
+        );
     }
     return PersonFailure(
       code: error.code,

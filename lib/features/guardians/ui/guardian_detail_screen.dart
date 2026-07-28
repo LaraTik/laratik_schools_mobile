@@ -9,7 +9,9 @@ import '../../../ui/widgets/ls_button.dart';
 import '../../../ui/widgets/ls_empty_state.dart';
 import '../../../ui/widgets/ls_status_chip.dart';
 import '../../people/data/person_failure.dart';
+import '../data/guardian.dart';
 import '../data/guardian_providers.dart';
+import '../data/guardian_repository.dart';
 
 class GuardianDetailScreen extends ConsumerWidget {
   const GuardianDetailScreen({required this.guardianId, super.key});
