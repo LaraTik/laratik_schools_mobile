@@ -5,6 +5,9 @@ import 'package:laratik_schools_api/laratik_schools_api.dart';
 import '../auth/session.dart';
 import '../core/clock.dart';
 import '../core/logging.dart';
+import '../features/guardians/ui/guardian_create_screen.dart';
+import '../features/guardians/ui/guardian_detail_screen.dart';
+import '../features/guardians/ui/guardians_list_screen.dart';
 import '../features/people/ui/student_create_screen.dart';
 import '../features/people/ui/student_detail_screen.dart';
 import '../features/people/ui/students_list_screen.dart';
@@ -144,8 +147,22 @@ GoRouter buildRouter({
           GoRoute(
             path: '/shell/guardians',
             name: 'guardians',
-            builder: (context, state) =>
-                const _TabPlaceholder(tab: ShellTab.guardians),
+            builder: (context, state) => const GuardiansListScreen(),
+            routes: [
+              GoRoute(
+                path: 'new',
+                name: 'guardian_new',
+                builder: (context, state) => const GuardianCreateScreen(),
+              ),
+              GoRoute(
+                path: ':id',
+                name: 'guardian_detail',
+                builder: (context, state) {
+                  final id = state.pathParameters['id'] ?? '';
+                  return GuardianDetailScreen(guardianId: id);
+                },
+              ),
+            ],
           ),
           GoRoute(
             path: '/shell/more',
