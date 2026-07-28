@@ -18,13 +18,12 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final deps = await bootstrap();
 
-  // Hand the typed API client to the Riverpod graph so feature providers
-  // (People, Boot, …) can resolve the same client the bootstrap owns.
+  // Hand the typed API client + auth pieces to the Riverpod graph so
+  // feature providers and the login screen can resolve the same objects
+  // the bootstrap owns.
   runApp(
     ProviderScope(
-      overrides: [
-        apiClientProvider.overrideWithValue(deps.api),
-      ],
+      overrides: deps.riverpodOverrides,
       child: LaratikSchoolsApp(deps: deps),
     ),
   );

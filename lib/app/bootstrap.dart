@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:laratik_schools_api/laratik_schools_api.dart';
 
@@ -6,7 +7,9 @@ import '../auth/session.dart';
 import '../core/clock.dart';
 import '../core/logging.dart';
 import '../core/result.dart';
+import '../features/people/data/person_providers.dart';
 import '../platform/transport.dart';
+import 'login_screen.dart';
 import 'router.dart';
 
 /// Composition root. The async factory constructs the immutable graph of
@@ -37,6 +40,16 @@ class AppDependencies {
   final SessionStore session;
   final Clock clock;
   final RedactingLogger logger;
+
+  /// The list of Riverpod overrides `main.dart` applies so the auth
+  /// layer and the People providers can pull the same objects from
+  /// either the graph or a ProviderScope.
+  List<Override> get riverpodOverrides => [
+        apiClientProvider.overrideWithValue(api),
+        sessionProvider.overrideWithValue(session),
+        clockProvider.overrideWithValue(clock),
+        loggerProvider.overrideWithValue(logger),
+      ];
 }
 
 class BootstrapEnvironment {
@@ -69,6 +82,10 @@ Future<AppDependencies> bootstrap({
     logger,
     clock,
   );
+  // Default session: in-memory. Production wires flutter_secure_storage
+  // via [SessionStore.restore] from the persisted SharedPreferences +
+  // secure-storage keys; that lands in Phase 2.1 alongside the OAuth
+  // wire (see docs/adr/0004).
   final session = await (sessionFactory ?? _defaultSessionFactory)(logger, clock);
   final api = LaratikSchoolsApiClient(transport);
   final router = buildRouter(
@@ -96,6 +113,8 @@ Future<LaratikSchoolsTransport> _defaultTransportFactory(
     baseUrl: baseUrl,
     logger: logger,
     clock: clock,
+    // The transport reads the bearer token from the session on every
+    // call so refresh + sign-out work without rebuilding the transport.
     tokenProvider: null,
   );
 }

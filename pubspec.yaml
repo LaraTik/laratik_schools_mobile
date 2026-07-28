@@ -28,13 +28,15 @@ dependencies:
   # Functional plumbing (Result<T, E> defined in lib/core/result.dart).
   equatable: ^2.0.5
 
-  # Platform — networking, crypto, prefs, device info.
+  # Platform — networking, crypto, prefs, device info, system browser.
   http: ^1.2.2
   crypto: ^3.0.5
   shared_preferences: ^2.3.2
   device_info_plus: ^10.1.2
   package_info_plus: ^8.0.2
   uuid: ^4.5.1
+  flutter_web_auth_2: ^2.1.0
+  url_launcher: ^6.3.0
 
   # Internationalization.
   intl: ^0.19.0

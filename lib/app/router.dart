@@ -20,6 +20,7 @@ import '../features/staff/ui/staff_detail_screen.dart';
 import '../features/staff/ui/staff_list_screen.dart';
 import '../ui/design_tokens.dart';
 import 'dashboard_screen.dart';
+import 'login_screen.dart';
 
 /// Top-level navigation destinations. The shell renders these in a bottom
 /// navigation bar. Order matters — left-to-right is the operator's mental
@@ -315,40 +316,7 @@ class _LoginScreen extends StatelessWidget {
   const _LoginScreen();
 
   @override
-  Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
-    return Scaffold(
-      backgroundColor: tokens.surface.canvas,
-      body: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: EdgeInsets.all(tokens.space.lg),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'Sign in',
-                  style: tokens.typography.titleLarge.copyWith(
-                    color: tokens.text.primary,
-                  ),
-                ),
-                SizedBox(height: tokens.space.sm),
-                Text(
-                  'OAuth PKCE lands in Phase 1.1.',
-                  style: tokens.typography.bodyMedium.copyWith(
-                    color: tokens.text.secondary,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => const LoginScreen();
 }
 
 class _OAuthCallbackScreen extends StatelessWidget {
