@@ -1,0 +1,65 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "flutter: pub get",
+      "type": "shell",
+      "command": "flutter",
+      "args": ["pub", "get"],
+      "presentation": {
+        "reveal": "silent",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "flutter: analyze",
+      "type": "shell",
+      "command": "flutter",
+      "args": ["analyze"],
+      "problemMatcher": "$dart-diagnostic"
+    },
+    {
+      "label": "flutter: test",
+      "type": "shell",
+      "command": "flutter",
+      "args": ["test"],
+      "problemMatcher": "$dart-test"
+    },
+    {
+      "label": "flutter: format check",
+      "type": "shell",
+      "command": "flutter",
+      "args": ["format", "--output=none", "--set-exit-if-changed", "."],
+      "problemMatcher": []
+    },
+    {
+      "label": "build: APK (dev debug)",
+      "type": "shell",
+      "command": "flutter",
+      "args": ["build", "apk", "--debug", "--dart-define=APP_FLAVOR=dev"],
+      "problemMatcher": []
+    },
+    {
+      "label": "build: APK (qa release)",
+      "type": "shell",
+      "command": "flutter",
+      "args": ["build", "apk", "--release", "--dart-define=APP_FLAVOR=qa"],
+      "problemMatcher": []
+    },
+    {
+      "label": "build: APK (prod release)",
+      "type": "shell",
+      "command": "flutter",
+      "args": ["build", "apk", "--release", "--dart-define=APP_FLAVOR=prod"],
+      "problemMatcher": []
+    },
+    {
+      "label": "clean",
+      "type": "shell",
+      "command": "flutter",
+      "args": ["clean"],
+      "problemMatcher": []
+    }
+  ]
+}

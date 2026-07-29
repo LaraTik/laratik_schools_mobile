@@ -1,0 +1,106 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Flutter: dev (debug)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "args": ["--dart-define=APP_FLAVOR=dev"]
+    },
+    {
+      "name": "Flutter: local (debug)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "args": ["--dart-define=APP_FLAVOR=local"]
+    },
+    {
+      "name": "Flutter: qa (debug)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "args": ["--dart-define=APP_FLAVOR=qa"]
+    },
+    {
+      "name": "Flutter: prod (debug)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "args": ["--dart-define=APP_FLAVOR=prod"]
+    },
+    {
+      "name": "Flutter: dev (profile)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "args": ["--profile", "--dart-define=APP_FLAVOR=dev"]
+    },
+    {
+      "name": "Flutter: local (profile)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "args": ["--profile", "--dart-define=APP_FLAVOR=local"]
+    },
+    {
+      "name": "Flutter: qa (profile)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "args": ["--profile", "--dart-define=APP_FLAVOR=qa"]
+    },
+    {
+      "name": "Flutter: prod (profile)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "args": ["--profile", "--dart-define=APP_FLAVOR=prod"]
+    },
+    {
+      "name": "Flutter: dev (release)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "args": ["--release", "--dart-define=APP_FLAVOR=dev"]
+    },
+    {
+      "name": "Flutter: local (release)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "args": ["--release", "--dart-define=APP_FLAVOR=local"]
+    },
+    {
+      "name": "Flutter: qa (release)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "args": ["--release", "--dart-define=APP_FLAVOR=qa"]
+    },
+    {
+      "name": "Flutter: prod (release)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "args": ["--release", "--dart-define=APP_FLAVOR=prod"]
+    },
+    {
+      "name": "Flutter: Attach",
+      "request": "attach",
+      "type": "dart",
+      "cwd": "${workspaceFolder}"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Flutter: all flavors (debug)",
+      "configurations": [
+        "Flutter: dev (debug)",
+        "Flutter: local (debug)",
+        "Flutter: qa (debug)",
+        "Flutter: prod (debug)"
+      ]
+    }
+  ]
+}
