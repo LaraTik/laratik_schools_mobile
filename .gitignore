@@ -58,3 +58,34 @@ firebase_options.dart
 *.dSYM.zip
 *.framework
 *.app.zip
+
+# --- Manual smoke-test screenshots (kept at repo root) ---
+# mipmap-*/ic_launcher.png and android/app/src/main/res assets stay tracked.
+/quiz_*.png
+/after_*.png
+/app_state*.png
+/chrome_tab_state.png
+/final_students.png
+/login_state.png
+/persistence_verified.png
+/screencap.png
+/select_menu.png
+/state_check.png
+/step_*.png
+/student_detail*.png
+/students_tab.png
+/webview_state.png
+
+# --- One-shot diagnostic scripts left in the repo root ---
+/cdp_*.mjs
+/bench_query.py
+/check_users.py
+/dump.py
+/dump.sh
+/dump_in.py
+/q.sh
+/run_query.sh
+/check_site.ps1
+
+# --- Android build noise that escapes android/.gitignore ---
+android/.kotlin/
