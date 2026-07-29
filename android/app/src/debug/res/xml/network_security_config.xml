@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Debug-only network security config.
+
+  Lets the dev and local flavors talk to the local Frappe dev backend over
+  plain HTTP (`http://10.0.2.2:8000` from the emulator, or the host's
+  LAN IP from a physical device). The release build does NOT include this
+  file — its manifest points at the main config which is HTTPS-only, so
+  no cleartext can leak into a production build.
+
+  To add another local host (e.g. a different dev machine, a port
+  forward, a custom LAN IP) add another <domain> entry under
+  <domain-config cleartextTrafficPermitted="true">.
+-->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <!-- Android emulator's loopback alias to the host machine. -->
+        <domain includeSubdomains="false">10.0.2.2</domain>
+        <!-- Direct loopback (used by host-machine browser tests). -->
+        <domain includeSubdomains="false">localhost</domain>
+        <domain includeSubdomains="false">127.0.0.1</domain>
+        <!-- Private RFC1918 ranges — covers the [local] flavor's LAN IP. -->
+        <domain includeSubdomains="false">192.168.0.0</domain>
+        <domain includeSubdomains="false">192.168.1.0</domain>
+        <domain includeSubdomains="false">192.168.2.0</domain>
+        <domain includeSubdomains="false">10.0.0.0</domain>
+    </domain-config>
+</network-security-config>
