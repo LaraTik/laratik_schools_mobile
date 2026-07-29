@@ -34,25 +34,64 @@
       "problemMatcher": []
     },
     {
-      "label": "build: APK (dev debug)",
+      "label": "dev: install on emulator (idempotent)",
       "type": "shell",
       "command": "flutter",
-      "args": ["build", "apk", "--debug", "--dart-define=APP_FLAVOR=dev"],
+      "args": [
+        "install",
+        "--flavor", "dev",
+        "--use-application-binary",
+        "build/app/outputs/flutter-apk/app-dev-debug.apk"
+      ],
+      "presentation": {
+        "reveal": "always",
+        "clear": false
+      },
       "problemMatcher": []
     },
     {
-      "label": "build: APK (qa release)",
+      "label": "dev: build APK (debug)",
       "type": "shell",
       "command": "flutter",
-      "args": ["build", "apk", "--release", "--dart-define=APP_FLAVOR=qa"],
+      "args": ["build", "apk", "--debug", "--flavor", "dev", "--dart-define=APP_FLAVOR=dev"],
       "problemMatcher": []
     },
     {
-      "label": "build: APK (prod release)",
+      "label": "dev: build APK (release)",
       "type": "shell",
       "command": "flutter",
-      "args": ["build", "apk", "--release", "--dart-define=APP_FLAVOR=prod"],
+      "args": ["build", "apk", "--release", "--flavor", "dev", "--dart-define=APP_FLAVOR=dev"],
       "problemMatcher": []
+    },
+    {
+      "label": "qa: build APK (release)",
+      "type": "shell",
+      "command": "flutter",
+      "args": ["build", "apk", "--release", "--flavor", "qa", "--dart-define=APP_FLAVOR=qa"],
+      "problemMatcher": []
+    },
+    {
+      "label": "prod: build APK (release)",
+      "type": "shell",
+      "command": "flutter",
+      "args": ["build", "apk", "--release", "--flavor", "prod", "--dart-define=APP_FLAVOR=prod"],
+      "problemMatcher": []
+    },
+    {
+      "label": "dev: map laratik.localhost on emulator",
+      "type": "shell",
+      "command": "adb",
+      "args": [
+        "-s", "emulator-5554",
+        "shell", "su", "0", "sh", "-c",
+        "echo '10.0.2.2 laratik.localhost' >> /etc/hosts; cat /etc/hosts"
+      ],
+      "presentation": {
+        "reveal": "always",
+        "clear": false
+      },
+      "problemMatcher": [],
+      "detail": "Run once per emulator boot. Maps the dev Frappe site name to the host machine's loopback so the post-login OAuth redirect (which uses laratik.localhost:8000) resolves on the emulator. Skipped automatically if the line is already present."
     },
     {
       "label": "clean",

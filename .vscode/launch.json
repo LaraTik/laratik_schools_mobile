@@ -6,84 +6,128 @@
       "request": "launch",
       "type": "dart",
       "program": "lib/main.dart",
-      "args": ["--dart-define=APP_FLAVOR=dev"]
+      "args": [
+        "--flavor", "dev",
+        "--dart-define=APP_FLAVOR=dev"
+      ]
     },
     {
       "name": "Flutter: local (debug)",
       "request": "launch",
       "type": "dart",
       "program": "lib/main.dart",
-      "args": ["--dart-define=APP_FLAVOR=local"]
+      "args": [
+        "--flavor", "local",
+        "--dart-define=APP_FLAVOR=local"
+      ]
     },
     {
       "name": "Flutter: qa (debug)",
       "request": "launch",
       "type": "dart",
       "program": "lib/main.dart",
-      "args": ["--dart-define=APP_FLAVOR=qa"]
+      "args": [
+        "--flavor", "qa",
+        "--dart-define=APP_FLAVOR=qa"
+      ]
     },
     {
       "name": "Flutter: prod (debug)",
       "request": "launch",
       "type": "dart",
       "program": "lib/main.dart",
-      "args": ["--dart-define=APP_FLAVOR=prod"]
+      "args": [
+        "--flavor", "prod",
+        "--dart-define=APP_FLAVOR=prod"
+      ]
     },
     {
       "name": "Flutter: dev (profile)",
       "request": "launch",
       "type": "dart",
       "program": "lib/main.dart",
-      "args": ["--profile", "--dart-define=APP_FLAVOR=dev"]
+      "args": [
+        "--flavor", "dev",
+        "--profile",
+        "--dart-define=APP_FLAVOR=dev"
+      ]
     },
     {
       "name": "Flutter: local (profile)",
       "request": "launch",
       "type": "dart",
       "program": "lib/main.dart",
-      "args": ["--profile", "--dart-define=APP_FLAVOR=local"]
+      "args": [
+        "--flavor", "local",
+        "--profile",
+        "--dart-define=APP_FLAVOR=local"
+      ]
     },
     {
       "name": "Flutter: qa (profile)",
       "request": "launch",
       "type": "dart",
       "program": "lib/main.dart",
-      "args": ["--profile", "--dart-define=APP_FLAVOR=qa"]
+      "args": [
+        "--flavor", "qa",
+        "--profile",
+        "--dart-define=APP_FLAVOR=qa"
+      ]
     },
     {
       "name": "Flutter: prod (profile)",
       "request": "launch",
       "type": "dart",
       "program": "lib/main.dart",
-      "args": ["--profile", "--dart-define=APP_FLAVOR=prod"]
+      "args": [
+        "--flavor", "prod",
+        "--profile",
+        "--dart-define=APP_FLAVOR=prod"
+      ]
     },
     {
       "name": "Flutter: dev (release)",
       "request": "launch",
       "type": "dart",
       "program": "lib/main.dart",
-      "args": ["--release", "--dart-define=APP_FLAVOR=dev"]
+      "args": [
+        "--flavor", "dev",
+        "--release",
+        "--dart-define=APP_FLAVOR=dev"
+      ]
     },
     {
       "name": "Flutter: local (release)",
       "request": "launch",
       "type": "dart",
       "program": "lib/main.dart",
-      "args": ["--release", "--dart-define=APP_FLAVOR=local"]
+      "args": [
+        "--flavor", "local",
+        "--release",
+        "--dart-define=APP_FLAVOR=local"
+      ]
     },
     {
       "name": "Flutter: qa (release)",
       "request": "launch",
       "type": "dart",
       "program": "lib/main.dart",
-      "args": ["--release", "--dart-define=APP_FLAVOR=qa"]
+      "args": [
+        "--flavor", "qa",
+        "--release",
+        "--dart-define=APP_FLAVOR=qa"
+      ]
     },
     {
       "name": "Flutter: prod (release)",
       "request": "launch",
       "type": "dart",
       "program": "lib/main.dart",
-      "args": ["--release", "--dart-define=APP_FLAVOR=prod"]
+      "args": [
+        "--flavor", "prod",
+        "--release",
+        "--dart-define=APP_FLAVOR=prod"
+      ]
     },
     {
       "name": "Flutter: Attach",
