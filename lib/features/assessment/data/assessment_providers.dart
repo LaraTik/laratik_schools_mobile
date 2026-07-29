@@ -74,6 +74,12 @@ final examEligibilityProvider = FutureProvider.autoDispose
   return repo.checkEligibility(
     examPlanId: args.examPlanId,
     studentId: args.studentId,
+    // The v1 eligibility check requires the enrollment id to match
+    // the audience row's `school_enrollment`. The mobile resolves
+    // the active enrollment once at the current-student level and
+    // passes it through here so the user doesn't have to re-pick it
+    // per exam.
+    schoolEnrollment: args.schoolEnrollment,
   );
 });
 
@@ -82,16 +88,20 @@ class ExamEligibilityArgs {
   const ExamEligibilityArgs({
     required this.examPlanId,
     required this.studentId,
+    this.schoolEnrollment = '',
   });
   final String examPlanId;
   final String studentId;
+  final String schoolEnrollment;
 
   @override
   bool operator ==(Object other) =>
       other is ExamEligibilityArgs &&
       other.examPlanId == examPlanId &&
-      other.studentId == studentId;
+      other.studentId == studentId &&
+      other.schoolEnrollment == schoolEnrollment;
 
   @override
-  int get hashCode => Object.hash(examPlanId, studentId);
+  int get hashCode =>
+      Object.hash(examPlanId, studentId, schoolEnrollment);
 }

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../auth/oauth_browser.dart';
 import '../auth/oauth_flow.dart';
 import '../auth/session.dart';
+import '../config/flavor_loader.dart';
 import '../core/clock.dart';
 import '../core/logging.dart';
 import '../ui/design_tokens.dart';
@@ -12,9 +13,11 @@ import '../ui/widgets/ls_button.dart';
 import '../ui/widgets/ls_status_chip.dart';
 
 /// Login screen. The OAuth flow is wired to the system browser via
-/// `flutter_web_auth_2`; the redirect scheme is `laratik://oauth/callback`
-/// per ADR 0003. The OAuth config is read from the bootstrap graph so
-/// the same code runs in test, dev, and prod.
+/// `flutter_web_auth_2`; the redirect scheme is configured per flavor
+/// (e.g. `laratik://oauth/callback` in dev, qa, prod) per ADR 0003.
+/// **All** environment-specific values are read from [appConfigProvider]
+/// — never hard-coded — so the same screen code runs in test, dev,
+/// local, qa, and prod.
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
@@ -48,23 +51,41 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   OauthFlow _oauthFlow() {
     final container = ProviderScope.containerOf(context, listen: false);
+    final config = container.read(appConfigProvider);
     final session = container.read(sessionProvider);
     final clock = container.read(clockProvider);
     final logger = container.read(loggerProvider);
+    // All OAuth URLs are derived from AppConfig — no hard-coded hostnames
+    // anywhere in the login screen.
+    final baseUri = Uri.parse(config.baseUrl);
+    final authorizeBase = baseUri.resolve(
+      '/api/method/frappe.integrations.oauth2.authorize',
+    );
+    final tokenBase = baseUri.resolve(
+      '/api/method/frappe.integrations.oauth2.get_token',
+    );
     return OauthFlow(
-      authorizeUrl: Uri.parse(
-        'https://laratik.localhost/api/method/frappe.integrations.oauth2.authorize',
-      ),
-      tokenUrl: Uri.parse(
-        'https://laratik.localhost/api/method/frappe.integrations.oauth2.get_token',
-      ),
-      clientId: 'laratik-mobile',
-      redirectUri: Uri.parse('laratik://oauth/callback'),
+      authorizeUrl: authorizeBase,
+      tokenUrl: tokenBase,
+      clientId: config.oauthClientId,
+      // Host is always "oauth" — the scheme comes from the flavor so
+      // dev / local / qa / prod can register parallel redirect URIs
+      // (e.g. `laratik-dev://oauth/callback`) without touching this code.
+      redirectUri: Uri.parse('${config.oauthRedirectScheme}://oauth/callback'),
       scope: 'openid all',
       session: session,
       clock: clock,
       logger: logger,
-      launcher: const FlutterWebAuthBrowserLauncher(),
+      // WebView, not Chrome Custom Tabs: Chrome's process would block
+      // cleartext HTTP to 10.0.2.2, which the dev flavor needs. Our
+      // debug NSC allows it; the in-app WebView honors the NSC.
+      // The root navigator (above the GoRouter) is what we push onto
+      // so dismissing the WebView returns to the login screen.
+      launcher: WebViewOauthBrowserLauncher(
+        navigator: Navigator.of(context, rootNavigator: true),
+        callbackScheme: config.oauthRedirectScheme,
+        title: 'Sign in with Laratik',
+      ),
     );
   }
 
@@ -127,7 +148,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               ),
                               SizedBox(height: tokens.space.xxs),
                               Text(
-                                'S256, system browser, no embedded webview.',
+                                'S256, in-app webview, system-broker redirect.',
                                 style: tokens.typography.bodySmall.copyWith(
                                   color: tokens.text.secondary,
                                 ),

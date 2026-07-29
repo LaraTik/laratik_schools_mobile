@@ -162,7 +162,7 @@ class _ExamsListScreenState extends ConsumerState<ExamsListScreen> {
             tone: plan.published ? LsChipTone.success : LsChipTone.neutral,
             icon: plan.published ? Icons.check_circle_outline : Icons.lock_outline,
           ),
-          onTap: () => context.go('/shell/assessment/exams/${plan.id}'),
+          onTap: () => context.go('/shell/academics/exams/${plan.id}'),
         );
       },
     );

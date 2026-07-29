@@ -36,8 +36,24 @@ dependencies:
   device_info_plus: ^10.1.2
   package_info_plus: ^8.0.2
   uuid: ^4.5.1
-  flutter_web_auth_2: ^2.1.0
   url_launcher: ^6.3.0
+  # Secure storage for OAuth tokens. Backed by Android Keystore +
+  # EncryptedSharedPreferences. The access / refresh tokens live here;
+  # the non-secret session metadata (installation id, roles, scopes,
+  # expires_at) stays in plain SharedPreferences. iOS uses the
+  # Keychain; tests fall back to an in-memory implementation.
+  flutter_secure_storage: ^9.2.4
+  # In-app WebView for the OAuth flow. Chrome Custom Tabs runs in
+  # Chrome's process and inherits Chrome's network-security policy
+  # (which blocks cleartext HTTP to 10.0.2.2 on Android 9+). Doing the
+  # OAuth round-trip in our own WebView lets the dev flavor's
+  # network_security_config.xml do its job and keeps the redirect
+  # interception under app control. The intent filter for
+  # `laratik://oauth/callback` is still registered in AndroidManifest
+  # for deep links from outside the WebView (e.g. email magic links).
+  # Pin to 4.x; the 5.x major has not been released yet at the time
+  # of this writing, so we re-evaluate when 5.0.0 lands.
+  webview_flutter: ^4.13.1
 
   # Internationalization.
   intl: 0.20.2 # direct pin required by project (Flutter 3.35.7 / flutter_localizations)

@@ -63,12 +63,13 @@ class OauthFlow {
     http.Client? httpClient,
   }) : _httpClient = httpClient ?? http.Client();
 
-  /// Authorize endpoint, e.g.
-  /// `Uri.parse('https://laratik.localhost/api/method/frappe.integrations.oauth2.authorize')`.
+  /// Authorize endpoint. Resolved at construction from [AppConfig.baseUrl]
+  /// — the caller does **not** hard-code a host here. Example for the
+  /// dev flavor: `http://10.0.2.2:8000/api/method/frappe.integrations.oauth2.authorize`.
   final Uri authorizeUrl;
 
-  /// Token endpoint, e.g.
-  /// `Uri.parse('https://laratik.localhost/api/method/frappe.integrations.oauth2.get_token')`.
+  /// Token endpoint. Same origin as [authorizeUrl] (e.g. for the dev
+  /// flavor: `http://10.0.2.2:8000/api/method/frappe.integrations.oauth2.get_token`).
   final Uri tokenUrl;
 
   /// OAuth client id (`laratik-mobile`, per ADR 0003).

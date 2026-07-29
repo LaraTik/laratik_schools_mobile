@@ -106,11 +106,18 @@ class AssessmentRepository {
   Future<Result<EligibilityResult, PersonFailure>> checkEligibility({
     required String examPlanId,
     required String studentId,
+    String? schoolEnrollment,
   }) async {
     try {
       final response = await _api.getSchoolOnlineExamEligibility(
         examPlan: examPlanId,
         schoolStudent: studentId,
+        // The v1 `is_eligible` server-side check short-circuits to
+        // `False` when `school_enrollment` is empty; pass it through
+        // so the audience row can be matched against the active
+        // enrollment. Optional on the wire (older clients don't send
+        // it) but required for a true eligibility verdict.
+        schoolEnrollment: schoolEnrollment,
       );
       final data = response.data;
       if (response.error != null) {
@@ -133,15 +140,24 @@ class AssessmentRepository {
 
   /// Start a new attempt. The server returns the question set inline
   /// so the attempt screen does not need a follow-up fetch.
+  ///
+  /// `schoolEnrollment` is required by the v1 `start_school_exam_attempt`
+  /// endpoint (Frappe's `is_eligible` check resolves the audience row
+  /// against the active enrollment). It is optional on the wire
+  /// today so older callers keep compiling, but the server will
+  /// reject the request without it.
   Future<Result<StartAttemptResult, PersonFailure>> startAttempt({
     required String examPlanId,
     required String studentId,
+    String? schoolEnrollment,
   }) async {
     try {
       final response = await _api.startSchoolExamAttempt(
         payload: <String, Object?>{
           'exam_plan': examPlanId,
           'school_student': studentId,
+          if (schoolEnrollment != null && schoolEnrollment.isNotEmpty)
+            'school_enrollment': schoolEnrollment,
         },
         idempotencyKey: _uuid.v4(),
       );
@@ -276,18 +292,30 @@ class AssessmentRepository {
 
   bool _matchesFilters(JsonMap row, String? subject, bool publishedOnly) {
     if (subject != null && subject.isNotEmpty) {
-      final rowSubject = row['subject'] ?? row['subject_name'];
+      final rowSubject = row['subject'] ??
+          row['subject_name'] ??
+          row['school_subject'];
       if (rowSubject is String && rowSubject != subject) return false;
       if (rowSubject is! String) return false;
     }
     if (publishedOnly) {
-      final published = row['published'];
-      final isPublished = published is bool
-          ? published
-          : published is String
-              ? published.toLowerCase() == 'true'
-              : false;
-      if (!isPublished) return false;
+      // The v1 exam-plans wire format doesn't expose a `published`
+      // boolean; the only "is this visible right now" signal is the
+      // `status` string ('Draft' | 'Published' | 'Closed'). Treat
+      // `status == 'Published'` as published; honour a literal
+      // boolean if a future schema version adds one.
+      final status = row['status'];
+      if (status is String && status == 'Published') {
+        // explicit Published — accept
+      } else {
+        final published = row['published'];
+        final isPublished = published is bool
+            ? published
+            : published is String
+                ? published.toLowerCase() == 'true'
+                : false;
+        if (!isPublished) return false;
+      }
     }
     return true;
   }

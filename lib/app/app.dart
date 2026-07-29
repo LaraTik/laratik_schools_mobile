@@ -31,3 +31,4 @@ class LaratikSchoolsApp extends StatelessWidget {
     );
   }
 }
+

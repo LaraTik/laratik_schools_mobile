@@ -91,5 +91,21 @@ void main() {
       });
       expect(person.hasGuardianWarning, isTrue);
     });
+
+    test('fullName falls back to student_name when first/last are missing',
+        () {
+      // The v1 list endpoint doesn't return first_name/last_name; it
+      // returns `student_name` (the Frappe title field). When the row
+      // has no first/last, the parser must use the student_name so
+      // the dashboard's "Acting as: …" card can show a useful name
+      // instead of the document id.
+      final person = Person.fromJson(<String, Object?>{
+        'school_student': 'STU-00061',
+        'student_name': 'Aaron Test Student',
+        'status': 'Active',
+      });
+      expect(person.fullName, 'Aaron Test Student');
+      expect(person.studentName, 'Aaron Test Student');
+    });
   });
 }

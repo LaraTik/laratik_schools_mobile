@@ -9,21 +9,25 @@ import '../../../ui/design_tokens.dart';
 import '../../../ui/widgets/ls_button.dart';
 import '../../../ui/widgets/ls_empty_state.dart';
 import '../../../ui/widgets/ls_status_chip.dart';
-import '../../people/data/person_failure.dart';
-import '../../people/data/person.dart';
-import '../../people/data/person_providers.dart';
 import '../data/assessment_providers.dart';
 import '../data/assessment_repository.dart';
+import '../data/current_student_provider.dart';
 import '../data/exam.dart';
 
 /// Exam attempt screen. Renders the question list, autosaves every 15s,
 /// and surfaces a Submit action that POSTs the final answers. The screen
 /// is keyed by the student + exam plan pair; the actual attempt id is
 /// minted by the server when [startAttempt] resolves.
+///
+/// [studentId] is kept for backward compatibility with the router's
+/// `?student=...` deep-link query param. When empty, the screen falls
+/// back to [currentStudentProvider] — the typical case in the dev
+/// shell where the mobile session is pinned to a single student by
+/// the dev seed.
 class ExamAttemptScreen extends ConsumerStatefulWidget {
   const ExamAttemptScreen({
     required this.examPlanId,
-    required this.studentId,
+    this.studentId = '',
     super.key,
   });
 
@@ -69,10 +73,23 @@ class _ExamAttemptScreenState extends ConsumerState<ExamAttemptScreen> {
   }
 
   Future<void> _start() async {
+    // Re-resolve the current student at start time so the screen
+    // works even if the build resolved an empty id (the provider is
+    // still warming up).
+    final current = ref.read(currentStudentProvider).valueOrNull;
+    final studentId = widget.studentId.isNotEmpty
+        ? widget.studentId
+        : (current?.studentId ?? '');
+    final enrollmentId = current?.enrollmentId ?? '';
+    if (studentId.isEmpty) {
+      setState(() => _error = 'No student resolved. Sign in and retry.');
+      return;
+    }
     final repo = ref.read(assessmentRepositoryProvider);
     final result = await repo.startAttempt(
       examPlanId: widget.examPlanId,
-      studentId: widget.studentId,
+      studentId: studentId,
+      schoolEnrollment: enrollmentId.isEmpty ? null : enrollmentId,
     );
     if (!mounted) return;
     switch (result) {
@@ -167,10 +184,28 @@ class _ExamAttemptScreenState extends ConsumerState<ExamAttemptScreen> {
     final tokens = DesignTokens.forBrightness(
       MediaQuery.platformBrightnessOf(context),
     );
+    // ignore: avoid_print
+    print('EXAM_SCREEN: build start examPlanId=${widget.examPlanId}');
+    // Resolve the student id from the deep-link query param when
+    // present, otherwise from `currentStudentProvider`. We hold the
+    // resolved id in [widget.studentId] only at construction; the
+    // `ref.watch` here gives us the live value as the provider
+    // resolves.
+    final currentStudentAsync = ref.watch(currentStudentProvider);
+    final resolvedStudentId = widget.studentId.isNotEmpty
+        ? widget.studentId
+        : (currentStudentAsync.valueOrNull?.studentId ?? '');
+    // The server-side `is_eligible` check requires the active
+    // enrollment id to match the audience row's `school_enrollment`.
+    // We pass it through from the resolved current student so the
+    // mobile user doesn't have to re-pick it per exam.
+    final resolvedEnrollmentId =
+        currentStudentAsync.valueOrNull?.enrollmentId ?? '';
     final asyncEligibility = ref.watch(examEligibilityProvider(
       ExamEligibilityArgs(
         examPlanId: widget.examPlanId,
-        studentId: widget.studentId,
+        studentId: resolvedStudentId,
+        schoolEnrollment: resolvedEnrollmentId,
       ),
     ));
     return Scaffold(
@@ -202,22 +237,34 @@ class _ExamAttemptScreenState extends ConsumerState<ExamAttemptScreen> {
         ],
       ),
       body: asyncEligibility.when(
-        data: (result) => switch (result) {
-          Ok(:final value) => value.eligible
-              ? _buildAttempt(tokens)
-              : _buildIneligible(value, tokens),
-          Err(:final error) => LsStateView.error(
-              icon: Icons.error_outline,
-              title: 'Could not check eligibility',
-              message: error.message,
-            ),
+        data: (result) {
+          // ignore: avoid_print
+          print('EXAM_SCREEN: eligibility data=$result');
+          return switch (result) {
+            Ok(:final value) => value.eligible
+                ? _buildAttempt(tokens)
+                : _buildIneligible(value, tokens),
+            Err(:final error) => LsStateView.error(
+                icon: Icons.error_outline,
+                title: 'Could not check eligibility',
+                message: error.message,
+              ),
+          };
         },
-        loading: () => const LsStateView.loading(title: 'Checking eligibility'),
-        error: (err, _) => LsStateView.error(
-          icon: Icons.error_outline,
-          title: 'Could not check eligibility',
-          message: err.toString(),
-        ),
+        loading: () {
+          // ignore: avoid_print
+          print('EXAM_SCREEN: eligibility loading');
+          return const LsStateView.loading(title: 'Checking eligibility');
+        },
+        error: (err, _) {
+          // ignore: avoid_print
+          print('EXAM_SCREEN: eligibility error=$err');
+          return LsStateView.error(
+            icon: Icons.error_outline,
+            title: 'Could not check eligibility',
+            message: err.toString(),
+          );
+        },
       ),
     );
   }
@@ -281,7 +328,8 @@ class _ExamAttemptScreenState extends ConsumerState<ExamAttemptScreen> {
   }
 
   Widget _buildStart(DesignTokens tokens) {
-    final personAsync = ref.watch(currentPersonProvider(widget.studentId));
+    final currentStudentAsync = ref.watch(currentStudentProvider);
+    final currentStudent = currentStudentAsync.valueOrNull;
     return Padding(
       padding: EdgeInsets.all(tokens.space.lg),
       child: Column(
@@ -294,19 +342,21 @@ class _ExamAttemptScreenState extends ConsumerState<ExamAttemptScreen> {
             ),
           ),
           SizedBox(height: tokens.space.sm),
-          personAsync.maybeWhen(
-            data: (result) => switch (result) {
-              Ok(:final value) => Text(
-                'Student: ${value.fullName}',
-                style: tokens.typography.bodyLarge.copyWith(
-                  color: tokens.text.secondary,
+          currentStudent == null
+              ? Text(
+                  currentStudentAsync.hasError
+                      ? 'Could not resolve student: ${currentStudentAsync.error}'
+                      : 'Resolving student…',
+                  style: tokens.typography.bodyLarge.copyWith(
+                    color: tokens.text.secondary,
+                  ),
+                )
+              : Text(
+                  'Student: ${currentStudent.person.fullName.isEmpty ? currentStudent.studentId : currentStudent.person.fullName}',
+                  style: tokens.typography.bodyLarge.copyWith(
+                    color: tokens.text.secondary,
+                  ),
                 ),
-              ),
-              Err() => const SizedBox.shrink(),
-              _ => const SizedBox.shrink(),
-            },
-            orElse: () => const SizedBox.shrink(),
-          ),
           SizedBox(height: tokens.space.lg),
           const LsStatusChip(
             label: 'Autosave every 15s',
@@ -315,9 +365,9 @@ class _ExamAttemptScreenState extends ConsumerState<ExamAttemptScreen> {
           ),
           SizedBox(height: tokens.space.lg),
           LsButton.primary(
-            label: 'Start attempt',
+            label: currentStudent == null ? 'Resolving…' : 'Start attempt',
             icon: Icons.play_arrow,
-            onPressed: _start,
+            onPressed: currentStudent == null ? null : _start,
           ),
         ],
       ),
@@ -571,25 +621,3 @@ class _QuestionCard extends StatelessWidget {
     );
   }
 }
-
-/// Helper to load the current Person row from the People repository so
-/// the start screen can show the student's name.
-final currentPersonProvider = FutureProvider.autoDispose
-    .family<Result<Person, PersonFailure>, String>((ref, id) async {
-  // The list call is the cheapest way to find one student by id; the
-  // SDK does not expose getSchoolStudentById in Phase 5.
-  final repo = ref.watch(personRepositoryProvider);
-  final page = await repo.listStudents(search: id);
-  return switch (page) {
-    Ok(:final value) when value.people.isNotEmpty =>
-      Ok(value: value.people.firstWhere(
-        (p) => p.id == id,
-        orElse: () => value.people.first,
-      )),
-    Ok() => Err(error: const PersonFailure(
-        code: 'NOT_FOUND',
-        message: 'Student not found.',
-      )),
-    Err(:final error) => Err(error: error),
-  };
-});

@@ -80,9 +80,18 @@ GoRouter buildRouter({
     refreshListenable: SessionListenable(session),
     redirect: (context, state) {
       final isAuthed = session.hasToken;
-      final loggingIn = state.matchedLocation.startsWith('/auth');
+      final location = state.matchedLocation;
+      final loggingIn = location.startsWith('/auth');
+      // The splash is the boot screen — once the session is known, we
+      // move to either /auth/login (anonymous) or /shell (authed). The
+      // previous version only redirected authed users when they were
+      // on /auth/login, which meant a restart-after-sign-in landed on
+      // /splash and never advanced to the home screen.
+      if (location == '/splash') {
+        return isAuthed ? '/shell' : '/auth/login';
+      }
       if (!isAuthed && !loggingIn) return '/auth/login';
-      if (isAuthed && state.matchedLocation == '/auth/login') return '/shell';
+      if (isAuthed && loggingIn) return '/shell';
       return null;
     },
     routes: [
@@ -218,10 +227,11 @@ GoRouter buildRouter({
                       final id = state.pathParameters['id'] ?? '';
                       return ExamAttemptScreen(
                         examPlanId: id,
-                        // The student id is supplied via the deep link
-                        // query (?student=...) until the boot context
-                        // exposes the current user; see the dashboard
-                        // for the typical operator path.
+                        // The student id can be supplied via the deep
+                        // link query (?student=...). When empty, the
+                        // screen resolves the current student via
+                        // [currentStudentProvider] (the dev session is
+                        // pinned to a single student by the dev seed).
                         studentId: state.uri.queryParameters['student'] ?? '',
                       );
                     },

@@ -6,6 +6,21 @@ import 'package:meta/meta.dart';
 /// known fields the mobile client cares about. The full row is preserved
 /// on [raw] so future schema additions (e.g. randomisation policy) flow
 /// through without an app update.
+///
+/// Field name mapping (defensive — backend keys can drift):
+///   - `id`            ← `name` (Frappe primary key)
+///   - `title`         ← `title`, falling back to `exam_name`
+///   - `subject`       ← `subject_name` (display), `subject` (rare),
+///                       or the `school_subject` link's display name
+///   - `examDate`      ← `exam_date` (string YYYY-MM-DD or DateTime)
+///   - `durationMinutes` ← `duration_minutes` (the only wire field)
+///   - `totalMarks`    ← `max_score` (the only wire field); the mobile
+///                       also accepts `total_marks` if the server later
+///                       adds it
+///   - `status`        ← `status`
+///   - `published`     ← `true` when `online_status == 'Published'`,
+///                       otherwise `false` (the wire carries a tri-state
+///                       "online_status" rather than a boolean)
 @immutable
 class ExamPlan extends Equatable {
   const ExamPlan({
@@ -42,18 +57,46 @@ class ExamPlan extends Equatable {
         final s = v.toLowerCase();
         return s == 'true' || s == '1' || s == 'yes';
       }
+      if (v is num) return v != 0;
       return false;
     }
 
+    String? examDate;
+    final rawDate = json['exam_date'];
+    if (rawDate is String && rawDate.isNotEmpty) {
+      examDate = rawDate;
+    } else if (rawDate is DateTime) {
+      examDate = rawDate.toIso8601String().split('T').first;
+    }
+
+    // `published` is a derived flag: the wire carries a tri-state
+    // `status` (Draft / Published / Closed) or `online_status`
+    // (legacy). The mobile only cares about the boolean "is this
+    // visible right now".
+    final onlineStatus = pickString('online_status') ??
+        pickString('status');
+    final published =
+        pickBool('published') || onlineStatus == 'Published';
+
     return ExamPlan(
-      id: pickString('name') ?? pickString('id') ?? '',
+      id: pickString('exam_plan') ??
+          pickString('name') ??
+          pickString('id') ??
+          '',
       title: pickString('title') ?? pickString('exam_name') ?? '',
-      subject: pickString('subject') ?? pickString('subject_name'),
-      examDate: pickString('exam_date') ?? pickString('date'),
+      subject: pickString('subject_name') ??
+          pickString('subject') ??
+          pickString('school_subject'),
+      examDate: examDate,
       durationMinutes: pickInt('duration_minutes') ?? pickInt('duration'),
-      totalMarks: pickInt('total_marks') ?? pickInt('total'),
-      status: pickString('status') ?? 'Draft',
-      published: pickBool('published'),
+      // Server doesn't expose `total_marks`; the canonical field is
+      // `max_score`. Accept either for forward compat.
+      totalMarks: pickInt('total_marks') ??
+          pickInt('total') ??
+          _asInt(json['max_score']) ??
+          _asInt(json['maxScore']),
+      status: pickString('status') ?? onlineStatus ?? 'Draft',
+      published: published,
       raw: json,
     );
   }
@@ -79,6 +122,13 @@ class ExamPlan extends Equatable {
         status,
         published,
       ];
+}
+
+int? _asInt(Object? v) {
+  if (v is int) return v;
+  if (v is num) return v.toInt();
+  if (v is String) return int.tryParse(v);
+  return null;
 }
 
 @immutable
@@ -108,19 +158,45 @@ class ExamQuestion extends Equatable {
       return null;
     }
 
-    final options = (json['options'] is List)
+    // Backend options carry `option_key` and `option_text`; the
+    // mobile UI widget reads `value` and `label`. Map both ways.
+    final rawOptions = (json['options'] is List)
         ? (json['options'] as List)
             .where((e) => e is Map)
-            .map((e) => Map<String, Object?>.from(e as Map))
+            .map((e) {
+              final m = Map<String, Object?>.from(e as Map);
+              return <String, Object?>{
+                'value': m['option_key'] ?? m['value'] ?? m['name'] ?? '',
+                'label': m['option_text'] ?? m['label'] ?? m['name'] ?? '',
+                'option_key': m['option_key'],
+                'option_text': m['option_text'],
+                'is_correct': m['is_correct'],
+                'sequence': m['sequence'],
+              };
+            })
             .toList(growable: false)
         : const <JsonMap>[];
 
+    // Type normalization: the wire carries the long form
+    //   "Single Choice" / "Multiple Choice" / "True/False" /
+    //   "Short Text" / "Long Text" / "Numeric"
+    // but the mobile UI narrows to a small set of stable keys. Unknown
+    // types fall back to `text` (the `_QuestionCard` widget treats
+    // `text` and `essay` as the same TextField).
+    final rawType = pickString('question_type') ?? 'text';
+    final normalized = _normalizeQuestionType(rawType);
+
     return ExamQuestion(
-      id: pickString('name') ?? pickString('id') ?? '',
+      // Backend uses `name` on direct fetches and `question` on
+      // attempt-start responses; accept either.
+      id: pickString('name') ??
+          pickString('id') ??
+          pickString('question') ??
+          '',
       questionText: pickString('question_text') ?? '',
-      questionType: pickString('question_type') ?? 'text',
+      questionType: normalized,
       marks: pickInt('marks') ?? 1,
-      options: options,
+      options: rawOptions,
       required: pickString('required') == 'true' ||
           pickInt('required') == 1 ||
           (json['required'] is bool && json['required'] as bool),
@@ -143,11 +219,42 @@ class ExamQuestion extends Equatable {
   static const String typeMultiSelect = 'multi_select';
   static const String typeTrueFalse = 'true_false';
   static const String typeEssay = 'essay';
+  static const String typeNumeric = 'numeric';
   static const String fallback = 'text';
 
   @override
   List<Object?> get props =>
       [id, questionText, questionType, marks, options, required];
+}
+
+/// Map the backend's long-form question type names to the mobile's
+/// stable short keys. Anything we don't recognise falls back to
+/// [ExamQuestion.typeText] (treated as a free-form answer).
+String _normalizeQuestionType(String raw) {
+  switch (raw.trim().toLowerCase()) {
+    case 'single choice':
+    case 'multi_choice':
+    case 'multi-choice':
+      return ExamQuestion.typeMultiChoice;
+    case 'multiple choice':
+    case 'multi_select':
+    case 'multi-select':
+      return ExamQuestion.typeMultiSelect;
+    case 'true/false':
+    case 'truefalse':
+    case 'true_false':
+      return ExamQuestion.typeTrueFalse;
+    case 'long text':
+    case 'essay':
+      return ExamQuestion.typeEssay;
+    case 'numeric':
+    case 'number':
+      return ExamQuestion.typeNumeric;
+    case 'short text':
+    case 'text':
+    default:
+      return ExamQuestion.typeText;
+  }
 }
 
 @immutable

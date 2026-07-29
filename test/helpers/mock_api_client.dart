@@ -24,11 +24,17 @@ import 'package:laratik_schools_api/laratik_schools_api.dart';
 class FakeLaratikSchoolsTransport implements LaratikSchoolsTransport {
   final Map<String, List<JsonMap>> _queue = {};
   final List<String> _invokedMethods = [];
+  final List<JsonMap> _invokedArguments = [];
 
   /// Read-only list of method names the fake has seen, in call order.
   /// Useful for assertions like "the controller called the
   /// eligibility endpoint before the attempt endpoint".
   List<String> get invokedMethods => List.unmodifiable(_invokedMethods);
+
+  /// Read-only list of argument maps the fake has seen, in call order
+  /// (parallel to [invokedMethods]). Useful for asserting wire-level
+  /// fields such as `school_enrollment` were forwarded through.
+  List<JsonMap> get invokedArguments => List.unmodifiable(_invokedArguments);
 
   /// Queue one or more wire envelopes to be returned for [method] in
   /// order. The first invocation consumes the first envelope, etc.
@@ -52,6 +58,7 @@ class FakeLaratikSchoolsTransport implements LaratikSchoolsTransport {
     String? idempotencyKey,
   }) async {
     _invokedMethods.add(method);
+    _invokedArguments.add(Map<String, Object?>.from(arguments));
     final queue = _queue[method];
     if (queue == null || queue.isEmpty) {
       throw StateError(

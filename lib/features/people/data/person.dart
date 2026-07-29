@@ -61,12 +61,28 @@ class Person extends Equatable {
 
     final firstName = pickString('first_name') ?? '';
     final lastName = pickString('last_name') ?? '';
-    final fullName =
-        pickString('full_name') ?? '$firstName $lastName'.trim();
-    final studentName = pickString('student_name') ?? fullName;
+    // The v1 list endpoint doesn't return first_name/last_name; it
+    // returns `student_name` (the Frappe title field). When the row
+    // has no first/last, fall back to the student_name so the
+    // "Acting as: …" card and the people list show something more
+    // useful than the document id.
+    final studentName = pickString('student_name') ?? '';
+    final fullName = pickString('full_name') ??
+        (firstName.isNotEmpty || lastName.isNotEmpty
+            ? '$firstName $lastName'.trim()
+            : studentName);
 
     return Person(
-      id: pickString('name') ?? pickString('id') ?? '',
+      // The v1 student list returns the id under `school_student` (the
+      // Frappe primary-key field). The single-student profile uses
+      // `name` (the same field surfaced by Frappe's REST API). Accept
+      // either so callers that walk the list (currentStudentProvider,
+      // the students list) and callers that fetch a single profile
+      // both end up with a non-empty [id].
+      id: pickString('school_student') ??
+          pickString('name') ??
+          pickString('id') ??
+          '',
       firstName: firstName,
       lastName: lastName,
       fullName: fullName,

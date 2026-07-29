@@ -199,12 +199,20 @@ class PersonRepository {
     }
     if (search != null && search.isNotEmpty) {
       final needle = search.toLowerCase();
+      // Include the document name (school_student/name/id) in the
+      // haystack so callers can find a student by their stable id
+      // (e.g. `currentStudentProvider` re-resolving a cached
+      // `STU-00061`, or a user pasting a student code in search).
       final hay = <String>[
         (row['first_name'] ?? '').toString(),
         (row['last_name'] ?? '').toString(),
         (row['full_name'] ?? '').toString(),
         (row['student_name'] ?? '').toString(),
+        (row['student_code'] ?? '').toString(),
         (row['school_id'] ?? '').toString(),
+        (row['school_student'] ?? '').toString(),
+        (row['name'] ?? '').toString(),
+        (row['id'] ?? '').toString(),
       ].join(' ').toLowerCase();
       if (!hay.contains(needle)) return false;
     }

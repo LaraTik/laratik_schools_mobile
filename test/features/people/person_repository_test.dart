@@ -99,6 +99,40 @@ void main() {
       final failure = (result as Err<PersonPage, PersonFailure>).error;
       expect(failure.code, 'STUDENT_LIST_FORBIDDEN');
     });
+
+    test('search matches the document name (school_student)', () async {
+      // The v1 list endpoint returns the Frappe primary key under
+      // `school_student`. Callers like `currentStudentProvider` look
+      // up a cached id with `listStudents(search: <id>)`; if the
+      // search filter ignores the document name, the lookup returns
+      // empty and the provider silently fails. Regression guard.
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondOnce(
+        LaratikSchoolsApiMethods.getSchoolStudents,
+        envelopeOk({
+          'students': [
+            {
+              'school_student': 'STU-00001',
+              'first_name': 'Ahmad',
+              'last_name': 'Barmada',
+              'status': 'Active',
+            },
+            {
+              'school_student': 'STU-00061',
+              'first_name': 'Test',
+              'last_name': 'Student',
+              'status': 'Active',
+            },
+          ],
+        }),
+      );
+      final repo = makeRepo(transport);
+      final result = await repo.listStudents(search: 'STU-00061');
+      expect(result, isA<Ok<PersonPage, PersonFailure>>());
+      final page = (result as Ok<PersonPage, PersonFailure>).value;
+      expect(page.people, hasLength(1));
+      expect(page.people.first.id, 'STU-00061');
+    });
   });
 
   group('PersonRepository.createStudent', () {

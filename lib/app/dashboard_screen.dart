@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../features/assessment/data/current_student_provider.dart';
 import '../ui/design_tokens.dart';
 import '../ui/widgets/ls_button.dart';
 import '../ui/widgets/ls_status_chip.dart';
@@ -9,15 +11,16 @@ import 'router.dart';
 /// Operator landing screen. Surfaces the five top-level destinations as
 /// large primary cards so the operator can find the right surface in
 /// one tap. Also renders the current date + boot summary placeholder.
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final tokens = DesignTokens.forBrightness(
       MediaQuery.platformBrightnessOf(context),
     );
     final today = _today();
+    final currentStudentAsync = ref.watch(currentStudentProvider);
     return Scaffold(
       backgroundColor: tokens.surface.canvas,
       appBar: AppBar(
@@ -56,6 +59,16 @@ class DashboardScreen extends StatelessWidget {
           SizedBox(height: tokens.space.sm),
           _QuickStartGrid(tokens: tokens),
           SizedBox(height: tokens.space.lg),
+          // "Acting as" — surfaces the resolved student so the
+          // operator knows who they're taking the practice quiz as.
+          // The mobile session is pinned to a single student by the
+          // dev seed; a future settings screen will let the user
+          // switch.
+          _ActingAsCard(
+            tokens: tokens,
+            studentAsync: currentStudentAsync,
+          ),
+          SizedBox(height: tokens.space.lg),
           Text(
             'Today',
             style: tokens.typography.titleSmall.copyWith(
@@ -92,6 +105,13 @@ class _QuickStartGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final isWide = MediaQuery.sizeOf(context).width >= 720;
     final items = <_QuickItem>[
+      _QuickItem(
+        label: 'Practice quiz',
+        description: 'Take a published exam',
+        icon: Icons.assignment_outlined,
+        tone: LsChipTone.brand,
+        onTap: () => context.go('/shell/academics/exams'),
+      ),
       _QuickItem(
         label: 'Capture attendance',
         description: 'Mark a class group',
@@ -295,6 +315,100 @@ class _TodaySummaryCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// "Acting as: <name>" pill. Resolves the current student via
+/// [currentStudentProvider] and surfaces their name + id so the
+/// operator can verify the practice-quiz attempt will be filed
+/// against the right person. The mobile session is pinned to a
+/// single student for the first slice; a future settings screen
+/// will let the operator switch.
+class _ActingAsCard extends StatelessWidget {
+  const _ActingAsCard({required this.tokens, required this.studentAsync});
+  final DesignTokens tokens;
+  final AsyncValue<CurrentStudent?> studentAsync;
+
+  @override
+  Widget build(BuildContext context) {
+    final content = studentAsync.when(
+      data: (current) {
+        if (current == null) {
+          return _row(
+            tokens,
+            icon: Icons.person_outline,
+            label: 'No student resolved',
+            sub: 'No students are seeded on this site yet.',
+          );
+        }
+        final name = current.person.fullName;
+        return _row(
+          tokens,
+          icon: Icons.person_outline,
+          label: 'Acting as: ${name.isEmpty ? current.studentId : name}',
+          sub: current.studentId,
+        );
+      },
+      loading: () => _row(
+        tokens,
+        icon: Icons.hourglass_top_outlined,
+        label: 'Resolving student…',
+        sub: 'Looking up the active student for this device.',
+      ),
+      error: (err, _) => _row(
+        tokens,
+        icon: Icons.warning_amber_outlined,
+        label: 'Student resolution failed',
+        sub: err.toString(),
+      ),
+    );
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: tokens.space.md,
+        vertical: tokens.space.sm,
+      ),
+      decoration: BoxDecoration(
+        color: tokens.surface.surface,
+        borderRadius: BorderRadius.circular(tokens.radius.md),
+        border: Border.all(color: tokens.surface.outlineVariant),
+      ),
+      child: content,
+    );
+  }
+
+  Widget _row(
+    DesignTokens tokens, {
+    required IconData icon,
+    required String label,
+    required String sub,
+  }) {
+    return Row(
+      children: [
+        Icon(icon, color: tokens.brand.primary, size: 18),
+        SizedBox(width: tokens.space.xs),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                label,
+                style: tokens.typography.titleSmall.copyWith(
+                  color: tokens.text.primary,
+                ),
+              ),
+              Text(
+                sub,
+                style: tokens.typography.bodySmall.copyWith(
+                  color: tokens.text.secondary,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

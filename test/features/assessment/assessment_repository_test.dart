@@ -15,6 +15,46 @@ void main() {
       AssessmentRepository(api: LaratikSchoolsApiClient(transport));
 
   group('AssessmentRepository.listExamPlans', () {
+    test('publishedOnly accepts plans with status=Published (v1 wire shape)',
+        () async {
+      // Regression: the v1 `get_school_exam_plans` wire format does
+      // not expose a `published` boolean; the only "is this visible
+      // right now" signal is the `status` string. Plans with
+      // `status: 'Published'` and no `published` field must still
+      // surface so the dashboard's exams list isn't empty.
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondOnce(
+        LaratikSchoolsApiMethods.getSchoolExamPlans,
+        envelopeOk({
+          'plans': [
+            {
+              'exam_plan': 'EXM-00002',
+              'exam_name': 'Arithmetic Practice Quiz',
+              'school_subject': 'SUB-Mathematics-Main-Campus',
+              'subject_name': 'Mathematics',
+              'exam_date': '2026-07-28',
+              'duration_minutes': 30,
+              'max_score': 6.0,
+              'status': 'Published',
+              // no `published` boolean in v1
+            },
+            {
+              'exam_plan': 'EXM-00003',
+              'exam_name': 'Closed Quiz',
+              'status': 'Closed',
+            },
+          ],
+        }),
+      );
+      final repo = makeRepo(transport);
+      final result = await repo.listExamPlans();
+      final page = (result as Ok<ExamPlanPage, PersonFailure>).value;
+      expect(page.plans, hasLength(1));
+      expect(page.plans.first.id, 'EXM-00002');
+      expect(page.plans.first.title, 'Arithmetic Practice Quiz');
+      expect(page.plans.first.published, isTrue);
+    });
+
     test('parses published plans and filters unpublished', () async {
       final transport = FakeLaratikSchoolsTransport();
       transport.respondOnce(
@@ -90,6 +130,68 @@ void main() {
       final eligibility =
           (result as Ok<EligibilityResult, PersonFailure>).value;
       expect(eligibility.eligible, isFalse);
+    });
+
+    test(
+        'forwards schoolEnrollment on the wire so the v1 is_eligible '
+        'server check can match the audience row', () async {
+      // Regression: the v1 `is_eligible` short-circuits to False when
+      // `school_enrollment` is empty. The mobile resolves the active
+      // enrollment from the dashboard's "Acting as" card and must
+      // forward it through the eligibility call; dropping it on the
+      // floor would always yield `not eligible` even for legitimate
+      // students.
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondOnce(
+        LaratikSchoolsApiMethods.getSchoolOnlineExamEligibility,
+        envelopeOk({
+          'eligible': true,
+          'exam_plan': 'EDU-EXM-2026-00001',
+        }),
+      );
+      final repo = makeRepo(transport);
+      final result = await repo.checkEligibility(
+        examPlanId: 'EDU-EXM-2026-00001',
+        studentId: 'EDU-STU-2026-00001',
+        schoolEnrollment: 'EDU-ENR-2026-00002',
+      );
+      expect(result, isA<Ok<EligibilityResult, PersonFailure>>());
+      // The fake records the last `arguments` map the SDK passed
+      // through; check the eligibility method's call had the
+      // enrollment id on it.
+      final eligibilityIndex = transport.invokedMethods.indexOf(
+        LaratikSchoolsApiMethods.getSchoolOnlineExamEligibility,
+      );
+      expect(eligibilityIndex, isNonNegative);
+      final args = transport.invokedArguments[eligibilityIndex];
+      expect(args['school_enrollment'], 'EDU-ENR-2026-00002');
+      expect(args['school_student'], 'EDU-STU-2026-00001');
+      expect(args['exam_plan'], 'EDU-EXM-2026-00001');
+    });
+
+    test('omits schoolEnrollment from the wire when not supplied',
+        () async {
+      // The wire contract allows the field to be optional (older
+      // clients don't pass it). Verify we don't accidentally emit
+      // an empty string and trip server-side truthiness checks.
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondOnce(
+        LaratikSchoolsApiMethods.getSchoolOnlineExamEligibility,
+        envelopeOk({
+          'eligible': false,
+          'exam_plan': 'EDU-EXM-2026-00001',
+        }),
+      );
+      final repo = makeRepo(transport);
+      await repo.checkEligibility(
+        examPlanId: 'EDU-EXM-2026-00001',
+        studentId: 'EDU-STU-2026-00001',
+      );
+      final eligibilityIndex = transport.invokedMethods.indexOf(
+        LaratikSchoolsApiMethods.getSchoolOnlineExamEligibility,
+      );
+      final args = transport.invokedArguments[eligibilityIndex];
+      expect(args.containsKey('school_enrollment'), isFalse);
     });
   });
 
