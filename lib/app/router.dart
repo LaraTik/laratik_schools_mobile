@@ -17,6 +17,9 @@ import '../features/boot/boot_provider.dart';
 import '../features/communication/ui/notifications_screen.dart';
 import '../features/family/ui/child_detail_screen.dart';
 import '../features/family/ui/family_home_screen.dart';
+import '../features/fees/ui/fee_operations_overview_screen.dart';
+import '../features/fees/ui/fee_plan_detail_screen.dart';
+import '../features/fees/ui/fee_plans_screen.dart';
 import '../features/guardians/ui/guardian_create_screen.dart';
 import '../features/guardians/ui/guardian_detail_screen.dart';
 import '../features/guardians/ui/guardians_list_screen.dart';
@@ -36,9 +39,13 @@ import 'login_screen.dart';
 
 /// Top-level navigation destinations. The shell renders these in a bottom
 /// navigation bar. Order matters — left-to-right is the operator's mental
-/// model (most-used first, admin surfaces last). Capped at 5 entries per
-/// the Laratik UI rules; the Home dashboard lives on the AppBar action of
-/// every tab instead of taking a slot.
+/// model (most-used first, admin surfaces last). The Laratik UI rules
+/// prefer 5 entries for legibility; the enum now carries 7, but the
+/// capability + role gates typically leave a user with 3-5 visible
+/// tabs (the registrar sees 5; the admin sees 6; the teacher sees 4;
+/// the parent + student see 0 and fall through to the home). The Home
+/// dashboard lives on the AppBar action of every tab instead of
+/// taking a slot.
 ///
 /// `requiredCapability` is the per-tab gate read from the active
 /// [BootContext]. The capability names are the **canonical v1 wire
@@ -67,7 +74,8 @@ enum ShellTab {
   guardians('can_view_guardians'),
   academics('can_view_academics'),
   attendance('can_view_academics'),
-  myClasses('can_view_academics', role: 'teacher');
+  myClasses('can_view_academics', role: 'teacher'),
+  fees('can_view_fees');
 
   const ShellTab(this.requiredCapability, {this.role});
   final String requiredCapability;
@@ -86,6 +94,7 @@ extension ShellTabX on ShellTab {
         ShellTab.academics => 'Academics',
         ShellTab.attendance => 'Attendance',
         ShellTab.myClasses => 'My classes',
+        ShellTab.fees => 'Fees',
       };
 
   IconData get icon => switch (this) {
@@ -95,6 +104,7 @@ extension ShellTabX on ShellTab {
         ShellTab.academics => Icons.menu_book_outlined,
         ShellTab.attendance => Icons.fact_check_outlined,
         ShellTab.myClasses => Icons.class_outlined,
+        ShellTab.fees => Icons.receipt_long_outlined,
       };
 
   IconData get activeIcon => switch (this) {
@@ -104,6 +114,7 @@ extension ShellTabX on ShellTab {
         ShellTab.academics => Icons.menu_book,
         ShellTab.attendance => Icons.fact_check,
         ShellTab.myClasses => Icons.class_,
+        ShellTab.fees => Icons.receipt_long,
       };
 
   String get route => switch (this) {
@@ -113,6 +124,7 @@ extension ShellTabX on ShellTab {
         ShellTab.academics => '/shell/academics',
         ShellTab.attendance => '/shell/attendance',
         ShellTab.myClasses => '/shell/teachers/classes',
+        ShellTab.fees => '/shell/fees/plans',
       };
 }
 
@@ -348,6 +360,36 @@ GoRouter buildRouter({
                 },
               ),
             ],
+          ),
+          // Fees surface — read-only "Fee plans" list + per-plan
+          // detail + admin "Operations" KPI overview. Reachable
+          // from the "Fees" bottom-nav tab (capability-gated on
+          // `can_view_fees`); the parent + admin both land on
+          // the same list (the v1 server is expected to filter
+          // to the current user when the session is a parent
+          // role, so the parent sees only their children's
+          // plans).
+          GoRoute(
+            path: '/shell/fees/plans',
+            name: 'fee_plans',
+            builder: (context, state) => const FeePlansScreen(),
+            routes: [
+              GoRoute(
+                path: ':planId',
+                name: 'fee_plan_detail',
+                builder: (context, state) {
+                  final id = Uri.decodeComponent(
+                    state.pathParameters['planId'] ?? '',
+                  );
+                  return FeePlanDetailScreen(planId: id);
+                },
+              ),
+            ],
+          ),
+          GoRoute(
+            path: '/shell/fees/operations',
+            name: 'fee_operations',
+            builder: (context, state) => const FeeOperationsOverviewScreen(),
           ),
         ],
       ),

@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../features/boot/boot_provider.dart';
 import '../features/communication/data/communication_providers.dart';
 import '../features/family/data/family_providers.dart';
 import '../ui/app_theme.dart';
@@ -83,6 +84,19 @@ class ParentHomeScreen extends ConsumerWidget {
         children: [
           _HeroFamilyCard(tokens: tokens, familyAsync: familyAsync),
           SizedBox(height: tokens.space.lg),
+          // Fee invoices for the parent's children. Capability-
+          // gated on `can_view_fees` — the v1 server only grants
+          // that capability to fee-management roles today, so
+          // most parents will not see this tile. When the
+          // backend grows a `can_view_own_fees` capability the
+          // tile can drop in for every parent; the read path
+          // (the v1 `get_school_student_fee_plans` endpoint,
+          // filtered to the current user on the server) is
+          // already in place.
+          if (hasCapability(ref, 'can_view_fees')) ...[
+            _FeeInvoicesCard(tokens: tokens),
+            SizedBox(height: tokens.space.lg),
+          ],
           Text(
             'Inbox',
             style: tokens.typography.titleSmall.copyWith(
@@ -96,6 +110,73 @@ class ParentHomeScreen extends ConsumerWidget {
             onTap: () => context.go('/shell/notifications'),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Compact "Fee invoices" tile for the parent home. Capability-
+/// gated on `can_view_fees` by the parent home; the tap opens
+/// the same fee-plans list the admin uses (the v1 server is
+/// expected to filter to the current user's children when the
+/// session is a parent role).
+class _FeeInvoicesCard extends StatelessWidget {
+  const _FeeInvoicesCard({required this.tokens});
+  final DesignTokens tokens;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: tokens.surface.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(tokens.radius.md),
+        side: BorderSide(color: tokens.surface.outlineVariant),
+      ),
+      child: InkWell(
+        onTap: () => context.go('/shell/fees/plans'),
+        borderRadius: BorderRadius.circular(tokens.radius.md),
+        child: Padding(
+          padding: EdgeInsets.all(tokens.space.md),
+          child: Row(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: tokens.status.warningContainer,
+                  borderRadius: BorderRadius.circular(tokens.radius.sm),
+                ),
+                child: Icon(
+                  Icons.receipt_long_outlined,
+                  color: tokens.status.warning,
+                  size: 22,
+                ),
+              ),
+              SizedBox(width: tokens.space.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Fee invoices',
+                      style: tokens.typography.titleSmall.copyWith(
+                        color: tokens.text.primary,
+                      ),
+                    ),
+                    SizedBox(height: tokens.space.xxs),
+                    Text(
+                      "Review your children's fee plans and payment status.",
+                      style: tokens.typography.bodySmall.copyWith(
+                        color: tokens.text.secondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(Icons.chevron_right, color: tokens.text.tertiary),
+            ],
+          ),
+        ),
       ),
     );
   }

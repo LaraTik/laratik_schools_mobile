@@ -164,6 +164,12 @@ class _QuickStartGrid extends ConsumerWidget {
             .where((n) => !n.read)
             .length ??
         0;
+    // Capability-gated tiles: the "Fee plans" + "Fee operations"
+    // tiles only render when the user has `can_view_fees`. The
+    // capability map is server-driven (see the boot context);
+    // a registrar without that capability won't see the tiles
+    // and the bottom-nav tab stays hidden.
+    final canViewFees = hasCapability(ref, 'can_view_fees');
     final items = <_QuickItem>[
       _QuickItem(
         label: 'Practice quiz',
@@ -200,6 +206,22 @@ class _QuickStartGrid extends ConsumerWidget {
         tone: LsChipTone.info,
         onTap: () => context.go('/shell/academics/subjects/new'),
       ),
+      if (canViewFees)
+        _QuickItem(
+          label: 'Fee plans',
+          description: 'Review issued + outstanding plans',
+          icon: Icons.receipt_long_outlined,
+          tone: LsChipTone.warning,
+          onTap: () => context.go('/shell/fees/plans'),
+        ),
+      if (canViewFees)
+        _QuickItem(
+          label: 'Fee operations',
+          description: 'Invoiced / collected / outstanding',
+          icon: Icons.insights_outlined,
+          tone: LsChipTone.success,
+          onTap: () => context.go('/shell/fees/operations'),
+        ),
       _QuickItem(
         label: 'Notifications',
         description: unread == 0

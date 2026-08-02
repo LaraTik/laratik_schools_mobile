@@ -25,6 +25,18 @@
 > per-class detail ship. See §3 (Teacher gap "My classes" +
 > "My students" → shipped) and §5 (item #6 → shipped). The
 > mobile is at the next commit after `f870b35`.
+>
+> Update 2026-08-03 (fees release): the read-only "Fee plans"
+> list + per-plan detail + admin "Fee operations" KPI
+> overview are wired end-to-end. The new "Fees" bottom-nav
+> tab is capability-gated on `can_view_fees`; the admin
+> quick-start surfaces the same surfaces as
+> capability-gated tiles. See §3 (Admin Fees → shipped;
+> Parent "Fee invoices for my children" → marked shipped
+> but tile hidden until the backend grows
+> `can_view_own_fees`) and §5 (item #7 → shipped for the
+> Fees slice; Analytics slice deferred). The mobile is at
+> the next commit after `6e29fba`.
 
 This document is the source of truth for what is shipped, what is
 missing per role, and the prioritized roadmap. It supersedes the
@@ -108,11 +120,21 @@ shortcuts.
   `export_school_academic_analytics`. Should be a "KPI" surface with
   drill-down per grade / branch. *(File: `lib/features/analytics/` is
   README-only.)*
-- **Fees** — no mobile code. Backend has
-  `get_school_fee_policies`, `get_school_student_fee_plans`,
-  `preview_school_fee_invoice`, `create_school_fee_invoice_draft`.
-  Read-only invoice list + detail is the Phase 1 slice; the
-  capability-gated "teller" surface is deferred. *(README only.)*
+- **Fees** — shipped (read-only slice). `FeePlansScreen` lists
+  the current user's fee plans (canonical + legacy wire keys
+  both parse); the per-plan detail renders the per-line
+  breakdown + Total / Paid / Outstanding totals. The admin
+  "Fee operations" KPI card shows the collection rate
+  (null on a fresh school with zero invoiced — the "0%
+  collected" lie is gone) + invoiced / collected / outstanding
+  totals + counts by status. Reachable from a new
+  "Fees" bottom-nav tab (capability-gated on `can_view_fees`)
+  and from capability-gated quick-start tiles on the admin
+  home. The capability-gated "teller" surface (invoice
+  preview + draft creation + payment recording) and the
+  write-side flows (`preview_school_fee_invoice`,
+  `create_school_fee_invoice_draft`, `create_school_fee_policy`)
+  are deferred to a follow-up turn.
 - **Governance** — no mobile code. Backend has
   `submit_school_privacy_request`, `process_school_privacy_request`,
   `approve_school_privacy_request`, `get_school_privacy_requests`,
@@ -196,7 +218,14 @@ shortcuts.
   accept that query parameter on the wire (see the comment at
   the top of `family_repository.dart`).
 - **Fee invoices for my children** — covered under the Fees gap
-  above; the parent's view is read-only.
+  above; the parent's view is read-only. The v1
+  `can_view_fees` capability does not include parents today,
+  so the parent home's "Fee invoices" tile stays hidden for
+  them; the read path (the v1 `get_school_student_fee_plans`
+  endpoint, filtered to the current user on the server) is
+  already in place. Backend follow-up: add
+  `can_view_own_fees` so the parent + student can see their
+  own plans.
 
 ---
 
@@ -236,7 +265,7 @@ surface. The rest is feature work.
 | 4 | **Foundation** | "Acting as" picker for the registrar to switch the active student | 1 turn | **shipped (picker release)** |
 | 5 | **Student surface** | "My grades" + "My attendance" + "My report cards" | 1 turn | **shipped (family release, reuses the parent child-detail widget)** |
 | 6 | **Teacher surface** | "My classes" + exam authoring + manual grading | 2 turns | **shipped (read-only "My classes" + per-class roster in this turn; exam authoring + manual grading deferred — see audit #6 follow-up)** |
-| 7 | **Admin enhancements** | Fees (read invoices) + Analytics (KPIs) | 2 turns | after #6 |
+| 7 | **Admin enhancements** | Fees (read invoices) + Analytics (KPIs) | 2 turns | **shipped (Fees slice — read-only fee plans + admin "Fee operations" KPI overview; Analytics slice deferred to a follow-up turn)** |
 | 8 | **Admin enhancements** | Governance (privacy + retention) + Grading (admin side) | 1 turn | after #7 |
 | 9 | **Admin enhancements** | Data import wizard + Operations health | 2 turns | after #8 |
 | 10 | **Quality** | Hard-coded filter values → real `get_school_grades` | 0.5 turn | **shipped (picker release, derived from loaded students — backend follow-up: add `get_school_grades` + `get_school_class_groups`)** |
@@ -253,10 +282,12 @@ definition: ~10 turns.
 Until the items above land, the honest answer to "is this PROD-ready
 for role X?" is:
 
-- **Admin / Registrar** — *No.* They can run the daily operations
-  (roster, attendance) but cannot review fees, manage imports, see
-  the operations health, or respond to privacy requests. Half of
-  their job is on the desktop, not the phone.
+- **Admin / Registrar** — *Partially.* They can run the daily
+  operations (roster, attendance, **read-only fees**) but
+  cannot yet manage imports, see the operations health, or
+  respond to privacy requests. The fee write flows (invoice
+  preview + draft creation + payment recording) and the
+  Analytics KPI surface are still on the desktop.
 - **Student** — *Partially.* They can take exams end-to-end and
   now see their grades / attendance / report cards under "My
   records" on the home screen. Fee invoices + class-scoped

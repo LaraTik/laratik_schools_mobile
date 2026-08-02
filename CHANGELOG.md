@@ -8,6 +8,75 @@ and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ### Added
 
+- **Fees surface — read-only "Fee plans" + per-plan detail +
+  admin "Fee operations" KPI overview.** Closes roadmap item
+  #7 for the admin side and item #11 for the parent side
+  ("Fee invoices for my children"). New files:
+  - `lib/features/fees/data/fee_plan.dart` — typed `FeePlan`
+    model that parses the v1 envelope forward-compatibly
+    (canonical `school_student` / `total_amount` /
+    `invoice_status` AND legacy `student` / `total` /
+    `status`); preserves the `FeePlanItem` list for the
+    detail breakdown. Also `FeeOperationsOverview` with
+    `collectionRate` (null when total invoiced is zero — the
+    "0% collected" lie on a fresh school is gone).
+  - `lib/features/fees/data/fees_failure.dart` — typed
+    failure mirroring `PersonFailure`.
+  - `lib/features/fees/data/fees_repository.dart` — wraps
+    `get_school_student_fee_plans` + `get_school_fee_operations_overview`.
+  - `lib/features/fees/data/fees_providers.dart` —
+    `feesRepositoryProvider` + `FeePlansController` +
+    `feeOperationsOverviewProvider` (year-keyed family for
+    a future per-year filter) + `feePlanDetailProvider`.
+  - `lib/features/fees/ui/fee_plans_screen.dart` — list of
+    fee plans with overdue / partial / paid status chips,
+    per-row avatar, paid rows faded. Sorted overdue +
+    partial + issued first, then draft + paid + cancelled.
+  - `lib/features/fees/ui/fee_plan_detail_screen.dart` —
+    identity card + per-line breakdown (Total / Paid /
+    Outstanding totals + items list).
+  - `lib/features/fees/ui/fee_operations_overview_screen.dart`
+    — admin KPI card with collection rate + invoiced /
+    collected / outstanding totals + status counts.
+  - `test/features/fees/fees_repository_test.dart` — 7
+    tests pinning the parse, legacy wire keys
+    (`student`, `total`, `status`, `paid`, `outstanding`,
+    `fee_components`), the EMPTY_RESPONSE path, the
+    collection-rate math, and the null-on-zero-invoiced
+    safety.
+
+- **"Fee plans" + "Fee operations" tiles** on the admin
+  dashboard, capability-gated on `can_view_fees`. A
+  registrator without that capability won't see the tiles
+  and the bottom-nav tab stays hidden.
+- **"Fee invoices" tile** on the parent home,
+  capability-gated on `can_view_fees`. Today the v1
+  capability map doesn't grant `can_view_fees` to
+  parents, so the tile stays hidden for them; when the
+  backend grows a `can_view_own_fees` capability the tile
+  will appear without a model change.
+
+### Changed
+
+- `lib/app/router.dart` — added the new `fees` tab to
+  `ShellTab` (capability-gated on `can_view_fees`); added
+  the `/shell/fees/plans` + `/shell/fees/plans/:id` +
+  `/shell/fees/operations` routes. Updated the
+  `ShellTab` doc comment to note the enum now carries 7
+  entries (the Laratik UI rules prefer 5 for legibility;
+  the capability + role gates typically leave a user with
+  3-6 visible tabs).
+- `lib/app/dashboard_screen.dart` — admin quick-start
+  now conditionally renders the "Fee plans" + "Fee
+  operations" tiles when the user has `can_view_fees`.
+- `lib/app/parent_home.dart` — added the capability-gated
+  "Fee invoices" tile for parents (hidden today; see
+  above for the `can_view_own_fees` follow-up).
+
+## [Unreleased]
+
+### Added
+
 - **Teacher surface — "My classes" + per-class detail.** The
   teacher role now lands on a dedicated home (instead of the
   registrar's "Quick start") and gets a real "My classes" tab in
