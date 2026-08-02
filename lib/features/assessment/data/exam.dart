@@ -73,10 +73,8 @@ class ExamPlan extends Equatable {
     // `status` (Draft / Published / Closed) or `online_status`
     // (legacy). The mobile only cares about the boolean "is this
     // visible right now".
-    final onlineStatus = pickString('online_status') ??
-        pickString('status');
-    final published =
-        pickBool('published') || onlineStatus == 'Published';
+    final onlineStatus = pickString('online_status') ?? pickString('status');
+    final published = pickBool('published') || onlineStatus == 'Published';
 
     return ExamPlan(
       id: pickString('exam_plan') ??
@@ -161,20 +159,17 @@ class ExamQuestion extends Equatable {
     // Backend options carry `option_key` and `option_text`; the
     // mobile UI widget reads `value` and `label`. Map both ways.
     final rawOptions = (json['options'] is List)
-        ? (json['options'] as List)
-            .where((e) => e is Map)
-            .map((e) {
-              final m = Map<String, Object?>.from(e as Map);
-              return <String, Object?>{
-                'value': m['option_key'] ?? m['value'] ?? m['name'] ?? '',
-                'label': m['option_text'] ?? m['label'] ?? m['name'] ?? '',
-                'option_key': m['option_key'],
-                'option_text': m['option_text'],
-                'is_correct': m['is_correct'],
-                'sequence': m['sequence'],
-              };
-            })
-            .toList(growable: false)
+        ? (json['options'] as List).where((e) => e is Map).map((e) {
+            final m = Map<String, Object?>.from(e as Map);
+            return <String, Object?>{
+              'value': m['option_key'] ?? m['value'] ?? m['name'] ?? '',
+              'label': m['option_text'] ?? m['label'] ?? m['name'] ?? '',
+              'option_key': m['option_key'],
+              'option_text': m['option_text'],
+              'is_correct': m['is_correct'],
+              'sequence': m['sequence'],
+            };
+          }).toList(growable: false)
         : const <JsonMap>[];
 
     // Type normalization: the wire carries the long form

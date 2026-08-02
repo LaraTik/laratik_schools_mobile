@@ -190,7 +190,8 @@ class HttpLaratikApiTransport implements LaratikSchoolsTransport {
         code: 'HTTP_${response.statusCode}',
         message: message is Map
             ? (message['message']?.toString() ?? message.toString())
-            : (message?.toString() ?? 'Request failed with ${response.statusCode}.'),
+            : (message?.toString() ??
+                'Request failed with ${response.statusCode}.'),
       );
     }
 

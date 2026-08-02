@@ -14,6 +14,8 @@ import '../data/assessment_repository.dart';
 import '../data/current_student_provider.dart';
 import '../data/exam.dart';
 
+import '../../../ui/app_theme.dart';
+
 /// Exam attempt screen. Renders the question list, autosaves every 15s,
 /// and surfaces a Submit action that POSTs the final answers. The screen
 /// is keyed by the student + exam plan pair; the actual attempt id is
@@ -181,11 +183,7 @@ class _ExamAttemptScreenState extends ConsumerState<ExamAttemptScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
-    // ignore: avoid_print
-    print('EXAM_SCREEN: build start examPlanId=${widget.examPlanId}');
+    final tokens = context.laratik;
     // Resolve the student id from the deep-link query param when
     // present, otherwise from `currentStudentProvider`. We hold the
     // resolved id in [widget.studentId] only at construction; the
@@ -238,8 +236,6 @@ class _ExamAttemptScreenState extends ConsumerState<ExamAttemptScreen> {
       ),
       body: asyncEligibility.when(
         data: (result) {
-          // ignore: avoid_print
-          print('EXAM_SCREEN: eligibility data=$result');
           return switch (result) {
             Ok(:final value) => value.eligible
                 ? _buildAttempt(tokens)
@@ -252,13 +248,9 @@ class _ExamAttemptScreenState extends ConsumerState<ExamAttemptScreen> {
           };
         },
         loading: () {
-          // ignore: avoid_print
-          print('EXAM_SCREEN: eligibility loading');
           return const LsStateView.loading(title: 'Checking eligibility');
         },
         error: (err, _) {
-          // ignore: avoid_print
-          print('EXAM_SCREEN: eligibility error=$err');
           return LsStateView.error(
             icon: Icons.error_outline,
             title: 'Could not check eligibility',
@@ -287,7 +279,8 @@ class _ExamAttemptScreenState extends ConsumerState<ExamAttemptScreen> {
       return LsStateView.empty(
         icon: Icons.flag_outlined,
         title: 'Attempt abandoned',
-        message: 'You abandoned this attempt. The server marked it as abandoned.',
+        message:
+            'You abandoned this attempt. The server marked it as abandoned.',
         action: LsButton.primary(
           label: 'Back to exams',
           icon: Icons.arrow_back,
@@ -299,7 +292,8 @@ class _ExamAttemptScreenState extends ConsumerState<ExamAttemptScreen> {
       return LsStateView.empty(
         icon: Icons.check_circle_outline,
         title: 'Submitted',
-        message: 'Your answers are on the server. Check back when the result is published.',
+        message:
+            'Your answers are on the server. Check back when the result is published.',
         action: LsButton.primary(
           label: 'Back to exams',
           icon: Icons.arrow_back,
@@ -521,9 +515,7 @@ class _QuestionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     return Container(
       padding: EdgeInsets.all(tokens.space.md),
       decoration: BoxDecoration(

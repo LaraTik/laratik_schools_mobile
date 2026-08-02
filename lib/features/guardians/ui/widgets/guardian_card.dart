@@ -4,6 +4,8 @@ import '../../../../ui/design_tokens.dart';
 import '../../../../ui/widgets/ls_status_chip.dart';
 import '../../data/guardian.dart';
 
+import '../../../../ui/app_theme.dart';
+
 class GuardianCard extends StatelessWidget {
   const GuardianCard({
     required this.guardian,
@@ -18,9 +20,7 @@ class GuardianCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     final linked = guardian.linkedStudentNames;
     return Material(
       color: tokens.surface.surface,

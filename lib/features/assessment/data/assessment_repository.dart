@@ -94,7 +94,8 @@ class AssessmentRepository {
           .where((row) => _matchesFilters(row, subject, publishedOnly))
           .map(ExamPlan.fromJson)
           .toList(growable: false);
-      return Ok(value: ExamPlanPage(
+      return Ok(
+          value: ExamPlanPage(
         plans: plans,
         nextCursor: _nextCursorFromMeta(response.meta),
       ));
@@ -124,12 +125,14 @@ class AssessmentRepository {
         return Err(error: _failureFromApi(response.error));
       }
       if (data == null) {
-        return const Err(error: PersonFailure(
+        return const Err(
+            error: PersonFailure(
           code: 'EMPTY_RESPONSE',
           message: 'The server returned no eligibility data.',
         ));
       }
-      return Ok(value: EligibilityResult(
+      return Ok(
+          value: EligibilityResult(
         eligible: data.eligible ?? false,
         examPlanId: data.examPlan ?? examPlanId,
       ));
@@ -166,7 +169,8 @@ class AssessmentRepository {
         return Err(error: _failureFromApi(response.error));
       }
       if (data == null) {
-        return const Err(error: PersonFailure(
+        return const Err(
+            error: PersonFailure(
           code: 'EMPTY_RESPONSE',
           message: 'The server returned no attempt data.',
         ));
@@ -174,7 +178,8 @@ class AssessmentRepository {
       final questions = (data.questions ?? const <JsonMap>[])
           .map(ExamQuestion.fromJson)
           .toList(growable: false);
-      return Ok(value: StartAttemptResult(
+      return Ok(
+          value: StartAttemptResult(
         attemptId: data.attempt ?? '',
         status: data.status ?? 'In Progress',
         endsAt: data.endsAt,
@@ -204,7 +209,8 @@ class AssessmentRepository {
       if (response.error != null) {
         return Err(error: _failureFromApi(response.error));
       }
-      return Ok(value: AttemptStatus(
+      return Ok(
+          value: AttemptStatus(
         attemptId: attemptId,
         status: 'In Progress',
       ));
@@ -232,12 +238,14 @@ class AssessmentRepository {
         return Err(error: _failureFromApi(response.error));
       }
       if (data == null) {
-        return const Err(error: PersonFailure(
+        return const Err(
+            error: PersonFailure(
           code: 'EMPTY_RESPONSE',
           message: 'The server returned no submission data.',
         ));
       }
-      return Ok(value: AttemptStatus(
+      return Ok(
+          value: AttemptStatus(
         attemptId: data.attempt ?? attemptId,
         status: data.status ?? 'Submitted',
       ));
@@ -246,7 +254,8 @@ class AssessmentRepository {
     }
   }
 
-  Future<Result<AttemptResult, PersonFailure>> getResult(String attemptId) async {
+  Future<Result<AttemptResult, PersonFailure>> getResult(
+      String attemptId) async {
     try {
       final response = await _api.getSchoolExamAttemptResult(
         attempt: attemptId,
@@ -256,12 +265,14 @@ class AssessmentRepository {
         return Err(error: _failureFromApi(response.error));
       }
       if (data == null) {
-        return const Err(error: PersonFailure(
+        return const Err(
+            error: PersonFailure(
           code: 'EMPTY_RESPONSE',
           message: 'The server returned no result data.',
         ));
       }
-      return Ok(value: AttemptResult(
+      return Ok(
+          value: AttemptResult(
         attemptId: data.attempt ?? attemptId,
         state: data.state ?? 'Graded',
         score: data.score,
@@ -281,7 +292,8 @@ class AssessmentRepository {
       if (response.error != null) {
         return Err(error: _failureFromApi(response.error));
       }
-      return Ok(value: AttemptStatus(
+      return Ok(
+          value: AttemptStatus(
         attemptId: attemptId,
         status: 'Abandoned',
       ));
@@ -292,9 +304,8 @@ class AssessmentRepository {
 
   bool _matchesFilters(JsonMap row, String? subject, bool publishedOnly) {
     if (subject != null && subject.isNotEmpty) {
-      final rowSubject = row['subject'] ??
-          row['subject_name'] ??
-          row['school_subject'];
+      final rowSubject =
+          row['subject'] ?? row['subject_name'] ?? row['school_subject'];
       if (rowSubject is String && rowSubject != subject) return false;
       if (rowSubject is! String) return false;
     }

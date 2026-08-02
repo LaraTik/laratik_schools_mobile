@@ -8,7 +8,7 @@ import '../auth/session.dart';
 import '../config/flavor_loader.dart';
 import '../core/clock.dart';
 import '../core/logging.dart';
-import '../ui/design_tokens.dart';
+import '../ui/app_theme.dart';
 import '../ui/widgets/ls_button.dart';
 import '../ui/widgets/ls_status_chip.dart';
 
@@ -91,9 +91,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     return Scaffold(
       backgroundColor: tokens.surface.canvas,
       body: SafeArea(
@@ -194,7 +192,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                   if (_error != null) SizedBox(height: tokens.space.md),
                   LsButton.primary(
-                    label: _signingIn ? 'Opening browser…' : 'Sign in with Laratik',
+                    label: _signingIn
+                        ? 'Opening browser…'
+                        : 'Sign in with Laratik',
                     icon: _signingIn ? Icons.hourglass_empty : Icons.login,
                     isLoading: _signingIn,
                     onPressed: _signingIn ? null : _signIn,
@@ -213,7 +213,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 /// login screen can build an [OauthFlow] without duplicating constructor
 /// wiring. Lives here so the auth layer owns the OAuth concerns.
 final sessionProvider = Provider<SessionStore>(
-  (ref) => throw StateError('sessionProvider must be overridden by bootstrap()'),
+  (ref) =>
+      throw StateError('sessionProvider must be overridden by bootstrap()'),
 );
 final clockProvider = Provider<Clock>(
   (ref) => throw StateError('clockProvider must be overridden by bootstrap()'),

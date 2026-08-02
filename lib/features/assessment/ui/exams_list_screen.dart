@@ -11,6 +11,8 @@ import '../data/assessment_providers.dart';
 import '../data/assessment_repository.dart';
 import '../data/exam.dart';
 
+import '../../../ui/app_theme.dart';
+
 class ExamsListScreen extends ConsumerStatefulWidget {
   const ExamsListScreen({super.key});
 
@@ -44,9 +46,7 @@ class _ExamsListScreenState extends ConsumerState<ExamsListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     final asyncPage = ref.watch(examPlansListProvider);
     return Scaffold(
       backgroundColor: tokens.surface.canvas,
@@ -67,8 +67,7 @@ class _ExamsListScreenState extends ConsumerState<ExamsListScreen> {
           IconButton(
             tooltip: 'Refresh',
             icon: const Icon(Icons.refresh),
-            onPressed: () =>
-                ref.read(examPlansListProvider.notifier).refresh(),
+            onPressed: () => ref.read(examPlansListProvider.notifier).refresh(),
           ),
         ],
       ),
@@ -150,8 +149,7 @@ class _ExamsListScreenState extends ConsumerState<ExamsListScreen> {
             [
               if ((plan.subject ?? '').isNotEmpty) plan.subject!,
               if ((plan.examDate ?? '').isNotEmpty) plan.examDate!,
-              if (plan.durationMinutes != null)
-                '${plan.durationMinutes} min',
+              if (plan.durationMinutes != null) '${plan.durationMinutes} min',
             ].join(' · '),
             style: tokens.typography.bodySmall.copyWith(
               color: tokens.text.secondary,
@@ -160,7 +158,9 @@ class _ExamsListScreenState extends ConsumerState<ExamsListScreen> {
           trailing: LsStatusChip(
             label: plan.published ? 'Open' : 'Draft',
             tone: plan.published ? LsChipTone.success : LsChipTone.neutral,
-            icon: plan.published ? Icons.check_circle_outline : Icons.lock_outline,
+            icon: plan.published
+                ? Icons.check_circle_outline
+                : Icons.lock_outline,
           ),
           onTap: () => context.go('/shell/academics/exams/${plan.id}'),
         );
@@ -182,8 +182,7 @@ class _ExamsListScreenState extends ConsumerState<ExamsListScreen> {
             label: 'Try again',
             icon: Icons.refresh,
             expand: false,
-            onPressed: () =>
-                ref.read(examPlansListProvider.notifier).refresh(),
+            onPressed: () => ref.read(examPlansListProvider.notifier).refresh(),
           ),
         ),
       ],

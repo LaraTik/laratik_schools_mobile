@@ -6,6 +6,150 @@ and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed (laratik_schools backend, with user approval)
+
+- **`School Exam Attempt` + `School Outbox Event` Datetime columns
+  rejected tz-aware ISO 8601.** In
+  `laratik_schools/laratik_schools/core/online_assessments.py`,
+  the insert dict used `timestamp.isoformat()` where `timestamp`
+  came from `_utc(now)` — the resulting `2026-07-31T12:45:54.216061+00:00`
+  string is rejected by MySQL strict mode with `ERROR 1292`. Same
+  shape at 7 call sites (lines 268, 355, 369, 431, 493, 555, 725,
+  807). A second instance of the bug lived in
+  `core/outbox.py:_record_to_mapping` — `available_at`,
+  `lease_expires_at`, `processed_at` were forwarded as raw tz-aware
+  `datetime`s. Both fixed with a `_naive_iso(value)` / `_to_frappe_datetime(value)`
+  helper that emits `YYYY-MM-DD HH:MM:SS` (the shape Frappe's
+  plain `Datetime` columns want). Verified with a full E2E:
+  `School Exam Attempt EXAT-00001` now lands in ERPNext with
+  `state: Pending Manual Grading, started_at, submitted_at,
+  max_score, revision: 2`. Documented in `docs/bug-log.md`
+  2026-07-31 "Backend `School Exam Attempt.started_at` rejects
+  tz-aware ISO 8601".
+
+## [Unreleased]
+
+### Fixed
+
+- **HTTP transport wire format diverged from the OpenAPI v1 contract.**
+  `lib/platform/transport.dart` was wrapping every body in
+  `{"args": ...}` and always using POST, which broke:
+  - **GET endpoints** with `in: query` parameters (e.g.
+    `get_school_online_exam_eligibility`) — the server's whitelisted-method
+    dispatcher saw `form_dict = {"args": <dict>}`, dropped the kwargs
+    (not in the function signature), and returned a stub
+    (`{"eligible": false, "exam_plan": null}`).
+  - **POST endpoints with the `payload` convention** (e.g.
+    `start_school_exam_attempt`) — the generated SDK already wraps the
+    caller's `payload` under a `payload` key; the transport wrapped a
+    second time, so `coerce_payload(form_dict["payload"])` returned the
+    inner wrapper instead of the user's args.
+  - **Idempotency-Key header** was set as `X-Idempotency-Key` but the
+    contract declares `Idempotency-Key` (no `X-` prefix); the server
+    rejected every mutating call with "Idempotency-Key header is required".
+  The transport now honours the contract: GET→query string, POST→
+  `arguments` as the JSON body (the SDK owns the per-operation envelope
+  shape), and the header is `Idempotency-Key`. See
+  `docs/bug-log.md` 2026-07-31 "Transport wire format diverged from
+  the OpenAPI v1 contract".
+
+- **`startAttempt` missing `client_mutation_id`.** The server's
+  `start_attempt()` requires this in the payload (it is the in-DB
+  dedupe key for the attempt row) but it is not in the OpenAPI
+  schema's `required` list because the payload uses
+  `additionalProperties: true`. The repository now reuses the same
+  UUID for the payload `client_mutation_id` and the
+  `Idempotency-Key` header so request- and row-level dedupe are
+  aligned.
+
+- **`get_school_enrollments` is the canonical source for the active
+  enrollment.** `currentStudentProvider._findActiveEnrollment` now
+  calls it first (client-side filtered for
+  `school_student == me && enrollment_status == "Active"`) and only
+  falls back to the exam-plan audience scan when the enrollments list
+  is empty. The v1 `_normalize_exam_plan` does not expose the
+  `audience` child table, so the audience-only path was silently
+  returning `enrollmentId: null` and producing a "Not eligible" screen
+  for every exam. See `docs/bug-log.md` 2026-07-31 "Not eligible on
+  every exam despite the API returning eligible".
+
+### Added
+
+- `AGENTS.md` at the repo root — landing doc for AI coding agents and new
+  contributors. Links to ADRs, runbook, and the self-learning bug log.
+- `docs/local-dev.md` — full local-dev runbook (start bench container,
+  start emulator, bridge ports, drive the OAuth login, E2E smoke for the
+  assessment flow, troubleshooting matrix).
+- `docs/bug-log.md` — self-learning record. **Binding rule:** every bug
+  fix lands a 1-paragraph entry in the same commit (see AGENTS.md §7).
+  First entry: dev flavor's `baseUrl` was pointing at host port 8000
+  (occupied by `meta_ads_ops` uvicorn) instead of 8700 (the actual bench
+  port). Fix landed in `lib/config/flavor_config.dart`.
+- `docs/adr/0007-build-flavors-and-env-config.md` referenced from the
+  README. The flavor registry now has a comment in
+  `lib/config/flavor_config.dart` explaining the port-8700 choice.
+- `test/platform/transport_test.dart` (new) — 4 tests pin the GET-as-
+  query-string, GET-with-no-args, POST-as-JSON-body, and 401-→
+  `UNAUTHENTICATED` invariants of the transport.
+
+### Changed
+
+- `lib/config/flavor_config.dart` — `dev` and `local` flavors now point
+  at host port **8700** (not 8000) because the dev bench container maps
+  host `8700 → container 8000` and host 8000 is taken by another service.
+  See `docs/bug-log.md` 2026-07-31.
+- `README.md` — layout section now matches reality (staff / guardians /
+  device / assessment / communication modules are top-level under
+  `lib/features/`). Status section notes Phase 1.x + Phase 2 + Phase 5 +
+  Phase 6 are shipped today.
+- **Theme tokens wired through `ThemeData` via a `ThemeExtension`.**
+  Every shared widget (and every screen) used to read tokens with
+  `DesignTokens.forBrightness(MediaQuery.platformBrightnessOf(context))`,
+  which bypasses the app theme — dark mode was effectively non-functional
+  because the widget picked the *device* brightness, not the
+  MaterialApp's resolved theme. The new
+  `lib/ui/app_theme.dart` exposes `LaratikTokens extends ThemeExtension`
+  and a `context.laratik` ergonomic accessor. `app.dart` now uses
+  `buildAppTheme(...)` so the extension is attached to both `theme` and
+  `darkTheme`. **Every widget** (`ls_button`, `ls_text_field`,
+  `ls_status_chip`, `ls_search_bar`, `ls_empty_state`, the dashboard,
+  the exam attempt screen, every list/detail/create screen) was
+  swept to use `context.laratik` (or `<var>.laratik` inside a sheet
+  builder). The 50+ call sites are mechanical; net -200 / +60 lines
+  once the unused `design_tokens.dart` imports land.
+- **Operator dashboard cleanup.**
+  - Removed the misleading "Live counters land in Phase 2" placeholder
+    card (Phase 2 has shipped per the CHANGELOG; the card was lying
+    to the operator).
+  - Added an AppBar `IconButton` for Notifications with a tooltip and
+    a new unread-count badge on the dashboard's Notifications quick
+    card (driven by `notificationsListProvider`). The tone flips from
+    `warning` to `error` while there are unread messages.
+  - Added a `Semantics` wrapper around the new unread badge so screen
+    readers announce "$N unread".
+- **`_ErrorScreen` (the catch-all 404 page) is now a real state view.**
+  Icon + headline + recovery body + "Back to home" primary action. Was
+  a single line of "Something went wrong." with no recovery path.
+- **Dead code in `lib/app/router.dart` removed.** The `/auth/callback`
+  route and its placeholder `_OAuthCallbackScreen` were unreachable
+  (the OAuth flow uses `Navigator.push` of `OauthWebViewScreen` on the
+  root navigator, not a GoRouter route). The wrapper `_LoginScreen` was
+  a 1-line pass-through to the real `LoginScreen`; inlined.
+- **Debug `print` calls in `exam_attempt_screen.dart` removed.** Three
+  `// ignore: avoid_print` statements were left in the build path from
+  a debug session; the production wire now logs through the
+  `RedactingLogger` instead.
+- **`LsStateView` (shared empty/loading/error surface) now wraps its
+  icon + title + message in a `Semantics` container** so the screen
+  reader announces the state once instead of walking every line.
+
+### Housekeeping
+
+- Moved ~100 stray `*.png` artifacts (old `quiz_*`, `step_*`, `app_state*`,
+  etc.) from the repo root into `docs/_artifacts/`. They were
+  screenshots from a previous browser-driven run and were not meant to
+  be tracked at the repo root.
+
 ### Added
 
 - Greenfield Flutter client foundation (Phase 0 of the

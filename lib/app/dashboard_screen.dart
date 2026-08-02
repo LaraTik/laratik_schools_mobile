@@ -3,22 +3,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../features/assessment/data/current_student_provider.dart';
+import '../features/communication/data/communication_providers.dart';
+import '../ui/app_theme.dart';
 import '../ui/design_tokens.dart';
-import '../ui/widgets/ls_button.dart';
 import '../ui/widgets/ls_status_chip.dart';
-import 'router.dart';
 
 /// Operator landing screen. Surfaces the five top-level destinations as
 /// large primary cards so the operator can find the right surface in
-/// one tap. Also renders the current date + boot summary placeholder.
+/// one tap. Also renders the current date + the resolved "acting as"
+/// student so the operator can verify the practice-quiz attempt will
+/// be filed against the right person.
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     final today = _today();
     final currentStudentAsync = ref.watch(currentStudentProvider);
     return Scaffold(
@@ -33,6 +33,11 @@ class DashboardScreen extends ConsumerWidget {
           ),
         ),
         actions: [
+          IconButton(
+            tooltip: 'Notifications',
+            icon: const Icon(Icons.notifications_outlined),
+            onPressed: () => context.go('/shell/notifications'),
+          ),
           Padding(
             padding: EdgeInsets.only(right: tokens.space.md),
             child: Center(
@@ -57,7 +62,7 @@ class DashboardScreen extends ConsumerWidget {
             ),
           ),
           SizedBox(height: tokens.space.sm),
-          _QuickStartGrid(tokens: tokens),
+          const _QuickStartGrid(),
           SizedBox(height: tokens.space.lg),
           // "Acting as" — surfaces the resolved student so the
           // operator knows who they're taking the practice quiz as.
@@ -67,21 +72,6 @@ class DashboardScreen extends ConsumerWidget {
           _ActingAsCard(
             tokens: tokens,
             studentAsync: currentStudentAsync,
-          ),
-          SizedBox(height: tokens.space.lg),
-          Text(
-            'Today',
-            style: tokens.typography.titleSmall.copyWith(
-              color: tokens.text.secondary,
-            ),
-          ),
-          SizedBox(height: tokens.space.sm),
-          _TodaySummaryCard(tokens: tokens),
-          SizedBox(height: tokens.space.lg),
-          LsButton.secondary(
-            label: 'Open students',
-            icon: Icons.school_outlined,
-            onPressed: () => context.go(ShellTab.students.route),
           ),
         ],
       ),
@@ -97,13 +87,21 @@ class DashboardScreen extends ConsumerWidget {
   }
 }
 
-class _QuickStartGrid extends StatelessWidget {
-  const _QuickStartGrid({required this.tokens});
-  final DesignTokens tokens;
+class _QuickStartGrid extends ConsumerWidget {
+  const _QuickStartGrid();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tokens = context.laratik;
     final isWide = MediaQuery.sizeOf(context).width >= 720;
+    // Watch the notifications list just to compute the unread count.
+    final unread = ref
+            .watch(notificationsListProvider)
+            .value
+            ?.items
+            .where((n) => !n.read)
+            .length ??
+        0;
     final items = <_QuickItem>[
       _QuickItem(
         label: 'Practice quiz',
@@ -142,9 +140,12 @@ class _QuickStartGrid extends StatelessWidget {
       ),
       _QuickItem(
         label: 'Notifications',
-        description: 'Inbox + announcements',
+        description: unread == 0
+            ? 'Inbox + announcements'
+            : '$unread unread message${unread == 1 ? '' : 's'}',
         icon: Icons.notifications_outlined,
-        tone: LsChipTone.warning,
+        tone: unread == 0 ? LsChipTone.warning : LsChipTone.error,
+        badge: unread == 0 ? null : unread.toString(),
         onTap: () => context.go('/shell/notifications'),
       ),
     ];
@@ -176,12 +177,14 @@ class _QuickItem {
     required this.icon,
     required this.tone,
     required this.onTap,
+    this.badge,
   });
   final String label;
   final String description;
   final IconData icon;
   final LsChipTone tone;
   final VoidCallback onTap;
+  final String? badge;
 }
 
 class _QuickCard extends StatelessWidget {
@@ -222,11 +225,22 @@ class _QuickCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      item.label,
-                      style: tokens.typography.titleSmall.copyWith(
-                        color: tokens.text.primary,
-                      ),
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            item.label,
+                            style: tokens.typography.titleSmall.copyWith(
+                              color: tokens.text.primary,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        if (item.badge != null) ...[
+                          SizedBox(width: tokens.space.xs),
+                          _Badge(label: item.badge!, tokens: tokens),
+                        ],
+                      ],
                     ),
                     SizedBox(height: tokens.space.xxs),
                     Text(
@@ -272,48 +286,35 @@ class _QuickCard extends StatelessWidget {
   }
 }
 
-class _TodaySummaryCard extends StatelessWidget {
-  const _TodaySummaryCard({required this.tokens});
+/// Compact pill used to surface a count next to a quick-action label
+/// (e.g. "Notifications · 3"). Always error-toned — only the unread
+/// notifications path uses it today, and "unread" is the only count
+/// worth surfacing on a dashboard quick card.
+class _Badge extends StatelessWidget {
+  const _Badge({required this.label, required this.tokens});
+  final String label;
   final DesignTokens tokens;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(tokens.space.md),
-      decoration: BoxDecoration(
-        color: tokens.surface.surface,
-        borderRadius: BorderRadius.circular(tokens.radius.md),
-        border: Border.all(color: tokens.surface.outlineVariant),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(
-                Icons.bolt_outlined,
-                color: tokens.status.warning,
-                size: 18,
-              ),
-              SizedBox(width: tokens.space.xs),
-              Text(
-                'Live counters land in Phase 2',
-                style: tokens.typography.titleSmall.copyWith(
-                  color: tokens.text.primary,
-                ),
-              ),
-            ],
+    return Semantics(
+      label: '$label unread',
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: tokens.space.xs,
+          vertical: tokens.space.xxs,
+        ),
+        decoration: BoxDecoration(
+          color: tokens.status.errorContainer,
+          borderRadius: BorderRadius.circular(tokens.radius.pill),
+        ),
+        child: Text(
+          label,
+          style: tokens.typography.labelSmall.copyWith(
+            color: tokens.status.error,
+            fontWeight: FontWeight.w600,
           ),
-          SizedBox(height: tokens.space.xs),
-          Text(
-            'The home dashboard is read-mostly today; live counters and '
-            'operations health surface once the Phase 2 boot pipeline '
-            'and operations permission are wired.',
-            style: tokens.typography.bodySmall.copyWith(
-              color: tokens.text.secondary,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

@@ -11,6 +11,8 @@ import '../../people/data/person_failure.dart';
 import '../data/staff_providers.dart';
 import '../data/staff_repository.dart';
 
+import '../../../ui/app_theme.dart';
+
 class StaffDetailScreen extends ConsumerWidget {
   const StaffDetailScreen({required this.staffId, super.key});
 
@@ -18,9 +20,7 @@ class StaffDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     final asyncProfile = ref.watch(staffProfileProvider(staffId));
 
     return Scaffold(
@@ -49,8 +49,7 @@ class StaffDetailScreen extends ConsumerWidget {
               action: LsButton.primary(
                 label: 'Try again',
                 expand: false,
-                onPressed: () =>
-                    ref.invalidate(staffProfileProvider(staffId)),
+                onPressed: () => ref.invalidate(staffProfileProvider(staffId)),
               ),
             ),
         },
@@ -109,9 +108,8 @@ class _IdentityCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fullName = (member.fullName as String).isEmpty
-        ? '—'
-        : member.fullName as String;
+    final fullName =
+        (member.fullName as String).isEmpty ? '—' : member.fullName as String;
     final id = member.id as String;
     final status = member.status as String;
     final role = member.staffRole as String?;
@@ -250,8 +248,7 @@ class _KeyValueCard extends StatelessWidget {
       child: Column(
         children: [
           for (var i = 0; i < visible.length; i++) ...[
-            if (i > 0)
-              Divider(height: 1, color: tokens.surface.outlineVariant),
+            if (i > 0) Divider(height: 1, color: tokens.surface.outlineVariant),
             Padding(
               padding: EdgeInsets.symmetric(
                 horizontal: tokens.space.md,

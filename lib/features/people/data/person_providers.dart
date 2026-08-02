@@ -41,7 +41,8 @@ class StudentsFilter {
   }) {
     return StudentsFilter(
       search: search ?? this.search,
-      gradeId: identical(gradeId, _noChange) ? this.gradeId : gradeId as String?,
+      gradeId:
+          identical(gradeId, _noChange) ? this.gradeId : gradeId as String?,
       classGroupId: identical(classGroupId, _noChange)
           ? this.classGroupId
           : classGroupId as String?,
@@ -97,7 +98,8 @@ class StudentsListController extends AutoDisposeAsyncNotifier<PersonPage> {
     final filter = ref.read(studentsFilterProvider);
     _cursor = null;
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() => _fetchPage(filter: filter, reset: true));
+    state =
+        await AsyncValue.guard(() => _fetchPage(filter: filter, reset: true));
   }
 
   Future<PersonPage> _fetchPage({
@@ -122,8 +124,8 @@ class StudentsListController extends AutoDisposeAsyncNotifier<PersonPage> {
   }
 }
 
-final studentsListProvider = AsyncNotifierProvider.autoDispose<
-    StudentsListController, PersonPage>(
+final studentsListProvider =
+    AsyncNotifierProvider.autoDispose<StudentsListController, PersonPage>(
   StudentsListController.new,
 );
 

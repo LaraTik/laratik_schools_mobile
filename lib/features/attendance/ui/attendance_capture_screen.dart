@@ -14,6 +14,8 @@ import '../data/attendance_repository.dart';
 import 'widgets/attendance_mark_row.dart';
 import 'widgets/attendance_status_segment.dart';
 
+import '../../../ui/app_theme.dart';
+
 /// Attendance capture: operator-first surface for daily / period
 /// attendance. Loads the class-group roster, lets the operator tap
 /// through Present / Absent / Late / Excused, and submits the batch.
@@ -102,9 +104,7 @@ class _AttendanceCaptureScreenState
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     final asyncRoster = ref.watch(attendanceRosterProvider(
       AttendanceRosterArgs(
         gradeId: widget.gradeId,
@@ -188,16 +188,14 @@ class _AttendanceCaptureScreenState
         message: 'Once students are enrolled, attendance capture is enabled.',
       );
     }
-    final present = _marks.values
-        .where((s) => s.tone == AttendanceTone.present)
-        .length;
-    final absent = _marks.values
-        .where((s) => s.tone == AttendanceTone.absent)
-        .length;
-    final late = _marks.values.where((s) => s.tone == AttendanceTone.late).length;
-    final excused = _marks.values
-        .where((s) => s.tone == AttendanceTone.excused)
-        .length;
+    final present =
+        _marks.values.where((s) => s.tone == AttendanceTone.present).length;
+    final absent =
+        _marks.values.where((s) => s.tone == AttendanceTone.absent).length;
+    final late =
+        _marks.values.where((s) => s.tone == AttendanceTone.late).length;
+    final excused =
+        _marks.values.where((s) => s.tone == AttendanceTone.excused).length;
     return Column(
       children: [
         Container(
@@ -350,9 +348,7 @@ class _MarkAllButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     return Material(
       color: tokens.surface.surfaceContainer,
       shape: RoundedRectangleBorder(

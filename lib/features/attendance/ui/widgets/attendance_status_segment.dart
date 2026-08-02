@@ -4,6 +4,8 @@ import '../../../../ui/design_tokens.dart';
 import '../../../../ui/widgets/ls_status_chip.dart';
 import '../../data/attendance_record.dart';
 
+import '../../../../ui/app_theme.dart';
+
 /// 4-way status selector: Present / Absent / Late / Excused.
 /// 48dp tall per option so the operator can tap with a thumb on dense
 /// rosters. The selected option uses the brand primary fill; the rest
@@ -27,9 +29,7 @@ class AttendanceStatusSegment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     return SizedBox(
       height: 36,
       child: Row(
@@ -63,29 +63,51 @@ class _SegmentButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     final (Color bg, Color fg, Color border) = switch (status.tone) {
       AttendanceTone.present => selected
-          ? (tokens.status.success, tokens.status.onSuccess, tokens.status.success)
-          : (tokens.status.successContainer, tokens.status.success,
-              tokens.status.success),
+          ? (
+              tokens.status.success,
+              tokens.status.onSuccess,
+              tokens.status.success
+            )
+          : (
+              tokens.status.successContainer,
+              tokens.status.success,
+              tokens.status.success
+            ),
       AttendanceTone.absent => selected
           ? (tokens.status.error, tokens.status.onError, tokens.status.error)
-          : (tokens.status.errorContainer, tokens.status.error, tokens.status.error),
+          : (
+              tokens.status.errorContainer,
+              tokens.status.error,
+              tokens.status.error
+            ),
       AttendanceTone.late => selected
-          ? (tokens.status.warning, tokens.status.onWarning,
-              tokens.status.warning)
-          : (tokens.status.warningContainer, tokens.status.warning,
-              tokens.status.warning),
+          ? (
+              tokens.status.warning,
+              tokens.status.onWarning,
+              tokens.status.warning
+            )
+          : (
+              tokens.status.warningContainer,
+              tokens.status.warning,
+              tokens.status.warning
+            ),
       AttendanceTone.excused => selected
           ? (tokens.status.info, tokens.status.onInfo, tokens.status.info)
-          : (tokens.status.infoContainer, tokens.status.info, tokens.status.info),
+          : (
+              tokens.status.infoContainer,
+              tokens.status.info,
+              tokens.status.info
+            ),
       AttendanceTone.neutral => selected
           ? (tokens.brand.primary, tokens.brand.onPrimary, tokens.brand.primary)
-          : (tokens.surface.surfaceContainer, tokens.text.secondary,
-              tokens.surface.outline),
+          : (
+              tokens.surface.surfaceContainer,
+              tokens.text.secondary,
+              tokens.surface.outline
+            ),
     };
     return Material(
       color: bg,

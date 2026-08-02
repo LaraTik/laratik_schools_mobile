@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../design_tokens.dart';
 
+import '../../ui/app_theme.dart';
+
 enum LsChipTone { neutral, success, warning, error, info, brand }
 
 /// A compact label-and-tone chip. Used for status, role, capability, and
@@ -21,9 +23,7 @@ class LsStatusChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     final (Color bg, Color fg) = switch (tone) {
       LsChipTone.neutral => (
           tokens.surface.surfaceContainerHigh,

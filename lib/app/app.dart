@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import '../ui/app_theme.dart';
 import '../ui/design_tokens.dart';
 import 'bootstrap.dart';
 
@@ -16,8 +17,8 @@ class LaratikSchoolsApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'Laratik Schools',
       debugShowCheckedModeBanner: false,
-      theme: buildTheme(DesignTokens.forBrightness(Brightness.light)),
-      darkTheme: buildTheme(DesignTokens.forBrightness(Brightness.dark)),
+      theme: buildAppTheme(DesignTokens.forBrightness(Brightness.light)),
+      darkTheme: buildAppTheme(DesignTokens.forBrightness(Brightness.dark)),
       themeMode: ThemeMode.system,
       // English source; Arabic locale is layered in when locale support lands
       // (OpenSpec Phase 1, ui-ux-pro-max design system).
@@ -31,4 +32,3 @@ class LaratikSchoolsApp extends StatelessWidget {
     );
   }
 }
-

@@ -13,6 +13,8 @@ import '../data/academics_providers.dart';
 import '../data/academics_repository.dart';
 import '../data/subject.dart';
 
+import '../../../ui/app_theme.dart';
+
 /// Academics surface: three tabs (Subjects, Timetable, Branches) sharing
 /// one scaffold. Subjects gets the create action; Timetable and Branches
 /// are read-only browse in this slice.
@@ -21,9 +23,7 @@ class AcademicsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -107,9 +107,7 @@ class _SubjectsTabState extends ConsumerState<_SubjectsTab> {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     final asyncPage = ref.watch(subjectsListProvider);
     return Column(
       children: [
@@ -124,8 +122,7 @@ class _SubjectsTabState extends ConsumerState<_SubjectsTab> {
         Expanded(
           child: asyncPage.when(
             data: (page) => _buildList(page, tokens),
-            loading: () =>
-                const LsStateView.loading(title: 'Loading subjects'),
+            loading: () => const LsStateView.loading(title: 'Loading subjects'),
             error: (err, _) => LsStateView.error(
               icon: Icons.error_outline,
               title: 'Could not load subjects',
@@ -258,9 +255,7 @@ class _TimetableTabState extends ConsumerState<_TimetableTab> {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     final asyncPage = ref.watch(timetableListProvider);
     return asyncPage.when(
       data: (page) => _buildGrid(page, tokens),
@@ -404,9 +399,7 @@ class _BranchesTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     final asyncPage = ref.watch(branchesListProvider(null));
     return asyncPage.when(
       data: (result) => switch (result) {

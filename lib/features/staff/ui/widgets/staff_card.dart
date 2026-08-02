@@ -4,6 +4,8 @@ import '../../../../ui/design_tokens.dart';
 import '../../../../ui/widgets/ls_status_chip.dart';
 import '../../data/staff_member.dart';
 
+import '../../../../ui/app_theme.dart';
+
 /// Row tile for the staff list. Mirrors `PersonCard` but for staff; the
 /// status chip tone uses the role hint when the wire status is missing.
 class StaffCard extends StatelessWidget {
@@ -20,9 +22,7 @@ class StaffCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     return Material(
       color: tokens.surface.surface,
       child: InkWell(
@@ -124,16 +124,15 @@ class _Avatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     final initials = _initials(member.fullName);
     final photoUrl = member.photoUrl;
     return CircleAvatar(
       radius: 20,
       backgroundColor: tokens.brand.secondaryContainer,
-      foregroundImage:
-          (photoUrl != null && photoUrl.isNotEmpty) ? NetworkImage(photoUrl) : null,
+      foregroundImage: (photoUrl != null && photoUrl.isNotEmpty)
+          ? NetworkImage(photoUrl)
+          : null,
       child: Text(
         initials,
         style: tokens.typography.labelLarge.copyWith(

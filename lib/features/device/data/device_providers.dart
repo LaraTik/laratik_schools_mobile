@@ -10,7 +10,8 @@ final deviceServiceProvider = Provider<DeviceService>((ref) {
 });
 
 final versionPolicyProvider =
-    FutureProvider.autoDispose<Result<VersionPolicy, PersonFailure>>((ref) async {
+    FutureProvider.autoDispose<Result<VersionPolicy, PersonFailure>>(
+        (ref) async {
   final service = ref.watch(deviceServiceProvider);
   return service.fetchVersionPolicy();
 });

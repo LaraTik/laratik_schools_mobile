@@ -12,6 +12,8 @@ import '../data/person.dart';
 import '../data/person_providers.dart';
 import '../data/person_repository.dart';
 
+import '../../../ui/app_theme.dart';
+
 /// Student detail. Renders the four sections the v1 profile response
 /// already returns: identity, current enrollment, attendance, and
 /// guardians. The §1.3 country warnings surface as visible chips; the
@@ -23,9 +25,7 @@ class StudentDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     final asyncProfile = ref.watch(studentProfileProvider(studentId));
 
     return Scaffold(

@@ -60,9 +60,7 @@ class AttendanceRecord extends Equatable {
 
     return AttendanceRecord(
       id: pickString('name') ?? pickString('id') ?? '',
-      studentId: pickString('school_student') ??
-          pickString('student') ??
-          '',
+      studentId: pickString('school_student') ?? pickString('student') ?? '',
       studentName: pickString('student_name') ?? '',
       attendanceDate: pickString('attendance_date') ?? pickString('date'),
       status: AttendanceStatus.fromWire(pickString('attendance_status')),

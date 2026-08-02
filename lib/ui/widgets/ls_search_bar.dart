@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 
 import '../design_tokens.dart';
 
+import '../../ui/app_theme.dart';
+
 /// Debounced search field. Emits a value only after the operator stops
 /// typing for [debounce] (default 350ms) so the underlying list is not
 /// re-fetched per keystroke.
@@ -44,9 +46,7 @@ class _LsSearchBarState extends State<LsSearchBar> {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     return TextField(
       controller: _controller,
       onChanged: _onChanged,

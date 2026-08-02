@@ -58,8 +58,7 @@ final currentStudentProvider =
   if (cachedId != null && cachedId.isNotEmpty) {
     final person = await _fetchPersonById(ref, cachedId);
     if (person == null) return null;
-    final enrollmentId =
-        await _findActiveEnrollment(ref, person.id);
+    final enrollmentId = await _findActiveEnrollment(ref, person.id);
     unawaited(session.setCurrentStudent(
       studentId: person.id,
       enrollmentId: enrollmentId,

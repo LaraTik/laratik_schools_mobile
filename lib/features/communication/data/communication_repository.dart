@@ -45,7 +45,8 @@ class CommunicationRepository {
           .where((row) => !unreadOnly || _isUnread(row))
           .map(NotificationItem.fromJson)
           .toList(growable: false);
-      return Ok(value: NotificationPage(
+      return Ok(
+          value: NotificationPage(
         items: items,
         nextCursor: _nextCursorFromMeta(response.meta),
       ));
@@ -68,10 +69,10 @@ class CommunicationRepository {
         return Err(error: _failureFromApi(response.error));
       }
       final rows = data.logs ?? const <JsonMap>[];
-      final entries = rows
-          .map(CommunicationLogEntry.fromJson)
-          .toList(growable: false);
-      return Ok(value: CommunicationLogPage(
+      final entries =
+          rows.map(CommunicationLogEntry.fromJson).toList(growable: false);
+      return Ok(
+          value: CommunicationLogPage(
         entries: entries,
         nextCursor: _nextCursorFromMeta(response.meta),
       ));
@@ -104,7 +105,7 @@ class CommunicationRepository {
       return const PersonFailure(
         code: 'EMPTY_RESPONSE',
         message: 'The server returned no data.',
-        );
+      );
     }
     return PersonFailure(
       code: error.code,

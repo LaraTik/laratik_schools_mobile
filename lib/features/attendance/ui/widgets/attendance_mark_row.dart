@@ -4,6 +4,8 @@ import '../../../../ui/design_tokens.dart';
 import '../../data/attendance_record.dart';
 import 'attendance_status_segment.dart';
 
+import '../../../../ui/app_theme.dart';
+
 /// Per-student row on the capture screen. Name on the left, four-way
 /// status segment on the right. 64dp tall so the operator can mark
 /// thumb-through a roster without mis-taps.
@@ -19,9 +21,7 @@ class AttendanceMarkRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: tokens.space.md,

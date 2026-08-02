@@ -11,6 +11,8 @@ import '../data/attendance_record.dart';
 import '../data/attendance_repository.dart';
 import 'widgets/attendance_status_segment.dart';
 
+import '../../../ui/app_theme.dart';
+
 /// Read-only history. Tapping a class group chip on the dashboard (Phase
 /// 1.1) deep-links into [AttendanceCaptureScreen]; this list is for the
 /// audit trail — who marked whom and when.
@@ -22,8 +24,7 @@ class AttendanceListScreen extends ConsumerStatefulWidget {
       _AttendanceListScreenState();
 }
 
-class _AttendanceListScreenState
-    extends ConsumerState<AttendanceListScreen> {
+class _AttendanceListScreenState extends ConsumerState<AttendanceListScreen> {
   final _scrollController = ScrollController();
 
   @override
@@ -49,9 +50,7 @@ class _AttendanceListScreenState
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     final asyncPage = ref.watch(attendanceListProvider);
     return Scaffold(
       backgroundColor: tokens.surface.canvas,
@@ -107,7 +106,8 @@ class _AttendanceListScreenState
           LsStateView.empty(
             icon: Icons.fact_check_outlined,
             title: 'No attendance records yet',
-            message: 'Tap Capture to start the daily attendance for a class group.',
+            message:
+                'Tap Capture to start the daily attendance for a class group.',
             action: LsButton.primary(
               label: 'Start capture',
               icon: Icons.play_arrow,
@@ -203,9 +203,7 @@ class _AttendanceListScreenState
     showModalBottomSheet<void>(
       context: context,
       builder: (sheetContext) {
-        final tokens = DesignTokens.forBrightness(
-          MediaQuery.platformBrightnessOf(sheetContext),
-        );
+        final tokens = sheetContext.laratik;
         return SafeArea(
           child: Padding(
             padding: EdgeInsets.symmetric(vertical: tokens.space.md),

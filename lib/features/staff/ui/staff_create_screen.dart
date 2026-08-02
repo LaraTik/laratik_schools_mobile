@@ -13,6 +13,8 @@ import '../data/staff_form_payload.dart';
 import '../data/staff_providers.dart';
 import '../data/staff_repository.dart';
 
+import '../../../ui/app_theme.dart';
+
 class StaffCreateScreen extends ConsumerStatefulWidget {
   const StaffCreateScreen({super.key});
 
@@ -132,9 +134,7 @@ class _StaffCreateScreenState extends ConsumerState<StaffCreateScreen> {
       context: context,
       isScrollControlled: true,
       builder: (sheetContext) {
-        final tokens = DesignTokens.forBrightness(
-          MediaQuery.platformBrightnessOf(sheetContext),
-        );
+        final tokens = sheetContext.laratik;
         return SafeArea(
           child: Padding(
             padding: EdgeInsets.all(tokens.space.lg),
@@ -219,9 +219,7 @@ class _StaffCreateScreenState extends ConsumerState<StaffCreateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     _isWide = MediaQuery.sizeOf(context).width >= 720;
     final asyncContext = ref.watch(staffSetupContextProvider(null));
     return Scaffold(
@@ -368,7 +366,8 @@ class _StaffCreateScreenState extends ConsumerState<StaffCreateScreen> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.error_outline, color: tokens.status.error, size: 18),
+                  Icon(Icons.error_outline,
+                      color: tokens.status.error, size: 18),
                   SizedBox(width: tokens.space.sm),
                   Expanded(
                     child: Text(

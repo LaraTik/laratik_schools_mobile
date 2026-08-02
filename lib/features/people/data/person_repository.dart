@@ -87,7 +87,8 @@ class PersonRepository {
           .where((row) => _matchesFilters(row, search, gradeId, classGroupId))
           .map(Person.fromJson)
           .toList(growable: false);
-      return Ok(value: PersonPage(
+      return Ok(
+          value: PersonPage(
         people: people,
         nextCursor: _nextCursorFromResponse(response, rows.length),
       ));
@@ -112,7 +113,8 @@ class PersonRepository {
       final student = data.student != null && data.student!.isNotEmpty
           ? data.student
           : studentId;
-      return Ok(value: PersonProfile(
+      return Ok(
+          value: PersonProfile(
         person: Person.fromJson(<String, Object?>{'name': student}),
         summary: data.summary ?? const <String, Object?>{},
         attendanceRecordsId: data.attendanceRecords,
@@ -129,8 +131,7 @@ class PersonRepository {
           if (data.currentEnrollment != null)
             'current_enrollment': data.currentEnrollment!,
           if (data.feePlans != null) 'fee_plans': data.feePlans!,
-          if (data.gradeRecords != null)
-            'grade_records': data.gradeRecords!,
+          if (data.gradeRecords != null) 'grade_records': data.gradeRecords!,
           if (data.guardians != null) 'guardians': data.guardians!,
           if (data.reportCards != null) 'report_cards': data.reportCards!,
         }),
@@ -156,21 +157,22 @@ class PersonRepository {
         return Err(error: _failureFromApi(response.error));
       }
       if (data == null) {
-        return const Err(error: PersonFailure(
+        return const Err(
+            error: PersonFailure(
           code: 'EMPTY_RESPONSE',
           message: 'The server returned no data for the new student.',
         ));
       }
-      return Ok(value: PersonCreationResult(
+      return Ok(
+          value: PersonCreationResult(
         schoolStudent: data.schoolStudent ?? '',
         studentName: data.studentName ?? '',
         erpnextCustomer: data.erpnextCustomer,
         status: data.status ?? 'Active',
         countryWasDefaulted: data.countryWasDefaulted == 'true' ||
             data.countryWasDefaulted == '1',
-        residentialCountryMismatch:
-            data.residentialCountryMismatch == 'true' ||
-                data.residentialCountryMismatch == '1',
+        residentialCountryMismatch: data.residentialCountryMismatch == 'true' ||
+            data.residentialCountryMismatch == '1',
         warnings: response.warnings
             .map((w) => w?.toString() ?? '')
             .where((s) => s.isNotEmpty)
@@ -219,8 +221,8 @@ class PersonRepository {
     return true;
   }
 
-  String? _nextCursorFromResponse(ApiEnvelope<GetSchoolStudentsData> response,
-      int returnedRowCount) {
+  String? _nextCursorFromResponse(
+      ApiEnvelope<GetSchoolStudentsData> response, int returnedRowCount) {
     final meta = response.meta;
     final raw = meta.values;
     for (final key in const ['next_cursor', 'nextCursor', 'cursor']) {
@@ -236,7 +238,7 @@ class PersonRepository {
       return const PersonFailure(
         code: 'EMPTY_RESPONSE',
         message: 'The server returned no data.',
-        );
+      );
     }
     return PersonFailure(
       code: error.code,

@@ -98,7 +98,8 @@ class StaffRepository {
           .where((row) => _matchesFilters(row, search, staffRole, branchId))
           .map(StaffMember.fromJson)
           .toList(growable: false);
-      return Ok(value: StaffPage(
+      return Ok(
+          value: StaffPage(
         staff: staff,
         nextCursor: _nextCursorFromResponse(response, rows.length),
       ));
@@ -124,7 +125,8 @@ class StaffRepository {
         (row) => (row['name'] ?? '').toString() == staffId,
         orElse: () => <String, Object?>{'name': staffId},
       );
-      return Ok(value: StaffProfile(
+      return Ok(
+          value: StaffProfile(
         member: StaffMember.fromJson(match),
         summary: const <String, Object?>{},
         raw: <String, Object?>{'staff': staffId},
@@ -148,12 +150,14 @@ class StaffRepository {
         return Err(error: _failureFromApi(response.error));
       }
       if (data == null) {
-        return const Err(error: PersonFailure(
+        return const Err(
+            error: PersonFailure(
           code: 'EMPTY_RESPONSE',
           message: 'The server returned no data for the new staff member.',
         ));
       }
-      return Ok(value: StaffCreationResult(
+      return Ok(
+          value: StaffCreationResult(
         schoolStaff: data.schoolStaff ?? '',
         staffName: data.staffName ?? '',
         staffRole: data.staffRole,
@@ -217,7 +221,7 @@ class StaffRepository {
       return const PersonFailure(
         code: 'EMPTY_RESPONSE',
         message: 'The server returned no data.',
-        );
+      );
     }
     return PersonFailure(
       code: error.code,

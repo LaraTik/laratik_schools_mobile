@@ -8,8 +8,7 @@ abstract class Clock {
 }
 
 class SystemClock implements Clock {
-  SystemClock([DateTime Function()? now])
-      : _now = now ?? DateTime.now;
+  SystemClock([DateTime Function()? now]) : _now = now ?? DateTime.now;
 
   final DateTime Function() _now;
 

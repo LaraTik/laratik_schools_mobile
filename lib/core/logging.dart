@@ -17,7 +17,8 @@ class LogLevel {
 }
 
 class RedactingLogger {
-  RedactingLogger({required Clock clock, LogSink? sink}) : _sink = sink ?? ConsoleSink() {
+  RedactingLogger({required Clock clock, LogSink? sink})
+      : _sink = sink ?? ConsoleSink() {
     _clock = clock;
   }
 
@@ -32,10 +33,12 @@ class RedactingLogger {
     RegExp(r'\"access_token\"\s*:\s*\"[^\"]+\"', caseSensitive: false),
     RegExp(r'\"refresh_token\"\s*:\s*\"[^\"]+\"', caseSensitive: false),
     // Idempotency-Key, OTP, recovery code.
-    RegExp(r'\b(Idempotency-Key|otp|recovery_code|otpauth)\b\s*[=:]\s*[\w-]{6,}',
+    RegExp(
+        r'\b(Idempotency-Key|otp|recovery_code|otpauth)\b\s*[=:]\s*[\w-]{6,}',
         caseSensitive: false),
     // Push device tokens (long opaque strings).
-    RegExp(r'\"(push_token|device_token|fcm_token|apns_token)\"\s*:\s*\"[^\"]+\"',
+    RegExp(
+        r'\"(push_token|device_token|fcm_token|apns_token)\"\s*:\s*\"[^\"]+\"',
         caseSensitive: false),
   ];
 
@@ -46,7 +49,9 @@ class RedactingLogger {
   void warn(String message, {Map<String, Object?>? context}) =>
       _emit(LogLevel.warn, message, context: context);
   void error(String message,
-          {Map<String, Object?>? context, Object? error, StackTrace? stackTrace}) =>
+          {Map<String, Object?>? context,
+          Object? error,
+          StackTrace? stackTrace}) =>
       _emit(LogLevel.error, message,
           context: context, error: error, stackTrace: stackTrace);
 
@@ -140,7 +145,8 @@ class RedactingLogger {
     if (value is String) return _scrub(value);
     if (value is Map) {
       return {
-        for (final entry in value.entries) entry.key.toString(): _scrubObject(entry.value),
+        for (final entry in value.entries)
+          entry.key.toString(): _scrubObject(entry.value),
       };
     }
     if (value is Iterable) {

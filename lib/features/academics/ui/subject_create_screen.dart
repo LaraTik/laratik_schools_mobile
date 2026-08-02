@@ -9,6 +9,8 @@ import '../../../ui/widgets/ls_text_field.dart';
 import '../data/academics_providers.dart';
 import '../data/academics_repository.dart';
 
+import '../../../ui/app_theme.dart';
+
 class SubjectCreateScreen extends ConsumerStatefulWidget {
   const SubjectCreateScreen({super.key});
 
@@ -90,9 +92,7 @@ class _SubjectCreateScreenState extends ConsumerState<SubjectCreateScreen> {
     showModalBottomSheet<void>(
       context: context,
       builder: (sheetContext) {
-        final tokens = DesignTokens.forBrightness(
-          MediaQuery.platformBrightnessOf(sheetContext),
-        );
+        final tokens = sheetContext.laratik;
         return SafeArea(
           child: Padding(
             padding: EdgeInsets.all(tokens.space.lg),
@@ -138,9 +138,7 @@ class _SubjectCreateScreenState extends ConsumerState<SubjectCreateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     _isWide = MediaQuery.sizeOf(context).width >= 720;
     return Scaffold(
       backgroundColor: tokens.surface.canvas,

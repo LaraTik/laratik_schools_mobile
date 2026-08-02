@@ -6,6 +6,8 @@ import '../../ui/design_tokens.dart';
 import 'boot_context.dart';
 import 'boot_service.dart';
 
+import '../../ui/app_theme.dart';
+
 /// Splash screen. Drives the boot pipeline and reports its outcome via the
 /// supplied callbacks. The router reacts to the outcome; this widget is
 /// purely a status surface.
@@ -51,9 +53,7 @@ class _BootScreenState extends State<BootScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     return Scaffold(
       backgroundColor: tokens.surface.canvas,
       body: Center(

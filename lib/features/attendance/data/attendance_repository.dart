@@ -72,7 +72,8 @@ class AttendanceRepository {
           .where((row) => _matchesFilters(row, classGroup, date))
           .map(AttendanceRecord.fromJson)
           .toList(growable: false);
-      return Ok(value: AttendancePage(
+      return Ok(
+          value: AttendancePage(
         records: records,
         nextCursor: _nextCursorFromMeta(response.meta),
       ));
@@ -94,14 +95,15 @@ class AttendanceRepository {
       classGroupId: classGroupId,
     );
     return switch (result) {
-      Ok(:final value) => Ok(value: value.people
-          .map((p) => AttendanceMark(
-                studentId: p.id,
-                studentName: p.fullName,
-                status: AttendanceStatus.present,
-                guardianName: p.guardianName,
-              ))
-          .toList(growable: false)),
+      Ok(:final value) => Ok(
+          value: value.people
+              .map((p) => AttendanceMark(
+                    studentId: p.id,
+                    studentName: p.fullName,
+                    status: AttendanceStatus.present,
+                    guardianName: p.guardianName,
+                  ))
+              .toList(growable: false)),
       Err(:final error) => Err(error: error),
     };
   }
@@ -132,12 +134,14 @@ class AttendanceRepository {
         return Err(error: _failureFromApi(response.error));
       }
       if (data == null) {
-        return const Err(error: PersonFailure(
+        return const Err(
+            error: PersonFailure(
           code: 'EMPTY_RESPONSE',
           message: 'The server returned no data for the new attendance record.',
         ));
       }
-      return Ok(value: AttendanceMarkResult(
+      return Ok(
+          value: AttendanceMarkResult(
         attendanceRecord: data.attendanceRecord ?? '',
         studentName: data.studentName ?? mark.studentName,
         attendanceStatus: data.attendanceStatus ?? mark.status.value,
@@ -205,7 +209,7 @@ class AttendanceRepository {
       return const PersonFailure(
         code: 'EMPTY_RESPONSE',
         message: 'The server returned no data.',
-        );
+      );
     }
     return PersonFailure(
       code: error.code,

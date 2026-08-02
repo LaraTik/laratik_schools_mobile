@@ -12,6 +12,8 @@ import '../data/guardian_form_payload.dart';
 import '../data/guardian_providers.dart';
 import '../data/guardian_repository.dart';
 
+import '../../../ui/app_theme.dart';
+
 class GuardianCreateScreen extends ConsumerStatefulWidget {
   const GuardianCreateScreen({super.key});
 
@@ -20,8 +22,7 @@ class GuardianCreateScreen extends ConsumerStatefulWidget {
       _GuardianCreateScreenState();
 }
 
-class _GuardianCreateScreenState
-    extends ConsumerState<GuardianCreateScreen> {
+class _GuardianCreateScreenState extends ConsumerState<GuardianCreateScreen> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameController;
   late final TextEditingController _relationController;
@@ -140,9 +141,7 @@ class _GuardianCreateScreenState
       context: context,
       isScrollControlled: true,
       builder: (sheetContext) {
-        final tokens = DesignTokens.forBrightness(
-          MediaQuery.platformBrightnessOf(sheetContext),
-        );
+        final tokens = sheetContext.laratik;
         return SafeArea(
           child: Padding(
             padding: EdgeInsets.all(tokens.space.lg),
@@ -191,7 +190,8 @@ class _GuardianCreateScreenState
                         icon: Icons.arrow_forward,
                         onPressed: () {
                           Navigator.of(sheetContext).pop();
-                          context.go('/shell/guardians/${result.schoolGuardian}');
+                          context
+                              .go('/shell/guardians/${result.schoolGuardian}');
                         },
                       ),
                     ),
@@ -221,9 +221,7 @@ class _GuardianCreateScreenState
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     _isWide = MediaQuery.sizeOf(context).width >= 720;
     final asyncContext = ref.watch(guardianSetupContextProvider(null));
     return Scaffold(
@@ -380,7 +378,8 @@ class _GuardianCreateScreenState
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.error_outline, color: tokens.status.error, size: 18),
+                  Icon(Icons.error_outline,
+                      color: tokens.status.error, size: 18),
                   SizedBox(width: tokens.space.sm),
                   Expanded(
                     child: Text(

@@ -13,6 +13,8 @@ import '../data/person_providers.dart';
 import '../data/person_repository.dart';
 import '../data/student_form_payload.dart';
 
+import '../../../ui/app_theme.dart';
+
 /// Student create form.
 ///
 /// Loads the setup context once for schema + defaults, then renders a
@@ -140,9 +142,7 @@ class _StudentCreateScreenState extends ConsumerState<StudentCreateScreen> {
       context: context,
       isScrollControlled: true,
       builder: (sheetContext) {
-        final tokens = DesignTokens.forBrightness(
-          MediaQuery.platformBrightnessOf(sheetContext),
-        );
+        final tokens = sheetContext.laratik;
         return SafeArea(
           child: Padding(
             padding: EdgeInsets.all(tokens.space.lg),
@@ -247,9 +247,7 @@ class _StudentCreateScreenState extends ConsumerState<StudentCreateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     _isWide = MediaQuery.sizeOf(context).width >= 720;
 
     final asyncContext = ref.watch(studentSetupContextProvider(null));
@@ -301,8 +299,9 @@ class _StudentCreateScreenState extends ConsumerState<StudentCreateScreen> {
     final defaults = setupContext['defaults'] is JsonMap
         ? setupContext['defaults'] as JsonMap
         : const <String, Object?>{};
-    final requiredRoles = (setupContext['required_roles'] as List?)?.cast<String>() ??
-        const <String>[];
+    final requiredRoles =
+        (setupContext['required_roles'] as List?)?.cast<String>() ??
+            const <String>[];
 
     return Form(
       key: _formKey,

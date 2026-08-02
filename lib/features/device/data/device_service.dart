@@ -151,7 +151,8 @@ class DeviceService {
   Future<Result<bool, PersonFailure>> revoke(String installationId) async {
     try {
       final response = await _api.revokeSchoolMobileDevice(
-        payload: RevokeSchoolMobileDevicePayload(installationId: installationId),
+        payload:
+            RevokeSchoolMobileDevicePayload(installationId: installationId),
         idempotencyKey: installationId,
       );
       if (response.error != null) {

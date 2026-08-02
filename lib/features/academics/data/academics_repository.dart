@@ -70,7 +70,8 @@ class AcademicsRepository {
           .where((row) => _matchesSubjectFilters(row, search, department))
           .map(Subject.fromJson)
           .toList(growable: false);
-      return Ok(value: SubjectPage(
+      return Ok(
+          value: SubjectPage(
         subjects: subjects,
         nextCursor: _nextCursorFromMeta(response.meta),
       ));
@@ -109,12 +110,14 @@ class AcademicsRepository {
         return Err(error: _failureFromApi(response.error));
       }
       if (data == null) {
-        return const Err(error: PersonFailure(
+        return const Err(
+            error: PersonFailure(
           code: 'EMPTY_RESPONSE',
           message: 'The server returned no data for the new subject.',
         ));
       }
-      return Ok(value: SubjectCreationResult(
+      return Ok(
+          value: SubjectCreationResult(
         subjectId: data.schoolSubject ?? '',
         subjectName: data.subjectName ?? subjectName,
         status: data.status ?? 'Active',
@@ -141,11 +144,11 @@ class AcademicsRepository {
       }
       final rows = data.slots ?? const <JsonMap>[];
       final slots = rows
-          .where((row) =>
-              _matchesSlotFilters(row, branch, academicYear))
+          .where((row) => _matchesSlotFilters(row, branch, academicYear))
           .map(TimetableSlot.fromJson)
           .toList(growable: false);
-      return Ok(value: TimetablePage(
+      return Ok(
+          value: TimetablePage(
         slots: slots,
         nextCursor: _nextCursorFromMeta(response.meta),
       ));
@@ -169,7 +172,8 @@ class AcademicsRepository {
       }
       final rows = data.branches ?? const <JsonMap>[];
       final branches = rows.map(Branch.fromJson).toList(growable: false);
-      return Ok(value: BranchPage(
+      return Ok(
+          value: BranchPage(
         branches: branches,
         nextCursor: _nextCursorFromMeta(response.meta),
       ));
@@ -233,7 +237,7 @@ class AcademicsRepository {
       return const PersonFailure(
         code: 'EMPTY_RESPONSE',
         message: 'The server returned no data.',
-        );
+      );
     }
     return PersonFailure(
       code: error.code,

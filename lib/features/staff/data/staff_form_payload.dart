@@ -25,7 +25,8 @@ class StaffFormPayload extends Equatable {
   });
 
   factory StaffFormPayload.fromDefaults(JsonMap defaults) {
-    String? pick(String k) => defaults[k] is String ? defaults[k] as String : null;
+    String? pick(String k) =>
+        defaults[k] is String ? defaults[k] as String : null;
     return StaffFormPayload(
       firstName: pick('first_name') ?? '',
       lastName: pick('last_name') ?? '',

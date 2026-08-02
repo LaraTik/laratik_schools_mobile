@@ -21,7 +21,8 @@ import '../features/people/ui/students_list_screen.dart';
 import '../features/staff/ui/staff_create_screen.dart';
 import '../features/staff/ui/staff_detail_screen.dart';
 import '../features/staff/ui/staff_list_screen.dart';
-import '../ui/design_tokens.dart';
+import '../ui/app_theme.dart';
+import '../ui/widgets/ls_button.dart';
 import 'dashboard_screen.dart';
 import 'login_screen.dart';
 
@@ -103,12 +104,7 @@ GoRouter buildRouter({
       GoRoute(
         path: '/auth/login',
         name: 'login',
-        builder: (context, state) => const _LoginScreen(),
-      ),
-      GoRoute(
-        path: '/auth/callback',
-        name: 'oauth_callback',
-        builder: (context, state) => const _OAuthCallbackScreen(),
+        builder: (context, state) => const LoginScreen(),
       ),
       GoRoute(
         path: '/error',
@@ -253,9 +249,7 @@ class _ShellScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     final location = GoRouterState.of(context).matchedLocation;
     final active = _activeTabFor(location);
 
@@ -297,9 +291,7 @@ class _SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     return Scaffold(
       backgroundColor: tokens.surface.canvas,
       body: Center(
@@ -328,50 +320,55 @@ class _SplashScreen extends StatelessWidget {
   }
 }
 
-class _LoginScreen extends StatelessWidget {
-  const _LoginScreen();
-
-  @override
-  Widget build(BuildContext context) => const LoginScreen();
-}
-
-class _OAuthCallbackScreen extends StatelessWidget {
-  const _OAuthCallbackScreen();
-
-  @override
-  Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
-    return Scaffold(
-      backgroundColor: tokens.surface.canvas,
-      body: Center(
-        child: Text(
-          'OAuth callback',
-          style: tokens.typography.titleLarge.copyWith(
-            color: tokens.text.primary,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class _ErrorScreen extends StatelessWidget {
   const _ErrorScreen();
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     return Scaffold(
       backgroundColor: tokens.surface.canvas,
-      body: Center(
-        child: Text(
-          'Something went wrong.',
-          style: tokens.typography.titleLarge.copyWith(
-            color: tokens.text.primary,
+      body: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: EdgeInsets.all(tokens.space.xl),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 480),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Icon(
+                    Icons.error_outline,
+                    size: 48,
+                    color: tokens.status.error,
+                  ),
+                  SizedBox(height: tokens.space.md),
+                  Text(
+                    'We could not find that page',
+                    textAlign: TextAlign.center,
+                    style: tokens.typography.titleLarge.copyWith(
+                      color: tokens.text.primary,
+                    ),
+                  ),
+                  SizedBox(height: tokens.space.xs),
+                  Text(
+                    'The link you followed may be broken, or the page may '
+                    'have been moved. Head back home to keep working.',
+                    textAlign: TextAlign.center,
+                    style: tokens.typography.bodyMedium.copyWith(
+                      color: tokens.text.secondary,
+                    ),
+                  ),
+                  SizedBox(height: tokens.space.lg),
+                  LsButton.primary(
+                    label: 'Back to home',
+                    icon: Icons.home_outlined,
+                    onPressed: () => GoRouter.of(context).go('/shell'),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),

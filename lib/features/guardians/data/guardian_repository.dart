@@ -93,7 +93,8 @@ class GuardianRepository {
           .where((row) => _matchesFilters(row, search, relation))
           .map(Guardian.fromJson)
           .toList(growable: false);
-      return Ok(value: GuardianPage(
+      return Ok(
+          value: GuardianPage(
         guardians: guardians,
         nextCursor: _nextCursorFromResponse(response, rows.length),
       ));
@@ -119,7 +120,8 @@ class GuardianRepository {
         (row) => (row['name'] ?? '').toString() == guardianId,
         orElse: () => <String, Object?>{'name': guardianId},
       );
-      return Ok(value: GuardianProfile(
+      return Ok(
+          value: GuardianProfile(
         guardian: Guardian.fromJson(match),
         summary: const <String, Object?>{},
         raw: <String, Object?>{'guardian': guardianId},
@@ -143,12 +145,14 @@ class GuardianRepository {
         return Err(error: _failureFromApi(response.error));
       }
       if (data == null) {
-        return const Err(error: PersonFailure(
+        return const Err(
+            error: PersonFailure(
           code: 'EMPTY_RESPONSE',
           message: 'The server returned no data for the new guardian.',
         ));
       }
-      return Ok(value: GuardianCreationResult(
+      return Ok(
+          value: GuardianCreationResult(
         schoolGuardian: data.schoolGuardian ?? '',
         guardianName: data.guardianName ?? '',
         status: data.status ?? 'Active',
@@ -199,7 +203,7 @@ class GuardianRepository {
       return const PersonFailure(
         code: 'EMPTY_RESPONSE',
         message: 'The server returned no data.',
-        );
+      );
     }
     return PersonFailure(
       code: error.code,

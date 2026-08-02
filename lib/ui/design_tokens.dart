@@ -363,8 +363,10 @@ class TypographyTokens {
           letterSpacing: letterSpacing,
         );
     return TypographyTokens(
-      displayLarge: s(40, weight: FontWeight.w600, height: 1.2, letterSpacing: -0.5),
-      displayMedium: s(32, weight: FontWeight.w600, height: 1.2, letterSpacing: -0.25),
+      displayLarge:
+          s(40, weight: FontWeight.w600, height: 1.2, letterSpacing: -0.5),
+      displayMedium:
+          s(32, weight: FontWeight.w600, height: 1.2, letterSpacing: -0.25),
       headlineLarge: s(28, weight: FontWeight.w600, height: 1.25),
       headlineMedium: s(24, weight: FontWeight.w600, height: 1.3),
       titleLarge: s(20, weight: FontWeight.w600, height: 1.3),
@@ -373,9 +375,12 @@ class TypographyTokens {
       bodyLarge: s(17, weight: FontWeight.w400, height: 1.45),
       bodyMedium: s(16, weight: FontWeight.w400, height: 1.45),
       bodySmall: s(14, weight: FontWeight.w400, height: 1.45),
-      labelLarge: s(15, weight: FontWeight.w500, height: 1.3, letterSpacing: 0.1),
-      labelMedium: s(13, weight: FontWeight.w500, height: 1.3, letterSpacing: 0.2),
-      labelSmall: s(12, weight: FontWeight.w500, height: 1.3, letterSpacing: 0.3),
+      labelLarge:
+          s(15, weight: FontWeight.w500, height: 1.3, letterSpacing: 0.1),
+      labelMedium:
+          s(13, weight: FontWeight.w500, height: 1.3, letterSpacing: 0.2),
+      labelSmall:
+          s(12, weight: FontWeight.w500, height: 1.3, letterSpacing: 0.3),
       monoFamily: 'monospace',
     );
   }
@@ -416,8 +421,10 @@ class TouchTokens {
 
 // Material 3 TypeTheme needs const typography values; we keep two
 // token instances and let the theme builder pick one at runtime.
-final TypographyTokens _lightTypography = TypographyTokens.standardOf(Brightness.light);
-final TypographyTokens _darkTypography = TypographyTokens.standardOf(Brightness.dark);
+final TypographyTokens _lightTypography =
+    TypographyTokens.standardOf(Brightness.light);
+final TypographyTokens _darkTypography =
+    TypographyTokens.standardOf(Brightness.dark);
 
 final DesignTokens lightTokens = DesignTokens(
   brightness: Brightness.light,

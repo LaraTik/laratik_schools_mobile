@@ -4,6 +4,8 @@ import '../../../../ui/design_tokens.dart';
 import '../../../../ui/widgets/ls_status_chip.dart';
 import '../../data/person.dart';
 
+import '../../../../ui/app_theme.dart';
+
 /// Row tile for the students / staff / guardians list.
 ///
 /// 64dp tall, name + role/status, optional trailing caret. Tap target meets
@@ -24,9 +26,7 @@ class PersonCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     final tone = _toneForStatus(person.status);
     return Material(
       color: tokens.surface.surface,
@@ -127,9 +127,7 @@ class _Avatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     final initials = _initials(person.fullName);
     final photoUrl = person.photoUrl;
     if (photoUrl != null && photoUrl.isNotEmpty) {

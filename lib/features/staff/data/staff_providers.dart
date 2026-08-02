@@ -30,9 +30,11 @@ class StaffFilter {
   }) {
     return StaffFilter(
       search: search ?? this.search,
-      staffRole:
-          identical(staffRole, _noChange) ? this.staffRole : staffRole as String?,
-      branchId: identical(branchId, _noChange) ? this.branchId : branchId as String?,
+      staffRole: identical(staffRole, _noChange)
+          ? this.staffRole
+          : staffRole as String?,
+      branchId:
+          identical(branchId, _noChange) ? this.branchId : branchId as String?,
     );
   }
 
@@ -82,7 +84,8 @@ class StaffListController extends AutoDisposeAsyncNotifier<StaffPage> {
     final filter = ref.read(staffFilterProvider);
     _cursor = null;
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() => _fetchPage(filter: filter, reset: true));
+    state =
+        await AsyncValue.guard(() => _fetchPage(filter: filter, reset: true));
   }
 
   Future<StaffPage> _fetchPage({
@@ -107,8 +110,8 @@ class StaffListController extends AutoDisposeAsyncNotifier<StaffPage> {
   }
 }
 
-final staffListProvider = AsyncNotifierProvider.autoDispose<
-    StaffListController, StaffPage>(
+final staffListProvider =
+    AsyncNotifierProvider.autoDispose<StaffListController, StaffPage>(
   StaffListController.new,
 );
 

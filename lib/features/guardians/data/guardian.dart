@@ -34,8 +34,7 @@ class Guardian extends Equatable {
       return null;
     }
 
-    final linkedStudents = (json['students'] ?? json['linked_students'])
-        is List
+    final linkedStudents = (json['students'] ?? json['linked_students']) is List
         ? List<JsonMap>.from(
             ((json['students'] ?? json['linked_students']) as List)
                 .where((e) => e is Map)

@@ -170,23 +170,23 @@ class OauthFlow {
       }
 
       final message = json['message'];
-      final messageMap = message is Map
-          ? Map<String, Object?>.from(message)
-          : json;
+      final messageMap =
+          message is Map ? Map<String, Object?>.from(message) : json;
       final accessToken = (messageMap['access_token'] ?? '').toString();
       final refreshToken = (messageMap['refresh_token'] ?? '').toString();
       final expiresIn = messageMap['expires_in'];
       if (accessToken.isEmpty || refreshToken.isEmpty) {
         return OauthFailure(
           code: 'MISSING_TOKENS',
-          message: 'Token endpoint did not return access_token and refresh_token.',
+          message:
+              'Token endpoint did not return access_token and refresh_token.',
         );
       }
       final expiresAt = clock.nowUtc().add(
-        expiresIn is num
-            ? Duration(seconds: expiresIn.toInt())
-            : const Duration(minutes: 30),
-      );
+            expiresIn is num
+                ? Duration(seconds: expiresIn.toInt())
+                : const Duration(minutes: 30),
+          );
       final scopes = <String>{
         if (messageMap['scope'] is String)
           ...(messageMap['scope'] as String).split(RegExp(r'\s+')),
@@ -245,9 +245,8 @@ class OauthFlow {
       r'refresh_token[\s:=]+[A-Za-z0-9._-]+',
       caseSensitive: false,
     );
-    final scrubbed = raw
-        .replaceAll(accessPattern, '***')
-        .replaceAll(refreshPattern, '***');
+    final scrubbed =
+        raw.replaceAll(accessPattern, '***').replaceAll(refreshPattern, '***');
     if (scrubbed.length > 200) {
       return '${scrubbed.substring(0, 200)}…';
     }

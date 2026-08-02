@@ -12,6 +12,8 @@ import '../data/staff_providers.dart';
 import '../data/staff_repository.dart';
 import 'widgets/staff_card.dart';
 
+import '../../../ui/app_theme.dart';
+
 class StaffListScreen extends ConsumerStatefulWidget {
   const StaffListScreen({super.key});
 
@@ -45,9 +47,7 @@ class _StaffListScreenState extends ConsumerState<StaffListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     final filter = ref.watch(staffFilterProvider);
     final asyncPage = ref.watch(staffListProvider);
 
@@ -67,8 +67,7 @@ class _StaffListScreenState extends ConsumerState<StaffListScreen> {
           IconButton(
             tooltip: 'Refresh',
             icon: const Icon(Icons.refresh),
-            onPressed: () =>
-                ref.read(staffListProvider.notifier).refresh(),
+            onPressed: () => ref.read(staffListProvider.notifier).refresh(),
           ),
           Padding(
             padding: EdgeInsets.only(right: tokens.space.sm),
@@ -198,8 +197,7 @@ class _StaffListScreenState extends ConsumerState<StaffListScreen> {
             label: 'Try again',
             icon: Icons.refresh,
             expand: false,
-            onPressed: () =>
-                ref.read(staffListProvider.notifier).refresh(),
+            onPressed: () => ref.read(staffListProvider.notifier).refresh(),
           ),
         ),
       ],
@@ -213,9 +211,7 @@ class _FilterRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     return SizedBox(
       height: 36,
       child: ListView(
@@ -278,9 +274,7 @@ class _FilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     return Material(
       color: selected
           ? tokens.brand.primaryContainer
@@ -335,9 +329,7 @@ class _SimpleFilterSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     return SafeArea(
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: tokens.space.md),

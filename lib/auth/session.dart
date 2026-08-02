@@ -443,12 +443,10 @@ class _PrefsTokenStore implements SecureTokenStore {
   Future<String?> readRefresh() async => _prefs.getString(_kRefresh);
 
   @override
-  Future<void> writeAccess(String value) =>
-      _prefs.setString(_kAccess, value);
+  Future<void> writeAccess(String value) => _prefs.setString(_kAccess, value);
 
   @override
-  Future<void> writeRefresh(String value) =>
-      _prefs.setString(_kRefresh, value);
+  Future<void> writeRefresh(String value) => _prefs.setString(_kRefresh, value);
 
   @override
   Future<void> deleteAll() async {

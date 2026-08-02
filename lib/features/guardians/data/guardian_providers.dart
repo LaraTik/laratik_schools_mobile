@@ -27,7 +27,8 @@ class GuardianFilter {
   }) {
     return GuardianFilter(
       search: search ?? this.search,
-      relation: identical(relation, _noChange) ? this.relation : relation as String?,
+      relation:
+          identical(relation, _noChange) ? this.relation : relation as String?,
     );
   }
 
@@ -76,7 +77,8 @@ class GuardianListController extends AutoDisposeAsyncNotifier<GuardianPage> {
     final filter = ref.read(guardianFilterProvider);
     _cursor = null;
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() => _fetchPage(filter: filter, reset: true));
+    state =
+        await AsyncValue.guard(() => _fetchPage(filter: filter, reset: true));
   }
 
   Future<GuardianPage> _fetchPage({
@@ -100,8 +102,8 @@ class GuardianListController extends AutoDisposeAsyncNotifier<GuardianPage> {
   }
 }
 
-final guardianListProvider = AsyncNotifierProvider.autoDispose<
-    GuardianListController, GuardianPage>(
+final guardianListProvider =
+    AsyncNotifierProvider.autoDispose<GuardianListController, GuardianPage>(
   GuardianListController.new,
 );
 

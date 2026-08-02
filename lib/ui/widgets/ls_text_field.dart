@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../design_tokens.dart';
 
+import '../../ui/app_theme.dart';
+
 /// Reusable text field. Always renders a visible label (no placeholder-only
 /// labels), keeps 48dp minimum height, exposes the per-field error so the
 /// form layer can map [PersonFailure.fieldErrors] directly.
@@ -35,9 +37,7 @@ class LsTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

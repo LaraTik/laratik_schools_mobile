@@ -38,7 +38,8 @@ class StudentFormPayload extends Equatable {
   /// Best-effort decode of a server default block (from
   /// `get_student_setup_context.defaults`) into a working form payload.
   factory StudentFormPayload.fromDefaults(JsonMap defaults) {
-    String? pick(String k) => defaults[k] is String ? defaults[k] as String : null;
+    String? pick(String k) =>
+        defaults[k] is String ? defaults[k] as String : null;
     return StudentFormPayload(
       firstName: pick('first_name') ?? '',
       lastName: pick('last_name') ?? '',

@@ -46,10 +46,12 @@ class BootService {
         return Err(error: _failureFromApi(bootResponse.error!, 'boot'));
       }
       if (permissionResponse.error != null) {
-        return Err(error: _failureFromApi(permissionResponse.error!, 'permission'));
+        return Err(
+            error: _failureFromApi(permissionResponse.error!, 'permission'));
       }
       if (bootData == null || permissionData == null) {
-        return const Err(error: BootFailure(
+        return const Err(
+            error: BootFailure(
           code: 'EMPTY_RESPONSE',
           message: 'Boot or permission response had no data.',
         ));
@@ -78,7 +80,8 @@ class BootService {
         error: e,
         stack: st,
       );
-      return Err(error: BootFailure(
+      return Err(
+          error: BootFailure(
         code: 'EXCEPTION',
         message: e.toString(),
       ));

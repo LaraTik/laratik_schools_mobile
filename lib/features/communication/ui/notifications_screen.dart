@@ -11,6 +11,8 @@ import '../data/communication_providers.dart';
 import '../data/communication_repository.dart';
 import '../data/notification.dart';
 
+import '../../../ui/app_theme.dart';
+
 class NotificationsScreen extends ConsumerStatefulWidget {
   const NotificationsScreen({super.key});
 
@@ -45,9 +47,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     final asyncPage = ref.watch(notificationsListProvider);
     return Scaffold(
       backgroundColor: tokens.surface.canvas,
@@ -240,9 +240,7 @@ class _FilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     return Material(
       color: selected
           ? tokens.brand.primaryContainer

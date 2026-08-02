@@ -13,6 +13,8 @@ import '../data/guardian.dart';
 import '../data/guardian_providers.dart';
 import '../data/guardian_repository.dart';
 
+import '../../../ui/app_theme.dart';
+
 class GuardianDetailScreen extends ConsumerWidget {
   const GuardianDetailScreen({required this.guardianId, super.key});
 
@@ -20,9 +22,7 @@ class GuardianDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     final asyncProfile = ref.watch(guardianProfileProvider(guardianId));
 
     return Scaffold(
@@ -162,7 +162,8 @@ class _IdentityCard extends StatelessWidget {
                   children: [
                     LsStatusChip(
                       label: g.status,
-                      tone: g.isActive ? LsChipTone.success : LsChipTone.neutral,
+                      tone:
+                          g.isActive ? LsChipTone.success : LsChipTone.neutral,
                     ),
                     if (g.relation != null && g.relation!.isNotEmpty)
                       LsStatusChip(
@@ -197,8 +198,7 @@ class _LinkedStudentsList extends StatelessWidget {
       child: Column(
         children: [
           for (var i = 0; i < students.length; i++) ...[
-            if (i > 0)
-              Divider(height: 1, color: tokens.surface.outlineVariant),
+            if (i > 0) Divider(height: 1, color: tokens.surface.outlineVariant),
             _LinkedStudentRow(student: students[i], tokens: tokens),
           ],
         ],
@@ -312,8 +312,7 @@ class _KeyValueCard extends StatelessWidget {
       child: Column(
         children: [
           for (var i = 0; i < visible.length; i++) ...[
-            if (i > 0)
-              Divider(height: 1, color: tokens.surface.outlineVariant),
+            if (i > 0) Divider(height: 1, color: tokens.surface.outlineVariant),
             Padding(
               padding: EdgeInsets.symmetric(
                 horizontal: tokens.space.md,

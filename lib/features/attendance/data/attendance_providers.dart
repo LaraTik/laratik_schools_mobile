@@ -73,8 +73,8 @@ class AttendanceListController
   }
 }
 
-final attendanceListProvider = AsyncNotifierProvider.autoDispose<
-    AttendanceListController, AttendancePage>(
+final attendanceListProvider =
+    AsyncNotifierProvider.autoDispose<AttendanceListController, AttendancePage>(
   AttendanceListController.new,
 );
 

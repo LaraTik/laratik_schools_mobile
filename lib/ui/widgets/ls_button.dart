@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../design_tokens.dart';
 
+import '../../ui/app_theme.dart';
+
 /// Primary action button. 48dp tall, 48dp wide target, full-width by default
 /// but adapts to a compact variant when nested in a toolbar.
 enum LsButtonVariant { primary, secondary, ghost, danger }
@@ -54,9 +56,7 @@ class LsButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     final isDisabled = onPressed == null || isLoading;
 
     final (Color bg, Color fg, Color border) = switch (variant) {
@@ -108,9 +108,7 @@ class LsButton extends StatelessWidget {
     );
 
     return Material(
-      color: isDisabled
-          ? bg.withValues(alpha: 0.5)
-          : bg,
+      color: isDisabled ? bg.withValues(alpha: 0.5) : bg,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(tokens.radius.md),
         side: border == Colors.transparent

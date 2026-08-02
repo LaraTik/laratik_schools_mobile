@@ -12,6 +12,8 @@ import '../data/person_providers.dart';
 import '../data/person_repository.dart';
 import 'widgets/person_card.dart';
 
+import '../../../ui/app_theme.dart';
+
 /// Students list. Server-paginated keyset (default 50 per page), case-
 /// insensitive name search, grade + class-group filter chips, manual
 /// pull-to-refresh, and a primary "New student" action in the app bar.
@@ -52,9 +54,7 @@ class _StudentsListScreenState extends ConsumerState<StudentsListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     final filter = ref.watch(studentsFilterProvider);
     final asyncPage = ref.watch(studentsListProvider);
     final filterIsEmpty = filter.isEmpty;
@@ -75,8 +75,7 @@ class _StudentsListScreenState extends ConsumerState<StudentsListScreen> {
           IconButton(
             tooltip: 'Refresh',
             icon: const Icon(Icons.refresh),
-            onPressed: () =>
-                ref.read(studentsListProvider.notifier).refresh(),
+            onPressed: () => ref.read(studentsListProvider.notifier).refresh(),
           ),
           Padding(
             padding: EdgeInsets.only(right: tokens.space.sm),
@@ -116,8 +115,7 @@ class _StudentsListScreenState extends ConsumerState<StudentsListScreen> {
         ),
       ),
       body: RefreshIndicator(
-        onRefresh: () =>
-            ref.read(studentsListProvider.notifier).refresh(),
+        onRefresh: () => ref.read(studentsListProvider.notifier).refresh(),
         child: asyncPage.when(
           data: (page) => _buildList(page, filterIsEmpty, tokens),
           loading: () => const LsStateView.loading(
@@ -207,8 +205,7 @@ class _StudentsListScreenState extends ConsumerState<StudentsListScreen> {
             label: 'Try again',
             icon: Icons.refresh,
             expand: false,
-            onPressed: () =>
-                ref.read(studentsListProvider.notifier).refresh(),
+            onPressed: () => ref.read(studentsListProvider.notifier).refresh(),
           ),
         ),
       ],
@@ -223,9 +220,7 @@ class _FilterRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     return SizedBox(
       height: 36,
       child: ListView(
@@ -302,9 +297,7 @@ class _FilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     return Material(
       color: selected
           ? tokens.brand.primaryContainer
@@ -359,9 +352,7 @@ class _SimpleFilterSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = DesignTokens.forBrightness(
-      MediaQuery.platformBrightnessOf(context),
-    );
+    final tokens = context.laratik;
     return SafeArea(
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: tokens.space.md),

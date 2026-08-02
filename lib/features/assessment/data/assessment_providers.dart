@@ -62,8 +62,8 @@ class ExamPlansListController extends AutoDisposeAsyncNotifier<ExamPlanPage> {
   }
 }
 
-final examPlansListProvider = AsyncNotifierProvider.autoDispose<
-    ExamPlansListController, ExamPlanPage>(
+final examPlansListProvider =
+    AsyncNotifierProvider.autoDispose<ExamPlansListController, ExamPlanPage>(
   ExamPlansListController.new,
 );
 
@@ -102,6 +102,5 @@ class ExamEligibilityArgs {
       other.schoolEnrollment == schoolEnrollment;
 
   @override
-  int get hashCode =>
-      Object.hash(examPlanId, studentId, schoolEnrollment);
+  int get hashCode => Object.hash(examPlanId, studentId, schoolEnrollment);
 }

@@ -6,7 +6,8 @@ import '../../people/data/person_providers.dart';
 import 'communication_repository.dart';
 import 'notification.dart';
 
-final communicationRepositoryProvider = Provider<CommunicationRepository>((ref) {
+final communicationRepositoryProvider =
+    Provider<CommunicationRepository>((ref) {
   return CommunicationRepository(api: ref.watch(apiClientProvider));
 });
 
