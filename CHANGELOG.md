@@ -8,6 +8,49 @@ and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ### Added
 
+- **Arabic + English locale support.** The mobile now supports
+  both `en` and `ar` via the standard Flutter ARB-driven
+  localization pipeline. The `MaterialApp` resolves the locale
+  from `supportedLocales` + the global delegates + the
+  generated `AppLocalizations.delegate`. New files:
+  - `l10n.yaml` — Flutter localization config.
+  - `lib/l10n/app_en.arb` (English source) +
+    `lib/l10n/app_ar.arb` (Modern Standard Arabic).
+  - `lib/l10n/app_localizations.dart` + per-locale generated
+    files (regenerated on every `flutter pub get`).
+  - `test/l10n/locale_test.dart` — 6 tests pinning the
+    locale pipeline (supported locales, English + Arabic
+    non-empty strings, bottom-nav tab resolution per locale).
+
+### Changed
+
+- `pubspec.yaml` — `flutter: generate: true` so the `gen-l10n`
+  step runs automatically on every `flutter pub get`.
+- `lib/app/app.dart` — `MaterialApp` now uses
+  `onGenerateTitle: (context) => AppLocalizations.of(context).appTitle`
+  and `supportedLocales: AppLocalizations.supportedLocales`.
+- `lib/app/router.dart` — `ShellTabX.labelFor(BuildContext)`
+  resolves the right tab label per locale; the `_ShellScaffold`
+  calls it when building the `NavigationDestination`s so a
+  runtime locale switch updates the bottom nav in the next
+  frame.
+
+### Scope notes
+
+The locale framework is in place and the bottom-nav tabs are
+fully localized. The home surfaces (parent / student / teacher
+/ admin dashboard) + the family / classes / child-detail /
+fee-plans surfaces still carry ~150 hardcoded English strings
+— the per-screen surface text + state-view titles + KPI
+labels. The extraction is mechanical and lands in the next
+turn, alongside the RTL-aware layout pass + a11y audit
+(both also deferred per the audit's "next turn" note on
+roadmap #11).
+
+## [Unreleased]
+
+### Added
+
 - **Fees surface — read-only "Fee plans" + per-plan detail +
   admin "Fee operations" KPI overview.** Closes roadmap item
   #7 for the admin side and item #11 for the parent side

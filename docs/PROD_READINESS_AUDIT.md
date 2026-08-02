@@ -38,6 +38,17 @@
 > Fees slice; Analytics slice deferred). The mobile is at
 > the next commit after `6e29fba`.
 
+> Update 2026-08-03 (locale release): the Flutter ARB-driven
+> localization pipeline is wired (`en` + `ar`). The
+> bottom-nav tab labels are locale-aware via
+> `ShellTab.labelFor(context)`. See §4 (the "No Arabic
+> locale" item is replaced with an "Arabic locale partial"
+> note documenting the home-surface string extraction +
+> RTL pass + a11y audit follow-up) and §5 (item #11
+> flipped to "shipped (locale framework + bottom-nav
+> labels; home-surface string extraction + RTL pass +
+> a11y audit deferred)"). The mobile is at `0cfd72e`.
+
 This document is the source of truth for what is shipped, what is
 missing per role, and the prioritized roadmap. It supersedes the
 "Phase 0–6 ship" status line in the README — the source bar is met
@@ -242,8 +253,14 @@ feature above were built:
 - **5 pre-existing test failures** in `test/platform/transport_test.dart`
   (2) and `test/features/assessment/current_student_provider_test.dart`
   (3, in the user's in-flight work). Not from the latest commit.
-- **No Arabic locale** — explicitly deferred to a later phase per
-  the README. English-only today.
+- **Arabic locale partial** — the framework + the bottom-nav
+  tab labels are localized (see the locale release in the
+  CHANGELOG). The home surfaces + the family / classes /
+  child-detail / fee-plans surfaces still carry ~150
+  hardcoded English strings; the per-screen surface text
+  + state-view titles + KPI labels land in the next turn.
+  RTL-aware layout pass + a11y audit also deferred to the
+  same follow-up.
 - **No offline support** — explicitly deferred per the AGENTS.md.
   The v1 SDK has `get_school_offline_pull` + `submit_school_offline_mutation`
   for the offline queue; the mobile doesn't read either.
@@ -269,7 +286,7 @@ surface. The rest is feature work.
 | 8 | **Admin enhancements** | Governance (privacy + retention) + Grading (admin side) | 1 turn | after #7 |
 | 9 | **Admin enhancements** | Data import wizard + Operations health | 2 turns | after #8 |
 | 10 | **Quality** | Hard-coded filter values → real `get_school_grades` | 0.5 turn | **shipped (picker release, derived from loaded students — backend follow-up: add `get_school_grades` + `get_school_class_groups`)** |
-| 11 | **Quality** | Arabic locale + a11y audit | 1 turn | after #10 |
+| 11 | **Quality** | Arabic locale + a11y audit | 1 turn | **shipped (locale framework + bottom-nav labels; home-surface string extraction + RTL pass + a11y audit deferred to the next turn)** |
 
 The estimate is "one focused coding turn" (~30–60 min of focused
 work plus tests + commit). Total to "PROD-ready" by the strict
@@ -283,23 +300,31 @@ Until the items above land, the honest answer to "is this PROD-ready
 for role X?" is:
 
 - **Admin / Registrar** — *Partially.* They can run the daily
-  operations (roster, attendance, **read-only fees**) but
-  cannot yet manage imports, see the operations health, or
-  respond to privacy requests. The fee write flows (invoice
-  preview + draft creation + payment recording) and the
-  Analytics KPI surface are still on the desktop.
-- **Student** — *Partially.* They can take exams end-to-end and
-  now see their grades / attendance / report cards under "My
-  records" on the home screen. Fee invoices + class-scoped
-  notifications are still on the desktop.
-- **Teacher** — *Partially.* They get a real "My classes" tab +
-  per-class detail (student roster). Still missing exam
+  operations (roster, attendance, **read-only fees**) and the
+  role-aware bottom nav now renders correctly (after the
+  wire-name fix in the locale release). Cannot yet manage
+  imports, see the operations health, or respond to privacy
+  requests. The fee write flows (invoice preview + draft
+  creation + payment recording) and the Analytics KPI
+  surface are still on the desktop.
+- **Student** — *Partially.* They can take exams end-to-end
+  and now see their grades / attendance / report cards under
+  "My records" on the home screen. Fee invoices +
+  class-scoped notifications are still on the desktop.
+- **Teacher** — *Partially.* They get a real "My classes" tab
+  + per-class detail (student roster). Still missing exam
   authoring and manual grading.
 - **Parent** — *Partially.* They get a real "My family" home
   with a hero "My children" card, the family picker at
-  `/shell/family`, and the per-child detail (Overview / Grades /
-  Attendance / Report cards). Fee invoices for their children are
-  still on the desktop.
+  `/shell/family`, and the per-child detail (Overview /
+  Grades / Attendance / Report cards). Fee invoices for
+  their children are still on the desktop.
+- **Locale** — *En + Ar.* The mobile now supports both
+  English and Arabic (Modern Standard). The bottom-nav
+  tabs are fully localized; the home surfaces still carry
+  ~150 hardcoded English strings that the next turn
+  extracts. RTL-aware layout pass + a11y audit also
+  deferred to the same follow-up.
 
 The source bar is met (the team can scaffold against the v1 Dart
 SDK and the foundation features work). The production bar is not.

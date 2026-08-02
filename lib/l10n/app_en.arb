@@ -1,0 +1,187 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "Laratik Schools",
+  "@appTitle": { "description": "Application title shown in the OS task switcher + on the splash." },
+
+  "navStudents": "Students",
+  "navStaff": "Staff",
+  "navGuardians": "Guardians",
+  "navAcademics": "Academics",
+  "navAttendance": "Attendance",
+  "navMyClasses": "My classes",
+  "navFees": "Fees",
+
+  "shellDashboard": "Home",
+  "shellNotifications": "Notifications",
+
+  "commonBack": "Back",
+  "commonCancel": "Cancel",
+  "commonClose": "Close",
+  "commonRefresh": "Refresh",
+  "commonSearch": "Search",
+  "commonTryAgain": "Try again",
+  "commonClearSearch": "Clear search",
+  "commonNoResults": "No results",
+  "commonLoading": "Loading",
+  "commonError": "Something went wrong",
+
+  "homeParentMyChildren": "My children",
+  "homeParentNoChildrenTitle": "No children linked yet",
+  "homeParentNoChildrenMessage": "When the school links you as a guardian, your children's names will appear here. If you expected to see a child and you don't, contact the school office to confirm the link is in place.",
+  "homeParentInbox": "Inbox",
+  "homeParentInboxEmpty": "No new messages",
+  "homeParentInboxUnread": "{count, plural, =0{No new messages} =1{1 unread message} other{{count} unread messages}}",
+  "@homeParentInboxUnread": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "homeStudentMySchool": "My school",
+  "homeStudentResolving": "Resolving student…",
+  "homeStudentResolvingMessage": "Looking up the active student for this device.",
+  "homeStudentResolvingFailed": "Student resolution failed",
+  "homeStudentNoStudent": "No student resolved",
+  "homeStudentNoStudentMessage": "No students are seeded on this site yet.",
+  "homeStudentSwitchStudent": "Switch student",
+  "homeStudentToday": "Today",
+  "homeStudentMore": "More",
+  "homeStudentAllExams": "All exams",
+  "homeStudentAllExamsSubtitle": "Browse every published exam",
+  "homeStudentMyRecords": "My records",
+  "homeStudentMyRecordsSubtitle": "Grades, attendance, and report cards",
+
+  "homeTeacherMySchool": "My school",
+  "homeTeacherMyClasses": "My classes",
+  "homeTeacherCaptureAttendance": "Capture attendance",
+  "homeTeacherCaptureAttendanceSubtitle": "Mark a class group",
+
+  "homeAdminQuickStart": "Quick start",
+  "homeAdminPracticeQuiz": "Practice quiz",
+  "homeAdminPracticeQuizSubtitle": "Take a published exam",
+  "homeAdminNewStudent": "New student",
+  "homeAdminNewStudentSubtitle": "Enrol from the registrar",
+  "homeAdminNewStaff": "New staff",
+  "homeAdminNewStaffSubtitle": "Add a teacher or admin",
+  "homeAdminNewSubject": "New subject",
+  "homeAdminNewSubjectSubtitle": "Add a subject to the catalog",
+  "homeAdminFeePlans": "Fee plans",
+  "homeAdminFeePlansSubtitle": "Review issued + outstanding plans",
+  "homeAdminFeeOperations": "Fee operations",
+  "homeAdminFeeOperationsSubtitle": "Invoiced / collected / outstanding",
+
+  "myChildrenHeaderTotal": "{count, plural, =0{No linked children} =1{1 linked child} other{{count} linked children}}",
+  "@myChildrenHeaderTotal": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "myChildrenHeaderActive": "{active} active · {inactive} withdrawn. Withdrawn links are kept for reference.",
+  "@myChildrenHeaderActive": {
+    "placeholders": {
+      "active": { "type": "int" },
+      "inactive": { "type": "int" }
+    }
+  },
+  "myChildrenHeaderAllActive": "Tap a child to see their grades, attendance, and report cards.",
+  "myChildrenChildCurrent": "Current",
+  "myChildrenChildActive": "Active",
+
+  "meSwitchStudentTitle": "Switch student",
+  "meSwitchStudentSearch": "Search by name or student number",
+  "meSwitchStudentNoResultsTitle": "No students match \"{query}\"",
+  "@meSwitchStudentNoResultsTitle": {
+    "placeholders": {
+      "query": { "type": "String" }
+    }
+  },
+  "meSwitchStudentEmptyTitle": "No students yet",
+  "meSwitchStudentEmptyMessage": "Add a student to the roster, then come back here to pick one.",
+  "meSwitchStudentSearchingTitle": "Searching students",
+  "meSwitchStudentSearchingMessage": "Looking up the roster.",
+  "meSwitchStudentNowActingAs": "Now acting as {name}",
+  "@meSwitchStudentNowActingAs": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+
+  "myClassesHeaderTotal": "{count, plural, =0{No active assignments} =1{1 active assignment} other{{count} active assignments}}",
+  "@myClassesHeaderTotal": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "myClassesHeaderActive": "{active} active · {inactive} inactive. Inactive assignments are kept for reference.",
+  "@myClassesHeaderActive": {
+    "placeholders": {
+      "active": { "type": "int" },
+      "inactive": { "type": "int" }
+    }
+  },
+  "myClassesHeaderAllActive": "Tap a class to see your roster + exams for that subject.",
+  "myClassesEmptyTitle": "No classes assigned",
+  "myClassesEmptyMessage": "You don't have any active teaching assignments yet. When the registrar assigns you to a (class, subject) pair, the class will appear here.",
+  "myClassesLoadingTitle": "Loading your classes",
+  "myClassesLoadingMessage": "Looking up the (class, subject) pairs you teach.",
+  "myClassesChipHomeroom": "Homeroom",
+
+  "classDetailRosterTitle": "Loading roster",
+  "classDetailRosterMessage": "Looking up the students assigned to this class group.",
+  "classDetailRosterEmptyTitle": "No students in this class yet",
+  "classDetailRosterEmptyMessage": "No students are assigned to this class group yet. When the registrar enrols students, they will appear here automatically.",
+  "classDetailHeaderClassGroup": "Class group",
+
+  "childDetailTitleOwn": "My records",
+  "childDetailTitleOther": "Child",
+  "childDetailTabOverview": "Overview",
+  "childDetailTabGrades": "Grades",
+  "childDetailTabAttendance": "Attendance",
+  "childDetailTabReports": "Report cards",
+  "childDetailOverviewKpiGrades": "Grades",
+  "childDetailOverviewKpiAverage": "Average",
+  "childDetailOverviewKpiAttendance": "Attendance",
+  "childDetailOverviewKpiReports": "Report cards",
+  "childDetailOverviewMessageOwn": "A quick summary of your grades, attendance, and report cards. Open a tab above for the full list.",
+  "childDetailOverviewMessageOther": "A quick summary of this child's grades, attendance, and report cards. Open a tab above for the full list.",
+  "childDetailOverviewTitleOwn": "Your records at a glance",
+  "childDetailOverviewTitleOther": "At a glance",
+  "childDetailGradesEmptyTitle": "No grades yet",
+  "childDetailGradesEmptyMessage": "No published grades for this student yet. New grades appear here as soon as teachers release them.",
+  "childDetailAttendanceEmptyTitle": "No attendance recorded",
+  "childDetailAttendanceEmptyMessage": "No attendance has been recorded for this student yet. Daily attendance will appear here as it's captured.",
+  "childDetailReportsEmptyTitle": "No report cards yet",
+  "childDetailReportsEmptyMessage": "No report cards have been published for this student yet. Term summaries appear here once the school releases them.",
+  "childDetailEmptyStateFallback": "Could not load records",
+  "childDetailNoStudentTitle": "No student resolved for this device",
+  "childDetailNoStudentMessage": "We couldn't resolve the student this device is acting as. Sign out and back in, or contact the school office if the issue persists.",
+
+  "feePlansHeaderTotal": "{count, plural, =0{No fee plans} =1{1 fee plan} other{{count} fee plans}}",
+  "@feePlansHeaderTotal": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "feePlansEmptyTitle": "No fee plans yet",
+  "feePlansEmptyMessage": "You don't have any active fee plans yet. When the school issues a plan for your child, it will appear here with the per-line breakdown and a payment status.",
+  "feePlansLoadingTitle": "Loading fee plans",
+  "feePlansLoadingMessage": "Looking up the latest fee plans from the server.",
+  "feePlansBreakdown": "Breakdown",
+
+  "a11yRefreshTooltip": "Refresh",
+  "a11yNotificationsTooltip": "Notifications",
+  "a11ySwitchStudentTooltip": "Switch student",
+  "a11yActingAs": "Acting as {name}",
+  "@a11yActingAs": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "a11yUnreadNotifications": "{count, plural, =0{No unread messages} =1{1 unread message} other{{count} unread messages}}",
+  "@a11yUnreadNotifications": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  }
+}

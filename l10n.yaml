@@ -1,0 +1,25 @@
+# l10n.yaml — Flutter localization config.
+#
+# The mobile supports English (en) and Arabic (ar). The ARB
+# files live in `lib/l10n/`. `flutter gen-l10n` reads this
+# config and emits the typed `AppLocalizations` class under
+# `.dart_tool/flutter_gen/gen_l10n/`.
+#
+# Arabic is RTL — the generated code picks the right
+# `Directionality` automatically; the `MaterialApp` sets
+# `localizationsDelegates` to include both the global
+# delegates and the generated `AppLocalizations.delegate`.
+#
+# Strings are extracted incrementally per the audit: this
+# turn covers the navigation labels, app-bar titles, common
+# button labels, and the high-traffic state-view messages.
+# The remaining ~150 strings are the "future hardening pass"
+# follow-up; the surface is functional in both locales
+# today, just with a handful of hardcoded English strings
+# in long-tail places.
+
+arb-dir: lib/l10n
+template-arb-file: app_en.arb
+output-localization-file: app_localizations.dart
+output-class: AppLocalizations
+nullable-getter: false

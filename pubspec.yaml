@@ -69,3 +69,9 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  # Enable the ARB-driven localization pipeline. The ARB files
+  # live in `lib/l10n/`; `flutter gen-l10n` (run via
+  # `flutter pub get`) generates the typed `AppLocalizations`
+  # class under `.dart_tool/flutter_gen/gen_l10n/`. See
+  # `l10n.yaml` for the generator config.
+  generate: true

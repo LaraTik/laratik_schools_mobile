@@ -32,6 +32,7 @@ import '../features/staff/ui/staff_detail_screen.dart';
 import '../features/staff/ui/staff_list_screen.dart';
 import '../features/teachers/ui/class_detail_screen.dart';
 import '../features/teachers/ui/my_classes_screen.dart';
+import '../l10n/app_localizations.dart';
 import '../ui/app_theme.dart';
 import '../ui/widgets/ls_button.dart';
 import 'dashboard_screen.dart';
@@ -87,15 +88,22 @@ enum ShellTab {
 }
 
 extension ShellTabX on ShellTab {
-  String get label => switch (this) {
-        ShellTab.students => 'Students',
-        ShellTab.staff => 'Staff',
-        ShellTab.guardians => 'Guardians',
-        ShellTab.academics => 'Academics',
-        ShellTab.attendance => 'Attendance',
-        ShellTab.myClasses => 'My classes',
-        ShellTab.fees => 'Fees',
-      };
+  /// Localized tab label. The shell resolves the [BuildContext]
+  /// once per render via `Localizations.localeOf(context)` so
+  /// a runtime locale switch (e.g. a future "language" tile on
+  /// the home) updates the bottom nav in the next frame.
+  String labelFor(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    return switch (this) {
+      ShellTab.students => l.navStudents,
+      ShellTab.staff => l.navStaff,
+      ShellTab.guardians => l.navGuardians,
+      ShellTab.academics => l.navAcademics,
+      ShellTab.attendance => l.navAttendance,
+      ShellTab.myClasses => l.navMyClasses,
+      ShellTab.fees => l.navFees,
+    };
+  }
 
   IconData get icon => switch (this) {
         ShellTab.students => Icons.school_outlined,
@@ -555,7 +563,7 @@ class _ShellScaffold extends ConsumerWidget {
                   NavigationDestination(
                     icon: Icon(tab.icon),
                     selectedIcon: Icon(tab.activeIcon),
-                    label: tab.label,
+                    label: tab.labelFor(context),
                   ),
               ],
             ),
