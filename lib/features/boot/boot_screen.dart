@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/bootstrap.dart';
 import '../../core/result.dart';
+import '../../ui/app_theme.dart';
 import '../../ui/design_tokens.dart';
 import 'boot_context.dart';
+import 'boot_provider.dart';
 import 'boot_service.dart';
-
-import '../../ui/app_theme.dart';
 
 /// Splash screen. Drives the boot pipeline and reports its outcome via the
 /// supplied callbacks. The router reacts to the outcome; this widget is
 /// purely a status surface.
-class BootScreen extends StatefulWidget {
+class BootScreen extends ConsumerStatefulWidget {
   const BootScreen({
     required this.deps,
     required this.onReady,
@@ -24,10 +25,10 @@ class BootScreen extends StatefulWidget {
   final ValueChanged<BootFailure> onError;
 
   @override
-  State<BootScreen> createState() => _BootScreenState();
+  ConsumerState<BootScreen> createState() => _BootScreenState();
 }
 
-class _BootScreenState extends State<BootScreen> {
+class _BootScreenState extends ConsumerState<BootScreen> {
   late final BootService _service = BootService(
     api: widget.deps.api,
     clock: widget.deps.clock,
@@ -45,8 +46,14 @@ class _BootScreenState extends State<BootScreen> {
     if (!mounted) return;
     switch (result) {
       case Ok(value: final ctx):
+        // Publish the context before calling onReady so the shell
+        // and the first frame of the dashboard already see it.
+        ref.read(bootContextProvider.notifier).set(ctx);
         widget.onReady(ctx);
       case Err(:final error):
+        // Clear any stale value before the router redirects to the
+        // error state.
+        ref.read(bootContextProvider.notifier).clear();
         widget.onError(error);
     }
   }

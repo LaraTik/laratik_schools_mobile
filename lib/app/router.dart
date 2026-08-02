@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:laratik_schools_api/laratik_schools_api.dart';
 
@@ -11,6 +12,7 @@ import '../features/assessment/ui/exam_attempt_screen.dart';
 import '../features/assessment/ui/exams_list_screen.dart';
 import '../features/attendance/ui/attendance_capture_screen.dart';
 import '../features/attendance/ui/attendance_list_screen.dart';
+import '../features/boot/boot_provider.dart';
 import '../features/communication/ui/notifications_screen.dart';
 import '../features/guardians/ui/guardian_create_screen.dart';
 import '../features/guardians/ui/guardian_detail_screen.dart';
@@ -31,7 +33,22 @@ import 'login_screen.dart';
 /// model (most-used first, admin surfaces last). Capped at 5 entries per
 /// the Laratik UI rules; the Home dashboard lives on the AppBar action of
 /// every tab instead of taking a slot.
-enum ShellTab { students, staff, guardians, academics, attendance }
+///
+/// `requiredCapability` is the per-tab gate read from the active
+/// [BootContext]. A tab whose gate returns `false` is hidden from
+/// the bottom nav. The shell also falls back to the home dashboard
+/// when no tabs match (e.g. for a parent role, where the 5 registrar
+/// tabs are all hidden) so the user always has somewhere to land.
+enum ShellTab {
+  students('student.read'),
+  staff('staff.read'),
+  guardians('guardian.read'),
+  academics('academics.read'),
+  attendance('attendance.read');
+
+  const ShellTab(this.requiredCapability);
+  final String requiredCapability;
+}
 
 extension ShellTabX on ShellTab {
   String get label => switch (this) {
@@ -243,46 +260,60 @@ GoRouter buildRouter({
   );
 }
 
-class _ShellScaffold extends StatelessWidget {
+class _ShellScaffold extends ConsumerWidget {
   const _ShellScaffold({required this.child});
   final Widget child;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.laratik;
     final location = GoRouterState.of(context).matchedLocation;
-    final active = _activeTabFor(location);
+    // Filter the 5 tab list by the active role's capability map.
+    // A parent (Guardian) typically has zero of the 5 capabilities
+    // and lands on the home dashboard; a Registrar has all 5 and
+    // sees the full bottom nav.
+    final ctx = ref.watch(bootContextProvider);
+    final visibleTabs = ShellTab.values
+        .where((tab) => ctx?.hasCapability(tab.requiredCapability) ?? false)
+        .toList(growable: false);
+    final active = _activeTabFor(location, visibleTabs);
 
     return Scaffold(
       backgroundColor: tokens.surface.canvas,
       body: child,
-      bottomNavigationBar: NavigationBar(
-        backgroundColor: tokens.surface.surface,
-        selectedIndex: ShellTab.values.indexOf(active),
-        onDestinationSelected: (index) {
-          final tab = ShellTab.values[index];
-          context.go(tab.route);
-        },
-        destinations: [
-          for (final tab in ShellTab.values)
-            NavigationDestination(
-              icon: Icon(tab.icon),
-              selectedIcon: Icon(tab.activeIcon),
-              label: tab.label,
+      bottomNavigationBar: visibleTabs.isEmpty
+          ? null
+          : NavigationBar(
+              backgroundColor: tokens.surface.surface,
+              selectedIndex: active == null
+                  ? 0
+                  : visibleTabs
+                      .indexOf(active)
+                      .clamp(0, visibleTabs.length - 1),
+              onDestinationSelected: (index) {
+                final tab = visibleTabs[index];
+                context.go(tab.route);
+              },
+              destinations: [
+                for (final tab in visibleTabs)
+                  NavigationDestination(
+                    icon: Icon(tab.icon),
+                    selectedIcon: Icon(tab.activeIcon),
+                    label: tab.label,
+                  ),
+              ],
             ),
-        ],
-      ),
     );
   }
 
-  ShellTab _activeTabFor(String location) {
+  ShellTab? _activeTabFor(String location, List<ShellTab> visible) {
     if (location == '/shell' || location == '/shell/') {
-      return ShellTab.students;
+      return null;
     }
-    for (final tab in ShellTab.values) {
+    for (final tab in visible) {
       if (location.startsWith(tab.route)) return tab;
     }
-    return ShellTab.students;
+    return null;
   }
 }
 

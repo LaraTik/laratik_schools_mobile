@@ -3,24 +3,61 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../features/assessment/data/current_student_provider.dart';
+import '../features/boot/boot_provider.dart';
 import '../features/communication/data/communication_providers.dart';
 import '../ui/app_theme.dart';
 import '../ui/design_tokens.dart';
 import '../ui/widgets/ls_status_chip.dart';
+import 'parent_home.dart';
+import 'student_home.dart';
 
-/// Operator landing screen. Surfaces the five top-level destinations as
-/// large primary cards so the operator can find the right surface in
-/// one tap. Also renders the current date + the resolved "acting as"
-/// student so the operator can verify the practice-quiz attempt will
-/// be filed against the right person.
+/// Home surface. Routes to a role-specific home based on the
+/// active [LaratikRole]:
+///   * `Student` → [StudentHomeScreen]
+///   * `Guardian` → [ParentHomeScreen]
+///   * everyone else (admin / registrar / teacher / unknown) → the
+///     original "Quick start" surface (kept below for backward
+///     compat and as the default when the boot context hasn't
+///     resolved yet).
+///
+/// The role branching is intentionally additive: the old surface
+/// still works for every role. The new surfaces are read-only
+/// placeholders that hint at what's coming; they don't replace
+/// the admin/registrar flow.
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final role = activeRole(ref);
+    switch (role) {
+      case LaratikRole.student:
+        return const StudentHomeScreen();
+      case LaratikRole.guardian:
+        return const ParentHomeScreen();
+      case LaratikRole.teacher:
+      case LaratikRole.registrar:
+      case LaratikRole.schoolAdmin:
+      case LaratikRole.operator:
+      case LaratikRole.unknown:
+        return const _AdminHomeScreen();
+    }
+  }
+}
+
+/// The original operator home (renamed to [_AdminHomeScreen] for
+/// clarity once the role router was added). Quick-start grid of
+/// the most-used create / capture actions plus the resolved
+/// "acting as" student card.
+class _AdminHomeScreen extends ConsumerWidget {
+  const _AdminHomeScreen();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.laratik;
     final today = _today();
     final currentStudentAsync = ref.watch(currentStudentProvider);
+    final role = activeRole(ref);
     return Scaffold(
       backgroundColor: tokens.surface.canvas,
       appBar: AppBar(
@@ -55,6 +92,11 @@ class DashboardScreen extends ConsumerWidget {
       body: ListView(
         padding: EdgeInsets.all(tokens.space.md),
         children: [
+          if (role != LaratikRole.unknown)
+            Padding(
+              padding: EdgeInsets.only(bottom: tokens.space.sm),
+              child: _RoleChip(tokens: tokens, role: role),
+            ),
           Text(
             'Quick start',
             style: tokens.typography.titleSmall.copyWith(
@@ -84,6 +126,24 @@ class DashboardScreen extends ConsumerWidget {
     final m = now.month.toString().padLeft(2, '0');
     final d = now.day.toString().padLeft(2, '0');
     return '$y-$m-$d';
+  }
+}
+
+class _RoleChip extends StatelessWidget {
+  const _RoleChip({required this.tokens, required this.role});
+  final DesignTokens tokens;
+  final LaratikRole role;
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: LsStatusChip(
+        label: 'Signed in as: ${role.wire}',
+        tone: LsChipTone.brand,
+        icon: Icons.verified_user_outlined,
+      ),
+    );
   }
 }
 
