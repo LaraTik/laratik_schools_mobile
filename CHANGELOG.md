@@ -8,6 +8,71 @@ and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ### Added
 
+- **Teacher surface — "My classes" + per-class detail.** The
+  teacher role now lands on a dedicated home (instead of the
+  registrar's "Quick start") and gets a real "My classes" tab in
+  the bottom nav. New files:
+  - `lib/features/teachers/data/teaching_assignment.dart` —
+    typed model that parses the v1 envelope forward-compatibly
+    (canonical `school_staff` / `school_class_group` /
+    `subject_name` AND legacy `staff` / `class_group` / `subject`).
+  - `lib/features/teachers/data/teachers_failure.dart` — typed
+    failure mirroring `PersonFailure`.
+  - `lib/features/teachers/data/teachers_repository.dart` —
+    wraps `get_school_teaching_assignments`.
+  - `lib/features/teachers/data/teachers_providers.dart` —
+    repository + `MyClassesController` + `classRosterProvider`
+    (family-scoped, filters `get_school_students` by
+    `classGroupId`).
+  - `lib/features/teachers/ui/my_classes_screen.dart` — list of
+    assignments with active-first ordering, "Homeroom" chip on
+    primary assignments, per-class subject chip.
+  - `lib/features/teachers/ui/class_detail_screen.dart` — class
+    identity card + student roster (read-only).
+  - `lib/app/teacher_home.dart` — teacher home with a hero
+    "My classes" tile (live count from `myClassesProvider`) +
+    attendance + notifications tiles.
+  - `test/features/teachers/teachers_repository_test.dart` — 5
+    tests pinning the parse, legacy wire keys, EMPTY_RESPONSE
+    path, and `isPrimary` (1/0 int + bool) handling.
+
+- **Bottom nav fixed (pre-existing bug).** Every `ShellTab`'s
+  `requiredCapability` now uses the canonical v1 wire name
+  (`can_view_students`, `can_view_staff`, etc.) — the previous
+  shorthand (`student.read`, `staff.read`, …) never matched
+  the wire so the nav was silently empty for every role. See
+  `docs/bug-log.md` 2026-08-03.
+
+### Fixed
+
+- **Bottom nav was silently empty.** Updated every `ShellTab`'s
+  `requiredCapability` to the canonical v1 wire name
+  (`can_view_students`, `can_view_staff`, `can_view_guardians`,
+  `can_view_academics`). The previous shorthand names did not
+  match the wire shape returned by `get_permission_context`, so
+  every `hasCapability` lookup returned `false` and the shell
+  fell through to the bare home dashboard for every role.
+  Documented in `docs/bug-log.md` 2026-08-03.
+
+### Changed
+
+- `lib/app/router.dart` — added the `myClasses` tab with
+  optional `role: 'teacher'` gate so it only shows for the
+  teacher role (the v1 server has no
+  `can_view_teaching_assignments` capability, so role-gating
+  is the honest way to keep the teacher-only tab off the
+  registrar's chrome). Added the new route
+  `/shell/teachers/classes` + `/shell/teachers/classes/:id`.
+  Shell filtering now reads the active role's primary role and
+  applies the `role` gate before the capability check.
+- `lib/app/dashboard_screen.dart` — `LaratikRole.teacher` now
+  routes to `TeacherHomeScreen` (was previously routed to the
+  registrar's `_AdminHomeScreen`).
+
+## [Unreleased]
+
+### Added
+
 - **"Switch student" picker** at `/shell/me/switch-student`. The
   registrar / teacher / parent-operator who is reviewing a
   specific student's record now has a real way to change which

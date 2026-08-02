@@ -27,6 +27,8 @@ import '../features/people/ui/students_list_screen.dart';
 import '../features/staff/ui/staff_create_screen.dart';
 import '../features/staff/ui/staff_detail_screen.dart';
 import '../features/staff/ui/staff_list_screen.dart';
+import '../features/teachers/ui/class_detail_screen.dart';
+import '../features/teachers/ui/my_classes_screen.dart';
 import '../ui/app_theme.dart';
 import '../ui/widgets/ls_button.dart';
 import 'dashboard_screen.dart';
@@ -39,19 +41,41 @@ import 'login_screen.dart';
 /// every tab instead of taking a slot.
 ///
 /// `requiredCapability` is the per-tab gate read from the active
-/// [BootContext]. A tab whose gate returns `false` is hidden from
-/// the bottom nav. The shell also falls back to the home dashboard
-/// when no tabs match (e.g. for a parent role, where the 5 registrar
-/// tabs are all hidden) so the user always has somewhere to land.
+/// [BootContext]. The capability names are the **canonical v1 wire
+/// shape** (`can_view_students`, `can_view_staff`, etc. — see
+/// `laratik_schools/core/permissions.py`). An earlier version of
+/// this enum used shorthand (`student.read`, `staff.read`, …) that
+/// never matched the wire, so the bottom nav was silently empty
+/// for every role; see `docs/bug-log.md` 2026-08-03 "Bottom nav
+/// was silently empty: ShellTab.requiredCapability names did not
+/// match the v1 wire".
+///
+/// `requiredRole` is an optional second gate. When set, only the
+/// matching [LaratikRole] sees the tab — used for teacher-only
+/// surfaces (the v1 server does not expose a
+/// `can_view_teaching_assignments` capability, so role-gating
+/// is the honest way to keep the "My classes" tab off the
+/// registrar's chrome).
+///
+/// A tab whose gate returns `false` is hidden from the bottom nav.
+/// The shell also falls back to the home dashboard when no tabs
+/// match (e.g. for a parent role, where the 5 registrar tabs are
+/// all hidden) so the user always has somewhere to land.
 enum ShellTab {
-  students('student.read'),
-  staff('staff.read'),
-  guardians('guardian.read'),
-  academics('academics.read'),
-  attendance('attendance.read');
+  students('can_view_students'),
+  staff('can_view_staff'),
+  guardians('can_view_guardians'),
+  academics('can_view_academics'),
+  attendance('can_view_academics'),
+  myClasses('can_view_academics', role: 'teacher');
 
-  const ShellTab(this.requiredCapability);
+  const ShellTab(this.requiredCapability, {this.role});
   final String requiredCapability;
+
+  /// When set, only the matching role sees the tab. Match is
+  /// case-insensitive against the v1 wire shape (`Teacher`,
+  /// `Student`, `Guardian`, etc.).
+  final String? role;
 }
 
 extension ShellTabX on ShellTab {
@@ -61,6 +85,7 @@ extension ShellTabX on ShellTab {
         ShellTab.guardians => 'Guardians',
         ShellTab.academics => 'Academics',
         ShellTab.attendance => 'Attendance',
+        ShellTab.myClasses => 'My classes',
       };
 
   IconData get icon => switch (this) {
@@ -69,6 +94,7 @@ extension ShellTabX on ShellTab {
         ShellTab.guardians => Icons.people_outline,
         ShellTab.academics => Icons.menu_book_outlined,
         ShellTab.attendance => Icons.fact_check_outlined,
+        ShellTab.myClasses => Icons.class_outlined,
       };
 
   IconData get activeIcon => switch (this) {
@@ -77,6 +103,7 @@ extension ShellTabX on ShellTab {
         ShellTab.guardians => Icons.people,
         ShellTab.academics => Icons.menu_book,
         ShellTab.attendance => Icons.fact_check,
+        ShellTab.myClasses => Icons.class_,
       };
 
   String get route => switch (this) {
@@ -85,6 +112,7 @@ extension ShellTabX on ShellTab {
         ShellTab.guardians => '/shell/guardians',
         ShellTab.academics => '/shell/academics',
         ShellTab.attendance => '/shell/attendance',
+        ShellTab.myClasses => '/shell/teachers/classes',
       };
 }
 
@@ -299,6 +327,28 @@ GoRouter buildRouter({
             name: 'me_switch_student',
             builder: (context, state) => const ActingAsPickerScreen(),
           ),
+          // Teacher surface — "My classes" list + per-class detail.
+          // The list is reached from the "My classes" bottom-nav
+          // tab (role-gated to teachers); the detail is reachable
+          // via deep link from a notification or a future
+          // "open class" intent.
+          GoRoute(
+            path: '/shell/teachers/classes',
+            name: 'my_classes',
+            builder: (context, state) => const MyClassesScreen(),
+            routes: [
+              GoRoute(
+                path: ':classGroupId',
+                name: 'class_detail',
+                builder: (context, state) {
+                  final id = Uri.decodeComponent(
+                    state.pathParameters['classGroupId'] ?? '',
+                  );
+                  return ClassDetailScreen(classGroupId: id);
+                },
+              ),
+            ],
+          ),
         ],
       ),
     ],
@@ -424,9 +474,22 @@ class _ShellScaffold extends ConsumerWidget {
     // and lands on the home dashboard; a Registrar has all 5 and
     // sees the full bottom nav.
     final ctx = ref.watch(bootContextProvider);
-    final visibleTabs = ShellTab.values
-        .where((tab) => ctx?.hasCapability(tab.requiredCapability) ?? false)
-        .toList(growable: false);
+    final primaryRole = ctx?.primaryRole?.toLowerCase();
+    // A tab is visible when:
+    //   * its capability is enabled in the boot context, AND
+    //   * either it has no [ShellTab.role] gate, or the active
+    //     user's primary role matches that gate.
+    // The role gate is what keeps "My classes" off the
+    // registrar's chrome (the v1 server has no
+    // `can_view_teaching_assignments` capability, so the
+    // registrar's `can_view_academics` would otherwise light up
+    // the teacher-only tab too).
+    final visibleTabs = ShellTab.values.where((tab) {
+      final capOk = ctx?.hasCapability(tab.requiredCapability) ?? false;
+      if (!capOk) return false;
+      if (tab.role == null) return true;
+      return primaryRole == tab.role!.toLowerCase();
+    }).toList(growable: false);
     final active = _activeTabFor(location, visibleTabs);
 
     return Scaffold(

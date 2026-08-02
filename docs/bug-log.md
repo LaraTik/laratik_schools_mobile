@@ -359,3 +359,61 @@ Prevention:
   `const \['Grade 1'.*'Grade '` style hard-coded filter
   literals in the codebase and route them through
   `deriveFilterOptions` (or the future real backend endpoint).
+
+### 2026-08-03 — Bottom nav was silently empty: `ShellTab.requiredCapability` names did not match the v1 wire
+
+Symptom: The role-aware shell (introduced in `902738d`) renders
+the bottom navigation bar conditionally on a per-tab capability
+gate. In practice the bottom nav was **always empty** for every
+role — a registrar signed in as `Administrator` saw no tabs at
+all, and the app fell through to the bare home dashboard.
+Reviewed the rendered tree: `_ShellScaffold` was returning
+`bottomNavigationBar: null` because
+`ShellTab.values.where((tab) => ctx?.hasCapability(tab.requiredCapability) ?? false)`
+was filtering out every tab.
+
+Root cause: The `ShellTab` enum in
+`lib/app/router.dart` declared its required capability using
+shorthand names: `student.read`, `staff.read`, `guardian.read`,
+`academics.read`, `attendance.read`. The v1 wire shape (see
+`laratik_schools/laratik_schools/core/permissions.py`) returns
+the canonical names: `can_view_students`, `can_view_staff`,
+`can_view_guardians`, `can_view_academics`. The mobile
+`BootContext.capabilities` map is keyed by the canonical names,
+so every `hasCapability` lookup returned `false` silently. The
+two namespaces were never cross-checked because the earlier
+role-foundation work landed without a live test that exercised
+the tab filtering end-to-end.
+
+Fix:
+- `lib/app/router.dart` — updated every `ShellTab`'s
+  `requiredCapability` to the canonical wire name
+  (`can_view_students`, `can_view_staff`, `can_view_guardians`,
+  `can_view_academics`). Added a new `myClasses` tab with
+  optional `role: 'teacher'` gate so it only shows for the
+  teacher role (the v1 server does not expose a
+  `can_view_teaching_assignments` capability, so role-gating is
+  the honest way to keep the teacher-only tab off the
+  registrar's chrome).
+- The shell filtering now reads the active role's primary role
+  and applies the `role` gate before the capability check.
+- All 5 existing tabs now render for the registrar; the new
+  `myClasses` tab renders for the teacher; the parent + student
+  still see no tabs and fall through to their home (the
+  intended behavior).
+
+Prevention:
+- The rule for any future capability gate: use the canonical
+  v1 wire name verbatim — `can_view_<feature>` — not a
+  shorthand. The shape is owned by the backend; the mobile
+  consumes it as-is.
+- The v1 `permissions.py` should grow a `can_view_teaching`
+  capability (or rename the existing `can_view_academics` to
+  carry the teacher signal) so the mobile can drop the role
+  gate in favor of a pure capability check. Logged as a
+  follow-up on the backend side; not in scope for the mobile
+  change.
+- A future hardening pass should grep for
+  `hasCapability\('(student|staff|guardian|academics|attendance)\.read'\)`
+  in the mobile codebase and route hits through the canonical
+  names.

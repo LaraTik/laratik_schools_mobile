@@ -12,6 +12,19 @@
 > status. The mobile is at the next commit after `902738d`
 > (role-foundation) — this snapshot is updated once that commit
 > lands.
+>
+> Update 2026-08-03 (picker release): "Acting as" picker for the
+> registrar + honest grade / class-group filter derivation in the
+> Students list. The mobile is at `f870b35`. See §3 (Admin gap
+> "Acting as" picker → shipped) and §5 (item #4 + #10 → shipped).
+>
+> Update 2026-08-03 (teacher release): the teacher role now lands
+> on a dedicated home, the bottom nav is finally rendering
+> (fixed a pre-existing bug where `ShellTab.requiredCapability`
+> names did not match the v1 wire), and the "My classes" tab +
+> per-class detail ship. See §3 (Teacher gap "My classes" +
+> "My students" → shipped) and §5 (item #6 → shipped). The
+> mobile is at the next commit after `f870b35`.
 
 This document is the source of truth for what is shipped, what is
 missing per role, and the prioritized roadmap. It supersedes the
@@ -42,14 +55,16 @@ history), or "my report cards" (the consolidated term report).
 
 ### Teacher (primary role: `Teacher`)
 
-The user who teaches classes and marks work. Today: the surface
-treats them as the same as a registrar — they get the same
-Students / Staff / Guardians / Academics / Attendance tabs. The
-auth flow lands them on the same dashboard. Cannot yet: see "my
-classes" (their teaching assignments), see the students in their
-own classes, author exam plans / questions, or manually grade
-exam attempts. The `mark_exam_attempt` API exists server-side and is
-exposed via v1; the mobile has no UI for it.
+The user who teaches classes and marks work. Today: lands on a
+dedicated teacher home with a hero "My classes" tile (live
+count from `myClassesProvider`) + attendance + notifications
+tiles. A new "My classes" tab in the bottom nav lists the
+teaching assignments owned by the current staff member, each
+tappable into the per-class detail (identity card + student
+roster filtered by `classGroupId`). Cannot yet: author exam
+plans / questions, or manually grade exam attempts. The
+`mark_exam_attempt` API exists server-side and is exposed via
+v1; the mobile has no UI for it.
 
 ### Parent (primary role: `Guardian`)
 
@@ -142,12 +157,18 @@ shortcuts.
 
 ### Teacher
 
-- **"My classes"** — no teaching-assignments surface. Backend has
-  `get_school_teaching_assignments`, `get_school_academic_structures`.
-- **"My students"** — the teacher sees the *whole* student roster,
-  not the roster of students in their own classes. *(The backend
-  `is_eligible` check is per-attempt; the mobile pre-attempt list
-  should also be class-scoped.)*
+- **"My classes"** — shipped. `MyClassesScreen` lists the
+  teaching assignments owned by the current staff member
+  (the v1 server is expected to filter to the current user
+  when the session is a teacher role). Active assignments
+  first, "Homeroom" chip on primary assignments, per-class
+  subject chip. Reachable from the "My classes" bottom-nav
+  tab (role-gated to teachers) and deep-linkable at
+  `/shell/teachers/classes`.
+- **"My students" (per-class)** — shipped. `ClassDetailScreen`
+  renders the class identity card + the student roster
+  filtered by `classGroupId`. Reachable from any row in
+  "My classes".
 - **Exam authoring** — no UI to create / publish exam plans or
   questions. Backend has `create_school_exam_plan`,
   `create_school_question`, `publish_school_question`,
@@ -184,10 +205,6 @@ shortcuts.
 These block the app from being called "PROD-ready" even if every
 feature above were built:
 
-- **Role-aware navigation is hard-coded.** The shell has a fixed
-  `ShellTab` enum of 5 tabs. The boot context *already* returns
-  `primaryRole`, `roles`, `capabilities`, and `navigation` — the
-  mobile just doesn't consume them. The single biggest PROD blocker.
 - **CI is broken** — `Flutter analyze + test` fails on `flutter pub
   get` because the `laratik_schools_api` path dep can't resolve
   (`../laratik_schools/contracts/dart`). The `Backend contract drift
@@ -218,7 +235,7 @@ surface. The rest is feature work.
 | 3 | **Parent surface** | "My children" picker + child detail (grades + attendance + reports) | 1 turn | **shipped (family release)** |
 | 4 | **Foundation** | "Acting as" picker for the registrar to switch the active student | 1 turn | **shipped (picker release)** |
 | 5 | **Student surface** | "My grades" + "My attendance" + "My report cards" | 1 turn | **shipped (family release, reuses the parent child-detail widget)** |
-| 6 | **Teacher surface** | "My classes" + exam authoring + manual grading | 2 turns | next turn |
+| 6 | **Teacher surface** | "My classes" + exam authoring + manual grading | 2 turns | **shipped (read-only "My classes" + per-class roster in this turn; exam authoring + manual grading deferred — see audit #6 follow-up)** |
 | 7 | **Admin enhancements** | Fees (read invoices) + Analytics (KPIs) | 2 turns | after #6 |
 | 8 | **Admin enhancements** | Governance (privacy + retention) + Grading (admin side) | 1 turn | after #7 |
 | 9 | **Admin enhancements** | Data import wizard + Operations health | 2 turns | after #8 |
@@ -244,9 +261,9 @@ for role X?" is:
   now see their grades / attendance / report cards under "My
   records" on the home screen. Fee invoices + class-scoped
   notifications are still on the desktop.
-- **Teacher** — *No.* They get the registrar's chrome and no teacher
-  surface. The exam-attempt flow is student-side; teachers cannot
-  author exams or grade them.
+- **Teacher** — *Partially.* They get a real "My classes" tab +
+  per-class detail (student roster). Still missing exam
+  authoring and manual grading.
 - **Parent** — *Partially.* They get a real "My family" home
   with a hero "My children" card, the family picker at
   `/shell/family`, and the per-child detail (Overview / Grades /

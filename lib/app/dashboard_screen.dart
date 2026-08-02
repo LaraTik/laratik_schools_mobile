@@ -10,6 +10,7 @@ import '../ui/design_tokens.dart';
 import '../ui/widgets/ls_status_chip.dart';
 import 'parent_home.dart';
 import 'student_home.dart';
+import 'teacher_home.dart';
 
 /// Home surface. Routes to a role-specific home based on the
 /// active [LaratikRole]:
@@ -36,6 +37,7 @@ class DashboardScreen extends ConsumerWidget {
       case LaratikRole.guardian:
         return const ParentHomeScreen();
       case LaratikRole.teacher:
+        return const TeacherHomeScreen();
       case LaratikRole.registrar:
       case LaratikRole.schoolAdmin:
       case LaratikRole.operator:
