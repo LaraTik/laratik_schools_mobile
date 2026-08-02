@@ -104,8 +104,7 @@ void main() {
       );
       final result = await repo.createStaff(payload);
       expect(result, isA<Ok<StaffCreationResult, PersonFailure>>());
-      final created =
-          (result as Ok<StaffCreationResult, PersonFailure>).value;
+      final created = (result as Ok<StaffCreationResult, PersonFailure>).value;
       expect(created.schoolStaff, 'EDU-STF-2026-00010');
       expect(created.erpnextEmployee, 'EMP-0010');
     });

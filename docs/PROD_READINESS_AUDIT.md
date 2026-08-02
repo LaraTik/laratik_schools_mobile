@@ -5,6 +5,13 @@
 > role can do the things their role implies, the build is green, and
 > the app degrades gracefully on the major failure modes (offline,
 > expired token, capability not granted, version-policy block).
+>
+> Update 2026-08-02 (family + records release): the parent and
+> student gaps for "my children" / "my grades" / "my attendance" /
+> "my report cards" are now closed. See §3 and §5 for the new
+> status. The mobile is at the next commit after `902738d`
+> (role-foundation) — this snapshot is updated once that commit
+> lands.
 
 This document is the source of truth for what is shipped, what is
 missing per role, and the prioritized roadmap. It supersedes the
@@ -117,13 +124,14 @@ shortcuts.
 
 ### Student
 
-- **"My grades"** — the mobile can read `get_school_grade_records`
-  but doesn't show a per-student grade history. *(Phase 5.4 candidate.)*
-- **"My attendance"** — no per-student attendance history view.
-  *(Phase 1.4 left only the capture + global list surfaces.)*
-- **"My report cards"** — the mobile never reads
-  `get_school_report_cards` or `get_school_student_profile`. *(Phase
-  7+ candidate.)*
+- **"My records" surface** — shipped. The student home now has a
+  "My records" tile that opens a four-tab detail (Overview / Grades
+  / Attendance / Report cards) for the active student resolved
+  via `currentStudentProvider`. The detail screen is the same
+  widget used by the parent child-detail route, just with
+  `isOwnRecords: true` so the labels read "Your records" instead
+  of "Your child's records". See
+  `lib/features/family/ui/child_detail_screen.dart`.
 - **"My fee invoices"** — the student can't see their own invoices
   on the mobile. *(Covered under the admin Fees gap above; the
   student's view is a re-skin of the same envelope.)*
@@ -146,14 +154,22 @@ shortcuts.
 
 ### Parent
 
-- **"My children" picker** — the mobile has no parent-specific
-  surface. A parent logged in today lands on the same registrar
-  dashboard.
-- **Child detail (grades + attendance + report cards)** — not built.
-  The backend envelope is the same as a registrar reading
-  `get_school_grade_records` and `get_school_attendance_records` for
-  a specific student; the mobile just needs the right `student_id`
-  filter and the role-aware entry point.
+- **"My children" picker** — shipped. The parent home now renders
+  a hero "My children" card (live count from `familyListProvider`)
+  that jumps into `FamilyHomeScreen` at `/shell/family`. The
+  picker lists the de-duplicated children the parent is linked to
+  (active wins over withdrawn duplicates, withdrawn links stay
+  visible at reduced opacity for reference), each row tappable
+  into the per-child detail. See
+  `lib/features/family/ui/family_home_screen.dart`.
+- **Child detail (grades + attendance + report cards)** —
+  shipped. `ChildDetailScreen` renders the four tabs
+  (Overview / Grades / Attendance / Report cards) using
+  `childRecordsProvider` (a single `FutureProvider.family` that
+  fetches all three record lists in one shot). Client-side
+  filtering by `school_student` because the v1 SDK does not
+  accept that query parameter on the wire (see the comment at
+  the top of `family_repository.dart`).
 - **Fee invoices for my children** — covered under the Fees gap
   above; the parent's view is read-only.
 
@@ -197,12 +213,12 @@ surface. The rest is feature work.
 
 | # | Theme | Item | Estimate | Status |
 | --- | --- | --- | --- | --- |
-| 1 | **Foundation** | `bootContextProvider` + role-aware shell + role-routed dashboard | 1 turn | **shipped in `2acb8b6`** (this turn) |
+| 1 | **Foundation** | `bootContextProvider` + role-aware shell + role-routed dashboard | 1 turn | **shipped in `902738d`** (role-foundation) |
 | 2 | **CI** | Check out the sibling `laratik_schools` repo in `ci.yml` (4 lines) | 15 min | blocked — needs the user to confirm the cross-repo access |
-| 3 | **Parent surface** | "My children" picker + child detail (grades + attendance) | 1 turn | next turn |
-| 4 | **Foundation** | "Acting as" picker for the registrar to switch the active student | 1 turn | after #3 |
-| 5 | **Student surface** | "My grades" + "My attendance" + "My report cards" | 1 turn | after #4 |
-| 6 | **Teacher surface** | "My classes" + exam authoring + manual grading | 2 turns | after #5 |
+| 3 | **Parent surface** | "My children" picker + child detail (grades + attendance + reports) | 1 turn | **shipped (family release)** |
+| 4 | **Foundation** | "Acting as" picker for the registrar to switch the active student | 1 turn | next turn |
+| 5 | **Student surface** | "My grades" + "My attendance" + "My report cards" | 1 turn | **shipped (family release, reuses the parent child-detail widget)** |
+| 6 | **Teacher surface** | "My classes" + exam authoring + manual grading | 2 turns | after #4 |
 | 7 | **Admin enhancements** | Fees (read invoices) + Analytics (KPIs) | 2 turns | after #6 |
 | 8 | **Admin enhancements** | Governance (privacy + retention) + Grading (admin side) | 1 turn | after #7 |
 | 9 | **Admin enhancements** | Data import wizard + Operations health | 2 turns | after #8 |
@@ -224,15 +240,18 @@ for role X?" is:
   (roster, attendance) but cannot review fees, manage imports, see
   the operations health, or respond to privacy requests. Half of
   their job is on the desktop, not the phone.
-- **Student** — *Partially.* They can take exams end-to-end, but
-  cannot see their grades, attendance, or report cards on the
-  phone. The exam flow is solid; everything else is desktop.
+- **Student** — *Partially.* They can take exams end-to-end and
+  now see their grades / attendance / report cards under "My
+  records" on the home screen. Fee invoices + class-scoped
+  notifications are still on the desktop.
 - **Teacher** — *No.* They get the registrar's chrome and no teacher
   surface. The exam-attempt flow is student-side; teachers cannot
   author exams or grade them.
-- **Parent** — *No.* They get the registrar's chrome. No "my
-  children" surface, no grade / attendance / invoice read for their
-  kids.
+- **Parent** — *Partially.* They get a real "My family" home
+  with a hero "My children" card, the family picker at
+  `/shell/family`, and the per-child detail (Overview / Grades /
+  Attendance / Report cards). Fee invoices for their children are
+  still on the desktop.
 
 The source bar is met (the team can scaffold against the v1 Dart
 SDK and the foundation features work). The production bar is not.

@@ -122,8 +122,7 @@ void main() {
         classGroup: 'A',
       );
       expect(result, isA<Ok<AttendanceMarkResult, PersonFailure>>());
-      final created =
-          (result as Ok<AttendanceMarkResult, PersonFailure>).value;
+      final created = (result as Ok<AttendanceMarkResult, PersonFailure>).value;
       expect(created.attendanceRecord, 'EDU-ATT-2026-00010');
       expect(created.attendanceStatus, 'Present');
     });

@@ -274,3 +274,45 @@ Prevention:
 - If/when the app grows a "follow system" / "always light" /
   "always dark" toggle, the theme plumbing is now ready for it
   — the toggle is a one-line `themeMode:` change in `app.dart`.
+
+### 2026-08-02 — `FamilyRepository.listAllRecordsForStudent` cast the wrong result type
+
+Symptom: After the family surface commit, the new
+`listAllRecordsForStudent` failed to type-check: `fvm flutter analyze`
+reported `'Err<Never, FamilyFailure>' is not a subtype of
+'Err<ChildRecordsPage<ChildGradeRecord>, FamilyFailure>'` at
+`family_repository.dart:469`. The corresponding test
+`FamilyRepository.listAllRecordsForStudent surfaces the first
+failure without fetching the rest` also failed with the same cast
+mismatch.
+
+Root cause: The original short-circuit used the
+`is Err<Never, FamilyFailure>` idiom to extract the error from the
+sealed `Result`:
+```dart
+if (grades is Err) {
+  return Err(error: (grades as Err<Never, FamilyFailure>).error);
+}
+```
+The `is Err` narrowed to the raw class but the cast target
+`Err<Never, FamilyFailure>` was a *type-erased* generic that didn't
+match the actual `Err<ChildRecordsPage<ChildGradeRecord>, FamilyFailure>`.
+`Result` is sealed, so the safe pattern is to type-narrow on the
+*concrete* generic instantiation.
+
+Fix: `lib/features/family/data/family_repository.dart` — re-typed the
+short-circuit to `if (gradesResult is Err<ChildRecordsPage<ChildGradeRecord>, FamilyFailure>)`
+and three sibling `is Err<...>` checks. The analyzer and the
+11-test repository suite now both go green.
+
+Prevention:
+- The sealed `Result<T, E>` pattern means: never `as Err<Never, E>`;
+  always narrow on the concrete `T` you declared in the function
+  signature. A future repo that chains `Result` short-circuits should
+  copy the family repository's idiom directly.
+- The test `listAllRecordsForStudent surfaces the first failure
+  without fetching the rest` is the safety net — it deliberately
+  does NOT queue the attendance / report-card stubs so a regression
+  to the broken short-circuit (or a regression that keeps fetching
+  after the first failure) fails loudly with a "No stub queued" error
+  from `FakeLaratikSchoolsTransport`.

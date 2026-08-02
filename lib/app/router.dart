@@ -8,12 +8,15 @@ import '../core/clock.dart';
 import '../core/logging.dart';
 import '../features/academics/ui/academics_screen.dart';
 import '../features/academics/ui/subject_create_screen.dart';
+import '../features/assessment/data/current_student_provider.dart';
 import '../features/assessment/ui/exam_attempt_screen.dart';
 import '../features/assessment/ui/exams_list_screen.dart';
 import '../features/attendance/ui/attendance_capture_screen.dart';
 import '../features/attendance/ui/attendance_list_screen.dart';
 import '../features/boot/boot_provider.dart';
 import '../features/communication/ui/notifications_screen.dart';
+import '../features/family/ui/child_detail_screen.dart';
+import '../features/family/ui/family_home_screen.dart';
 import '../features/guardians/ui/guardian_create_screen.dart';
 import '../features/guardians/ui/guardian_detail_screen.dart';
 import '../features/guardians/ui/guardians_list_screen.dart';
@@ -253,11 +256,148 @@ GoRouter buildRouter({
               ),
             ],
           ),
+          // Family surface — parent "my children" picker + per-child
+          // detail. The v1 server is expected to filter
+          // get_school_guardians to the current user when the session
+          // is a parent; the mobile does not (and should not) issue a
+          // "guardians linked to the current user" query — that
+          // contract is the server's. Deep links work even when the
+          // tab is hidden in the bottom nav (e.g. admin opening
+          // /shell/family/<id> from a notification deep link).
+          GoRoute(
+            path: '/shell/family',
+            name: 'family',
+            builder: (context, state) => const FamilyHomeScreen(),
+            routes: [
+              GoRoute(
+                path: ':studentId',
+                name: 'family_child',
+                builder: (context, state) {
+                  final id = state.pathParameters['studentId'] ?? '';
+                  return ChildDetailScreen(studentId: id);
+                },
+              ),
+            ],
+          ),
+          // Student "my records" — same widget, different label.
+          // Resolves the current student via [currentStudentProvider];
+          // the screen renders a "no student resolved" empty state
+          // when the provider has not loaded.
+          GoRoute(
+            path: '/shell/me/records',
+            name: 'me_records',
+            builder: (context, state) => const _StudentRecordsRoute(),
+          ),
         ],
       ),
     ],
     errorBuilder: (context, state) => const _ErrorScreen(),
   );
+}
+
+/// Resolves the current student and routes into
+/// [ChildDetailScreen] in "own records" mode. Kept as a separate
+/// widget so the router builder stays small and the consumer
+/// (Riverpod) reads the current-student provider in the right
+/// lifecycle (after sign-in, after role resolution).
+class _StudentRecordsRoute extends ConsumerWidget {
+  const _StudentRecordsRoute();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final async = ref.watch(currentStudentProvider);
+    return async.when(
+      data: (current) {
+        if (current == null || current.studentId.isEmpty) {
+          // Fall back to the dashboard rather than show a dead
+          // screen — the user has no resolved student yet, and
+          // there's no useful "My records" content to render.
+          return const _NoStudentForRecords();
+        }
+        return ChildDetailScreen(
+          studentId: current.studentId,
+          title: current.person.fullName.isEmpty
+              ? 'My records'
+              : 'My records · ${current.person.fullName}',
+          isOwnRecords: true,
+        );
+      },
+      loading: () => const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      ),
+      error: (err, _) => _NoStudentForRecords(message: err.toString()),
+    );
+  }
+}
+
+/// Friendly empty / error state for the student "my records" route
+/// when no student is resolved. Surfaces a "Back to home" button
+/// so the user has somewhere to land.
+class _NoStudentForRecords extends StatelessWidget {
+  const _NoStudentForRecords({this.message});
+  final String? message;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.laratik;
+    return Scaffold(
+      backgroundColor: tokens.surface.canvas,
+      appBar: AppBar(
+        backgroundColor: tokens.surface.surface,
+        elevation: 0,
+        title: Text(
+          'My records',
+          style: tokens.typography.titleLarge.copyWith(
+            color: tokens.text.primary,
+          ),
+        ),
+      ),
+      body: Center(
+        child: Padding(
+          padding: EdgeInsets.all(tokens.space.xl),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 480),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.person_off_outlined,
+                  size: 48,
+                  color: tokens.text.tertiary,
+                ),
+                SizedBox(height: tokens.space.md),
+                Text(
+                  'No student resolved for this device',
+                  textAlign: TextAlign.center,
+                  style: tokens.typography.titleMedium.copyWith(
+                    color: tokens.text.primary,
+                  ),
+                ),
+                SizedBox(height: tokens.space.xs),
+                Text(
+                  message ??
+                      "We couldn't resolve the student this device is "
+                          'acting as. Sign out and back in, or contact the '
+                          'school office if the issue persists.',
+                  textAlign: TextAlign.center,
+                  style: tokens.typography.bodyMedium.copyWith(
+                    color: tokens.text.secondary,
+                  ),
+                ),
+                SizedBox(height: tokens.space.lg),
+                LsButton.primary(
+                  label: 'Back to home',
+                  icon: Icons.home_outlined,
+                  expand: false,
+                  onPressed: () => GoRouter.of(context).go('/shell'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class _ShellScaffold extends ConsumerWidget {

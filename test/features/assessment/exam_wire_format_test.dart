@@ -8,7 +8,9 @@ import 'package:laratik_schools_mobile/features/assessment/data/exam.dart';
 
 void main() {
   group('ExamPlan.fromJson', () {
-    test('parses long-form Frappe keys (name, exam_name, max_score, online_status)', () {
+    test(
+        'parses long-form Frappe keys (name, exam_name, max_score, online_status)',
+        () {
       final plan = ExamPlan.fromJson({
         'name': 'EXM-00002',
         'exam_name': 'Arithmetic Practice Quiz',
@@ -42,7 +44,8 @@ void main() {
       expect(plan.published, isFalse);
     });
 
-    test('accepts legacy title/total_marks/published fields for forward compat', () {
+    test('accepts legacy title/total_marks/published fields for forward compat',
+        () {
       final plan = ExamPlan.fromJson({
         'name': 'EXM-00004',
         'title': 'Legacy Midterm',
@@ -66,8 +69,18 @@ void main() {
         'question_type': 'Single Choice',
         'marks': 1,
         'options': [
-          {'option_key': 'A', 'option_text': '10', 'is_correct': 0, 'sequence': 1},
-          {'option_key': 'C', 'option_text': '12', 'is_correct': 1, 'sequence': 3},
+          {
+            'option_key': 'A',
+            'option_text': '10',
+            'is_correct': 0,
+            'sequence': 1
+          },
+          {
+            'option_key': 'C',
+            'option_text': '12',
+            'is_correct': 1,
+            'sequence': 3
+          },
         ],
       });
       expect(q.questionType, ExamQuestion.typeMultiChoice);

@@ -22,6 +22,14 @@ class StudentHomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.laratik;
     final currentStudentAsync = ref.watch(currentStudentProvider);
+    // Pull the resolved CurrentStudent out of the AsyncValue so
+    // the "My records" tile can decide whether to enable its tap
+    // target. Loading / error / null all keep the tile disabled
+    // with a friendly sub-line.
+    final current = currentStudentAsync.maybeWhen(
+      data: (v) => v,
+      orElse: () => null,
+    );
     final unread = ref
             .watch(notificationsListProvider)
             .value
@@ -141,18 +149,23 @@ class StudentHomeScreen extends ConsumerWidget {
           SizedBox(height: tokens.space.sm),
           _SurfaceTile(
             tokens: tokens,
+            icon: Icons.summarize_outlined,
+            title: 'My records',
+            subtitle: current == null
+                ? 'Resolving student…'
+                : 'Grades, attendance, and report cards',
+            onTap:
+                current == null ? null : () => context.go('/shell/me/records'),
+          ),
+          SizedBox(height: tokens.space.sm),
+          _SurfaceTile(
+            tokens: tokens,
             icon: Icons.notifications_outlined,
             title: 'Notifications',
             subtitle: unread == 0
                 ? 'Inbox + announcements'
                 : '$unread unread message${unread == 1 ? '' : 's'}',
             onTap: () => context.go('/shell/notifications'),
-          ),
-          SizedBox(height: tokens.space.lg),
-          _FutureSurfaceCard(
-            tokens: tokens,
-            title: 'Grades, attendance & report cards',
-            message: 'These surfaces land in the next release.',
           ),
         ],
       ),
@@ -290,56 +303,68 @@ class _SurfaceTile extends StatelessWidget {
   final IconData icon;
   final String title;
   final String subtitle;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: tokens.surface.surface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(tokens.radius.md),
-        side: BorderSide(color: tokens.surface.outlineVariant),
-      ),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(tokens.radius.md),
-        child: Padding(
-          padding: EdgeInsets.all(tokens.space.md),
-          child: Row(
-            children: [
-              Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(
-                  color: tokens.brand.primaryContainer,
-                  borderRadius: BorderRadius.circular(tokens.radius.sm),
+    final disabled = onTap == null;
+    final iconBg = disabled
+        ? tokens.surface.surfaceContainerHigh
+        : tokens.brand.primaryContainer;
+    final iconFg =
+        disabled ? tokens.text.tertiary : tokens.brand.onPrimaryContainer;
+    final titleColor = disabled ? tokens.text.secondary : tokens.text.primary;
+    final chevronColor = disabled ? tokens.text.disabled : tokens.text.tertiary;
+    return Semantics(
+      button: !disabled,
+      enabled: !disabled,
+      label: title,
+      child: Material(
+        color: tokens.surface.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(tokens.radius.md),
+          side: BorderSide(color: tokens.surface.outlineVariant),
+        ),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(tokens.radius.md),
+          child: Padding(
+            padding: EdgeInsets.all(tokens.space.md),
+            child: Row(
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: iconBg,
+                    borderRadius: BorderRadius.circular(tokens.radius.sm),
+                  ),
+                  child: Icon(icon, color: iconFg, size: 22),
                 ),
-                child: Icon(icon,
-                    color: tokens.brand.onPrimaryContainer, size: 22),
-              ),
-              SizedBox(width: tokens.space.md),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: tokens.typography.titleSmall.copyWith(
-                        color: tokens.text.primary,
+                SizedBox(width: tokens.space.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: tokens.typography.titleSmall.copyWith(
+                          color: titleColor,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: tokens.space.xxs),
-                    Text(
-                      subtitle,
-                      style: tokens.typography.bodySmall.copyWith(
-                        color: tokens.text.secondary,
+                      SizedBox(height: tokens.space.xxs),
+                      Text(
+                        subtitle,
+                        style: tokens.typography.bodySmall.copyWith(
+                          color: tokens.text.secondary,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              Icon(Icons.chevron_right, color: tokens.text.tertiary),
-            ],
+                Icon(Icons.chevron_right, color: chevronColor),
+              ],
+            ),
           ),
         ),
       ),
@@ -495,55 +520,6 @@ class _ErrorCard extends StatelessWidget {
                   ),
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _FutureSurfaceCard extends StatelessWidget {
-  const _FutureSurfaceCard({
-    required this.tokens,
-    required this.title,
-    required this.message,
-  });
-  final DesignTokens tokens;
-  final String title;
-  final String message;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(tokens.space.md),
-      decoration: BoxDecoration(
-        color: tokens.surface.surface,
-        borderRadius: BorderRadius.circular(tokens.radius.md),
-        border: Border.all(color: tokens.surface.outlineVariant),
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.upcoming_outlined, color: tokens.status.info, size: 22),
-          SizedBox(width: tokens.space.md),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: tokens.typography.titleSmall.copyWith(
-                    color: tokens.text.primary,
-                  ),
-                ),
-                SizedBox(height: tokens.space.xxs),
-                Text(
-                  message,
-                  style: tokens.typography.bodySmall.copyWith(
-                    color: tokens.text.secondary,
-                  ),
                 ),
               ],
             ),

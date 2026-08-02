@@ -158,8 +158,7 @@ void main() {
       );
       final result = await repo.createStudent(payload);
       expect(result, isA<Ok<PersonCreationResult, PersonFailure>>());
-      final created =
-          (result as Ok<PersonCreationResult, PersonFailure>).value;
+      final created = (result as Ok<PersonCreationResult, PersonFailure>).value;
       expect(created.schoolStudent, 'EDU-STU-2026-00010');
       expect(created.countryWasDefaulted, isTrue);
       expect(created.residentialCountryMismatch, isTrue);

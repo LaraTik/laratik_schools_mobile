@@ -100,7 +100,8 @@ void main() {
       final logger = RedactingLogger(clock: clock);
       final session = SessionStore.inMemory(clock: clock, logger: logger);
       final launcher = _StateCapturingLauncher(
-        Uri.parse('laratik://oauth/callback?code=auth-code-1&state=PLACEHOLDER'),
+        Uri.parse(
+            'laratik://oauth/callback?code=auth-code-1&state=PLACEHOLDER'),
       );
       final flow = _buildFlow(
         session: session,
@@ -146,7 +147,8 @@ void main() {
       final logger = RedactingLogger(clock: clock);
       final session = SessionStore.inMemory(clock: clock, logger: logger);
       final launcher = _StateCapturingLauncher(
-        Uri.parse('laratik://oauth/callback?code=auth-code-1&state=PLACEHOLDER'),
+        Uri.parse(
+            'laratik://oauth/callback?code=auth-code-1&state=PLACEHOLDER'),
       );
       final flow = _buildFlow(
         session: session,

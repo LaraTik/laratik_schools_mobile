@@ -169,8 +169,7 @@ void main() {
       expect(args['exam_plan'], 'EDU-EXM-2026-00001');
     });
 
-    test('omits schoolEnrollment from the wire when not supplied',
-        () async {
+    test('omits schoolEnrollment from the wire when not supplied', () async {
       // The wire contract allows the field to be optional (older
       // clients don't pass it). Verify we don't accidentally emit
       // an empty string and trip server-side truthiness checks.

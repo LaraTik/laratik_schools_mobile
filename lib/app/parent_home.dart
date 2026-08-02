@@ -1,18 +1,27 @@
+// SPDX-License-Identifier: Proprietary
+// Parent (guardian) home. Read-mostly surface for the legal
+// guardian of one or more students.
+//
+// The role-aware shell routes here when [LaratikRole.guardian] is
+// the active role (see `dashboard_screen.dart`). The home shows
+// the unread notifications count, a hero "My children" tile that
+// jumps straight into the family picker, and the inbox shortcut.
+//
+// The actual children list lives at `/shell/family` (the
+// FamilyHomeScreen widget). This surface is the lightweight
+// launcher; the picker is the place where the user picks a child
+// and drills into the per-child records.
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../features/communication/data/communication_providers.dart';
+import '../features/family/data/family_providers.dart';
 import '../ui/app_theme.dart';
-import '../ui/widgets/ls_button.dart';
+import '../ui/design_tokens.dart';
+import '../ui/widgets/ls_status_chip.dart';
 
-/// Parent (guardian) home. A read-mostly surface for the legal
-/// guardian of one or more students. Today's build is a
-/// placeholder — the full "my children" picker with per-child
-/// grade / attendance / report cards lands in the next release.
-/// The plumbing is in place: the boot context exposes the
-/// guardian record, the dashboard routes here, and the bottom
-/// nav hides the registrar tabs for guardians.
 class ParentHomeScreen extends ConsumerWidget {
   const ParentHomeScreen({super.key});
 
@@ -26,6 +35,11 @@ class ParentHomeScreen extends ConsumerWidget {
             .where((n) => !n.read)
             .length ??
         0;
+    // Eagerly watch the family list so the "My children" hero card
+    // shows the live count rather than a generic placeholder. The
+    // picker screen re-fetches on its own; this is a read-only
+    // peek to keep the home calm.
+    final familyAsync = ref.watch(familyListProvider);
 
     return Scaffold(
       backgroundColor: tokens.surface.canvas,
@@ -67,46 +81,7 @@ class ParentHomeScreen extends ConsumerWidget {
       body: ListView(
         padding: EdgeInsets.all(tokens.space.md),
         children: [
-          Container(
-            padding: EdgeInsets.all(tokens.space.md),
-            decoration: BoxDecoration(
-              color: tokens.surface.surface,
-              borderRadius: BorderRadius.circular(tokens.radius.md),
-              border: Border.all(color: tokens.surface.outlineVariant),
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.family_restroom_outlined,
-                  color: tokens.brand.primary,
-                ),
-                SizedBox(width: tokens.space.md),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Your linked children',
-                        style: tokens.typography.titleSmall.copyWith(
-                          color: tokens.text.primary,
-                        ),
-                      ),
-                      SizedBox(height: tokens.space.xxs),
-                      Text(
-                        'When the school links you as a guardian, your '
-                        "children's grades, attendance, and report cards "
-                        'will appear here. The full picker lands in the '
-                        'next release.',
-                        style: tokens.typography.bodySmall.copyWith(
-                          color: tokens.text.secondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
+          _HeroFamilyCard(tokens: tokens, familyAsync: familyAsync),
           SizedBox(height: tokens.space.lg),
           Text(
             'Inbox',
@@ -115,54 +90,203 @@ class ParentHomeScreen extends ConsumerWidget {
             ),
           ),
           SizedBox(height: tokens.space.sm),
-          Container(
-            padding: EdgeInsets.all(tokens.space.md),
-            decoration: BoxDecoration(
-              color: tokens.surface.surface,
-              borderRadius: BorderRadius.circular(tokens.radius.md),
-              border: Border.all(color: tokens.surface.outlineVariant),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+          _InboxCard(
+            tokens: tokens,
+            unread: unread,
+            onTap: () => context.go('/shell/notifications'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Hero "My children" card. Shows the live count from
+/// [familyListProvider] when available, otherwise a calm loading
+/// placeholder. Tap → /shell/family.
+class _HeroFamilyCard extends StatelessWidget {
+  const _HeroFamilyCard({required this.tokens, required this.familyAsync});
+  final DesignTokens tokens;
+  final AsyncValue<dynamic> familyAsync;
+
+  @override
+  Widget build(BuildContext context) {
+    final summary = _summaryFor(familyAsync);
+    return Material(
+      color: tokens.brand.primaryContainer,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(tokens.radius.md),
+      ),
+      child: InkWell(
+        onTap: () => context.go('/shell/family'),
+        borderRadius: BorderRadius.circular(tokens.radius.md),
+        child: Padding(
+          padding: EdgeInsets.all(tokens.space.md),
+          child: Row(
+            children: [
+              Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: tokens.surface.surface,
+                  borderRadius: BorderRadius.circular(tokens.radius.sm),
+                ),
+                child: Icon(
+                  Icons.family_restroom_outlined,
+                  color: tokens.brand.primary,
+                  size: 28,
+                ),
+              ),
+              SizedBox(width: tokens.space.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.notifications_outlined,
-                      color: tokens.text.secondary,
-                      size: 18,
-                    ),
-                    SizedBox(width: tokens.space.xs),
                     Text(
-                      unread == 0
-                          ? 'No new messages'
-                          : '$unread unread message${unread == 1 ? '' : 's'}',
+                      'My children',
+                      style: tokens.typography.titleMedium.copyWith(
+                        color: tokens.brand.onPrimaryContainer,
+                      ),
+                    ),
+                    SizedBox(height: tokens.space.xxs),
+                    Text(
+                      summary.message,
+                      style: tokens.typography.bodySmall.copyWith(
+                        color: tokens.brand.onPrimaryContainer,
+                      ),
+                    ),
+                    if (summary.chip != null) ...[
+                      SizedBox(height: tokens.space.xs),
+                      LsStatusChip(
+                        label: summary.chip!,
+                        tone: LsChipTone.brand,
+                        icon: Icons.people_outline,
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              Icon(
+                Icons.chevron_right,
+                color: tokens.brand.onPrimaryContainer,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  _HeroSummary _summaryFor(AsyncValue<dynamic> async) {
+    return async.when(
+      data: (page) {
+        final members = (page as dynamic).members as List<dynamic>? ?? const [];
+        if (members.isEmpty) {
+          return const _HeroSummary(
+            message: "When the school links you as a guardian, your "
+                "children's grades, attendance, and report cards "
+                'will appear here.',
+            chip: null,
+          );
+        }
+        final active =
+            members.where((m) => (m as dynamic).isActive as bool).length;
+        final count = members.length;
+        return _HeroSummary(
+          message: count == 1
+              ? '1 linked child · tap to see grades, attendance, and '
+                  'report cards.'
+              : '$count linked children · $active active. Tap to see '
+                  'grades, attendance, and report cards.',
+          chip: count == 1 ? '1 child' : '$count children',
+        );
+      },
+      loading: () => const _HeroSummary(
+        message: 'Looking up the students you are linked to.',
+        chip: 'Loading…',
+      ),
+      error: (_, __) => const _HeroSummary(
+        message: "We couldn't load your children just now. "
+            'Tap to retry.',
+        chip: 'Try again',
+      ),
+    );
+  }
+}
+
+class _HeroSummary {
+  const _HeroSummary({required this.message, required this.chip});
+  final String message;
+  final String? chip;
+}
+
+class _InboxCard extends StatelessWidget {
+  const _InboxCard({
+    required this.tokens,
+    required this.unread,
+    required this.onTap,
+  });
+  final DesignTokens tokens;
+  final int unread;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: tokens.surface.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(tokens.radius.md),
+        side: BorderSide(color: tokens.surface.outlineVariant),
+      ),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(tokens.radius.md),
+        child: Padding(
+          padding: EdgeInsets.all(tokens.space.md),
+          child: Row(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: tokens.surface.surfaceContainerHigh,
+                  borderRadius: BorderRadius.circular(tokens.radius.sm),
+                ),
+                child: Icon(
+                  unread == 0
+                      ? Icons.notifications_none_outlined
+                      : Icons.notifications_active_outlined,
+                  color: tokens.text.secondary,
+                  size: 22,
+                ),
+              ),
+              SizedBox(width: tokens.space.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Inbox',
                       style: tokens.typography.titleSmall.copyWith(
                         color: tokens.text.primary,
                       ),
                     ),
+                    SizedBox(height: tokens.space.xxs),
+                    Text(
+                      unread == 0
+                          ? 'No new messages'
+                          : '$unread unread message${unread == 1 ? '' : 's'}',
+                      style: tokens.typography.bodySmall.copyWith(
+                        color: tokens.text.secondary,
+                      ),
+                    ),
                   ],
                 ),
-                SizedBox(height: tokens.space.xs),
-                Text(
-                  'Announcements from the school land here, plus '
-                  "anything addressed to your children (absence notes, "
-                  'grade releases, fee reminders).',
-                  style: tokens.typography.bodySmall.copyWith(
-                    color: tokens.text.secondary,
-                  ),
-                ),
-                SizedBox(height: tokens.space.md),
-                LsButton.secondary(
-                  label: 'Open inbox',
-                  icon: Icons.inbox_outlined,
-                  expand: false,
-                  onPressed: () => context.go('/shell/notifications'),
-                ),
-              ],
-            ),
+              ),
+              Icon(Icons.chevron_right, color: tokens.text.tertiary),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

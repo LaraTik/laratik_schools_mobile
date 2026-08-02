@@ -30,11 +30,13 @@ void main() {
       SharedPreferences.setMockInitialValues(const {});
       final transport = _RecordingTransport();
       final clock = FixedClock(DateTime.utc(2026, 7, 27, 12, 0));
-      final session = SessionStore.inMemory(clock: clock, logger: RedactingLogger(clock: clock));
+      final session = SessionStore.inMemory(
+          clock: clock, logger: RedactingLogger(clock: clock));
 
       final deps = await bootstrap(
         config: _testConfig,
-        transportFactory: (baseUrl, logger, c, tokenProvider) async => transport,
+        transportFactory: (baseUrl, logger, c, tokenProvider) async =>
+            transport,
         sessionFactory: (logger, c) async => session,
       );
 
@@ -51,8 +53,7 @@ void main() {
       expect(deps.riverpodOverrides, isNotEmpty);
     });
 
-    test('session starts with no token and a stable installation id',
-        () async {
+    test('session starts with no token and a stable installation id', () async {
       SharedPreferences.setMockInitialValues(const {});
       final transport = _RecordingTransport();
       final clock = FixedClock(DateTime.utc(2026, 7, 27));

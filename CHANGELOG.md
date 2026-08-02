@@ -6,6 +6,71 @@ and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- **Family surface — parent "my children" + per-child detail.** The
+  parent role can now pick from the children they're linked to as a
+  guardian and drill into a per-child detail screen with four tabs:
+  Overview (KPI summary), Grades (score bars + pass/fail chips),
+  Attendance (date list + status chips), and Report cards (term
+  summaries with average score). New files:
+  - `lib/features/family/data/family_failure.dart` — typed failure
+    mirroring `PersonFailure` so the rest of the app can swap
+    surfaces without learning a new error contract.
+  - `lib/features/family/data/family_repository.dart` — wraps
+    `get_school_guardians`, `get_school_grade_records`,
+    `get_school_attendance_records`, `get_school_report_cards`.
+    Flattens the guardian link table into de-duplicated
+    [FamilyMember]s (active wins over withdrawn duplicates) and
+    filters the three record-list APIs client-side by `school_student`
+    because the v1 SDK does not accept that filter on the wire.
+  - `lib/features/family/data/family_providers.dart` — repository
+    provider + `FamilyListController` (async notifier) +
+    `childRecordsProvider` (family FutureProvider).
+  - `lib/features/family/ui/family_home_screen.dart` — parent
+    picker. Hero "My children" card on the parent home now reflects
+    the live count from the family list.
+  - `lib/features/family/ui/child_detail_screen.dart` — reusable
+    detail surface used by both the parent deep link
+    (`/shell/family/:studentId`) and the student "My records" route
+    (`/shell/me/records`); `isOwnRecords` flag toggles the label
+    voice and the overview sub-text.
+  - `test/features/family/family_repository_test.dart` — 11 tests
+    pinning the dedup logic, client-side student filter, the
+    "first failure short-circuits the rest" path, and
+    `FamilyFailure.isRetryable` classification.
+
+- **Student "My records" surface.** The student home replaces the
+  "next release" placeholder with a real "My records" tile that
+  opens `ChildDetailScreen` for the active student (resolved via
+  `currentStudentProvider`). The tile stays disabled with a
+  "Resolving student…" sub-line while the provider is still
+  loading.
+
+- **New routes.** `/shell/family` (parent picker),
+  `/shell/family/:studentId` (parent child detail),
+  `/shell/me/records` (student own records). All three are deep-
+  linkable, work even when the bottom-nav tab is hidden, and live
+  inside the existing `ShellRoute` so they keep the chrome.
+
+### Changed
+
+- `lib/app/parent_home.dart` — replaced the "next release"
+  placeholder with a real hero "My children" card that surfaces
+  the live count from `familyListProvider` and the inbox card.
+  The picker lives at `/shell/family` (deep linkable).
+- `lib/app/student_home.dart` — added the "My records" tile and
+  removed the dead `_FutureSurfaceCard` widget. `_SurfaceTile`
+  now accepts a nullable `onTap` and renders a calm disabled
+  state with `Semantics(button: false)` when the parent can't
+  enable it.
+- `lib/app/router.dart` — added the three new routes + a
+  `_StudentRecordsRoute` resolver widget that reads
+  `currentStudentProvider` and falls back to a friendly "no
+  student resolved" state when the provider has not loaded.
+
+## [Unreleased]
+
 ### Fixed (laratik_schools backend, with user approval)
 
 - **`School Exam Attempt` + `School Outbox Event` Datetime columns
