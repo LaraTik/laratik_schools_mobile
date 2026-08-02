@@ -20,6 +20,7 @@ import '../features/family/ui/family_home_screen.dart';
 import '../features/guardians/ui/guardian_create_screen.dart';
 import '../features/guardians/ui/guardian_detail_screen.dart';
 import '../features/guardians/ui/guardians_list_screen.dart';
+import '../features/me/ui/acting_as_picker_screen.dart';
 import '../features/people/ui/student_create_screen.dart';
 import '../features/people/ui/student_detail_screen.dart';
 import '../features/people/ui/students_list_screen.dart';
@@ -287,6 +288,16 @@ GoRouter buildRouter({
             path: '/shell/me/records',
             name: 'me_records',
             builder: (context, state) => const _StudentRecordsRoute(),
+          ),
+          // "Switch student" picker — the registrar / teacher /
+          // parent-operator who needs to change which student the
+          // mobile is "acting as". Pops back to the caller on
+          // selection; the caller's "Acting as" card re-renders the
+          // new name on next frame.
+          GoRoute(
+            path: '/shell/me/switch-student',
+            name: 'me_switch_student',
+            builder: (context, state) => const ActingAsPickerScreen(),
           ),
         ],
       ),

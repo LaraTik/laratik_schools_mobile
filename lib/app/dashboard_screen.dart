@@ -397,6 +397,7 @@ class _ActingAsCard extends StatelessWidget {
       data: (current) {
         if (current == null) {
           return _row(
+            context,
             tokens,
             icon: Icons.person_outline,
             label: 'No student resolved',
@@ -405,6 +406,7 @@ class _ActingAsCard extends StatelessWidget {
         }
         final name = current.person.fullName;
         return _row(
+          context,
           tokens,
           icon: Icons.person_outline,
           label: 'Acting as: ${name.isEmpty ? current.studentId : name}',
@@ -412,12 +414,14 @@ class _ActingAsCard extends StatelessWidget {
         );
       },
       loading: () => _row(
+        context,
         tokens,
         icon: Icons.hourglass_top_outlined,
         label: 'Resolving student…',
         sub: 'Looking up the active student for this device.',
       ),
       error: (err, _) => _row(
+        context,
         tokens,
         icon: Icons.warning_amber_outlined,
         label: 'Student resolution failed',
@@ -439,6 +443,7 @@ class _ActingAsCard extends StatelessWidget {
   }
 
   Widget _row(
+    BuildContext context,
     DesignTokens tokens, {
     required IconData icon,
     required String label,
@@ -468,6 +473,11 @@ class _ActingAsCard extends StatelessWidget {
               ),
             ],
           ),
+        ),
+        IconButton(
+          tooltip: 'Switch student',
+          icon: const Icon(Icons.swap_horiz),
+          onPressed: () => context.go('/shell/me/switch-student'),
         ),
       ],
     );

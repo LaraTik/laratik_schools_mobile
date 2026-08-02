@@ -316,3 +316,46 @@ Prevention:
   to the broken short-circuit (or a regression that keeps fetching
   after the first failure) fails loudly with a "No stub queued" error
   from `FakeLaratikSchoolsTransport`.
+
+### 2026-08-03 — Students list grade / class-group filter lied to the operator
+
+Symptom: The Students list's "Filter by grade" bottom sheet always
+showed `['Grade 1', 'Grade 2', 'Grade 3', 'Grade 4']` and
+"Filter by class group" always showed `['A', 'B', 'C', 'D']`
+regardless of the school. Picking any of them would narrow the
+list to rows whose `grade` field matched the hard-coded string,
+which silently returned an empty page for schools that use a
+different naming scheme ("Year 1", "KG-2", "Maple", etc.).
+
+Root cause: `lib/features/people/ui/students_list_screen.dart`
+hard-coded the two filter option lists inline (lines 259 and 274
+of the previous revision). The v1 SDK does not expose
+`get_school_grades` / `get_school_class_groups`, so the lists
+were a placeholder — but they shipped to PROD as a literal
+filter UI, which an operator would treat as authoritative.
+
+Fix:
+- `lib/features/people/data/filter_options.dart` (new) — pure
+  `deriveFilterOptions(Iterable<Person> people)` helper that
+  returns the de-duplicated, case-insensitively-sorted grade +
+  class-group strings actually present in the loaded roster.
+- `lib/features/people/ui/students_list_screen.dart` — the
+  bottom sheets now read from `deriveFilterOptions(people)`;
+  when no students are loaded the filter chips render in a
+  disabled state (taps are no-ops) instead of opening a bottom
+  sheet of phantom options.
+- `test/features/people/filter_options_test.dart` (new) — 5
+  tests pin the derivation logic, including the "Year 1 / KG-2"
+  case that proves the previous hard-coded list was a lie.
+
+Prevention:
+- The v1 SDK gap is now documented in
+  `docs/PROD_READINESS_AUDIT.md` as a backend follow-up:
+  add `get_school_grades` and `get_school_class_groups` so the
+  mobile can pre-populate the filter chips without waiting for
+  a student list to be loaded. Until then the derived list is
+  the honest fix.
+- A future hardening pass should grep for
+  `const \['Grade 1'.*'Grade '` style hard-coded filter
+  literals in the codebase and route them through
+  `deriveFilterOptions` (or the future real backend endpoint).

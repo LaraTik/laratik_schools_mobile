@@ -8,6 +8,54 @@ and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ### Added
 
+- **"Switch student" picker** at `/shell/me/switch-student`. The
+  registrar / teacher / parent-operator who is reviewing a
+  specific student's record now has a real way to change which
+  student the mobile is "acting as" — full-screen picker with
+  debounced search, avatar + name + student number per row, and
+  a "Current" chip on the currently-acting student. Selection
+  persists via `SessionStore.setCurrentStudent` and invalidates
+  `currentStudentProvider` so the dashboard + student home
+  re-render the new name on next frame. The picker's choice is
+  deep-linkable and reachable from a new "Switch" icon button
+  on the "Acting as" card in both the student home and the
+  registrar dashboard.
+- `lib/features/me/ui/acting_as_picker_screen.dart` — the
+  picker widget.
+- `lib/features/people/data/filter_options.dart` — the pure
+  `deriveFilterOptions(people)` helper that the Students list
+  now uses to populate its grade + class-group filter chips
+  from the loaded roster (replacing the hard-coded
+  `['Grade 1', 'Grade 2', ...]` and `['A', 'B', 'C', 'D']`
+  that used to lie to the operator when the school uses a
+  different naming scheme).
+- `test/features/people/filter_options_test.dart` — 5 tests
+  pinning the derivation logic (empty input, de-dup, case-
+  insensitive sort, alternative catalog names like "Year 1" /
+  "KG-2", null / empty grade / class-group handling).
+
+### Changed
+
+- `lib/features/people/ui/students_list_screen.dart` — the
+  grade + class-group filter chips are now derived from the
+  loaded students via `deriveFilterOptions(people)`, not
+  hard-coded. When the student list is empty the chips render
+  in a disabled state (taps are no-ops) instead of opening a
+  bottom sheet of phantom options. Backend follow-up: add
+  `get_school_grades` and `get_school_class_groups` so the
+  mobile can pre-populate the chips without waiting for a
+  student list.
+- `lib/app/dashboard_screen.dart` + `lib/app/student_home.dart`
+  — both `_ActingAsCard` widgets now expose a "Switch student"
+  icon button that deep-links to `/shell/me/switch-student`.
+- `lib/app/router.dart` — added the new route inside the
+  existing `ShellRoute` so it keeps the chrome and the bottom
+  nav.
+
+## [Unreleased]
+
+### Added
+
 - **Family surface — parent "my children" + per-child detail.** The
   parent role can now pick from the children they're linked to as a
   guardian and drill into a per-child detail screen with four tabs:

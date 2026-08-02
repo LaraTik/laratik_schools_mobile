@@ -222,6 +222,11 @@ class _ActingAsCard extends ConsumerWidget {
               ],
             ),
           ),
+          IconButton(
+            tooltip: 'Switch student',
+            icon: const Icon(Icons.swap_horiz),
+            onPressed: () => context.go('/shell/me/switch-student'),
+          ),
         ],
       ),
     );

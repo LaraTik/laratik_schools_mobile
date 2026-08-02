@@ -13,6 +13,7 @@ import '../data/person_repository.dart';
 import 'widgets/person_card.dart';
 
 import '../../../ui/app_theme.dart';
+import '../data/filter_options.dart';
 
 /// Students list. Server-paginated keyset (default 50 per page), case-
 /// insensitive name search, grade + class-group filter chips, manual
@@ -221,6 +222,22 @@ class _FilterRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.laratik;
+    final asyncPage = ref.watch(studentsListProvider);
+    // The v1 SDK does not expose a "list grades" / "list class
+    // groups" endpoint today, so the filter values are derived from
+    // the currently loaded students. The previous version
+    // hard-coded `['Grade 1', 'Grade 2', 'Grade 3', 'Grade 4']`
+    // and `['A', 'B', 'C', 'D']` which lied to the operator when
+    // the school uses a different catalog (e.g. "Year 1" or
+    // "KG-2"). The derived list is honest: it shows the grades
+    // and class groups that exist in the data the mobile has
+    // already pulled.
+    final derived = deriveFilterOptions(
+      asyncPage.maybeWhen(
+        data: (page) => page.people,
+        orElse: () => const <Person>[],
+      ),
+    );
     return SizedBox(
       height: 36,
       child: ListView(
@@ -229,13 +246,21 @@ class _FilterRow extends ConsumerWidget {
           _FilterChip(
             label: filter.gradeId ?? 'Grade',
             selected: filter.gradeId != null,
-            onTap: () => _showGradeFilter(context, ref),
+            onTap: derived.grades.isEmpty
+                ? null
+                : () => _showGradeFilter(context, ref, derived.grades),
           ),
           SizedBox(width: tokens.space.xs),
           _FilterChip(
             label: filter.classGroupId ?? 'Class group',
             selected: filter.classGroupId != null,
-            onTap: () => _showClassGroupFilter(context, ref),
+            onTap: derived.classGroups.isEmpty
+                ? null
+                : () => _showClassGroupFilter(
+                      context,
+                      ref,
+                      derived.classGroups,
+                    ),
           ),
           SizedBox(width: tokens.space.xs),
           if (!filter.isEmpty)
@@ -251,12 +276,16 @@ class _FilterRow extends ConsumerWidget {
     );
   }
 
-  void _showGradeFilter(BuildContext context, WidgetRef ref) {
+  void _showGradeFilter(
+    BuildContext context,
+    WidgetRef ref,
+    List<String> options,
+  ) {
     showModalBottomSheet<void>(
       context: context,
       builder: (context) => _SimpleFilterSheet(
         title: 'Filter by grade',
-        options: const ['Grade 1', 'Grade 2', 'Grade 3', 'Grade 4'],
+        options: options,
         onSelected: (value) {
           ref.read(studentsFilterProvider.notifier).update(
                 (f) => f.copyWith(gradeId: value),
@@ -266,12 +295,16 @@ class _FilterRow extends ConsumerWidget {
     );
   }
 
-  void _showClassGroupFilter(BuildContext context, WidgetRef ref) {
+  void _showClassGroupFilter(
+    BuildContext context,
+    WidgetRef ref,
+    List<String> options,
+  ) {
     showModalBottomSheet<void>(
       context: context,
       builder: (context) => _SimpleFilterSheet(
         title: 'Filter by class group',
-        options: const ['A', 'B', 'C', 'D'],
+        options: options,
         onSelected: (value) {
           ref.read(studentsFilterProvider.notifier).update(
                 (f) => f.copyWith(classGroupId: value),

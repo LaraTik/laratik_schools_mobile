@@ -117,10 +117,14 @@ shortcuts.
   `get_school_operations_health`, `get_school_delivery_health`,
   `replay_school_delivery_event`, `get_school_auth_audit_events`,
   `receive_school_delivery_callback`. *(README only.)*
-- **"Acting as" picker** — the mobile currently pins the session to
-  whatever student the dev seed creates. A registrar who is logged
-  in as `Administrator` but reviewing a particular student's record
-  has no in-app way to switch.
+- **"Acting as" picker** — shipped. The "Acting as" card on both
+  the student home and the registrar dashboard now exposes a
+  "Switch student" icon button that opens the full-screen
+  picker at `/shell/me/switch-student`. The picker searches the
+  roster, persists the choice via
+  `SessionStore.setCurrentStudent`, and invalidates
+  `currentStudentProvider` so the next frame re-renders the new
+  name on every dependent surface.
 
 ### Student
 
@@ -192,10 +196,6 @@ feature above were built:
 - **5 pre-existing test failures** in `test/platform/transport_test.dart`
   (2) and `test/features/assessment/current_student_provider_test.dart`
   (3, in the user's in-flight work). Not from the latest commit.
-- **Hard-coded filter values** in `students_list_screen.dart`
-  (`const ['Grade 1', 'Grade 2', ...]`) — will lie to the operator
-  against real data. Needs a `get_school_grades` integration. Flagged
-  in the previous review.
 - **No Arabic locale** — explicitly deferred to a later phase per
   the README. English-only today.
 - **No offline support** — explicitly deferred per the AGENTS.md.
@@ -216,13 +216,13 @@ surface. The rest is feature work.
 | 1 | **Foundation** | `bootContextProvider` + role-aware shell + role-routed dashboard | 1 turn | **shipped in `902738d`** (role-foundation) |
 | 2 | **CI** | Check out the sibling `laratik_schools` repo in `ci.yml` (4 lines) | 15 min | blocked — needs the user to confirm the cross-repo access |
 | 3 | **Parent surface** | "My children" picker + child detail (grades + attendance + reports) | 1 turn | **shipped (family release)** |
-| 4 | **Foundation** | "Acting as" picker for the registrar to switch the active student | 1 turn | next turn |
+| 4 | **Foundation** | "Acting as" picker for the registrar to switch the active student | 1 turn | **shipped (picker release)** |
 | 5 | **Student surface** | "My grades" + "My attendance" + "My report cards" | 1 turn | **shipped (family release, reuses the parent child-detail widget)** |
-| 6 | **Teacher surface** | "My classes" + exam authoring + manual grading | 2 turns | after #4 |
+| 6 | **Teacher surface** | "My classes" + exam authoring + manual grading | 2 turns | next turn |
 | 7 | **Admin enhancements** | Fees (read invoices) + Analytics (KPIs) | 2 turns | after #6 |
 | 8 | **Admin enhancements** | Governance (privacy + retention) + Grading (admin side) | 1 turn | after #7 |
 | 9 | **Admin enhancements** | Data import wizard + Operations health | 2 turns | after #8 |
-| 10 | **Quality** | Hard-coded filter values → real `get_school_grades` | 0.5 turn | after #9 |
+| 10 | **Quality** | Hard-coded filter values → real `get_school_grades` | 0.5 turn | **shipped (picker release, derived from loaded students — backend follow-up: add `get_school_grades` + `get_school_class_groups`)** |
 | 11 | **Quality** | Arabic locale + a11y audit | 1 turn | after #10 |
 
 The estimate is "one focused coding turn" (~30–60 min of focused
