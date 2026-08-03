@@ -8,6 +8,103 @@ and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ### Added
 
+- **Admin "Grading" surface — read-only overview + policies.**
+  Closes roadmap #8 for the grading slice. New files:
+  - `lib/features/grading/data/grading_overview.dart` —
+    typed `GradingOverview`, `SubjectGradePolicy`,
+    `SubjectGradePolicyPage`, `GradingPolicySetupContext`,
+    and `GradingWorkflowStage` models. `GradingOverview`
+    flattens the operations + overview-context endpoints
+    into a single typed model (total / published / draft
+    / average / pass rate + coverage + feature + recent
+    students + workflow stages). The wire field names
+    are forward-compatibly parsed (canonical `total_grades`
+    / `school_subject` / `grade_band` AND legacy `total` /
+    `subject` / `band`). `GradingWorkflowStage.stageFamily`
+    maps the wire stage name to a coarse family
+    (draft / submitted / promoted / corrected / rejected /
+    other) for the chip icon; `toneFamily` exposes the
+    server-defined tone as a string for the UI to map.
+    `GradingOverview.passRatePercent` returns null when
+    no grades are published (avoids the "0% pass on a
+    fresh school" lie).
+  - `lib/features/grading/data/grading_failure.dart` —
+    typed `GradingFailure` mirroring `FeesFailure` /
+    `OperationsFailure` / `GovernanceFailure`.
+  - `lib/features/grading/data/grading_repository.dart` —
+    wraps the v1 endpoints `get_grading_overview_context`,
+    `get_school_grading_operations_overview`,
+    `get_school_subject_grade_policies`, and
+    `get_grading_policy_setup_context` with the canonical
+    `Result<T, E>` + `_failureFromApi` + `_exceptionFailure`
+    pattern. The overview fetch fires the two endpoints
+    in parallel and merges the results.
+  - `lib/features/grading/data/grading_providers.dart` —
+    `gradingRepositoryProvider` +
+    `gradingOverviewProvider` +
+    `gradingPolicySetupContextProvider` +
+    `GradingPoliciesController` (the policies tab's
+    combined view-model that fetches the policy list +
+    the setup context in parallel and exposes them
+    together).
+  - `lib/features/grading/ui/grading_screen.dart` — the
+    two-tab surface (Overview / Policies). The Overview
+    tab renders the four headline KPIs (total / published
+    / draft / average) as a 2x2 / 4-up responsive grid
+    with status colors, then the workflow stages as a
+    chip strip (success / warning / error / info / brand
+    tones), then a feature / coverage / recent-students
+    card for the support team to identify the version.
+    The Policies tab renders the permissions card
+    (managed-doctypes + read roles + required roles as
+    separate chip strips) at the top, then the list of
+    subject grade policies (subject / grade band / pass
+    threshold / status chip with tone per family).
+    Every user-facing string is locale-aware via
+    `AppLocalizations.of(context)`. The chevron mirrors
+    itself under RTL.
+  - `test/features/grading/grading_repository_test.dart` —
+    7 tests pinning the parse (canonical + legacy wire
+    keys, the merged overview fetch, the null pass rate
+    on a fresh school, the typed-failure path, the
+    EMPTY_RESPONSE path, the policy setup context, the
+    workflow stage family mapping).
+  - **~25 new ARB keys** for the grading surface (screen
+    title, tabs, loading / error / KPI labels + sub-titles,
+    workflow header, feature / coverage / recent-students
+    sub-lines, pass-threshold chip, permissions card
+    headers + role labels) in both `app_en.arb` (English
+    source) and `app_ar.arb` (Modern Standard Arabic).
+- **"Grading" tile** on the admin dashboard,
+  capability-gated on `can_manage_branches` (admin-only
+  on the v1 wire; the v1 server does not yet expose a
+  dedicated `can_view_grading` capability — see the
+  audit's §4 follow-up for the future hardening).
+
+### Changed
+
+- `lib/app/router.dart` — added the `/shell/grading`
+  route inside the existing `ShellRoute` so it keeps
+  the chrome + the bottom nav.
+- `lib/app/dashboard_screen.dart` — the admin
+  quick-start now conditionally renders the "Grading"
+  tile when the user can manage branches.
+
+### Tests
+
+- 7 new grading repository tests. Total test count:
+  **126 passed, 5 pre-existing failures** (2 in
+  `test/platform/transport_test.dart`, 3 in the user's
+  in-flight `test/features/assessment/current_student_provider_test.dart`).
+
+## [Unreleased]
+
+### Added
+
+- **Admin "Governance" surface — read-only privacy requests
+
+### Added
+
 - **Admin "Governance" surface — read-only privacy requests
   queue with per-row approve / process / set-legal-hold
   actions.** Closes roadmap #8 for the privacy slice. New

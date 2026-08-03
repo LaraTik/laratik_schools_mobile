@@ -650,6 +650,18 @@ abstract class AppLocalizations {
   /// **'Privacy requests, legal hold, retention'**
   String get homeAdminGovernanceSubtitle;
 
+  /// No description provided for @homeAdminGrading.
+  ///
+  /// In en, this message translates to:
+  /// **'Grading'**
+  String get homeAdminGrading;
+
+  /// No description provided for @homeAdminGradingSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview, policies, per-record review'**
+  String get homeAdminGradingSubtitle;
+
   /// No description provided for @homeAdminNotificationsSubtitle.
   ///
   /// In en, this message translates to:
@@ -1754,6 +1766,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not start retention evaluation.'**
   String get governanceEvaluateRetentionFailure;
+
+  /// No description provided for @gradingScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Grading'**
+  String get gradingScreenTitle;
+
+  /// No description provided for @gradingTabOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview'**
+  String get gradingTabOverview;
+
+  /// No description provided for @gradingTabPolicies.
+  ///
+  /// In en, this message translates to:
+  /// **'Policies'**
+  String get gradingTabPolicies;
+
+  /// No description provided for @gradingLoadingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading grading data'**
+  String get gradingLoadingTitle;
+
+  /// No description provided for @gradingLoadingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Aggregating the latest grade records + policy catalog.'**
+  String get gradingLoadingMessage;
+
+  /// No description provided for @gradingErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load grading data'**
+  String get gradingErrorTitle;
+
+  /// No description provided for @gradingKpiTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total grades'**
+  String get gradingKpiTotal;
+
+  /// No description provided for @gradingKpiTotalSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'All grade records (published + draft)'**
+  String get gradingKpiTotalSubtitle;
+
+  /// No description provided for @gradingKpiPublished.
+  ///
+  /// In en, this message translates to:
+  /// **'Published'**
+  String get gradingKpiPublished;
+
+  /// No description provided for @gradingKpiPublishedSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Promoted to a grade record'**
+  String get gradingKpiPublishedSubtitle;
+
+  /// No description provided for @gradingKpiDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft'**
+  String get gradingKpiDraft;
+
+  /// No description provided for @gradingKpiDraftSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Still pending publish'**
+  String get gradingKpiDraftSubtitle;
+
+  /// No description provided for @gradingKpiAverage.
+  ///
+  /// In en, this message translates to:
+  /// **'Average'**
+  String get gradingKpiAverage;
+
+  /// No description provided for @gradingKpiAverageSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'School-wide published average'**
+  String get gradingKpiAverageSubtitle;
+
+  /// No description provided for @gradingWorkflowHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Workflow'**
+  String get gradingWorkflowHeader;
+
+  /// No description provided for @gradingFeatureHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Feature'**
+  String get gradingFeatureHeader;
+
+  /// No description provided for @gradingFeatureValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Feature: {feature}'**
+  String gradingFeatureValue(String feature);
+
+  /// No description provided for @gradingCoverageValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Coverage: {coverage}'**
+  String gradingCoverageValue(String coverage);
+
+  /// No description provided for @gradingRecentStudentsValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent students: {value}'**
+  String gradingRecentStudentsValue(String value);
+
+  /// No description provided for @gradingPassThresholdValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Pass ≥ {pct}%'**
+  String gradingPassThresholdValue(String pct);
+
+  /// No description provided for @gradingPermissionsHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Permissions'**
+  String get gradingPermissionsHeader;
+
+  /// No description provided for @gradingPermissionsDoctypesValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Manages: {doctypes}'**
+  String gradingPermissionsDoctypesValue(String doctypes);
+
+  /// No description provided for @gradingPermissionsReadRoles.
+  ///
+  /// In en, this message translates to:
+  /// **'Read roles'**
+  String get gradingPermissionsReadRoles;
+
+  /// No description provided for @gradingPermissionsRequiredRoles.
+  ///
+  /// In en, this message translates to:
+  /// **'Required roles for approval'**
+  String get gradingPermissionsRequiredRoles;
 }
 
 class _AppLocalizationsDelegate

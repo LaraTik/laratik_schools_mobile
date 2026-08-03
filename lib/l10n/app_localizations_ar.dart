@@ -357,6 +357,12 @@ class AppLocalizationsAr extends AppLocalizations {
       'طلبات الخصوصية، الحجز القانوني، الاحتفاظ';
 
   @override
+  String get homeAdminGrading => 'الدرجات';
+
+  @override
+  String get homeAdminGradingSubtitle => 'نظرة عامة، السياسات، مراجعة كل سجل';
+
+  @override
   String get homeAdminNotificationsSubtitle => 'صندوق الوارد + الإعلانات';
 
   @override
@@ -1126,4 +1132,88 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get governanceEvaluateRetentionFailure => 'تعذّر بدء تقييم الاحتفاظ.';
+
+  @override
+  String get gradingScreenTitle => 'الدرجات';
+
+  @override
+  String get gradingTabOverview => 'نظرة عامة';
+
+  @override
+  String get gradingTabPolicies => 'السياسات';
+
+  @override
+  String get gradingLoadingTitle => 'جارٍ تحميل بيانات الدرجات';
+
+  @override
+  String get gradingLoadingMessage =>
+      'نجمع أحدث سجلات الدرجات وكتالوج السياسات.';
+
+  @override
+  String get gradingErrorTitle => 'تعذّر تحميل بيانات الدرجات';
+
+  @override
+  String get gradingKpiTotal => 'إجمالي الدرجات';
+
+  @override
+  String get gradingKpiTotalSubtitle =>
+      'كل سجلات الدرجات (المنشورة + المسودات)';
+
+  @override
+  String get gradingKpiPublished => 'منشورة';
+
+  @override
+  String get gradingKpiPublishedSubtitle => 'تم ترقيتها إلى سجل درجات';
+
+  @override
+  String get gradingKpiDraft => 'مسودة';
+
+  @override
+  String get gradingKpiDraftSubtitle => 'لا تزال بانتظار النشر';
+
+  @override
+  String get gradingKpiAverage => 'المتوسط';
+
+  @override
+  String get gradingKpiAverageSubtitle => 'متوسط المنشور على مستوى المدرسة';
+
+  @override
+  String get gradingWorkflowHeader => 'سير العمل';
+
+  @override
+  String get gradingFeatureHeader => 'الميزة';
+
+  @override
+  String gradingFeatureValue(String feature) {
+    return 'الميزة: $feature';
+  }
+
+  @override
+  String gradingCoverageValue(String coverage) {
+    return 'التغطية: $coverage';
+  }
+
+  @override
+  String gradingRecentStudentsValue(String value) {
+    return 'الطلاب الأخيرون: $value';
+  }
+
+  @override
+  String gradingPassThresholdValue(String pct) {
+    return 'النجاح ≥ $pct٪';
+  }
+
+  @override
+  String get gradingPermissionsHeader => 'الأذونات';
+
+  @override
+  String gradingPermissionsDoctypesValue(String doctypes) {
+    return 'يدير: $doctypes';
+  }
+
+  @override
+  String get gradingPermissionsReadRoles => 'أدوار القراءة';
+
+  @override
+  String get gradingPermissionsRequiredRoles => 'الأدوار المطلوبة للموافقة';
 }

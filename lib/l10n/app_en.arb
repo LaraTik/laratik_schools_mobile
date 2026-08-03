@@ -144,6 +144,8 @@
   "homeAdminOperationsSubtitle": "System health, delivery, audit log",
   "homeAdminGovernance": "Governance",
   "homeAdminGovernanceSubtitle": "Privacy requests, legal hold, retention",
+  "homeAdminGrading": "Grading",
+  "homeAdminGradingSubtitle": "Overview, policies, per-record review",
   "homeAdminNotificationsSubtitle": "Inbox + announcements",
 
   "myChildrenHeaderTotal": "{count, plural, =0{No linked children} =1{1 linked child} other{{count} linked children}}",
@@ -521,5 +523,55 @@
   "governanceActionSuccess": "Action applied.",
   "governanceEvaluateRetentionTooltip": "Run retention evaluation",
   "governanceEvaluateRetentionSuccess": "Retention evaluation started.",
-  "governanceEvaluateRetentionFailure": "Could not start retention evaluation."
+  "governanceEvaluateRetentionFailure": "Could not start retention evaluation.",
+
+  "gradingScreenTitle": "Grading",
+  "gradingTabOverview": "Overview",
+  "gradingTabPolicies": "Policies",
+  "gradingLoadingTitle": "Loading grading data",
+  "gradingLoadingMessage": "Aggregating the latest grade records + policy catalog.",
+  "gradingErrorTitle": "Could not load grading data",
+  "gradingKpiTotal": "Total grades",
+  "gradingKpiTotalSubtitle": "All grade records (published + draft)",
+  "gradingKpiPublished": "Published",
+  "gradingKpiPublishedSubtitle": "Promoted to a grade record",
+  "gradingKpiDraft": "Draft",
+  "gradingKpiDraftSubtitle": "Still pending publish",
+  "gradingKpiAverage": "Average",
+  "gradingKpiAverageSubtitle": "School-wide published average",
+  "gradingWorkflowHeader": "Workflow",
+  "gradingFeatureHeader": "Feature",
+  "gradingFeatureValue": "Feature: {feature}",
+  "@gradingFeatureValue": {
+    "placeholders": {
+      "feature": { "type": "String" }
+    }
+  },
+  "gradingCoverageValue": "Coverage: {coverage}",
+  "@gradingCoverageValue": {
+    "placeholders": {
+      "coverage": { "type": "String" }
+    }
+  },
+  "gradingRecentStudentsValue": "Recent students: {value}",
+  "@gradingRecentStudentsValue": {
+    "placeholders": {
+      "value": { "type": "String" }
+    }
+  },
+  "gradingPassThresholdValue": "Pass ≥ {pct}%",
+  "@gradingPassThresholdValue": {
+    "placeholders": {
+      "pct": { "type": "String" }
+    }
+  },
+  "gradingPermissionsHeader": "Permissions",
+  "gradingPermissionsDoctypesValue": "Manages: {doctypes}",
+  "@gradingPermissionsDoctypesValue": {
+    "placeholders": {
+      "doctypes": { "type": "String" }
+    }
+  },
+  "gradingPermissionsReadRoles": "Read roles",
+  "gradingPermissionsRequiredRoles": "Required roles for approval"
 }

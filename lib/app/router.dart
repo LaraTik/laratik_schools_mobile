@@ -26,6 +26,7 @@ import '../features/guardians/ui/guardians_list_screen.dart';
 import '../features/me/ui/acting_as_picker_screen.dart';
 import '../features/operations/ui/operations_health_screen.dart';
 import '../features/governance/ui/governance_screen.dart';
+import '../features/grading/ui/grading_screen.dart';
 import '../features/people/ui/student_create_screen.dart';
 import '../features/people/ui/student_detail_screen.dart';
 import '../features/people/ui/students_list_screen.dart';
@@ -432,6 +433,20 @@ GoRouter buildRouter({
             path: '/shell/governance',
             name: 'governance',
             builder: (context, state) => const GovernanceScreen(),
+          ),
+          // Grading surface — read-only overview + policies.
+          // Reachable from the "Grading" tile on the admin
+          // home (capability-gated on `can_manage_branches` —
+          // admin-only on the v1 wire; the v1 server does not
+          // yet expose a dedicated `can_view_grading`
+          // capability — see the audit's §4 follow-up for
+          // the future hardening). Two tabs (Overview /
+          // Policies) so the admin gets a single place to
+          // see "how is grading going" + the policy catalog.
+          GoRoute(
+            path: '/shell/grading',
+            name: 'grading',
+            builder: (context, state) => const GradingScreen(),
           ),
         ],
       ),

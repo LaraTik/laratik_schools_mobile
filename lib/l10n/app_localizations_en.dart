@@ -345,6 +345,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Privacy requests, legal hold, retention';
 
   @override
+  String get homeAdminGrading => 'Grading';
+
+  @override
+  String get homeAdminGradingSubtitle =>
+      'Overview, policies, per-record review';
+
+  @override
   String get homeAdminNotificationsSubtitle => 'Inbox + announcements';
 
   @override
@@ -1082,4 +1089,87 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get governanceEvaluateRetentionFailure =>
       'Could not start retention evaluation.';
+
+  @override
+  String get gradingScreenTitle => 'Grading';
+
+  @override
+  String get gradingTabOverview => 'Overview';
+
+  @override
+  String get gradingTabPolicies => 'Policies';
+
+  @override
+  String get gradingLoadingTitle => 'Loading grading data';
+
+  @override
+  String get gradingLoadingMessage =>
+      'Aggregating the latest grade records + policy catalog.';
+
+  @override
+  String get gradingErrorTitle => 'Could not load grading data';
+
+  @override
+  String get gradingKpiTotal => 'Total grades';
+
+  @override
+  String get gradingKpiTotalSubtitle => 'All grade records (published + draft)';
+
+  @override
+  String get gradingKpiPublished => 'Published';
+
+  @override
+  String get gradingKpiPublishedSubtitle => 'Promoted to a grade record';
+
+  @override
+  String get gradingKpiDraft => 'Draft';
+
+  @override
+  String get gradingKpiDraftSubtitle => 'Still pending publish';
+
+  @override
+  String get gradingKpiAverage => 'Average';
+
+  @override
+  String get gradingKpiAverageSubtitle => 'School-wide published average';
+
+  @override
+  String get gradingWorkflowHeader => 'Workflow';
+
+  @override
+  String get gradingFeatureHeader => 'Feature';
+
+  @override
+  String gradingFeatureValue(String feature) {
+    return 'Feature: $feature';
+  }
+
+  @override
+  String gradingCoverageValue(String coverage) {
+    return 'Coverage: $coverage';
+  }
+
+  @override
+  String gradingRecentStudentsValue(String value) {
+    return 'Recent students: $value';
+  }
+
+  @override
+  String gradingPassThresholdValue(String pct) {
+    return 'Pass ≥ $pct%';
+  }
+
+  @override
+  String get gradingPermissionsHeader => 'Permissions';
+
+  @override
+  String gradingPermissionsDoctypesValue(String doctypes) {
+    return 'Manages: $doctypes';
+  }
+
+  @override
+  String get gradingPermissionsReadRoles => 'Read roles';
+
+  @override
+  String get gradingPermissionsRequiredRoles => 'Required roles for approval';
 }
