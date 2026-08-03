@@ -1,15 +1,21 @@
 // SPDX-License-Identifier: Proprietary
-// Per-plan detail — read-only exam plan summary + the
-// subject's question catalog + a "Manual grade" action.
+// Per-plan detail — exam plan summary + the subject's
+// question catalog + authoring + manual grading actions.
 //
 // The detail surface shows:
 //   * Status chip + title + subject + exam date +
 //     duration + max score header.
 //   * The subject's question list (one card per
-//     question, with the question text + type + marks).
-//   * **Manual grade** button (bottom) that opens the
-//     manual grade form at
-//     `/shell/teachers/exams/:examPlanId/grade`.
+//     question, with the question text + type + marks
+//     + a per-question "Publish" action).
+//   * **Add question** button → opens the question
+//     authoring form at
+//     `/shell/teachers/exams/:examPlanId/questions/new`.
+//   * **Publish exam** button → calls
+//     `publish_school_online_exam` to freeze the
+//     audience + question list.
+//   * **Manual grade** button → opens the manual grade
+//     form at `/shell/teachers/exams/:examPlanId/grade`.
 //
 // Every user-facing string is locale-aware via
 // [AppLocalizations.of(context)]; the chevron mirrors
@@ -20,6 +26,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/result.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../ui/app_theme.dart';
 import '../../../ui/design_tokens.dart';
@@ -108,6 +115,8 @@ class TeacherExamDetailScreen extends ConsumerWidget {
     final questionsAsync = subject.isEmpty
         ? null
         : ref.watch(teacherExamQuestionsProvider(subject));
+    final publishExamAsync =
+        ref.watch(publishTeacherExamProvider(plan.id));
     return ListView(
       padding: EdgeInsets.fromLTRB(
         tokens.space.md,
@@ -118,11 +127,30 @@ class TeacherExamDetailScreen extends ConsumerWidget {
       children: [
         _Header(tokens: tokens, plan: plan),
         SizedBox(height: tokens.space.lg),
-        Text(
-          l.teacherExamQuestionsHeader,
-          style: tokens.typography.titleSmall.copyWith(
-            color: tokens.text.secondary,
-          ),
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                l.teacherExamQuestionsHeader,
+                style: tokens.typography.titleSmall.copyWith(
+                  color: tokens.text.secondary,
+                ),
+              ),
+            ),
+            LsButton.secondary(
+              label: l.teacherExamAddQuestionAction,
+              icon: Icons.add,
+              expand: false,
+              onPressed: () {
+                final subjectQuery = subject.isEmpty
+                    ? ''
+                    : '?subject=${Uri.encodeComponent(subject)}';
+                context.go(
+                  '/shell/teachers/exams/${Uri.encodeComponent(plan.id)}/questions/new$subjectQuery',
+                );
+              },
+            ),
+          ],
         ),
         SizedBox(height: tokens.space.sm),
         if (questionsAsync == null)
@@ -149,6 +177,7 @@ class TeacherExamDetailScreen extends ConsumerWidget {
                       tokens: tokens,
                       index: i + 1,
                       question: questions[i],
+                      subject: subject,
                     ),
                   ],
                 ],
@@ -166,13 +195,24 @@ class TeacherExamDetailScreen extends ConsumerWidget {
           ),
         SizedBox(height: tokens.space.lg),
         LsButton.primary(
+          label: publishExamAsync.isLoading
+              ? l.teacherExamPublishLoading
+              : l.teacherExamPublishAction,
+          icon: Icons.publish_outlined,
+          expand: true,
+          onPressed: publishExamAsync.isLoading
+              ? null
+              : () => _onPublishExam(context, ref, plan, subject),
+        ),
+        SizedBox(height: tokens.space.sm),
+        LsButton.secondary(
           label: l.teacherExamManualGradeAction,
           icon: Icons.grading_outlined,
           expand: true,
           onPressed: () {
-            final subjectQuery = (plan.subject ?? '').isEmpty
+            final subjectQuery = subject.isEmpty
                 ? ''
-                : '?subject=${Uri.encodeComponent(plan.subject!)}';
+                : '?subject=${Uri.encodeComponent(subject)}';
             context.go(
               '/shell/teachers/exams/${Uri.encodeComponent(plan.id)}/grade$subjectQuery',
             );
@@ -180,6 +220,49 @@ class TeacherExamDetailScreen extends ConsumerWidget {
         ),
       ],
     );
+  }
+
+  Future<void> _onPublishExam(
+    BuildContext context,
+    WidgetRef ref,
+    ExamPlan plan,
+    String subject,
+  ) async {
+    // The mobile does not currently maintain an
+    // "audience" list (the v1 server is expected to
+    // resolve the audience from the plan's
+    // `school_class_group` + branch on publish). The
+    // wire envelope accepts an empty list and the
+    // server fills it in from the plan's class
+    // enrollment. The question list is the per-subject
+    // list rendered on this screen; we pass every
+    // question's id.
+    final questionsAsync = subject.isEmpty
+        ? null
+        : ref.read(teacherExamQuestionsProvider(subject));
+    final questions = questionsAsync?.value ?? const [];
+    final questionIds = <String>[
+      for (final q in questions) q.id,
+    ];
+    final result = await ref
+        .read(publishTeacherExamProvider(plan.id).notifier)
+        .publish(questionIds: questionIds);
+    if (!context.mounted) return;
+    final l = AppLocalizations.of(context);
+    switch (result) {
+      case Ok():
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l.teacherExamPublishedSnack)),
+        );
+      case Err(:final error):
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              l.teacherExamPublishErrorSnack(error.message),
+            ),
+          ),
+        );
+    }
   }
 }
 
@@ -281,19 +364,23 @@ class _Header extends StatelessWidget {
   }
 }
 
-class _QuestionCard extends StatelessWidget {
+class _QuestionCard extends ConsumerWidget {
   const _QuestionCard({
     required this.tokens,
     required this.index,
     required this.question,
+    required this.subject,
   });
   final DesignTokens tokens;
   final int index;
   final TeacherExamQuestion question;
+  final String subject;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
+    final publishAsync =
+        ref.watch(publishTeacherExamQuestionProvider(question.id));
     return Container(
       padding: EdgeInsets.all(tokens.space.md),
       decoration: BoxDecoration(
@@ -347,9 +434,45 @@ class _QuestionCard extends StatelessWidget {
               color: tokens.text.tertiary,
             ),
           ),
+          SizedBox(height: tokens.space.xs),
+          Align(
+            alignment: AlignmentDirectional.centerEnd,
+            child: LsButton.secondary(
+              label: publishAsync.isLoading
+                  ? l.teacherExamQuestionPublishLoading
+                  : l.teacherExamQuestionPublishAction,
+              icon: Icons.publish_outlined,
+              expand: false,
+              onPressed: publishAsync.isLoading
+                  ? null
+                  : () => _onPublish(context, ref),
+            ),
+          ),
         ],
       ),
     );
+  }
+
+  Future<void> _onPublish(BuildContext context, WidgetRef ref) async {
+    final result = await ref
+        .read(publishTeacherExamQuestionProvider(question.id).notifier)
+        .publish(schoolSubject: subject);
+    if (!context.mounted) return;
+    final l = AppLocalizations.of(context);
+    switch (result) {
+      case Ok():
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l.teacherExamQuestionPublishedSnack)),
+        );
+      case Err(:final error):
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              l.teacherExamQuestionPublishErrorSnack(error.message),
+            ),
+          ),
+        );
+    }
   }
 }
 

@@ -1611,4 +1611,93 @@ class AppLocalizationsEn extends AppLocalizations {
   String manualGradeErrorSnack(String message) {
     return 'Grade failed: $message';
   }
+
+  @override
+  String get teacherExamAddQuestionAction => 'Add question';
+
+  @override
+  String get teacherExamPublishAction => 'Publish exam';
+
+  @override
+  String get teacherExamPublishLoading => 'Publishing…';
+
+  @override
+  String get teacherExamPublishedSnack => 'Exam published.';
+
+  @override
+  String teacherExamPublishErrorSnack(String message) {
+    return 'Publish failed: $message';
+  }
+
+  @override
+  String get teacherExamQuestionPublishAction => 'Publish';
+
+  @override
+  String get teacherExamQuestionPublishLoading => 'Publishing…';
+
+  @override
+  String get teacherExamQuestionPublishedSnack => 'Question published.';
+
+  @override
+  String teacherExamQuestionPublishErrorSnack(String message) {
+    return 'Publish failed: $message';
+  }
+
+  @override
+  String get teacherExamQuestionFormTitle => 'Add question';
+
+  @override
+  String get teacherExamQuestionTypeHeader => 'Type';
+
+  @override
+  String get teacherExamQuestionTextHeader => 'Question text';
+
+  @override
+  String get teacherExamQuestionTextLabel => 'Question';
+
+  @override
+  String get teacherExamQuestionTextHint => 'What do you want to ask?';
+
+  @override
+  String get teacherExamQuestionTextRequired => 'Question text is required';
+
+  @override
+  String get teacherExamQuestionMarksHeader => 'Marks';
+
+  @override
+  String get teacherExamQuestionMarksLabel => 'Marks';
+
+  @override
+  String get teacherExamQuestionMarksHint => '1, 2, 5, …';
+
+  @override
+  String get teacherExamQuestionMarksRequired => 'Marks is required';
+
+  @override
+  String get teacherExamQuestionMarksInvalid => 'Enter a whole number';
+
+  @override
+  String get teacherExamQuestionMarksNegative => 'Marks must be greater than 0';
+
+  @override
+  String teacherExamQuestionOptionsHeader(int count) {
+    return 'Options ($count)';
+  }
+
+  @override
+  String get teacherExamQuestionAddOption => 'Add option';
+
+  @override
+  String get teacherExamQuestionSubmitAction => 'Save question';
+
+  @override
+  String get teacherExamQuestionSubmitLoading => 'Saving…';
+
+  @override
+  String get teacherExamQuestionCreatedSnack => 'Question added.';
+
+  @override
+  String teacherExamQuestionErrorSnack(String message) {
+    return 'Save failed: $message';
+  }
 }

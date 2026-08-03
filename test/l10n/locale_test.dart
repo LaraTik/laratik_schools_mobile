@@ -277,6 +277,12 @@ void main() {
         expect(en.teacherExamQuestionsHeader, 'Questions');
         expect(en.teacherExamQuestionFallback, 'Untitled question');
         expect(en.teacherExamManualGradeAction, 'Manual grade entry');
+        expect(en.teacherExamAddQuestionAction, 'Add question');
+        expect(en.teacherExamPublishAction, 'Publish exam');
+        expect(en.teacherExamQuestionFormTitle, 'Add question');
+        expect(en.teacherExamQuestionTextLabel, 'Question');
+        expect(en.teacherExamQuestionMarksLabel, 'Marks');
+        expect(en.teacherExamQuestionSubmitAction, 'Save question');
         expect(en.manualGradeScreenTitle, 'Manual grade');
         expect(en.manualGradeAttemptLabel, 'Attempt ID');
         expect(en.manualGradeAttemptRequired, 'Attempt ID is required');
@@ -299,6 +305,12 @@ void main() {
           () => ar.teacherExamQuestionsHeader,
           () => ar.teacherExamQuestionFallback,
           () => ar.teacherExamManualGradeAction,
+          () => ar.teacherExamAddQuestionAction,
+          () => ar.teacherExamPublishAction,
+          () => ar.teacherExamQuestionFormTitle,
+          () => ar.teacherExamQuestionTextLabel,
+          () => ar.teacherExamQuestionMarksLabel,
+          () => ar.teacherExamQuestionSubmitAction,
           () => ar.manualGradeScreenTitle,
           () => ar.manualGradeAttemptLabel,
           () => ar.manualGradeAttemptRequired,

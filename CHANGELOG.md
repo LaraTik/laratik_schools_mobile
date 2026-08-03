@@ -8,6 +8,24 @@ and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ### Added
 
+- **Teacher exam authoring + per-question publish +
+  exam publish flow.** New question authoring form at
+  `/shell/teachers/exams/:examPlanId/questions/new`
+  (text + type picker [Single Choice / Multiple
+  Choice / True/False / Short Text / Long Text /
+  Numeric] + marks + dynamic options list with per-
+  option "correct" flag) calls `create_school_question`
+  on submit. Each question card on the plan detail
+  now ships a per-question **Publish** action that
+  calls `publish_school_question`. The plan detail
+  now also ships a **Publish exam** action that calls
+  `publish_school_online_exam` to freeze the audience
+  + question list. The new "Add question" + "Publish
+  exam" + per-question "Publish" actions all mint a
+  fresh UUID for the `Idempotency-Key` header. The
+  full question editor + `promote_school_exam_attempt`
+  (per graded attempt → grade record) write flows are
+  deferred to a follow-up turn.
 - **Teacher "Exams" surface — read-only exam plan
   catalog + manual grading form.** New
   `/shell/teachers/exams` route with the per-plan

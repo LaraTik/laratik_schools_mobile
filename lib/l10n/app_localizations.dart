@@ -2588,6 +2588,168 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Grade failed: {message}'**
   String manualGradeErrorSnack(String message);
+
+  /// No description provided for @teacherExamAddQuestionAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Add question'**
+  String get teacherExamAddQuestionAction;
+
+  /// No description provided for @teacherExamPublishAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish exam'**
+  String get teacherExamPublishAction;
+
+  /// No description provided for @teacherExamPublishLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Publishing…'**
+  String get teacherExamPublishLoading;
+
+  /// No description provided for @teacherExamPublishedSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Exam published.'**
+  String get teacherExamPublishedSnack;
+
+  /// No description provided for @teacherExamPublishErrorSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish failed: {message}'**
+  String teacherExamPublishErrorSnack(String message);
+
+  /// No description provided for @teacherExamQuestionPublishAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish'**
+  String get teacherExamQuestionPublishAction;
+
+  /// No description provided for @teacherExamQuestionPublishLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Publishing…'**
+  String get teacherExamQuestionPublishLoading;
+
+  /// No description provided for @teacherExamQuestionPublishedSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Question published.'**
+  String get teacherExamQuestionPublishedSnack;
+
+  /// No description provided for @teacherExamQuestionPublishErrorSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish failed: {message}'**
+  String teacherExamQuestionPublishErrorSnack(String message);
+
+  /// No description provided for @teacherExamQuestionFormTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add question'**
+  String get teacherExamQuestionFormTitle;
+
+  /// No description provided for @teacherExamQuestionTypeHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get teacherExamQuestionTypeHeader;
+
+  /// No description provided for @teacherExamQuestionTextHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Question text'**
+  String get teacherExamQuestionTextHeader;
+
+  /// No description provided for @teacherExamQuestionTextLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Question'**
+  String get teacherExamQuestionTextLabel;
+
+  /// No description provided for @teacherExamQuestionTextHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What do you want to ask?'**
+  String get teacherExamQuestionTextHint;
+
+  /// No description provided for @teacherExamQuestionTextRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Question text is required'**
+  String get teacherExamQuestionTextRequired;
+
+  /// No description provided for @teacherExamQuestionMarksHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Marks'**
+  String get teacherExamQuestionMarksHeader;
+
+  /// No description provided for @teacherExamQuestionMarksLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Marks'**
+  String get teacherExamQuestionMarksLabel;
+
+  /// No description provided for @teacherExamQuestionMarksHint.
+  ///
+  /// In en, this message translates to:
+  /// **'1, 2, 5, …'**
+  String get teacherExamQuestionMarksHint;
+
+  /// No description provided for @teacherExamQuestionMarksRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Marks is required'**
+  String get teacherExamQuestionMarksRequired;
+
+  /// No description provided for @teacherExamQuestionMarksInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a whole number'**
+  String get teacherExamQuestionMarksInvalid;
+
+  /// No description provided for @teacherExamQuestionMarksNegative.
+  ///
+  /// In en, this message translates to:
+  /// **'Marks must be greater than 0'**
+  String get teacherExamQuestionMarksNegative;
+
+  /// No description provided for @teacherExamQuestionOptionsHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Options ({count})'**
+  String teacherExamQuestionOptionsHeader(int count);
+
+  /// No description provided for @teacherExamQuestionAddOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Add option'**
+  String get teacherExamQuestionAddOption;
+
+  /// No description provided for @teacherExamQuestionSubmitAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Save question'**
+  String get teacherExamQuestionSubmitAction;
+
+  /// No description provided for @teacherExamQuestionSubmitLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving…'**
+  String get teacherExamQuestionSubmitLoading;
+
+  /// No description provided for @teacherExamQuestionCreatedSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Question added.'**
+  String get teacherExamQuestionCreatedSnack;
+
+  /// No description provided for @teacherExamQuestionErrorSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Save failed: {message}'**
+  String teacherExamQuestionErrorSnack(String message);
 }
 
 class _AppLocalizationsDelegate

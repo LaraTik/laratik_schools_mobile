@@ -20,6 +20,7 @@
 //     success.
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:laratik_schools_api/laratik_schools_api.dart';
 
 import '../../../core/result.dart';
 import '../../assessment/data/assessment_repository.dart' show ExamPlanPage;
@@ -193,6 +194,146 @@ class CreateTeacherExamPlanController
 final createTeacherExamPlanProvider = AsyncNotifierProvider.autoDispose<
     CreateTeacherExamPlanController, void>(
   CreateTeacherExamPlanController.new,
+);
+
+/// Add a new question to a plan. The screen reads the
+/// current state and calls [submit] from the form action.
+/// On success, the question list provider for the plan's
+/// subject is invalidated so the new row renders in the
+/// plan detail.
+class CreateTeacherExamQuestionController
+    extends AutoDisposeFamilyAsyncNotifier<void, String> {
+  @override
+  Future<void> build(String arg) async {
+    // No-op build; the screen only needs the [submit]
+    // action.
+  }
+
+  /// Add a new question to the named exam plan. The
+  /// `schoolSubject` is required for the per-subject
+  /// question list; `schoolBranch` is optional.
+  Future<Result<String, PersonFailure>> submit({
+    required String examPlan,
+    required String questionText,
+    required String questionType,
+    required int marks,
+    String? schoolSubject,
+    String? schoolBranch,
+    List<JsonMap>? options,
+  }) async {
+    state = const AsyncValue.loading();
+    final repo = ref.read(teacherExamRepositoryProvider);
+    final result = await repo.createQuestion(
+      examPlan: examPlan,
+      questionText: questionText,
+      questionType: questionType,
+      marks: marks,
+      schoolSubject: schoolSubject,
+      schoolBranch: schoolBranch,
+      options: options,
+    );
+    switch (result) {
+      case Ok(:final value):
+        state = const AsyncValue.data(null);
+        if (schoolSubject != null && schoolSubject.isNotEmpty) {
+          ref.invalidate(teacherExamQuestionsProvider(schoolSubject));
+        }
+        ref.invalidate(teacherExamPlansProvider);
+        return Ok(value: value);
+      case Err(:final error):
+        state = AsyncValue.error(error, StackTrace.current);
+        return Err(error: error);
+    }
+  }
+}
+
+final createTeacherExamQuestionProvider = AsyncNotifierProvider.autoDispose
+    .family<CreateTeacherExamQuestionController, void, String>(
+  CreateTeacherExamQuestionController.new,
+);
+
+/// Publish a single question (marks the `School Question`
+/// as ready to be served to students). Family-keyed on
+/// the question id so the per-question publish action
+/// can show its own loading state.
+class PublishTeacherExamQuestionController
+    extends AutoDisposeFamilyAsyncNotifier<void, String> {
+  @override
+  Future<void> build(String arg) async {
+    // No-op build; the screen only needs the [publish]
+    // action.
+  }
+
+  /// Publish the named question. On success, the
+  /// per-subject question list + the plans list are
+  /// invalidated.
+  Future<Result<JsonMap, PersonFailure>> publish({
+    String? schoolSubject,
+  }) async {
+    final id = arg;
+    state = const AsyncValue.loading();
+    final repo = ref.read(teacherExamRepositoryProvider);
+    final result = await repo.publishQuestion(question: id);
+    switch (result) {
+      case Ok(:final value):
+        state = const AsyncValue.data(null);
+        if (schoolSubject != null && schoolSubject.isNotEmpty) {
+          ref.invalidate(teacherExamQuestionsProvider(schoolSubject));
+        }
+        ref.invalidate(teacherExamPlansProvider);
+        return Ok(value: value);
+      case Err(:final error):
+        state = AsyncValue.error(error, StackTrace.current);
+        return Err(error: error);
+    }
+  }
+}
+
+final publishTeacherExamQuestionProvider = AsyncNotifierProvider.autoDispose
+    .family<PublishTeacherExamQuestionController, void, String>(
+  PublishTeacherExamQuestionController.new,
+);
+
+/// Publish the whole exam plan (freeze the audience +
+/// question list). Family-keyed on the plan id.
+class PublishTeacherExamController
+    extends AutoDisposeFamilyAsyncNotifier<void, String> {
+  @override
+  Future<void> build(String arg) async {
+    // No-op build; the screen only needs the [publish]
+    // action.
+  }
+
+  /// Publish the named exam plan. On success, the
+  /// plans list is invalidated so the status chip
+  /// flips to `Published`.
+  Future<Result<JsonMap, PersonFailure>> publish({
+    List<String> questionIds = const [],
+    List<String> audience = const [],
+  }) async {
+    final id = arg;
+    state = const AsyncValue.loading();
+    final repo = ref.read(teacherExamRepositoryProvider);
+    final result = await repo.publishExam(
+      examPlan: id,
+      questionIds: questionIds,
+      audience: audience,
+    );
+    switch (result) {
+      case Ok(:final value):
+        state = const AsyncValue.data(null);
+        ref.invalidate(teacherExamPlansProvider);
+        return Ok(value: value);
+      case Err(:final error):
+        state = AsyncValue.error(error, StackTrace.current);
+        return Err(error: error);
+    }
+  }
+}
+
+final publishTeacherExamProvider = AsyncNotifierProvider.autoDispose
+    .family<PublishTeacherExamController, void, String>(
+  PublishTeacherExamController.new,
 );
 
 /// Resolve a single exam plan by id from the current

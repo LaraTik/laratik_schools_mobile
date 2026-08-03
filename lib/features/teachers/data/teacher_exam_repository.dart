@@ -270,6 +270,122 @@ class TeacherExamRepository {
     }
   }
 
+  /// Add a new question to the school's question catalog
+  /// (and to this exam plan, by way of the `exam_plan`
+  /// field). The wire envelope is permissive
+  /// (`additionalProperties: true` on the server) so the
+  /// mobile forwards the canonical question fields + the
+  /// optional `options` list (one entry per choice option
+  /// for `Single Choice` / `Multiple Choice` / `True/False`
+  /// questions) + the parent exam plan + subject + branch.
+  Future<Result<String, PersonFailure>> createQuestion({
+    required String examPlan,
+    required String questionText,
+    required String questionType,
+    required int marks,
+    String? schoolSubject,
+    String? schoolBranch,
+    List<JsonMap>? options,
+  }) async {
+    try {
+      final response = await _api.createSchoolQuestion(
+        payload: <String, Object?>{
+          'exam_plan': examPlan,
+          'question_text': questionText,
+          'question_type': questionType,
+          'marks': marks,
+          if (schoolSubject != null && schoolSubject.isNotEmpty)
+            'school_subject': schoolSubject,
+          if (schoolBranch != null && schoolBranch.isNotEmpty)
+            'school_branch': schoolBranch,
+          if (options != null && options.isNotEmpty) 'options': options,
+        },
+        idempotencyKey: _uuid.v4(),
+      );
+      final data = response.data;
+      if (response.error != null) {
+        return Err(error: _failureFromApi(response.error));
+      }
+      if (data == null) {
+        return const Err(
+          error: PersonFailure(
+            code: 'EMPTY_RESPONSE',
+            message: 'The server returned no question data.',
+          ),
+        );
+      }
+      return Ok(value: data.question ?? '');
+    } on Exception catch (e) {
+      return Err(error: _exceptionFailure(e));
+    }
+  }
+
+  /// Publish a single question (server-side: marks the
+  /// `School Question` as ready to be served to students).
+  Future<Result<JsonMap, PersonFailure>> publishQuestion({
+    required String question,
+  }) async {
+    try {
+      final response = await _api.publishSchoolQuestion(
+        question: question,
+        idempotencyKey: _uuid.v4(),
+      );
+      final data = response.data;
+      if (response.error != null) {
+        return Err(error: _failureFromApi(response.error));
+      }
+      if (data == null) {
+        return const Err(
+          error: PersonFailure(
+            code: 'EMPTY_RESPONSE',
+            message: 'The server returned no publish data.',
+          ),
+        );
+      }
+      return Ok(value: Map<String, Object?>.from(data.toJson()));
+    } on Exception catch (e) {
+      return Err(error: _exceptionFailure(e));
+    }
+  }
+
+  /// Publish an exam plan — marks the whole exam
+  /// (`School Online Exam`) as Published + freezes the
+  /// audience (list of enrollment rows) + the question
+  /// list. Once published, the plan becomes visible to
+  /// the eligible students via `get_school_exam_plans`
+  /// + `get_school_online_exam_eligibility`.
+  Future<Result<JsonMap, PersonFailure>> publishExam({
+    required String examPlan,
+    List<String> questionIds = const [],
+    List<String> audience = const [],
+  }) async {
+    try {
+      final response = await _api.publishSchoolOnlineExam(
+        payload: <String, Object?>{
+          'exam_plan': examPlan,
+          'questions': questionIds,
+          'audience': audience,
+        },
+        idempotencyKey: _uuid.v4(),
+      );
+      final data = response.data;
+      if (response.error != null) {
+        return Err(error: _failureFromApi(response.error));
+      }
+      if (data == null) {
+        return const Err(
+          error: PersonFailure(
+            code: 'EMPTY_RESPONSE',
+            message: 'The server returned no publish data.',
+          ),
+        );
+      }
+      return Ok(value: Map<String, Object?>.from(data.toJson()));
+    } on Exception catch (e) {
+      return Err(error: _exceptionFailure(e));
+    }
+  }
+
   bool _matchesSubject(JsonMap row, String? subject) {
     if (subject == null || subject.isEmpty) return true;
     final rowSubject =

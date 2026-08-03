@@ -809,5 +809,54 @@
     "placeholders": {
       "message": { "type": "String" }
     }
+  },
+
+  "teacherExamAddQuestionAction": "Add question",
+  "teacherExamPublishAction": "Publish exam",
+  "teacherExamPublishLoading": "Publishing…",
+  "teacherExamPublishedSnack": "Exam published.",
+  "teacherExamPublishErrorSnack": "Publish failed: {message}",
+  "@teacherExamPublishErrorSnack": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
+  "teacherExamQuestionPublishAction": "Publish",
+  "teacherExamQuestionPublishLoading": "Publishing…",
+  "teacherExamQuestionPublishedSnack": "Question published.",
+  "teacherExamQuestionPublishErrorSnack": "Publish failed: {message}",
+  "@teacherExamQuestionPublishErrorSnack": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
+
+  "teacherExamQuestionFormTitle": "Add question",
+  "teacherExamQuestionTypeHeader": "Type",
+  "teacherExamQuestionTextHeader": "Question text",
+  "teacherExamQuestionTextLabel": "Question",
+  "teacherExamQuestionTextHint": "What do you want to ask?",
+  "teacherExamQuestionTextRequired": "Question text is required",
+  "teacherExamQuestionMarksHeader": "Marks",
+  "teacherExamQuestionMarksLabel": "Marks",
+  "teacherExamQuestionMarksHint": "1, 2, 5, …",
+  "teacherExamQuestionMarksRequired": "Marks is required",
+  "teacherExamQuestionMarksInvalid": "Enter a whole number",
+  "teacherExamQuestionMarksNegative": "Marks must be greater than 0",
+  "teacherExamQuestionOptionsHeader": "Options ({count})",
+  "@teacherExamQuestionOptionsHeader": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "teacherExamQuestionAddOption": "Add option",
+  "teacherExamQuestionSubmitAction": "Save question",
+  "teacherExamQuestionSubmitLoading": "Saving…",
+  "teacherExamQuestionCreatedSnack": "Question added.",
+  "teacherExamQuestionErrorSnack": "Save failed: {message}",
+  "@teacherExamQuestionErrorSnack": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
   }
 }

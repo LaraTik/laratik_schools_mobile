@@ -373,4 +373,191 @@ void main() {
       expect(err.code, 'EXAM_PLAN_VALIDATION_FAILED');
     });
   });
+
+  group('TeacherExamRepository.createQuestion', () {
+    test(
+      'mints a fresh idempotency key + forwards the question payload + '
+      'options',
+      () async {
+        final transport = FakeLaratikSchoolsTransport();
+        transport.respondOnce(
+          LaratikSchoolsApiMethods.createSchoolQuestion,
+          envelopeOk({'question': 'Q-NEW', 'status': 'Draft', 'version': 1}),
+        );
+        final repo = makeRepo(transport);
+        final result = await repo.createQuestion(
+          examPlan: 'EX-001',
+          questionText: 'What is 2 + 2?',
+          questionType: 'Single Choice',
+          marks: 5,
+          schoolSubject: 'Mathematics',
+          options: const [
+            {'option_key': 'OPT-1', 'option_text': '3', 'is_correct': false},
+            {'option_key': 'OPT-2', 'option_text': '4', 'is_correct': true},
+          ],
+        );
+        expect(result, isA<Ok<String, PersonFailure>>());
+        expect((result as Ok).value, 'Q-NEW');
+        final payload =
+            transport.invokedArguments.last['payload'] as JsonMap;
+        expect(payload['exam_plan'], 'EX-001');
+        expect(payload['question_text'], 'What is 2 + 2?');
+        expect(payload['question_type'], 'Single Choice');
+        expect(payload['marks'], 5);
+        expect(payload['school_subject'], 'Mathematics');
+        final options = payload['options'] as List;
+        expect(options.length, 2);
+        expect((options[1] as Map)['is_correct'], isTrue);
+        final key = transport.invokedIdempotencyKey;
+        expect(key, isNotNull);
+        expect(key!.length, greaterThanOrEqualTo(8));
+      },
+    );
+
+    test('omits empty options list from the payload', () async {
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondOnce(
+        LaratikSchoolsApiMethods.createSchoolQuestion,
+        envelopeOk({'question': 'Q-NEW'}),
+      );
+      final repo = makeRepo(transport);
+      await repo.createQuestion(
+        examPlan: 'EX-001',
+        questionText: 'Explain photosynthesis.',
+        questionType: 'Long Text',
+        marks: 10,
+      );
+      final payload =
+          transport.invokedArguments.last['payload'] as JsonMap;
+      expect(payload.containsKey('options'), isFalse);
+      expect(payload.containsKey('school_subject'), isFalse);
+    });
+
+    test('surfaces a typed error code from the wire', () async {
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondError(
+        LaratikSchoolsApiMethods.createSchoolQuestion,
+        const ApiError(
+          code: 'EXAM_QUESTION_VALIDATION_FAILED',
+          message: 'Question text is required.',
+        ),
+      );
+      final repo = makeRepo(transport);
+      final result = await repo.createQuestion(
+        examPlan: 'EX-001',
+        questionText: '',
+        questionType: 'Short Text',
+        marks: 1,
+      );
+      expect(result, isA<Err<String, PersonFailure>>());
+      final err = (result as Err).error as PersonFailure;
+      expect(err.code, 'EXAM_QUESTION_VALIDATION_FAILED');
+    });
+  });
+
+  group('TeacherExamRepository.publishQuestion', () {
+    test(
+      'mints a fresh idempotency key + forwards the question id',
+      () async {
+        final transport = FakeLaratikSchoolsTransport();
+        transport.respondOnce(
+          LaratikSchoolsApiMethods.publishSchoolQuestion,
+          envelopeOk({'question': 'Q-001', 'status': 'Published'}),
+        );
+        final repo = makeRepo(transport);
+        final result = await repo.publishQuestion(question: 'Q-001');
+        expect(result, isA<Ok<JsonMap, PersonFailure>>());
+        final value = (result as Ok).value as JsonMap;
+        expect(value['status'], 'Published');
+        // The publish endpoint forwards `question` as a
+        // top-level argument (not a payload-wrapped map).
+        expect(transport.invokedArguments.last['question'], 'Q-001');
+        final key = transport.invokedIdempotencyKey;
+        expect(key, isNotNull);
+        expect(key!.length, greaterThanOrEqualTo(8));
+      },
+    );
+
+    test('surfaces a typed error code from the wire', () async {
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondError(
+        LaratikSchoolsApiMethods.publishSchoolQuestion,
+        const ApiError(
+          code: 'QUESTION_NOT_FOUND',
+          message: 'Question was not found.',
+        ),
+      );
+      final repo = makeRepo(transport);
+      final result = await repo.publishQuestion(question: 'Q-XYZ');
+      expect(result, isA<Err<JsonMap, PersonFailure>>());
+      final err = (result as Err).error as PersonFailure;
+      expect(err.code, 'QUESTION_NOT_FOUND');
+    });
+  });
+
+  group('TeacherExamRepository.publishExam', () {
+    test(
+      'mints a fresh idempotency key + forwards the exam plan id + the '
+      'question ids + the audience list',
+      () async {
+        final transport = FakeLaratikSchoolsTransport();
+        transport.respondOnce(
+          LaratikSchoolsApiMethods.publishSchoolOnlineExam,
+          envelopeOk({
+            'exam_plan': 'EX-001',
+            'publication_version': 1,
+            'status': 'Published',
+          }),
+        );
+        final repo = makeRepo(transport);
+        final result = await repo.publishExam(
+          examPlan: 'EX-001',
+          questionIds: const ['Q-001', 'Q-002', 'Q-003'],
+          audience: const ['ENR-A', 'ENR-B'],
+        );
+        expect(result, isA<Ok<JsonMap, PersonFailure>>());
+        final value = (result as Ok).value as JsonMap;
+        expect(value['exam_plan'], 'EX-001');
+        expect(value['status'], 'Published');
+        final payload =
+            transport.invokedArguments.last['payload'] as JsonMap;
+        expect(payload['exam_plan'], 'EX-001');
+        expect(payload['questions'], ['Q-001', 'Q-002', 'Q-003']);
+        expect(payload['audience'], ['ENR-A', 'ENR-B']);
+        final key = transport.invokedIdempotencyKey;
+        expect(key, isNotNull);
+        expect(key!.length, greaterThanOrEqualTo(8));
+      },
+    );
+
+    test('defaults to empty question + audience lists', () async {
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondOnce(
+        LaratikSchoolsApiMethods.publishSchoolOnlineExam,
+        envelopeOk({'exam_plan': 'EX-001', 'status': 'Published'}),
+      );
+      final repo = makeRepo(transport);
+      await repo.publishExam(examPlan: 'EX-001');
+      final payload =
+          transport.invokedArguments.last['payload'] as JsonMap;
+      expect(payload['questions'], isEmpty);
+      expect(payload['audience'], isEmpty);
+    });
+
+    test('surfaces a typed error code from the wire', () async {
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondError(
+        LaratikSchoolsApiMethods.publishSchoolOnlineExam,
+        const ApiError(
+          code: 'EXAM_PLAN_NOT_FOUND',
+          message: 'Exam plan was not found.',
+        ),
+      );
+      final repo = makeRepo(transport);
+      final result = await repo.publishExam(examPlan: 'EX-XYZ');
+      expect(result, isA<Err<JsonMap, PersonFailure>>());
+      final err = (result as Err).error as PersonFailure;
+      expect(err.code, 'EXAM_PLAN_NOT_FOUND');
+    });
+  });
 }

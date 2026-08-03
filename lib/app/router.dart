@@ -40,6 +40,7 @@ import '../features/teachers/ui/class_detail_screen.dart';
 import '../features/teachers/ui/manual_grade_screen.dart';
 import '../features/teachers/ui/my_classes_screen.dart';
 import '../features/teachers/ui/teacher_exam_detail_screen.dart';
+import '../features/teachers/ui/teacher_exam_question_form_screen.dart';
 import '../features/teachers/ui/teacher_exams_screen.dart';
 import '../l10n/app_localizations.dart';
 import '../ui/app_theme.dart';
@@ -405,6 +406,21 @@ GoRouter buildRouter({
                   return TeacherExamDetailScreen(examPlan: id);
                 },
                 routes: [
+                  GoRoute(
+                    path: 'questions/new',
+                    name: 'teacher_exam_question_new',
+                    builder: (context, state) {
+                      final id = Uri.decodeComponent(
+                        state.pathParameters['examPlanId'] ?? '',
+                      );
+                      final subject = state.uri
+                          .queryParameters['subject'] ?? '';
+                      return TeacherExamQuestionFormScreen(
+                        examPlan: id,
+                        subject: subject,
+                      );
+                    },
+                  ),
                   GoRoute(
                     path: 'grade',
                     name: 'manual_grade',

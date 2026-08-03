@@ -1668,4 +1668,94 @@ class AppLocalizationsAr extends AppLocalizations {
   String manualGradeErrorSnack(String message) {
     return 'فشل التصحيح: $message';
   }
+
+  @override
+  String get teacherExamAddQuestionAction => 'إضافة سؤال';
+
+  @override
+  String get teacherExamPublishAction => 'اعتماد الاختبار';
+
+  @override
+  String get teacherExamPublishLoading => 'جارٍ الاعتماد…';
+
+  @override
+  String get teacherExamPublishedSnack => 'تم اعتماد الاختبار.';
+
+  @override
+  String teacherExamPublishErrorSnack(String message) {
+    return 'فشل الاعتماد: $message';
+  }
+
+  @override
+  String get teacherExamQuestionPublishAction => 'اعتماد';
+
+  @override
+  String get teacherExamQuestionPublishLoading => 'جارٍ الاعتماد…';
+
+  @override
+  String get teacherExamQuestionPublishedSnack => 'تم اعتماد السؤال.';
+
+  @override
+  String teacherExamQuestionPublishErrorSnack(String message) {
+    return 'فشل الاعتماد: $message';
+  }
+
+  @override
+  String get teacherExamQuestionFormTitle => 'إضافة سؤال';
+
+  @override
+  String get teacherExamQuestionTypeHeader => 'النوع';
+
+  @override
+  String get teacherExamQuestionTextHeader => 'نص السؤال';
+
+  @override
+  String get teacherExamQuestionTextLabel => 'السؤال';
+
+  @override
+  String get teacherExamQuestionTextHint => 'ماذا تريد أن تسأل؟';
+
+  @override
+  String get teacherExamQuestionTextRequired => 'نص السؤال مطلوب';
+
+  @override
+  String get teacherExamQuestionMarksHeader => 'الدرجة';
+
+  @override
+  String get teacherExamQuestionMarksLabel => 'الدرجة';
+
+  @override
+  String get teacherExamQuestionMarksHint => '1، 2، 5، …';
+
+  @override
+  String get teacherExamQuestionMarksRequired => 'الدرجة مطلوبة';
+
+  @override
+  String get teacherExamQuestionMarksInvalid => 'أدخل رقمًا صحيحًا';
+
+  @override
+  String get teacherExamQuestionMarksNegative =>
+      'يجب أن تكون الدرجة أكبر من صفر';
+
+  @override
+  String teacherExamQuestionOptionsHeader(int count) {
+    return 'الخيارات ($count)';
+  }
+
+  @override
+  String get teacherExamQuestionAddOption => 'إضافة خيار';
+
+  @override
+  String get teacherExamQuestionSubmitAction => 'حفظ السؤال';
+
+  @override
+  String get teacherExamQuestionSubmitLoading => 'جارٍ الحفظ…';
+
+  @override
+  String get teacherExamQuestionCreatedSnack => 'تمت إضافة السؤال.';
+
+  @override
+  String teacherExamQuestionErrorSnack(String message) {
+    return 'فشل الحفظ: $message';
+  }
 }
