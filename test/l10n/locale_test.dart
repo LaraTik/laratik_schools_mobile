@@ -326,4 +326,93 @@ void main() {
       },
     );
   });
+
+  group('Student detail + create surface localization', () {
+    test(
+      'student detail + create ARB keys are pinned in both English and Arabic',
+      () async {
+        final en = await AppLocalizations.delegate.load(const Locale('en'));
+        final ar = await AppLocalizations.delegate.load(const Locale('ar'));
+        // Detail
+        expect(en.studentDetailScreenTitle, 'Student');
+        expect(en.studentDetailErrorTitle, 'Could not load student');
+        expect(en.studentDetailLoadingTitle, 'Loading student');
+        expect(en.studentDetailEnrollmentHeader, 'Current enrollment');
+        expect(en.studentDetailIdentityHeader, 'Identity & contact');
+        expect(en.studentDetailGuardiansHeader, 'Guardians');
+        expect(en.studentDetailRecentGradesHeader, 'Recent grades');
+        expect(en.studentDetailGradeLabel, 'Grade');
+        expect(en.studentDetailClassGroupLabel, 'Class group');
+        expect(en.studentDetailAcademicYearLabel, 'Academic year');
+        expect(en.studentDetailStatusLabel, 'Status');
+        expect(en.studentDetailEnrollmentStatusLabel, 'Enrollment status');
+        expect(en.studentDetailActivationLabel, 'Activation');
+        expect(en.studentDetailNationalityLabel, 'Nationality');
+        expect(en.studentDetailCountryLabel, 'Country');
+        expect(en.studentDetailErpnextCustomerLabel, 'ERPNext customer');
+        expect(en.studentDetailNoDataLabel, 'No data on file.');
+        expect(en.studentDetailNoGuardianChip, 'No guardian on file');
+        expect(en.studentDetailCountryWarningTitle, 'Country needs review');
+        // Create
+        expect(en.studentCreateScreenTitle, 'New student');
+        expect(en.studentCreateLoadingTitle, 'Loading form');
+        expect(en.studentCreateSchemaErrorTitle,
+            'Could not load the form schema');
+        expect(en.studentCreateSuccessTitle, 'Student created');
+        expect(en.studentCreateAnotherAction, 'Create another');
+        expect(en.studentCreateOpenRecordAction, 'Open record');
+        expect(en.studentCreateSubmitAction, 'Create student');
+        expect(en.studentCreateIdentityHeader, 'Identity');
+        expect(en.studentCreateFirstNameLabel, 'First name');
+        expect(en.studentCreateLastNameLabel, 'Last name');
+        expect(en.studentCreateDateOfBirthLabel, 'Date of birth');
+        expect(en.studentCreateNationalityLabel, 'Nationality');
+        expect(en.studentCreateCountryLabel, 'Country of residence');
+        expect(en.studentCreateGuardianNameLabel, 'Guardian name');
+        expect(en.studentCreateGuardianPhoneLabel, 'Guardian phone');
+        expect(en.studentCreateGradeLabel, 'Grade');
+        expect(en.studentCreateNotesLabel, 'Notes');
+        for (final getter in [
+          () => ar.studentDetailScreenTitle,
+          () => ar.studentDetailErrorTitle,
+          () => ar.studentDetailLoadingTitle,
+          () => ar.studentDetailEnrollmentHeader,
+          () => ar.studentDetailIdentityHeader,
+          () => ar.studentDetailGuardiansHeader,
+          () => ar.studentDetailRecentGradesHeader,
+          () => ar.studentDetailGradeLabel,
+          () => ar.studentDetailClassGroupLabel,
+          () => ar.studentDetailAcademicYearLabel,
+          () => ar.studentDetailStatusLabel,
+          () => ar.studentDetailEnrollmentStatusLabel,
+          () => ar.studentDetailActivationLabel,
+          () => ar.studentDetailNationalityLabel,
+          () => ar.studentDetailCountryLabel,
+          () => ar.studentDetailErpnextCustomerLabel,
+          () => ar.studentDetailNoDataLabel,
+          () => ar.studentDetailNoGuardianChip,
+          () => ar.studentDetailCountryWarningTitle,
+          () => ar.studentCreateScreenTitle,
+          () => ar.studentCreateLoadingTitle,
+          () => ar.studentCreateSchemaErrorTitle,
+          () => ar.studentCreateSuccessTitle,
+          () => ar.studentCreateAnotherAction,
+          () => ar.studentCreateOpenRecordAction,
+          () => ar.studentCreateSubmitAction,
+          () => ar.studentCreateIdentityHeader,
+          () => ar.studentCreateFirstNameLabel,
+          () => ar.studentCreateLastNameLabel,
+          () => ar.studentCreateDateOfBirthLabel,
+          () => ar.studentCreateNationalityLabel,
+          () => ar.studentCreateCountryLabel,
+          () => ar.studentCreateGuardianNameLabel,
+          () => ar.studentCreateGuardianPhoneLabel,
+          () => ar.studentCreateGradeLabel,
+          () => ar.studentCreateNotesLabel,
+        ]) {
+          expect(getter(), isNotEmpty, reason: 'AR missing');
+        }
+      },
+    );
+  });
 }

@@ -19,6 +19,24 @@ and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
   parent role, so the tile is now rendered for every
   parent. Closes roadmap #7 for the student + parent
   read-only fee surface.
+- **Student detail + create surface locale + RTL
+  pass.** Hardcoded English strings on the student
+  detail + create screens extracted to ARB keys in
+  both English (source) + Modern Standard Arabic.
+  ~40 new ARB keys cover the section headers (Current
+  enrollment / Identity & contact / Guardians /
+  Recent grades / Identity / Date of birth / Country
+  & nationality / Guardian / Enrollment / Notes),
+  the entry labels (Grade / Class group / Academic
+  year / Status / Enrollment status / Activation /
+  Nationality / Country / ERPNext customer), the
+  field hints + the success modal copy ("Student
+  created" / "Create another" / "Open record"), the
+  country-warning chips + messages, and the loading /
+  error states. The locale test grew from 13 to 14
+  to pin the new keys in both locales. Closes
+  roadmap #11 for the student detail + create
+  surfaces.
 - **Teacher exam authoring + per-question publish +
   exam publish flow.** New question authoring form at
   `/shell/teachers/exams/:examPlanId/questions/new`

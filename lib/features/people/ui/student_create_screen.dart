@@ -1,9 +1,26 @@
+// SPDX-License-Identifier: Proprietary
+// Student create form.
+//
+// Loads the setup context once for schema + defaults, then renders a
+// two-column form (stacks to one column under 720dp). On submit the
+// form hands a [StudentFormPayload] to the repository; the
+// §1.3 country flags surface on the success card so the operator can
+// confirm before navigating to the detail screen.
+//
+// Every user-facing string is locale-aware via
+// [AppLocalizations.of(context)] — AppBar title, form section
+// labels, field hints + required error copy, the success modal's
+// "Student created" header + "Create another" / "Open record"
+// actions, the country-warning chips, and the loading / error
+// states. RTL mirrors the input row layout.
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:laratik_schools_api/laratik_schools_api.dart';
 
 import '../../../core/result.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../ui/design_tokens.dart';
 import '../../../ui/widgets/ls_button.dart';
 import '../../../ui/widgets/ls_empty_state.dart';
@@ -15,13 +32,6 @@ import '../data/student_form_payload.dart';
 
 import '../../../ui/app_theme.dart';
 
-/// Student create form.
-///
-/// Loads the setup context once for schema + defaults, then renders a
-/// two-column form (stacks to one column under 720dp). On submit the
-/// form hands a [StudentFormPayload] to the repository; the
-/// §1.3 country flags surface on the success card so the operator can
-/// confirm before navigating to the detail screen.
 class StudentCreateScreen extends ConsumerStatefulWidget {
   const StudentCreateScreen({super.key});
 
@@ -143,6 +153,7 @@ class _StudentCreateScreenState extends ConsumerState<StudentCreateScreen> {
       isScrollControlled: true,
       builder: (sheetContext) {
         final tokens = sheetContext.laratik;
+        final l = AppLocalizations.of(sheetContext);
         return SafeArea(
           child: Padding(
             padding: EdgeInsets.all(tokens.space.lg),
@@ -158,7 +169,7 @@ class _StudentCreateScreenState extends ConsumerState<StudentCreateScreen> {
                     ),
                     SizedBox(width: tokens.space.sm),
                     Text(
-                      'Student created',
+                      l.studentCreateSuccessTitle,
                       style: tokens.typography.titleLarge.copyWith(
                         color: tokens.text.primary,
                       ),
@@ -168,7 +179,7 @@ class _StudentCreateScreenState extends ConsumerState<StudentCreateScreen> {
                 SizedBox(height: tokens.space.sm),
                 Text(
                   result.studentName.isEmpty
-                      ? 'The student record is on file.'
+                      ? l.studentCreateSuccessFallback
                       : result.studentName,
                   style: tokens.typography.bodyMedium.copyWith(
                     color: tokens.text.secondary,
@@ -180,20 +191,22 @@ class _StudentCreateScreenState extends ConsumerState<StudentCreateScreen> {
                   runSpacing: tokens.space.xs,
                   children: [
                     if (result.countryWasDefaulted)
-                      const LsStatusChip(
-                        label: 'Country defaulted from nationality',
+                      LsStatusChip(
+                        label: l.studentCreateCountryDefaultedChip,
                         icon: Icons.info_outline,
                         tone: LsChipTone.warning,
                       ),
                     if (result.residentialCountryMismatch)
-                      const LsStatusChip(
-                        label: 'Country ≠ nationality',
+                      LsStatusChip(
+                        label: l.studentCreateCountryMismatchChip,
                         icon: Icons.swap_horiz,
                         tone: LsChipTone.warning,
                       ),
                     if (result.warnings.isNotEmpty)
                       LsStatusChip(
-                        label: '${result.warnings.length} warning(s)',
+                        label: l.studentCreateWarningsChip(
+                          result.warnings.length,
+                        ),
                         icon: Icons.priority_high,
                         tone: LsChipTone.info,
                       ),
@@ -204,7 +217,7 @@ class _StudentCreateScreenState extends ConsumerState<StudentCreateScreen> {
                   children: [
                     Expanded(
                       child: LsButton.secondary(
-                        label: 'Create another',
+                        label: l.studentCreateAnotherAction,
                         icon: Icons.add,
                         onPressed: () {
                           Navigator.of(sheetContext).pop();
@@ -215,7 +228,7 @@ class _StudentCreateScreenState extends ConsumerState<StudentCreateScreen> {
                     SizedBox(width: tokens.space.sm),
                     Expanded(
                       child: LsButton.primary(
-                        label: 'Open record',
+                        label: l.studentCreateOpenRecordAction,
                         icon: Icons.arrow_forward,
                         onPressed: () {
                           Navigator.of(sheetContext).pop();
@@ -248,6 +261,7 @@ class _StudentCreateScreenState extends ConsumerState<StudentCreateScreen> {
   @override
   Widget build(BuildContext context) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     _isWide = MediaQuery.sizeOf(context).width >= 720;
 
     final asyncContext = ref.watch(studentSetupContextProvider(null));
@@ -261,7 +275,7 @@ class _StudentCreateScreenState extends ConsumerState<StudentCreateScreen> {
           onPressed: () => context.go('/shell/students'),
         ),
         title: Text(
-          'New student',
+          l.studentCreateScreenTitle,
           style: tokens.typography.titleLarge.copyWith(
             color: tokens.text.primary,
           ),
@@ -272,23 +286,23 @@ class _StudentCreateScreenState extends ConsumerState<StudentCreateScreen> {
           Ok(:final value) => _buildForm(value, tokens),
           Err(:final error) => LsStateView.error(
               icon: Icons.error_outline,
-              title: 'Could not load the form schema',
+              title: l.studentCreateSchemaErrorTitle,
               message: error.message,
               action: LsButton.primary(
-                label: 'Try again',
+                label: l.commonTryAgain,
                 expand: false,
                 onPressed: () =>
                     ref.invalidate(studentSetupContextProvider(null)),
               ),
             ),
         },
-        loading: () => const LsStateView.loading(
-          title: 'Loading form',
-          message: 'Fetching the school setup context.',
+        loading: () => LsStateView.loading(
+          title: l.studentCreateLoadingTitle,
+          message: l.studentCreateLoadingMessage,
         ),
         error: (err, _) => LsStateView.error(
           icon: Icons.error_outline,
-          title: 'Could not load the form schema',
+          title: l.studentCreateSchemaErrorTitle,
           message: err.toString(),
         ),
       ),
@@ -296,6 +310,7 @@ class _StudentCreateScreenState extends ConsumerState<StudentCreateScreen> {
   }
 
   Widget _buildForm(JsonMap setupContext, DesignTokens tokens) {
+    final l = AppLocalizations.of(context);
     final defaults = setupContext['defaults'] is JsonMap
         ? setupContext['defaults'] as JsonMap
         : const <String, Object?>{};
@@ -312,23 +327,25 @@ class _StudentCreateScreenState extends ConsumerState<StudentCreateScreen> {
             Padding(
               padding: EdgeInsets.only(bottom: tokens.space.md),
               child: LsStatusChip(
-                label: 'Requires: ${requiredRoles.join(", ")}',
+                label: l.studentCreateRequiredRolesChip(
+                  requiredRoles.join(', '),
+                ),
                 icon: Icons.lock_outline,
                 tone: LsChipTone.info,
               ),
             ),
-          _SectionLabel('Identity', tokens: tokens),
+          _SectionLabel(l.studentCreateIdentityHeader, tokens: tokens),
           _buildFieldsColumnOrRow([
             LsTextField(
-              label: 'First name',
+              label: l.studentCreateFirstNameLabel,
               required: true,
               controller: _firstNameController,
-              hint: 'As it appears on the birth certificate',
+              hint: l.studentCreateFirstNameHint,
               errorText: _errorFor('first_name'),
               onChanged: (_) => _onFieldChanged(),
             ),
             LsTextField(
-              label: 'Last name',
+              label: l.studentCreateLastNameLabel,
               required: true,
               controller: _lastNameController,
               errorText: _errorFor('last_name'),
@@ -336,37 +353,40 @@ class _StudentCreateScreenState extends ConsumerState<StudentCreateScreen> {
             ),
           ], tokens),
           SizedBox(height: tokens.space.md),
-          _SectionLabel('Date of birth', tokens: tokens),
+          _SectionLabel(l.studentCreateDateOfBirthHeader, tokens: tokens),
           LsTextField(
-            label: 'Date of birth',
+            label: l.studentCreateDateOfBirthLabel,
             controller: _dateOfBirthController,
-            hint: 'YYYY-MM-DD',
+            hint: l.studentCreateDateOfBirthHint,
             errorText: _errorFor('date_of_birth'),
             onChanged: (_) => _onFieldChanged(),
           ),
           SizedBox(height: tokens.space.md),
-          _SectionLabel('Country & nationality', tokens: tokens),
+          _SectionLabel(
+            l.studentCreateCountryNationalityHeader,
+            tokens: tokens,
+          ),
           _buildFieldsColumnOrRow([
             LsTextField(
-              label: 'Nationality',
+              label: l.studentCreateNationalityLabel,
               controller: _nationalityController,
-              hint: 'The nationality on file',
+              hint: l.studentCreateNationalityHint,
               errorText: _errorFor('nationality'),
               onChanged: (_) => _onFieldChanged(),
             ),
             LsTextField(
-              label: 'Country of residence',
+              label: l.studentCreateCountryLabel,
               controller: _countryController,
-              hint: 'Where the student lives',
+              hint: l.studentCreateCountryHint,
               errorText: _errorFor('country'),
               onChanged: (_) => _onFieldChanged(),
             ),
           ], tokens),
           SizedBox(height: tokens.space.md),
-          _SectionLabel('Guardian', tokens: tokens),
+          _SectionLabel(l.studentCreateGuardianHeader, tokens: tokens),
           _buildFieldsColumnOrRow([
             LsTextField(
-              label: 'Guardian name',
+              label: l.studentCreateGuardianNameLabel,
               required: true,
               controller: _guardianController,
               hint: defaults['guardian']?.toString() ?? '',
@@ -374,7 +394,7 @@ class _StudentCreateScreenState extends ConsumerState<StudentCreateScreen> {
               onChanged: (_) => _onFieldChanged(),
             ),
             LsTextField(
-              label: 'Guardian phone',
+              label: l.studentCreateGuardianPhoneLabel,
               controller: _guardianPhoneController,
               keyboardType: TextInputType.phone,
               errorText: _errorFor('guardian_phone'),
@@ -382,18 +402,18 @@ class _StudentCreateScreenState extends ConsumerState<StudentCreateScreen> {
             ),
           ], tokens),
           SizedBox(height: tokens.space.md),
-          _SectionLabel('Enrollment', tokens: tokens),
+          _SectionLabel(l.studentCreateEnrollmentHeader, tokens: tokens),
           LsTextField(
-            label: 'Grade',
+            label: l.studentCreateGradeLabel,
             controller: _gradeController,
-            hint: defaults['grade']?.toString() ?? 'Grade 1',
+            hint: defaults['grade']?.toString() ?? l.studentCreateGradeHint,
             errorText: _errorFor('grade'),
             onChanged: (_) => _onFieldChanged(),
           ),
           SizedBox(height: tokens.space.md),
-          _SectionLabel('Notes', tokens: tokens),
+          _SectionLabel(l.studentCreateNotesHeader, tokens: tokens),
           LsTextField(
-            label: 'Notes',
+            label: l.studentCreateNotesLabel,
             controller: _notesController,
             maxLines: 4,
             errorText: _errorFor('notes'),
@@ -430,7 +450,9 @@ class _StudentCreateScreenState extends ConsumerState<StudentCreateScreen> {
             ),
           if (_generalError != null) SizedBox(height: tokens.space.md),
           LsButton.primary(
-            label: _submitting ? 'Creating…' : 'Create student',
+            label: _submitting
+                ? l.studentCreateSubmitLoading
+                : l.studentCreateSubmitAction,
             icon: Icons.check,
             isLoading: _submitting,
             onPressed: _submitting ? null : _submit,

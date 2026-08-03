@@ -88,6 +88,188 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeStudentFeeInvoicesSubtitle => 'المستحقة + المتأخرة';
 
   @override
+  String get studentDetailScreenTitle => 'الطالب';
+
+  @override
+  String get studentDetailErrorTitle => 'تعذّر تحميل الطالب';
+
+  @override
+  String get studentDetailLoadingTitle => 'جارٍ تحميل الطالب';
+
+  @override
+  String get studentDetailEnrollmentHeader => 'التسجيل الحالي';
+
+  @override
+  String get studentDetailIdentityHeader => 'الهوية والتواصل';
+
+  @override
+  String get studentDetailGuardiansHeader => 'أولياء الأمور';
+
+  @override
+  String get studentDetailRecentGradesHeader => 'الدرجات الأخيرة';
+
+  @override
+  String get studentDetailGradeLabel => 'الصف';
+
+  @override
+  String get studentDetailClassGroupLabel => 'الفصل';
+
+  @override
+  String get studentDetailAcademicYearLabel => 'السنة الدراسية';
+
+  @override
+  String get studentDetailStatusLabel => 'الحالة';
+
+  @override
+  String get studentDetailEnrollmentStatusLabel => 'حالة التسجيل';
+
+  @override
+  String get studentDetailActivationLabel => 'التفعيل';
+
+  @override
+  String get studentDetailNationalityLabel => 'الجنسية';
+
+  @override
+  String get studentDetailCountryLabel => 'البلد';
+
+  @override
+  String get studentDetailErpnextCustomerLabel => 'عميل ERPNext';
+
+  @override
+  String get studentDetailNoDataLabel => 'لا توجد بيانات.';
+
+  @override
+  String get studentDetailNoGuardianChip => 'لا يوجد ولي أمر مسجّل';
+
+  @override
+  String get studentDetailCountryWarningTitle => 'البلد يحتاج مراجعة';
+
+  @override
+  String get studentDetailCountryDefaultedMessage =>
+      'تم تعيين البلد افتراضيًا من الجنسية؛ يرجى التأكد مع المشغّل.';
+
+  @override
+  String get studentDetailCountryMismatchMessage =>
+      'الجنسية وبلد الإقامة مختلفان؛ تحقّق قبل إدخال الدرجات.';
+
+  @override
+  String get studentCreateScreenTitle => 'طالب جديد';
+
+  @override
+  String get studentCreateLoadingTitle => 'جارٍ تحميل النموذج';
+
+  @override
+  String get studentCreateLoadingMessage => 'يجري جلب سياق إعداد المدرسة.';
+
+  @override
+  String get studentCreateSchemaErrorTitle => 'تعذّر تحميل مخطط النموذج';
+
+  @override
+  String get studentCreateSuccessTitle => 'تم إنشاء الطالب';
+
+  @override
+  String get studentCreateSuccessFallback => 'سجل الطالب محفوظ.';
+
+  @override
+  String get studentCreateCountryDefaultedChip =>
+      'تم تعيين البلد افتراضيًا من الجنسية';
+
+  @override
+  String get studentCreateCountryMismatchChip => 'البلد ≠ الجنسية';
+
+  @override
+  String studentCreateWarningsChip(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count تحذير',
+      many: '$count تحذيرًا',
+      few: '$count تحذيرات',
+      two: 'تحذيران',
+      one: 'تحذير واحد',
+      zero: 'لا تحذيرات',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get studentCreateAnotherAction => 'إنشاء طالب آخر';
+
+  @override
+  String get studentCreateOpenRecordAction => 'فتح السجل';
+
+  @override
+  String get studentCreateSubmitAction => 'إنشاء الطالب';
+
+  @override
+  String get studentCreateSubmitLoading => 'جارٍ الإنشاء…';
+
+  @override
+  String studentCreateRequiredRolesChip(String roles) {
+    return 'يتطلب: $roles';
+  }
+
+  @override
+  String get studentCreateIdentityHeader => 'الهوية';
+
+  @override
+  String get studentCreateFirstNameLabel => 'الاسم الأول';
+
+  @override
+  String get studentCreateFirstNameHint => 'كما هو مكتوب في شهادة الميلاد';
+
+  @override
+  String get studentCreateLastNameLabel => 'اسم العائلة';
+
+  @override
+  String get studentCreateDateOfBirthHeader => 'تاريخ الميلاد';
+
+  @override
+  String get studentCreateDateOfBirthLabel => 'تاريخ الميلاد';
+
+  @override
+  String get studentCreateDateOfBirthHint => 'YYYY-MM-DD';
+
+  @override
+  String get studentCreateCountryNationalityHeader => 'البلد والجنسية';
+
+  @override
+  String get studentCreateNationalityLabel => 'الجنسية';
+
+  @override
+  String get studentCreateNationalityHint => 'الجنسية المسجّلة';
+
+  @override
+  String get studentCreateCountryLabel => 'بلد الإقامة';
+
+  @override
+  String get studentCreateCountryHint => 'مكان إقامة الطالب';
+
+  @override
+  String get studentCreateGuardianHeader => 'ولي الأمر';
+
+  @override
+  String get studentCreateGuardianNameLabel => 'اسم ولي الأمر';
+
+  @override
+  String get studentCreateGuardianPhoneLabel => 'هاتف ولي الأمر';
+
+  @override
+  String get studentCreateEnrollmentHeader => 'التسجيل';
+
+  @override
+  String get studentCreateGradeLabel => 'الصف';
+
+  @override
+  String get studentCreateGradeHint => 'الصف الأول';
+
+  @override
+  String get studentCreateNotesHeader => 'ملاحظات';
+
+  @override
+  String get studentCreateNotesLabel => 'ملاحظات';
+
+  @override
   String get homeParentInboxEmpty => 'لا توجد رسائل جديدة';
 
   @override

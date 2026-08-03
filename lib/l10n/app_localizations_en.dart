@@ -88,6 +88,186 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeStudentFeeInvoicesSubtitle => 'Issued + outstanding plans';
 
   @override
+  String get studentDetailScreenTitle => 'Student';
+
+  @override
+  String get studentDetailErrorTitle => 'Could not load student';
+
+  @override
+  String get studentDetailLoadingTitle => 'Loading student';
+
+  @override
+  String get studentDetailEnrollmentHeader => 'Current enrollment';
+
+  @override
+  String get studentDetailIdentityHeader => 'Identity & contact';
+
+  @override
+  String get studentDetailGuardiansHeader => 'Guardians';
+
+  @override
+  String get studentDetailRecentGradesHeader => 'Recent grades';
+
+  @override
+  String get studentDetailGradeLabel => 'Grade';
+
+  @override
+  String get studentDetailClassGroupLabel => 'Class group';
+
+  @override
+  String get studentDetailAcademicYearLabel => 'Academic year';
+
+  @override
+  String get studentDetailStatusLabel => 'Status';
+
+  @override
+  String get studentDetailEnrollmentStatusLabel => 'Enrollment status';
+
+  @override
+  String get studentDetailActivationLabel => 'Activation';
+
+  @override
+  String get studentDetailNationalityLabel => 'Nationality';
+
+  @override
+  String get studentDetailCountryLabel => 'Country';
+
+  @override
+  String get studentDetailErpnextCustomerLabel => 'ERPNext customer';
+
+  @override
+  String get studentDetailNoDataLabel => 'No data on file.';
+
+  @override
+  String get studentDetailNoGuardianChip => 'No guardian on file';
+
+  @override
+  String get studentDetailCountryWarningTitle => 'Country needs review';
+
+  @override
+  String get studentDetailCountryDefaultedMessage =>
+      'Country was defaulted from nationality; confirm with the operator.';
+
+  @override
+  String get studentDetailCountryMismatchMessage =>
+      'Nationality and residential country differ; double-check before grading.';
+
+  @override
+  String get studentCreateScreenTitle => 'New student';
+
+  @override
+  String get studentCreateLoadingTitle => 'Loading form';
+
+  @override
+  String get studentCreateLoadingMessage =>
+      'Fetching the school setup context.';
+
+  @override
+  String get studentCreateSchemaErrorTitle => 'Could not load the form schema';
+
+  @override
+  String get studentCreateSuccessTitle => 'Student created';
+
+  @override
+  String get studentCreateSuccessFallback => 'The student record is on file.';
+
+  @override
+  String get studentCreateCountryDefaultedChip =>
+      'Country defaulted from nationality';
+
+  @override
+  String get studentCreateCountryMismatchChip => 'Country ≠ nationality';
+
+  @override
+  String studentCreateWarningsChip(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count warnings',
+      one: '1 warning',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get studentCreateAnotherAction => 'Create another';
+
+  @override
+  String get studentCreateOpenRecordAction => 'Open record';
+
+  @override
+  String get studentCreateSubmitAction => 'Create student';
+
+  @override
+  String get studentCreateSubmitLoading => 'Creating…';
+
+  @override
+  String studentCreateRequiredRolesChip(String roles) {
+    return 'Requires: $roles';
+  }
+
+  @override
+  String get studentCreateIdentityHeader => 'Identity';
+
+  @override
+  String get studentCreateFirstNameLabel => 'First name';
+
+  @override
+  String get studentCreateFirstNameHint =>
+      'As it appears on the birth certificate';
+
+  @override
+  String get studentCreateLastNameLabel => 'Last name';
+
+  @override
+  String get studentCreateDateOfBirthHeader => 'Date of birth';
+
+  @override
+  String get studentCreateDateOfBirthLabel => 'Date of birth';
+
+  @override
+  String get studentCreateDateOfBirthHint => 'YYYY-MM-DD';
+
+  @override
+  String get studentCreateCountryNationalityHeader => 'Country & nationality';
+
+  @override
+  String get studentCreateNationalityLabel => 'Nationality';
+
+  @override
+  String get studentCreateNationalityHint => 'The nationality on file';
+
+  @override
+  String get studentCreateCountryLabel => 'Country of residence';
+
+  @override
+  String get studentCreateCountryHint => 'Where the student lives';
+
+  @override
+  String get studentCreateGuardianHeader => 'Guardian';
+
+  @override
+  String get studentCreateGuardianNameLabel => 'Guardian name';
+
+  @override
+  String get studentCreateGuardianPhoneLabel => 'Guardian phone';
+
+  @override
+  String get studentCreateEnrollmentHeader => 'Enrollment';
+
+  @override
+  String get studentCreateGradeLabel => 'Grade';
+
+  @override
+  String get studentCreateGradeHint => 'Grade 1';
+
+  @override
+  String get studentCreateNotesHeader => 'Notes';
+
+  @override
+  String get studentCreateNotesLabel => 'Notes';
+
+  @override
   String get homeParentInboxEmpty => 'No new messages';
 
   @override

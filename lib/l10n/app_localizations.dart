@@ -254,6 +254,336 @@ abstract class AppLocalizations {
   /// **'Issued + outstanding plans'**
   String get homeStudentFeeInvoicesSubtitle;
 
+  /// No description provided for @studentDetailScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Student'**
+  String get studentDetailScreenTitle;
+
+  /// No description provided for @studentDetailErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load student'**
+  String get studentDetailErrorTitle;
+
+  /// No description provided for @studentDetailLoadingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading student'**
+  String get studentDetailLoadingTitle;
+
+  /// No description provided for @studentDetailEnrollmentHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Current enrollment'**
+  String get studentDetailEnrollmentHeader;
+
+  /// No description provided for @studentDetailIdentityHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Identity & contact'**
+  String get studentDetailIdentityHeader;
+
+  /// No description provided for @studentDetailGuardiansHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Guardians'**
+  String get studentDetailGuardiansHeader;
+
+  /// No description provided for @studentDetailRecentGradesHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent grades'**
+  String get studentDetailRecentGradesHeader;
+
+  /// No description provided for @studentDetailGradeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Grade'**
+  String get studentDetailGradeLabel;
+
+  /// No description provided for @studentDetailClassGroupLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Class group'**
+  String get studentDetailClassGroupLabel;
+
+  /// No description provided for @studentDetailAcademicYearLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Academic year'**
+  String get studentDetailAcademicYearLabel;
+
+  /// No description provided for @studentDetailStatusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get studentDetailStatusLabel;
+
+  /// No description provided for @studentDetailEnrollmentStatusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Enrollment status'**
+  String get studentDetailEnrollmentStatusLabel;
+
+  /// No description provided for @studentDetailActivationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Activation'**
+  String get studentDetailActivationLabel;
+
+  /// No description provided for @studentDetailNationalityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Nationality'**
+  String get studentDetailNationalityLabel;
+
+  /// No description provided for @studentDetailCountryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Country'**
+  String get studentDetailCountryLabel;
+
+  /// No description provided for @studentDetailErpnextCustomerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'ERPNext customer'**
+  String get studentDetailErpnextCustomerLabel;
+
+  /// No description provided for @studentDetailNoDataLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'No data on file.'**
+  String get studentDetailNoDataLabel;
+
+  /// No description provided for @studentDetailNoGuardianChip.
+  ///
+  /// In en, this message translates to:
+  /// **'No guardian on file'**
+  String get studentDetailNoGuardianChip;
+
+  /// No description provided for @studentDetailCountryWarningTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Country needs review'**
+  String get studentDetailCountryWarningTitle;
+
+  /// No description provided for @studentDetailCountryDefaultedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Country was defaulted from nationality; confirm with the operator.'**
+  String get studentDetailCountryDefaultedMessage;
+
+  /// No description provided for @studentDetailCountryMismatchMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Nationality and residential country differ; double-check before grading.'**
+  String get studentDetailCountryMismatchMessage;
+
+  /// No description provided for @studentCreateScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New student'**
+  String get studentCreateScreenTitle;
+
+  /// No description provided for @studentCreateLoadingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading form'**
+  String get studentCreateLoadingTitle;
+
+  /// No description provided for @studentCreateLoadingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Fetching the school setup context.'**
+  String get studentCreateLoadingMessage;
+
+  /// No description provided for @studentCreateSchemaErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load the form schema'**
+  String get studentCreateSchemaErrorTitle;
+
+  /// No description provided for @studentCreateSuccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Student created'**
+  String get studentCreateSuccessTitle;
+
+  /// No description provided for @studentCreateSuccessFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'The student record is on file.'**
+  String get studentCreateSuccessFallback;
+
+  /// No description provided for @studentCreateCountryDefaultedChip.
+  ///
+  /// In en, this message translates to:
+  /// **'Country defaulted from nationality'**
+  String get studentCreateCountryDefaultedChip;
+
+  /// No description provided for @studentCreateCountryMismatchChip.
+  ///
+  /// In en, this message translates to:
+  /// **'Country ≠ nationality'**
+  String get studentCreateCountryMismatchChip;
+
+  /// No description provided for @studentCreateWarningsChip.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 warning} other{{count} warnings}}'**
+  String studentCreateWarningsChip(int count);
+
+  /// No description provided for @studentCreateAnotherAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Create another'**
+  String get studentCreateAnotherAction;
+
+  /// No description provided for @studentCreateOpenRecordAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Open record'**
+  String get studentCreateOpenRecordAction;
+
+  /// No description provided for @studentCreateSubmitAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Create student'**
+  String get studentCreateSubmitAction;
+
+  /// No description provided for @studentCreateSubmitLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Creating…'**
+  String get studentCreateSubmitLoading;
+
+  /// No description provided for @studentCreateRequiredRolesChip.
+  ///
+  /// In en, this message translates to:
+  /// **'Requires: {roles}'**
+  String studentCreateRequiredRolesChip(String roles);
+
+  /// No description provided for @studentCreateIdentityHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Identity'**
+  String get studentCreateIdentityHeader;
+
+  /// No description provided for @studentCreateFirstNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'First name'**
+  String get studentCreateFirstNameLabel;
+
+  /// No description provided for @studentCreateFirstNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'As it appears on the birth certificate'**
+  String get studentCreateFirstNameHint;
+
+  /// No description provided for @studentCreateLastNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Last name'**
+  String get studentCreateLastNameLabel;
+
+  /// No description provided for @studentCreateDateOfBirthHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of birth'**
+  String get studentCreateDateOfBirthHeader;
+
+  /// No description provided for @studentCreateDateOfBirthLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of birth'**
+  String get studentCreateDateOfBirthLabel;
+
+  /// No description provided for @studentCreateDateOfBirthHint.
+  ///
+  /// In en, this message translates to:
+  /// **'YYYY-MM-DD'**
+  String get studentCreateDateOfBirthHint;
+
+  /// No description provided for @studentCreateCountryNationalityHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Country & nationality'**
+  String get studentCreateCountryNationalityHeader;
+
+  /// No description provided for @studentCreateNationalityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Nationality'**
+  String get studentCreateNationalityLabel;
+
+  /// No description provided for @studentCreateNationalityHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The nationality on file'**
+  String get studentCreateNationalityHint;
+
+  /// No description provided for @studentCreateCountryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Country of residence'**
+  String get studentCreateCountryLabel;
+
+  /// No description provided for @studentCreateCountryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Where the student lives'**
+  String get studentCreateCountryHint;
+
+  /// No description provided for @studentCreateGuardianHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Guardian'**
+  String get studentCreateGuardianHeader;
+
+  /// No description provided for @studentCreateGuardianNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Guardian name'**
+  String get studentCreateGuardianNameLabel;
+
+  /// No description provided for @studentCreateGuardianPhoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Guardian phone'**
+  String get studentCreateGuardianPhoneLabel;
+
+  /// No description provided for @studentCreateEnrollmentHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Enrollment'**
+  String get studentCreateEnrollmentHeader;
+
+  /// No description provided for @studentCreateGradeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Grade'**
+  String get studentCreateGradeLabel;
+
+  /// No description provided for @studentCreateGradeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Grade 1'**
+  String get studentCreateGradeHint;
+
+  /// No description provided for @studentCreateNotesHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get studentCreateNotesHeader;
+
+  /// No description provided for @studentCreateNotesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get studentCreateNotesLabel;
+
   /// No description provided for @homeParentInboxEmpty.
   ///
   /// In en, this message translates to:

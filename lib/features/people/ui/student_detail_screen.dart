@@ -1,9 +1,22 @@
+// SPDX-License-Identifier: Proprietary
+// Student detail. Renders the four sections the v1 profile response
+// already returns: identity, current enrollment, attendance, and
+// guardians. The §1.3 country warnings surface as visible chips; the
+// country/nationality pair is shown side-by-side.
+//
+// Every user-facing string is locale-aware via
+// [AppLocalizations.of(context)]; the section headers + entry
+// labels + warning copy + error / loading / empty titles all
+// resolve through the ARB-driven localizer. RTL mirrors the
+// `TextDirection` per row.
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:laratik_schools_api/laratik_schools_api.dart';
 
 import '../../../core/result.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../ui/design_tokens.dart';
 import '../../../ui/widgets/ls_button.dart';
 import '../../../ui/widgets/ls_empty_state.dart';
@@ -14,10 +27,6 @@ import '../data/person_repository.dart';
 
 import '../../../ui/app_theme.dart';
 
-/// Student detail. Renders the four sections the v1 profile response
-/// already returns: identity, current enrollment, attendance, and
-/// guardians. The §1.3 country warnings surface as visible chips; the
-/// country/nationality pair is shown side-by-side.
 class StudentDetailScreen extends ConsumerWidget {
   const StudentDetailScreen({required this.studentId, super.key});
 
@@ -26,6 +35,7 @@ class StudentDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     final asyncProfile = ref.watch(studentProfileProvider(studentId));
 
     return Scaffold(
@@ -38,7 +48,7 @@ class StudentDetailScreen extends ConsumerWidget {
           onPressed: () => context.go('/shell/students'),
         ),
         title: Text(
-          'Student',
+          l.studentDetailScreenTitle,
           style: tokens.typography.titleLarge.copyWith(
             color: tokens.text.primary,
           ),
@@ -49,20 +59,22 @@ class StudentDetailScreen extends ConsumerWidget {
           Ok(:final value) => _buildBody(context, value, tokens),
           Err(:final error) => LsStateView.error(
               icon: Icons.error_outline,
-              title: 'Could not load student',
+              title: l.studentDetailErrorTitle,
               message: error.message,
               action: LsButton.primary(
-                label: 'Try again',
+                label: l.commonTryAgain,
                 expand: false,
                 onPressed: () =>
                     ref.invalidate(studentProfileProvider(studentId)),
               ),
             ),
         },
-        loading: () => const LsStateView.loading(title: 'Loading student'),
+        loading: () => LsStateView.loading(
+          title: l.studentDetailLoadingTitle,
+        ),
         error: (err, _) => LsStateView.error(
           icon: Icons.error_outline,
-          title: 'Could not load student',
+          title: l.studentDetailErrorTitle,
           message: err.toString(),
         ),
       ),
@@ -74,6 +86,7 @@ class StudentDetailScreen extends ConsumerWidget {
     PersonProfile profile,
     DesignTokens tokens,
   ) {
+    final l = AppLocalizations.of(context);
     return ListView(
       padding: EdgeInsets.all(tokens.space.md),
       children: [
@@ -81,36 +94,68 @@ class StudentDetailScreen extends ConsumerWidget {
         SizedBox(height: tokens.space.md),
         if (profile.person.hasCountryWarning)
           _CountryWarningCard(person: profile.person, tokens: tokens),
-        _SectionHeader(title: 'Current enrollment', tokens: tokens),
+        _SectionHeader(
+          title: l.studentDetailEnrollmentHeader,
+          tokens: tokens,
+        ),
         _KeyValueCard(
           entries: [
-            _Entry('Grade', profile.person.grade),
-            _Entry('Class group', profile.person.classGroup),
-            _Entry('Academic year', profile.person.academicYear),
-            _Entry('Status', profile.person.status),
-            _Entry('Enrollment status', profile.person.enrollmentStatus),
-            _Entry('Activation', profile.person.activationStatus),
+            _Entry(l.studentDetailGradeLabel, profile.person.grade),
+            _Entry(
+              l.studentDetailClassGroupLabel,
+              profile.person.classGroup,
+            ),
+            _Entry(
+              l.studentDetailAcademicYearLabel,
+              profile.person.academicYear,
+            ),
+            _Entry(l.studentDetailStatusLabel, profile.person.status),
+            _Entry(
+              l.studentDetailEnrollmentStatusLabel,
+              profile.person.enrollmentStatus,
+            ),
+            _Entry(
+              l.studentDetailActivationLabel,
+              profile.person.activationStatus,
+            ),
           ],
+          emptyLabel: l.studentDetailNoDataLabel,
           tokens: tokens,
         ),
         SizedBox(height: tokens.space.md),
-        _SectionHeader(title: 'Identity & contact', tokens: tokens),
+        _SectionHeader(
+          title: l.studentDetailIdentityHeader,
+          tokens: tokens,
+        ),
         _KeyValueCard(
           entries: [
-            _Entry('Nationality', profile.person.nationality),
-            _Entry('Country', profile.person.country),
-            _Entry('ERPNext customer', profile.person.erpnextCustomer),
+            _Entry(
+              l.studentDetailNationalityLabel,
+              profile.person.nationality,
+            ),
+            _Entry(l.studentDetailCountryLabel, profile.person.country),
+            _Entry(
+              l.studentDetailErpnextCustomerLabel,
+              profile.person.erpnextCustomer,
+            ),
           ],
+          emptyLabel: l.studentDetailNoDataLabel,
           tokens: tokens,
         ),
         SizedBox(height: tokens.space.md),
         if (profile.guardians.isNotEmpty) ...[
-          _SectionHeader(title: 'Guardians', tokens: tokens),
+          _SectionHeader(
+            title: l.studentDetailGuardiansHeader,
+            tokens: tokens,
+          ),
           _GuardianList(guardians: profile.guardians, tokens: tokens),
           SizedBox(height: tokens.space.md),
         ],
         if (profile.gradeRecords.isNotEmpty) ...[
-          _SectionHeader(title: 'Recent grades', tokens: tokens),
+          _SectionHeader(
+            title: l.studentDetailRecentGradesHeader,
+            tokens: tokens,
+          ),
           _GradeList(records: profile.gradeRecords, tokens: tokens),
         ],
         SizedBox(height: tokens.space.lg),
@@ -127,6 +172,7 @@ class _IdentityCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     return Container(
       padding: EdgeInsets.all(tokens.space.md),
       decoration: BoxDecoration(
@@ -177,7 +223,7 @@ class _IdentityCard extends StatelessWidget {
                     SizedBox(width: tokens.space.xs),
                     if (person.hasGuardianWarning)
                       LsStatusChip(
-                        label: 'No guardian on file',
+                        label: l.studentDetailNoGuardianChip,
                         icon: Icons.warning_amber,
                         tone: LsChipTone.warning,
                       ),
@@ -210,6 +256,7 @@ class _CountryWarningCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     return Container(
       margin: EdgeInsets.only(bottom: tokens.space.md),
       padding: EdgeInsets.all(tokens.space.md),
@@ -230,7 +277,7 @@ class _CountryWarningCard extends StatelessWidget {
               ),
               SizedBox(width: tokens.space.xs),
               Text(
-                'Country needs review',
+                l.studentDetailCountryWarningTitle,
                 style: tokens.typography.titleSmall.copyWith(
                   color: tokens.status.warning,
                 ),
@@ -240,14 +287,14 @@ class _CountryWarningCard extends StatelessWidget {
           SizedBox(height: tokens.space.xs),
           if (person.countryWasDefaulted)
             Text(
-              'Country was defaulted from nationality; confirm with the operator.',
+              l.studentDetailCountryDefaultedMessage,
               style: tokens.typography.bodySmall.copyWith(
                 color: tokens.status.warning,
               ),
             ),
           if (person.residentialCountryMismatch)
             Text(
-              'Nationality and residential country differ; double-check before grading.',
+              l.studentDetailCountryMismatchMessage,
               style: tokens.typography.bodySmall.copyWith(
                 color: tokens.status.warning,
               ),
@@ -284,9 +331,14 @@ class _Entry {
 }
 
 class _KeyValueCard extends StatelessWidget {
-  const _KeyValueCard({required this.entries, required this.tokens});
+  const _KeyValueCard({
+    required this.entries,
+    required this.tokens,
+    required this.emptyLabel,
+  });
   final List<_Entry> entries;
   final DesignTokens tokens;
+  final String emptyLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -302,7 +354,7 @@ class _KeyValueCard extends StatelessWidget {
           border: Border.all(color: tokens.surface.outlineVariant),
         ),
         child: Text(
-          'No data on file.',
+          emptyLabel,
           style: tokens.typography.bodyMedium.copyWith(
             color: tokens.text.tertiary,
           ),
@@ -419,7 +471,13 @@ class _GuardianRow extends StatelessWidget {
         ),
       ),
       trailing: Icon(
-        Icons.chevron_right,
+        // Chevron points the same way as the text flow in
+        // both LTR + RTL. A raw Icon doesn't auto-mirror under
+        // RTL like ListTile does, so we pick the right one per
+        // direction.
+        Directionality.of(context) == TextDirection.rtl
+            ? Icons.chevron_left
+            : Icons.chevron_right,
         color: tokens.text.tertiary,
       ),
     );
