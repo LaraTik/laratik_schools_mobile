@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Proprietary
 // Tests for the Governance repository (read-only privacy
 // requests + approve / process / set-legal-hold / retention
-// evaluation).
+// evaluation + parent/student submit).
 //
 // The tests cover:
 //   * [listPrivacyRequests] parses v1 envelope rows into
@@ -15,6 +15,9 @@
 //     key for every call.
 //   * [setLegalHold] forwards the `hold` boolean to the SDK
 //     + the `reason` string when present.
+//   * [submitPrivacyRequest] forwards the canonical payload
+//     fields + mints a fresh idempotency key for every call
+//     + parses the v1 envelope into a [SubmittedPrivacyRequest].
 //   * [PrivacyRequest.statusFamily] maps the wire status
 //     to a coarse family for the chip tone.
 //   * [PrivacyRequest.typeFamily] maps the wire request
@@ -154,6 +157,94 @@ void main() {
       expect(payload['request_name'], 'EDU-PR-2026-00001');
       expect(payload['hold'], isTrue);
       expect(payload['reason'], 'Pending legal review.');
+    });
+  });
+
+  group('GovernanceRepository.submitPrivacyRequest', () {
+    test('forwards canonical payload + mints a fresh idempotency key',
+        () async {
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondOnce(
+        LaratikSchoolsApiMethods.submitSchoolPrivacyRequest,
+        envelopeOk({
+          'privacy_request': 'EDU-PR-2026-00042',
+          'status': 'submitted',
+        }),
+      );
+      final repo = makeRepo(transport);
+      final result = await repo.submitPrivacyRequest(
+        requestType: 'erasure',
+        requesterType: 'guardian',
+        subjectType: 'student',
+        subject: 'STU-00001',
+        requestedCategories: const ['personal', 'attendance'],
+        schoolBranch: 'main',
+        authorityReference: 'auth-ticket-9001',
+      );
+      expect(result, isA<Ok<SubmittedPrivacyRequest, GovernanceFailure>>());
+      final ok = result as Ok<SubmittedPrivacyRequest, GovernanceFailure>;
+      expect(ok.value.privacyRequest, 'EDU-PR-2026-00042');
+      expect(ok.value.isSubmitted, isTrue);
+      // The SDK wraps the payload under a `payload` key, so the
+      // test inspects `arguments['payload']`.
+      final args = transport.invokedArguments.last;
+      final payload = args['payload'] as Map<String, Object?>;
+      expect(payload['request_type'], 'erasure');
+      expect(payload['requester_type'], 'guardian');
+      expect(payload['subject_type'], 'student');
+      expect(payload['subject'], 'STU-00001');
+      expect(payload['school_branch'], 'main');
+      expect(payload['authority_reference'], 'auth-ticket-9001');
+      expect(payload['requested_categories'], ['personal', 'attendance']);
+      // The repository mints a fresh UUID v4 for the
+      // `Idempotency-Key` header. Same for `client_request_id`
+      // on the payload so a retry is safe to send again.
+      expect(transport.invokedIdempotencyKey, isNotNull);
+      expect(transport.invokedIdempotencyKey!.length, greaterThanOrEqualTo(8));
+      final clientRequestId = payload['client_request_id'] as String;
+      expect(clientRequestId.length, greaterThanOrEqualTo(8));
+    });
+
+    test('falls back to the wire `name` legacy alias for the request id',
+        () async {
+      // Pure model test — the v1 SDK's
+      // `SubmitSchoolPrivacyRequestData.fromJson` is strict-cast
+      // and only accepts the canonical `privacy_request` key, so
+      // we exercise the model layer directly here to confirm the
+      // forward-compat alias walker still surfaces `name` /
+      // `request` when the server grows an older envelope.
+      final parsed = SubmittedPrivacyRequest.fromJson({
+        'name': 'EDU-PR-2026-00043',
+        'status': 'received',
+      });
+      expect(parsed.privacyRequest, 'EDU-PR-2026-00043');
+      expect(parsed.isSubmitted, isTrue);
+    });
+
+    test('surfaces the wire error code on a typed-error response', () async {
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondError(
+        LaratikSchoolsApiMethods.submitSchoolPrivacyRequest,
+        const ApiError(
+          code: 'PRIVACY_REQUESTER_FORBIDDEN',
+          message: 'Not allowed to submit on behalf of this subject.',
+        ),
+      );
+      final repo = makeRepo(transport);
+      final result = await repo.submitPrivacyRequest(
+        requestType: 'access',
+        requesterType: 'guardian',
+        subjectType: 'student',
+        subject: 'STU-00001',
+        requestedCategories: const ['personal'],
+        schoolBranch: 'main',
+        authorityReference: 'auth-ticket-9001',
+      );
+      expect(result, isA<Err<SubmittedPrivacyRequest, GovernanceFailure>>());
+      final err =
+          (result as Err<SubmittedPrivacyRequest, GovernanceFailure>).error;
+      expect(err.code, 'PRIVACY_REQUESTER_FORBIDDEN');
+      expect(err.isRetryable, isFalse);
     });
   });
 

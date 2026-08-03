@@ -29,6 +29,7 @@ import '../features/imports/ui/score_import_detail_screen.dart';
 import '../features/me/ui/acting_as_picker_screen.dart';
 import '../features/operations/ui/operations_health_screen.dart';
 import '../features/governance/ui/governance_screen.dart';
+import '../features/governance/ui/privacy_request_submit_screen.dart';
 import '../features/grading/ui/grade_record_correction_screen.dart';
 import '../features/grading/ui/grading_screen.dart';
 import '../features/people/ui/student_create_screen.dart';
@@ -509,6 +510,22 @@ GoRouter buildRouter({
             path: '/shell/governance',
             name: 'governance',
             builder: (context, state) => const GovernanceScreen(),
+          ),
+          // Privacy request submit form (parent / student
+          // surface). The home screen deep-links here with
+          // the requester type + subject type + subject id
+          // baked in. The school branch is a required form
+          // field (BootContext has no per-role branch today
+          // — the v1 server is single-tenant per school).
+          GoRoute(
+            path:
+                '/shell/governance/submit/:requesterType/:subjectType/:subject',
+            name: 'governance_submit',
+            builder: (context, state) => PrivacyRequestSubmitScreen(
+              requesterType: state.pathParameters['requesterType']!,
+              subjectType: state.pathParameters['subjectType']!,
+              subject: state.pathParameters['subject']!,
+            ),
           ),
           // Grading surface — read-only overview + policies.
           // Reachable from the "Grading" tile on the admin

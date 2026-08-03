@@ -438,3 +438,14 @@ mutating v1 endpoint should preserve the `idempotencyKey`
 parameter on the call so the test can assert the
 `idempotency-key auto-mint` invariant from
 `lib/core/result.dart`.
+
+### 2026-08-03 — Privacy submit form `_error` was typed as `String?` but assigned a typed `GovernanceFailure?`
+
+Symptom: `lib/features/governance/ui/privacy_request_submit_screen.dart`
+failed to compile with `A value of type 'GovernanceFailure?' can't be assigned to a variable of type 'String?'` at line 119 (and a follow-up `The getter 'message' isn't defined for the type 'String'` at line 220).
+
+Root cause: the field was typed `String?` to "just hold the message", but `submitPrivacyRequest` returns a `Result<SubmittedPrivacyRequest, GovernanceFailure>` and the typed failure carries the user-safe `message` field. The fix is to type the field as `GovernanceFailure?` and use `failure.message` when rendering, the same pattern as every other `*Failure`-typed form in the mobile (student create, staff create, grading correction).
+
+Fix: typed `_error` as `GovernanceFailure?` and assigned `(result as Err<...>).error` on failure. The form's error container now uses `_error!.message` directly, with no string-conversion round-trip.
+
+Prevention: any new write-flow form in this repo should type its `_error` field as the failure type from the matching `Result` envelope (e.g. `StudentFailure?` for `Result<X, StudentFailure>`). The `String?` shortcut is wrong because the typed failure already carries a `message` getter.

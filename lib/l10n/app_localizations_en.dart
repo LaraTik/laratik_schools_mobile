@@ -91,6 +91,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeStudentFeeInvoicesSubtitle => 'Issued + outstanding plans';
 
   @override
+  String get homeParentPrivacyRequestTitle => 'Submit a privacy request';
+
+  @override
+  String get homeParentPrivacyRequestSubtitle =>
+      'Data access, erasure, or correction';
+
+  @override
+  String get homeStudentPrivacyRequestTitle => 'Submit a privacy request';
+
+  @override
+  String get homeStudentPrivacyRequestSubtitle =>
+      'Data access, erasure, or correction';
+
+  @override
   String get studentDetailScreenTitle => 'Student';
 
   @override
@@ -2867,4 +2881,114 @@ class AppLocalizationsEn extends AppLocalizations {
   String operationsReceiveCallbackErrorSnack(String message) {
     return 'Callback failed: $message';
   }
+
+  @override
+  String get privacyRequestSubmitScreenTitle => 'Submit a privacy request';
+
+  @override
+  String get privacyRequestSubmitTypeHeader => 'Request type';
+
+  @override
+  String get privacyRequestTypeAccess => 'Data access';
+
+  @override
+  String get privacyRequestTypeRectification => 'Rectification';
+
+  @override
+  String get privacyRequestTypeErasure => 'Erasure';
+
+  @override
+  String get privacyRequestTypeConsentWithdrawal => 'Consent withdrawal';
+
+  @override
+  String get privacyRequestTypeLegalHold => 'Legal hold';
+
+  @override
+  String get privacyRequestSubmitCategoriesHeader => 'Data categories';
+
+  @override
+  String get privacyRequestSubmitAuthorityHeader => 'Authority';
+
+  @override
+  String get privacyRequestSubmitAuthorityLabel => 'Authority reference';
+
+  @override
+  String get privacyRequestSubmitAuthorityHint =>
+      'e.g. ticket id or email thread id';
+
+  @override
+  String get privacyRequestSubmitAuthorityRequired =>
+      'An authority reference is required.';
+
+  @override
+  String get privacyRequestSubmitBranchHeader => 'School branch';
+
+  @override
+  String get privacyRequestSubmitBranchLabel => 'School branch';
+
+  @override
+  String get privacyRequestSubmitBranchHint => 'e.g. main / north / campus-2';
+
+  @override
+  String get privacyRequestSubmitBranchRequired =>
+      'A school branch is required.';
+
+  @override
+  String get privacyRequestSubmitNoteHeader => 'Note (optional)';
+
+  @override
+  String get privacyRequestSubmitNoteLabel => 'Note';
+
+  @override
+  String get privacyRequestSubmitNoteHint => 'Why is this request needed?';
+
+  @override
+  String get privacyRequestSubmitAction => 'Submit request';
+
+  @override
+  String get privacyRequestSubmitLoading => 'Submitting…';
+
+  @override
+  String get privacyRequestSubmitSummaryHeader => 'Request context';
+
+  @override
+  String get privacyRequestSubmitSummaryRequester => 'Requester type';
+
+  @override
+  String get privacyRequestSubmitSummarySubject => 'Subject';
+
+  @override
+  String get privacyRequestSubmitSummaryBranch => 'School branch';
+
+  @override
+  String get privacyRequestSubmitSuccessTitle => 'Privacy request submitted';
+
+  @override
+  String get privacyRequestSubmitSuccessFallback => 'The request is on file.';
+
+  @override
+  String privacyRequestSubmitSuccessLabel(String id) {
+    return 'Request $id submitted.';
+  }
+
+  @override
+  String get privacyRequestSubmitBackAction => 'Back to my family';
+
+  @override
+  String get privacyRequestCategoryPersonal => 'Personal';
+
+  @override
+  String get privacyRequestCategoryAttendance => 'Attendance';
+
+  @override
+  String get privacyRequestCategoryGrades => 'Grades';
+
+  @override
+  String get privacyRequestCategoryFees => 'Fees';
+
+  @override
+  String get privacyRequestCategoryHealth => 'Health';
+
+  @override
+  String get privacyRequestCategoryCommunications => 'Communications';
 }

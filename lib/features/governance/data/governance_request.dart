@@ -191,10 +191,8 @@ class PrivacyRequestTimeline extends Equatable {
     final entries = json['entries'];
     final list = entries is List
         ? entries
-            .whereType<Map>()
-            .map((e) => PrivacyTimelineEntry.fromJson(
-                  Map<String, Object?>.from(e),
-                ))
+            .whereType<Map<String, Object?>>()
+            .map(PrivacyTimelineEntry.fromJson)
             .toList(growable: false)
         : const <PrivacyTimelineEntry>[];
     return PrivacyRequestTimeline(entries: list);
@@ -240,4 +238,61 @@ class PrivacyTimelineEntry extends Equatable {
 
   @override
   List<Object?> get props => [action, actor, timestamp, note];
+}
+
+/// The result of a successful `submit_school_privacy_request`
+/// call from a parent or student. The v1 wire shape is
+/// `{privacy_request, status}`. The named accessors are
+/// best-effort fallbacks.
+@immutable
+class SubmittedPrivacyRequest extends Equatable {
+  const SubmittedPrivacyRequest({
+    required this.raw,
+    required this.privacyRequest,
+    this.status,
+    this.message,
+  });
+
+  /// Forward-compat factory. Pulls the well-known keys
+  /// (canonical + the legacy aliases) and falls back to
+  /// `null` when the wire doesn't carry them.
+  factory SubmittedPrivacyRequest.fromJson(JsonMap json) {
+    return SubmittedPrivacyRequest(
+      raw: json,
+      privacyRequest: _readString(json, const [
+        'privacy_request',
+        'name',
+        'request',
+      ]) ?? '',
+      status: _readString(json, const [
+        'status',
+        'state',
+        'result',
+      ]),
+      message: _readString(json, const [
+        'message',
+        'note',
+        'status_message',
+      ]),
+    );
+  }
+
+  final JsonMap raw;
+  final String privacyRequest;
+  final String? status;
+  final String? message;
+
+  bool get isSubmitted => status == 'submitted' || status == 'received';
+  bool get hasName => privacyRequest.isNotEmpty;
+
+  @override
+  List<Object?> get props => [raw, privacyRequest, status, message];
+}
+
+String? _readString(JsonMap json, List<String> keys) {
+  for (final key in keys) {
+    final value = json[key];
+    if (value is String && value.isNotEmpty) return value;
+  }
+  return null;
 }

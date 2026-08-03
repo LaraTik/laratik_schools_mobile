@@ -881,4 +881,101 @@ void main() {
       },
     );
   });
+
+  group('Privacy request submit surface localization', () {
+    test(
+      'privacy request submit ARB keys are pinned in both English and Arabic',
+      () async {
+        final en = await AppLocalizations.delegate.load(const Locale('en'));
+        final ar = await AppLocalizations.delegate.load(const Locale('ar'));
+        // Screen title + section headers + helper copy.
+        expect(en.privacyRequestSubmitScreenTitle,
+            'Submit a privacy request');
+        expect(en.privacyRequestSubmitTypeHeader, 'Request type');
+        expect(en.privacyRequestSubmitCategoriesHeader, 'Data categories');
+        expect(en.privacyRequestSubmitAuthorityHeader, 'Authority');
+        expect(en.privacyRequestSubmitBranchHeader, 'School branch');
+        expect(en.privacyRequestSubmitNoteHeader, 'Note (optional)');
+        // Request type labels.
+        expect(en.privacyRequestTypeAccess, 'Data access');
+        expect(en.privacyRequestTypeRectification, 'Rectification');
+        expect(en.privacyRequestTypeErasure, 'Erasure');
+        expect(en.privacyRequestTypeConsentWithdrawal, 'Consent withdrawal');
+        expect(en.privacyRequestTypeLegalHold, 'Legal hold');
+        // Authority + branch + note labels + hints.
+        expect(en.privacyRequestSubmitAuthorityLabel, 'Authority reference');
+        expect(en.privacyRequestSubmitAuthorityRequired, isNotEmpty);
+        expect(en.privacyRequestSubmitBranchLabel, 'School branch');
+        expect(en.privacyRequestSubmitBranchRequired, isNotEmpty);
+        expect(en.privacyRequestSubmitNoteLabel, 'Note');
+        // Submit action.
+        expect(en.privacyRequestSubmitAction, 'Submit request');
+        expect(en.privacyRequestSubmitLoading, contains('Submit'));
+        // Summary copy.
+        expect(en.privacyRequestSubmitSummaryHeader, 'Request context');
+        expect(en.privacyRequestSubmitSummaryRequester, 'Requester type');
+        expect(en.privacyRequestSubmitSummarySubject, 'Subject');
+        expect(en.privacyRequestSubmitSummaryBranch, 'School branch');
+        // Success copy.
+        expect(en.privacyRequestSubmitSuccessTitle,
+            'Privacy request submitted');
+        expect(en.privacyRequestSubmitSuccessFallback, isNotEmpty);
+        expect(en.privacyRequestSubmitSuccessLabel('EDU-PR-2026-00001'),
+            contains('EDU-PR-2026-00001'));
+        expect(en.privacyRequestSubmitBackAction, isNotEmpty);
+        // Category chip labels.
+        expect(en.privacyRequestCategoryPersonal, 'Personal');
+        expect(en.privacyRequestCategoryAttendance, 'Attendance');
+        expect(en.privacyRequestCategoryGrades, 'Grades');
+        expect(en.privacyRequestCategoryFees, 'Fees');
+        expect(en.privacyRequestCategoryHealth, 'Health');
+        expect(en.privacyRequestCategoryCommunications, 'Communications');
+        // Home tile labels (parent + student surfaces).
+        expect(en.homeParentPrivacyRequestTitle, isNotEmpty);
+        expect(en.homeParentPrivacyRequestSubtitle, isNotEmpty);
+        expect(en.homeStudentPrivacyRequestTitle, isNotEmpty);
+        expect(en.homeStudentPrivacyRequestSubtitle, isNotEmpty);
+        for (final getter in [
+          () => ar.privacyRequestSubmitScreenTitle,
+          () => ar.privacyRequestSubmitTypeHeader,
+          () => ar.privacyRequestSubmitCategoriesHeader,
+          () => ar.privacyRequestSubmitAuthorityHeader,
+          () => ar.privacyRequestSubmitBranchHeader,
+          () => ar.privacyRequestSubmitNoteHeader,
+          () => ar.privacyRequestTypeAccess,
+          () => ar.privacyRequestTypeRectification,
+          () => ar.privacyRequestTypeErasure,
+          () => ar.privacyRequestTypeConsentWithdrawal,
+          () => ar.privacyRequestTypeLegalHold,
+          () => ar.privacyRequestSubmitAuthorityLabel,
+          () => ar.privacyRequestSubmitAuthorityRequired,
+          () => ar.privacyRequestSubmitBranchLabel,
+          () => ar.privacyRequestSubmitBranchRequired,
+          () => ar.privacyRequestSubmitNoteLabel,
+          () => ar.privacyRequestSubmitAction,
+          () => ar.privacyRequestSubmitLoading,
+          () => ar.privacyRequestSubmitSummaryHeader,
+          () => ar.privacyRequestSubmitSummaryRequester,
+          () => ar.privacyRequestSubmitSummarySubject,
+          () => ar.privacyRequestSubmitSummaryBranch,
+          () => ar.privacyRequestSubmitSuccessTitle,
+          () => ar.privacyRequestSubmitSuccessFallback,
+          () => ar.privacyRequestSubmitSuccessLabel('EDU-PR-2026-00001'),
+          () => ar.privacyRequestSubmitBackAction,
+          () => ar.privacyRequestCategoryPersonal,
+          () => ar.privacyRequestCategoryAttendance,
+          () => ar.privacyRequestCategoryGrades,
+          () => ar.privacyRequestCategoryFees,
+          () => ar.privacyRequestCategoryHealth,
+          () => ar.privacyRequestCategoryCommunications,
+          () => ar.homeParentPrivacyRequestTitle,
+          () => ar.homeParentPrivacyRequestSubtitle,
+          () => ar.homeStudentPrivacyRequestTitle,
+          () => ar.homeStudentPrivacyRequestSubtitle,
+        ]) {
+          expect(getter(), isNotEmpty, reason: 'AR missing');
+        }
+      },
+    );
+  });
 }

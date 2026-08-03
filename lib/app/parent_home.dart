@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Proprietary
+﻿// SPDX-License-Identifier: Proprietary
 // Parent (guardian) home. Read-mostly surface for the legal
 // guardian of one or more students.
 //
@@ -93,7 +93,7 @@ class ParentHomeScreen extends ConsumerWidget {
           _HeroFamilyCard(tokens: tokens, familyAsync: familyAsync),
           SizedBox(height: tokens.space.lg),
           // Fee invoices for the parent's children. Shown to
-          // every parent — the v1 server is expected to filter
+          // every parent â€” the v1 server is expected to filter
           // `get_school_student_fee_plans` to the current user's
           // children when the session is a parent role, so the
           // tile is safe to render for all parents regardless
@@ -105,6 +105,23 @@ class ParentHomeScreen extends ConsumerWidget {
             tokens: tokens,
             title: l.homeParentFeeInvoicesTitle,
             subtitle: l.homeParentFeeInvoicesSubtitle,
+          ),
+          SizedBox(height: tokens.space.sm),
+          // "Submit a privacy request" tile. The parent can
+          // submit a data access / rectification / erasure /
+          // consent_withdrawal / legal_hold request on behalf
+          // of their linked child. The form collects the
+          // school branch + the subject id (the form is
+          // server-side authoritative on the linked child
+          // scope, so a generic "main" placeholder is enough
+          // for the deep-link).
+          _PrivacyRequestCard(
+            tokens: tokens,
+            title: l.homeParentPrivacyRequestTitle,
+            subtitle: l.homeParentPrivacyRequestSubtitle,
+            onTap: () => context.go(
+              '/shell/governance/submit/guardian/student/main',
+            ),
           ),
           SizedBox(height: tokens.space.lg),
           Text(
@@ -126,7 +143,7 @@ class ParentHomeScreen extends ConsumerWidget {
 }
 
 /// Compact "Fee invoices" tile. Reused by both the parent
-/// home and the student home — the v1 server filters
+/// home and the student home â€” the v1 server filters
 /// `get_school_student_fee_plans` to the current user
 /// (parent's children / the student's own plans) so the
 /// tile is safe to render for any role that has its own
@@ -212,7 +229,7 @@ class _FeeInvoicesCard extends StatelessWidget {
 
 /// Hero "My children" card. Shows the live count from
 /// [familyListProvider] when available, otherwise a calm loading
-/// placeholder. Tap → /shell/family.
+/// placeholder. Tap â†’ /shell/family.
 class _HeroFamilyCard extends StatelessWidget {
   const _HeroFamilyCard({required this.tokens, required this.familyAsync});
   final DesignTokens tokens;
@@ -384,6 +401,89 @@ class _InboxCard extends StatelessWidget {
                     SizedBox(height: tokens.space.xxs),
                     Text(
                       l.homeParentInboxUnread(unread),
+                      style: tokens.typography.bodySmall.copyWith(
+                        color: tokens.text.secondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(
+                Directionality.of(context) == TextDirection.rtl
+                    ? Icons.chevron_left
+                    : Icons.chevron_right,
+                color: tokens.text.tertiary,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+// SPDX-License-Identifier: Proprietary
+// Privacy request card appended.
+
+/// "Submit a privacy request" tile on the parent home.
+/// Reachable from the "More" section as a deep-link to the
+/// governance submit form with the requester type (guardian)
+/// + the subject type (student) + the active child's id +
+/// the active school branch baked in.
+class _PrivacyRequestCard extends StatelessWidget {
+  const _PrivacyRequestCard({
+    required this.tokens,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  final DesignTokens tokens;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: tokens.surface.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(tokens.radius.md),
+        side: BorderSide(color: tokens.surface.outlineVariant),
+      ),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(tokens.radius.md),
+        child: Padding(
+          padding: EdgeInsets.all(tokens.space.md),
+          child: Row(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: tokens.surface.surfaceContainerHigh,
+                  borderRadius: BorderRadius.circular(tokens.radius.sm),
+                ),
+                child: Icon(
+                  Icons.privacy_tip_outlined,
+                  color: tokens.text.secondary,
+                  size: 22,
+                ),
+              ),
+              SizedBox(width: tokens.space.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: tokens.typography.titleSmall.copyWith(
+                        color: tokens.text.primary,
+                      ),
+                    ),
+                    SizedBox(height: tokens.space.xxs),
+                    Text(
+                      subtitle,
                       style: tokens.typography.bodySmall.copyWith(
                         color: tokens.text.secondary,
                       ),

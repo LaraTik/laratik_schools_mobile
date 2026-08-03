@@ -162,6 +162,24 @@ class StudentHomeScreen extends ConsumerWidget {
             onTap: () => context.go('/shell/fees/plans'),
           ),
           SizedBox(height: tokens.space.sm),
+          // "Submit a privacy request" tile (student surface). The
+          // student submits their own access / rectification / erasure
+          // / consent_withdrawal / legal_hold request. Requires a
+          // resolved current student so the subject is known.
+          _SurfaceTile(
+            tokens: tokens,
+            icon: Icons.privacy_tip_outlined,
+            title: l.homeStudentPrivacyRequestTitle,
+            subtitle: current == null
+                ? l.homeStudentResolving
+                : l.homeStudentPrivacyRequestSubtitle,
+            onTap: current == null
+                ? null
+                : () => context.go(
+                      '/shell/governance/submit/student/student/${current.studentId}',
+                    ),
+          ),
+          SizedBox(height: tokens.space.sm),
           _SurfaceTile(
             tokens: tokens,
             icon: Icons.notifications_outlined,

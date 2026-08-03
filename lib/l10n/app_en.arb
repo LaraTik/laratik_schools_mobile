@@ -35,6 +35,11 @@
   "homeStudentFeeInvoicesTitle": "My fee invoices",
   "homeStudentFeeInvoicesSubtitle": "Issued + outstanding plans",
 
+  "homeParentPrivacyRequestTitle": "Submit a privacy request",
+  "homeParentPrivacyRequestSubtitle": "Data access, erasure, or correction",
+  "homeStudentPrivacyRequestTitle": "Submit a privacy request",
+  "homeStudentPrivacyRequestSubtitle": "Data access, erasure, or correction",
+
   "studentDetailScreenTitle": "Student",
   "studentDetailErrorTitle": "Could not load student",
   "studentDetailLoadingTitle": "Loading student",
@@ -1373,5 +1378,46 @@
     "placeholders": {
       "message": { "type": "String" }
     }
-  }
+  },
+
+  "privacyRequestSubmitScreenTitle": "Submit a privacy request",
+  "privacyRequestSubmitTypeHeader": "Request type",
+  "privacyRequestTypeAccess": "Data access",
+  "privacyRequestTypeRectification": "Rectification",
+  "privacyRequestTypeErasure": "Erasure",
+  "privacyRequestTypeConsentWithdrawal": "Consent withdrawal",
+  "privacyRequestTypeLegalHold": "Legal hold",
+  "privacyRequestSubmitCategoriesHeader": "Data categories",
+  "privacyRequestSubmitAuthorityHeader": "Authority",
+  "privacyRequestSubmitAuthorityLabel": "Authority reference",
+  "privacyRequestSubmitAuthorityHint": "e.g. ticket id or email thread id",
+  "privacyRequestSubmitAuthorityRequired": "An authority reference is required.",
+  "privacyRequestSubmitBranchHeader": "School branch",
+  "privacyRequestSubmitBranchLabel": "School branch",
+  "privacyRequestSubmitBranchHint": "e.g. main / north / campus-2",
+  "privacyRequestSubmitBranchRequired": "A school branch is required.",
+  "privacyRequestSubmitNoteHeader": "Note (optional)",
+  "privacyRequestSubmitNoteLabel": "Note",
+  "privacyRequestSubmitNoteHint": "Why is this request needed?",
+  "privacyRequestSubmitAction": "Submit request",
+  "privacyRequestSubmitLoading": "Submitting…",
+  "privacyRequestSubmitSummaryHeader": "Request context",
+  "privacyRequestSubmitSummaryRequester": "Requester type",
+  "privacyRequestSubmitSummarySubject": "Subject",
+  "privacyRequestSubmitSummaryBranch": "School branch",
+  "privacyRequestSubmitSuccessTitle": "Privacy request submitted",
+  "privacyRequestSubmitSuccessFallback": "The request is on file.",
+  "privacyRequestSubmitSuccessLabel": "Request {id} submitted.",
+  "@privacyRequestSubmitSuccessLabel": {
+    "placeholders": {
+      "id": { "type": "String" }
+    }
+  },
+  "privacyRequestSubmitBackAction": "Back to my family",
+  "privacyRequestCategoryPersonal": "Personal",
+  "privacyRequestCategoryAttendance": "Attendance",
+  "privacyRequestCategoryGrades": "Grades",
+  "privacyRequestCategoryFees": "Fees",
+  "privacyRequestCategoryHealth": "Health",
+  "privacyRequestCategoryCommunications": "Communications"
 }

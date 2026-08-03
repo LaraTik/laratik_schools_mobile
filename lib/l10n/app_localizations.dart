@@ -260,6 +260,30 @@ abstract class AppLocalizations {
   /// **'Issued + outstanding plans'**
   String get homeStudentFeeInvoicesSubtitle;
 
+  /// No description provided for @homeParentPrivacyRequestTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit a privacy request'**
+  String get homeParentPrivacyRequestTitle;
+
+  /// No description provided for @homeParentPrivacyRequestSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Data access, erasure, or correction'**
+  String get homeParentPrivacyRequestSubtitle;
+
+  /// No description provided for @homeStudentPrivacyRequestTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit a privacy request'**
+  String get homeStudentPrivacyRequestTitle;
+
+  /// No description provided for @homeStudentPrivacyRequestSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Data access, erasure, or correction'**
+  String get homeStudentPrivacyRequestSubtitle;
+
   /// No description provided for @studentDetailScreenTitle.
   ///
   /// In en, this message translates to:
@@ -4838,6 +4862,216 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Callback failed: {message}'**
   String operationsReceiveCallbackErrorSnack(String message);
+
+  /// No description provided for @privacyRequestSubmitScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit a privacy request'**
+  String get privacyRequestSubmitScreenTitle;
+
+  /// No description provided for @privacyRequestSubmitTypeHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Request type'**
+  String get privacyRequestSubmitTypeHeader;
+
+  /// No description provided for @privacyRequestTypeAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Data access'**
+  String get privacyRequestTypeAccess;
+
+  /// No description provided for @privacyRequestTypeRectification.
+  ///
+  /// In en, this message translates to:
+  /// **'Rectification'**
+  String get privacyRequestTypeRectification;
+
+  /// No description provided for @privacyRequestTypeErasure.
+  ///
+  /// In en, this message translates to:
+  /// **'Erasure'**
+  String get privacyRequestTypeErasure;
+
+  /// No description provided for @privacyRequestTypeConsentWithdrawal.
+  ///
+  /// In en, this message translates to:
+  /// **'Consent withdrawal'**
+  String get privacyRequestTypeConsentWithdrawal;
+
+  /// No description provided for @privacyRequestTypeLegalHold.
+  ///
+  /// In en, this message translates to:
+  /// **'Legal hold'**
+  String get privacyRequestTypeLegalHold;
+
+  /// No description provided for @privacyRequestSubmitCategoriesHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Data categories'**
+  String get privacyRequestSubmitCategoriesHeader;
+
+  /// No description provided for @privacyRequestSubmitAuthorityHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Authority'**
+  String get privacyRequestSubmitAuthorityHeader;
+
+  /// No description provided for @privacyRequestSubmitAuthorityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Authority reference'**
+  String get privacyRequestSubmitAuthorityLabel;
+
+  /// No description provided for @privacyRequestSubmitAuthorityHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. ticket id or email thread id'**
+  String get privacyRequestSubmitAuthorityHint;
+
+  /// No description provided for @privacyRequestSubmitAuthorityRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'An authority reference is required.'**
+  String get privacyRequestSubmitAuthorityRequired;
+
+  /// No description provided for @privacyRequestSubmitBranchHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'School branch'**
+  String get privacyRequestSubmitBranchHeader;
+
+  /// No description provided for @privacyRequestSubmitBranchLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'School branch'**
+  String get privacyRequestSubmitBranchLabel;
+
+  /// No description provided for @privacyRequestSubmitBranchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. main / north / campus-2'**
+  String get privacyRequestSubmitBranchHint;
+
+  /// No description provided for @privacyRequestSubmitBranchRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'A school branch is required.'**
+  String get privacyRequestSubmitBranchRequired;
+
+  /// No description provided for @privacyRequestSubmitNoteHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Note (optional)'**
+  String get privacyRequestSubmitNoteHeader;
+
+  /// No description provided for @privacyRequestSubmitNoteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Note'**
+  String get privacyRequestSubmitNoteLabel;
+
+  /// No description provided for @privacyRequestSubmitNoteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Why is this request needed?'**
+  String get privacyRequestSubmitNoteHint;
+
+  /// No description provided for @privacyRequestSubmitAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit request'**
+  String get privacyRequestSubmitAction;
+
+  /// No description provided for @privacyRequestSubmitLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitting…'**
+  String get privacyRequestSubmitLoading;
+
+  /// No description provided for @privacyRequestSubmitSummaryHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Request context'**
+  String get privacyRequestSubmitSummaryHeader;
+
+  /// No description provided for @privacyRequestSubmitSummaryRequester.
+  ///
+  /// In en, this message translates to:
+  /// **'Requester type'**
+  String get privacyRequestSubmitSummaryRequester;
+
+  /// No description provided for @privacyRequestSubmitSummarySubject.
+  ///
+  /// In en, this message translates to:
+  /// **'Subject'**
+  String get privacyRequestSubmitSummarySubject;
+
+  /// No description provided for @privacyRequestSubmitSummaryBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'School branch'**
+  String get privacyRequestSubmitSummaryBranch;
+
+  /// No description provided for @privacyRequestSubmitSuccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy request submitted'**
+  String get privacyRequestSubmitSuccessTitle;
+
+  /// No description provided for @privacyRequestSubmitSuccessFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'The request is on file.'**
+  String get privacyRequestSubmitSuccessFallback;
+
+  /// No description provided for @privacyRequestSubmitSuccessLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Request {id} submitted.'**
+  String privacyRequestSubmitSuccessLabel(String id);
+
+  /// No description provided for @privacyRequestSubmitBackAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to my family'**
+  String get privacyRequestSubmitBackAction;
+
+  /// No description provided for @privacyRequestCategoryPersonal.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal'**
+  String get privacyRequestCategoryPersonal;
+
+  /// No description provided for @privacyRequestCategoryAttendance.
+  ///
+  /// In en, this message translates to:
+  /// **'Attendance'**
+  String get privacyRequestCategoryAttendance;
+
+  /// No description provided for @privacyRequestCategoryGrades.
+  ///
+  /// In en, this message translates to:
+  /// **'Grades'**
+  String get privacyRequestCategoryGrades;
+
+  /// No description provided for @privacyRequestCategoryFees.
+  ///
+  /// In en, this message translates to:
+  /// **'Fees'**
+  String get privacyRequestCategoryFees;
+
+  /// No description provided for @privacyRequestCategoryHealth.
+  ///
+  /// In en, this message translates to:
+  /// **'Health'**
+  String get privacyRequestCategoryHealth;
+
+  /// No description provided for @privacyRequestCategoryCommunications.
+  ///
+  /// In en, this message translates to:
+  /// **'Communications'**
+  String get privacyRequestCategoryCommunications;
 }
 
 class _AppLocalizationsDelegate

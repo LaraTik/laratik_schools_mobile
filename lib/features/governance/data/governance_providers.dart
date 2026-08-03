@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Proprietary
 // Riverpod wiring for the Governance feature.
 //
-// Today (read-only privacy requests + approve / process / set
-// legal hold + retention evaluation):
+// Today (read-only privacy requests + admin approve / process /
+// set legal hold + retention + requester submit):
 //   * `governanceRepositoryProvider` — single instance per app
 //     session.
 //   * `privacyRequestsController` — async notifier for the
@@ -14,17 +14,19 @@
 //     to the repository and invalidate
 //     `privacyRequestsProvider` on success so the list
 //     re-fetches the latest state.
+//   * `submitPrivacyRequest` — top-level helper for the
+//     requester flow (parent or student submits their own
+//     request). Mints a fresh UUID for the
+//     `Idempotency-Key` header + a fresh `client_request_id`
+//     so a retry of the same submit is safe to send again.
 //
 // Future (deferred to a follow-up turn):
-//   * `submitPrivacyRequest` — requester flow (parent or
-//     student submits their own request).
 //   * `approveDataGovernanceSettings` — admin approves a
 //     settings change (retention window + legal hold
 //     defaults).
 //   * `createDataArchiveManifest` — admin exports the school's
 //     data archive for a specific date range.
 
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/result.dart';
@@ -141,6 +143,41 @@ Future<Result<void, GovernanceFailure>> setPrivacyLegalHold(
 Future<Result<void, GovernanceFailure>> evaluateRetention(WidgetRef ref) async {
   final repo = ref.read(governanceRepositoryProvider);
   final result = await repo.evaluateRetention();
+  if (result is Ok) {
+    ref.invalidate(privacyRequestsProvider);
+  }
+  return result;
+}
+
+/// Top-level helper to submit a new privacy request from
+/// a parent or student. The repository mints a fresh UUID
+/// for the `Idempotency-Key` header + a fresh
+/// `client_request_id` so a retry of the same submit is
+/// safe to send again. The list provider is invalidated
+/// on success so the admin's privacy list (when re-loaded
+/// by the same school session) re-fetches the new row.
+Future<Result<SubmittedPrivacyRequest, GovernanceFailure>> submitPrivacyRequest(
+  WidgetRef ref, {
+  required String requestType,
+  required String requesterType,
+  required String subjectType,
+  required String subject,
+  required List<String> requestedCategories,
+  required String schoolBranch,
+  required String authorityReference,
+  String? schemaVersion,
+}) async {
+  final repo = ref.read(governanceRepositoryProvider);
+  final result = await repo.submitPrivacyRequest(
+    requestType: requestType,
+    requesterType: requesterType,
+    subjectType: subjectType,
+    subject: subject,
+    requestedCategories: requestedCategories,
+    schoolBranch: schoolBranch,
+    authorityReference: authorityReference,
+    schemaVersion: schemaVersion,
+  );
   if (result is Ok) {
     ref.invalidate(privacyRequestsProvider);
   }

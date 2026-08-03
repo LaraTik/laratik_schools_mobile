@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: Proprietary
-// Governance repository — wraps the v1 endpoints the read-only
-// privacy + retention surface needs.
+// Governance repository — wraps the v1 endpoints the admin +
+// parent / student privacy + retention surface needs.
 //
-// Today (read-only privacy requests + approve / process / set
-// legal hold):
+// Today (read-only privacy requests + admin approve / process /
+// set legal hold + retention + requester submit):
 //   * `get_school_privacy_requests` → list of privacy requests
 //     (data export / data deletion / data access / consent
 //     withdrawal / legal hold / governance settings). The
@@ -12,19 +12,17 @@
 //   * `approve_school_privacy_request` (write) — admin
 //     approves a submitted request. The mobile passes a
 //     `payload: { 'request_name': <id>, 'decision': 'approved' }`
-//     and a fresh idempotency key (see the convention in
-//     `lib/core/result.dart`).
+//     and a fresh idempotency key.
 //   * `process_school_privacy_request` (write) — admin
 //     marks a request as "Under Review" (in-progress).
 //   * `set_school_privacy_legal_hold` (write) — admin
 //     sets or releases a legal hold on a request.
 //   * `evaluate_school_data_retention` (write) — admin runs
 //     the retention policy across the school.
-//
-// The `submit_school_privacy_request` endpoint is for the
-// requester (a parent or student submitting their own
-// request). That flow is deferred to a follow-up turn — the
-// admin surface doesn't need it.
+//   * `submit_school_privacy_request` (write) — parent or
+//     student submits a new privacy request. The mobile
+//     mints a fresh UUID for the `Idempotency-Key` header
+//     and the `client_request_id` field on the payload.
 //
 // The `approve_school_data_governance_settings` endpoint is
 // the approve action for the governance settings change
@@ -32,7 +30,6 @@
 // settings follow-up.
 
 import 'package:laratik_schools_api/laratik_schools_api.dart';
-import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../core/result.dart';
@@ -168,6 +165,64 @@ class GovernanceRepository {
         return Err(error: _failureFromApi(response.error));
       }
       return const Ok(value: null);
+    } on Exception catch (e) {
+      return Err(error: _exceptionFailure(e));
+    }
+  }
+
+  /// Submit a new privacy request from a parent or student.
+  /// The v1 server requires
+  /// `require_privacy_requester_access()` (parent or student
+  /// role). The payload carries `request_type` (access /
+  /// rectification / erasure / consent_withdrawal / legal_hold)
+  /// + `requester_type` (guardian / student) + `subject_type`
+  /// (student / family / staff) + `subject` (the subject id)
+  /// + `requested_categories` (list) + `school_branch` (the
+  /// active school branch) + `authority_reference` (an external
+  /// reference) + `client_request_id` (a fresh UUID v4 so a
+  /// retry of the same submit is safe to send again). The
+  /// repository mints a fresh UUID for the `Idempotency-Key`
+  /// header too.
+  Future<Result<SubmittedPrivacyRequest, GovernanceFailure>>
+      submitPrivacyRequest({
+    required String requestType,
+    required String requesterType,
+    required String subjectType,
+    required String subject,
+    required List<String> requestedCategories,
+    required String schoolBranch,
+    required String authorityReference,
+    String? schemaVersion,
+  }) async {
+    try {
+      final clientRequestId = _uuid.v4();
+      final response = await _api.submitSchoolPrivacyRequest(
+        payload: SubmitSchoolPrivacyRequestPayload(
+          authorityReference: authorityReference,
+          clientRequestId: clientRequestId,
+          requestType: requestType,
+          requestedCategories: requestedCategories,
+          requesterType: requesterType,
+          schoolBranch: schoolBranch,
+          schemaVersion: schemaVersion,
+          subject: subject,
+          subjectType: subjectType,
+        ),
+        idempotencyKey: _uuid.v4(),
+      );
+      final data = response.data;
+      if (response.error != null) {
+        return Err(error: _failureFromApi(response.error));
+      }
+      if (data == null) {
+        return const Err(
+          error: GovernanceFailure(
+            code: 'EMPTY_RESPONSE',
+            message: 'The server returned no submitted privacy request.',
+          ),
+        );
+      }
+      return Ok(value: SubmittedPrivacyRequest.fromJson(data.toJson()));
     } on Exception catch (e) {
       return Err(error: _exceptionFailure(e));
     }

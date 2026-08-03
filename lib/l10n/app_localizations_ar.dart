@@ -91,6 +91,20 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeStudentFeeInvoicesSubtitle => 'المستحقة + المتأخرة';
 
   @override
+  String get homeParentPrivacyRequestTitle => 'تقديم طلب خصوصية';
+
+  @override
+  String get homeParentPrivacyRequestSubtitle =>
+      'الوصول إلى البيانات أو محوها أو تصحيحها';
+
+  @override
+  String get homeStudentPrivacyRequestTitle => 'تقديم طلب خصوصية';
+
+  @override
+  String get homeStudentPrivacyRequestSubtitle =>
+      'الوصول إلى البيانات أو محوها أو تصحيحها';
+
+  @override
   String get studentDetailScreenTitle => 'الطالب';
 
   @override
@@ -2931,4 +2945,112 @@ class AppLocalizationsAr extends AppLocalizations {
   String operationsReceiveCallbackErrorSnack(String message) {
     return 'فشل رد الاتصال: $message';
   }
+
+  @override
+  String get privacyRequestSubmitScreenTitle => 'تقديم طلب خصوصية';
+
+  @override
+  String get privacyRequestSubmitTypeHeader => 'نوع الطلب';
+
+  @override
+  String get privacyRequestTypeAccess => 'الوصول إلى البيانات';
+
+  @override
+  String get privacyRequestTypeRectification => 'التصحيح';
+
+  @override
+  String get privacyRequestTypeErasure => 'المحو';
+
+  @override
+  String get privacyRequestTypeConsentWithdrawal => 'سحب الموافقة';
+
+  @override
+  String get privacyRequestTypeLegalHold => 'الاحتجاز القانوني';
+
+  @override
+  String get privacyRequestSubmitCategoriesHeader => 'فئات البيانات';
+
+  @override
+  String get privacyRequestSubmitAuthorityHeader => 'المرجع';
+
+  @override
+  String get privacyRequestSubmitAuthorityLabel => 'مرجع السلطة';
+
+  @override
+  String get privacyRequestSubmitAuthorityHint =>
+      'مثال: معرّف تذكرة أو معرّف رسالة بريد';
+
+  @override
+  String get privacyRequestSubmitAuthorityRequired => 'مرجع السلطة مطلوب.';
+
+  @override
+  String get privacyRequestSubmitBranchHeader => 'فرع المدرسة';
+
+  @override
+  String get privacyRequestSubmitBranchLabel => 'فرع المدرسة';
+
+  @override
+  String get privacyRequestSubmitBranchHint => 'مثال: main / north / campus-2';
+
+  @override
+  String get privacyRequestSubmitBranchRequired => 'فرع المدرسة مطلوب.';
+
+  @override
+  String get privacyRequestSubmitNoteHeader => 'ملاحظة (اختياري)';
+
+  @override
+  String get privacyRequestSubmitNoteLabel => 'ملاحظة';
+
+  @override
+  String get privacyRequestSubmitNoteHint => 'لماذا هذا الطلب مطلوب؟';
+
+  @override
+  String get privacyRequestSubmitAction => 'إرسال الطلب';
+
+  @override
+  String get privacyRequestSubmitLoading => 'جارٍ الإرسال…';
+
+  @override
+  String get privacyRequestSubmitSummaryHeader => 'سياق الطلب';
+
+  @override
+  String get privacyRequestSubmitSummaryRequester => 'نوع مقدم الطلب';
+
+  @override
+  String get privacyRequestSubmitSummarySubject => 'الموضوع';
+
+  @override
+  String get privacyRequestSubmitSummaryBranch => 'فرع المدرسة';
+
+  @override
+  String get privacyRequestSubmitSuccessTitle => 'تم تقديم طلب الخصوصية';
+
+  @override
+  String get privacyRequestSubmitSuccessFallback => 'الطلب موجود.';
+
+  @override
+  String privacyRequestSubmitSuccessLabel(String id) {
+    return 'تم تقديم الطلب $id.';
+  }
+
+  @override
+  String get privacyRequestSubmitBackAction => 'العودة إلى عائلتي';
+
+  @override
+  String get privacyRequestCategoryPersonal => 'الشخصية';
+
+  @override
+  String get privacyRequestCategoryAttendance => 'الحضور';
+
+  @override
+  String get privacyRequestCategoryGrades => 'الدرجات';
+
+  @override
+  String get privacyRequestCategoryFees => 'الرسوم';
+
+  @override
+  String get privacyRequestCategoryHealth => 'الصحة';
+
+  @override
+  String get privacyRequestCategoryCommunications => 'التواصل';
 }

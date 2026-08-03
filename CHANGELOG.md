@@ -8,6 +8,29 @@ and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ### Added
 
+- **Privacy request submit form (parent + student write
+  flow).** New 5-tab choice-chip form at
+  `/shell/governance/submit/:requesterType/:subjectType/:subject`
+  for submitting a data access / rectification / erasure /
+  consent_withdrawal / legal_hold request. Calls
+  `submit_school_privacy_request` with a canonical
+  `SubmitSchoolPrivacyRequestPayload` (request type +
+  requester type + subject type + subject id + requested
+  categories list + school branch + authority reference
+  + fresh `client_request_id` UUID v4 so a retry of the
+  same submit is safe to send again). The repository mints
+  a separate fresh UUID for the `Idempotency-Key` header.
+  Two new home tiles launch the form — `Submit a privacy
+  request` on the parent home + the same tile on the
+  student home (disabled until a current student is
+  resolved). The locale test grew from 22 to 23 to pin
+  the new keys in both English and Modern Standard Arabic.
+  The form's locale + RTL pass: category chip labels
+  extracted to ARB keys, ChoiceChip strip + FilterChip
+  strip + summary card + success card + summary rows all
+  honor `EdgeInsetsDirectional`. Closes the
+  parent + student write-flow gap of the privacy roadmap.
+
 - **Student + parent "Fee invoices" tile.** New
   `My fee invoices` (student) + `Fee invoices` (parent)
   tile on the role home, both launching the read-only

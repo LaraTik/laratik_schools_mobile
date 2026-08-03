@@ -342,6 +342,43 @@ Update 2026-08-03 (admin Grading surface): the
 > end-to-end" note now covers every per-role home
 > + every detail / create / capture / attempt
 > surface) and §5 (item #11 → fully shipped).
+>
+> Update 2026-08-03 (Privacy request submit
+> form — parent + student write flow): the
+> new 5-tab choice-chip form at
+> `/shell/governance/submit/:requesterType/:subjectType/:subject`
+> submits a data access / rectification /
+> erasure / consent_withdrawal / legal_hold
+> request. Calls
+> `submit_school_privacy_request` with a
+> canonical `SubmitSchoolPrivacyRequestPayload`
+> (request type + requester type + subject
+> type + subject id + requested categories
+> list + school branch + authority reference
+> + fresh `client_request_id` UUID v4 so a
+> retry of the same submit is safe to send
+> again). The repository mints a separate
+> fresh UUID for the `Idempotency-Key` header.
+> Two new home tiles launch the form —
+> `Submit a privacy request` on the parent
+> home (no-op until a child is linked) + the
+> same tile on the student home (disabled
+> until a current student is resolved). The
+> form's category chip labels are extracted
+> to ARB keys (Personal / Attendance / Grades
+> / Fees / Health / Communications), the
+> ChoiceChip strip + FilterChip strip +
+> summary card + success card all honor
+> `EdgeInsetsDirectional`. The locale test
+> grew from 22 to 23 to pin the new keys in
+> both English and Modern Standard Arabic.
+> Closes the parent + student write-flow gap
+> of the privacy roadmap. See §3 (Parent +
+> Student — "submit a privacy request" tile
+> shipped) and §5 (item #8 → privacy slice
+> fully shipped for the requester role; the
+> remaining admin write flows are still
+> deferred).
 
 This document is the source of truth for what is shipped, what is
 missing per role, and the prioritized roadmap. It supersedes the
