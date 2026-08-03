@@ -2,7 +2,8 @@
 // Grading repository — wraps the v1 endpoints the read-only
 // Grading admin surface needs.
 //
-// Today (read-only overview + policies + setup context):
+// Today (read-only overview + policies + setup context +
+// admin write flows):
 //   * `get_grading_overview_context` → coverage + feature +
 //     recent-students + summary + workflow stages. The
 //     mobile flattens the summary + workflow stages into
@@ -19,26 +20,33 @@
 //     subject grade policies. The mobile renders each as
 //     a row with the subject, grade band, pass threshold,
 //     and approval status.
+//   * `correct_school_grade_record` — admin corrects an
+//     existing grade record. Mints a fresh UUID for the
+//     `Idempotency-Key` header.
 //
 // Write flows (deferred to follow-up turns):
-//   * `correct_school_grade_record` — admin corrects an
-//     existing grade record.
 //   * `promote_school_assessment_result` — admin promotes
 //     a grade from an assessment result to a grade record.
 //   * `approve_school_subject_grade_policy` — admin approves
 //     a pending policy.
 
 import 'package:laratik_schools_api/laratik_schools_api.dart';
-import 'package:meta/meta.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../core/result.dart';
+import 'grade_record_correction.dart';
 import 'grading_failure.dart';
 import 'grading_overview.dart';
 
 class GradingRepository {
-  GradingRepository({required LaratikSchoolsApiClient api}) : _api = api;
+  GradingRepository({
+    required LaratikSchoolsApiClient api,
+    Uuid? uuid,
+  })  : _api = api,
+        _uuid = uuid ?? const Uuid();
 
   final LaratikSchoolsApiClient _api;
+  final Uuid _uuid;
 
   /// Top-level grading overview snapshot. Combines the
   /// `get_grading_overview_context` (workflow stages) +
@@ -147,6 +155,46 @@ class GradingRepository {
         );
       }
       return Ok(value: GradingPolicySetupContext.fromJson(data.toJson()));
+    } on Exception catch (e) {
+      return Err(error: _exceptionFailure(e));
+    }
+  }
+
+  /// Correct an existing grade record. The v1 server
+  /// requires `require_grade_approval_access()` (admin
+  /// role) and the `payload` carries `score` + `max_score`
+  /// + an optional `reason`. The repository mints a fresh
+  /// UUID for the `Idempotency-Key` header so a retry of
+  /// the same correction is safe to send again.
+  Future<Result<CorrectedGradeRecord, GradingFailure>> correctGradeRecord({
+    required String gradeName,
+    required double score,
+    required double maxScore,
+    String? reason,
+  }) async {
+    try {
+      final response = await _api.correctSchoolGradeRecord(
+        gradeName: gradeName,
+        payload: <String, Object?>{
+          'score': score,
+          'max_score': maxScore,
+          if (reason != null && reason.isNotEmpty) 'reason': reason,
+        },
+        idempotencyKey: _uuid.v4(),
+      );
+      final data = response.data;
+      if (response.error != null) {
+        return Err(error: _failureFromApi(response.error));
+      }
+      if (data == null) {
+        return const Err(
+          error: GradingFailure(
+            code: 'EMPTY_RESPONSE',
+            message: 'The server returned no correction result.',
+          ),
+        );
+      }
+      return Ok(value: CorrectedGradeRecord.fromJson(data.toJson()));
     } on Exception catch (e) {
       return Err(error: _exceptionFailure(e));
     }

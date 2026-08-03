@@ -48,6 +48,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get commonClose => 'إغلاق';
 
   @override
+  String get commonContinue => 'متابعة';
+
+  @override
   String get commonRefresh => 'تحديث';
 
   @override
@@ -2757,4 +2760,100 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get examAttemptAnswerHint => 'اكتب إجابتك…';
+
+  @override
+  String get gradingCorrectionScreenTitle => 'تصحيح درجة';
+
+  @override
+  String get gradingCorrectionLoadingTitle => 'جارٍ تحميل النموذج';
+
+  @override
+  String get gradingCorrectionLoadingMessage =>
+      'يجري جلب سياق إعداد سجل الدرجة.';
+
+  @override
+  String get gradingCorrectionErrorTitle => 'تعذّر تحميل النموذج';
+
+  @override
+  String get gradingCorrectionTargetHeader => 'الدرجة المستهدفة';
+
+  @override
+  String get gradingCorrectionGradeLabel => 'معرّف الدرجة';
+
+  @override
+  String get gradingCorrectionScoresHeader => 'الدرجات';
+
+  @override
+  String get gradingCorrectionScoreLabel => 'الدرجة';
+
+  @override
+  String get gradingCorrectionScoreHint => '0';
+
+  @override
+  String get gradingCorrectionMaxScoreLabel => 'الحد الأقصى';
+
+  @override
+  String get gradingCorrectionMaxScoreHint => '100';
+
+  @override
+  String get gradingCorrectionReasonHeader => 'السبب';
+
+  @override
+  String get gradingCorrectionReasonLabel => 'السبب';
+
+  @override
+  String get gradingCorrectionReasonHint => 'لماذا يحتاج هذا التصحيح؟';
+
+  @override
+  String get gradingCorrectionSubmitAction => 'تطبيق التصحيح';
+
+  @override
+  String get gradingCorrectionSubmitLoading => 'جارٍ التطبيق…';
+
+  @override
+  String get gradingCorrectionSuccessTitle => 'تم تصحيح الدرجة';
+
+  @override
+  String get gradingCorrectionSuccessFallback => 'سجل الدرجة موجود.';
+
+  @override
+  String gradingCorrectionSuccessLabel(String name) {
+    return 'تم تصحيح الدرجة $name';
+  }
+
+  @override
+  String gradingCorrectionScoreChip(double score) {
+    return 'الدرجة: $score';
+  }
+
+  @override
+  String gradingCorrectionMaxScoreChip(double max) {
+    return 'الحد: $max';
+  }
+
+  @override
+  String gradingCorrectionActorChip(String actor) {
+    return 'بواسطة $actor';
+  }
+
+  @override
+  String gradingCorrectionTimestampLabel(String timestamp) {
+    return 'تم التصحيح في $timestamp';
+  }
+
+  @override
+  String get gradingCorrectionAnotherAction => 'تصحيح آخر';
+
+  @override
+  String get gradingCorrectionBackAction => 'العودة إلى الدرجات';
+
+  @override
+  String get gradingCorrectionAction => 'تصحيح درجة';
+
+  @override
+  String get gradingCorrectionPromptTitle => 'تصحيح درجة';
+
+  @override
+  String get gradingCorrectionPromptHint =>
+      'أدخل معرّف الدرجة (مثال: GR-00001)';
 }

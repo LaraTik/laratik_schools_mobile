@@ -18,6 +18,7 @@
   "commonBack": "Back",
   "commonCancel": "Cancel",
   "commonClose": "Close",
+  "commonContinue": "Continue",
   "commonRefresh": "Refresh",
   "commonSearch": "Search",
   "commonTryAgain": "Try again",
@@ -1267,5 +1268,59 @@
       "marks": { "type": "int" }
     }
   },
-  "examAttemptAnswerHint": "Type your answer…"
+  "examAttemptAnswerHint": "Type your answer…",
+
+  "gradingCorrectionScreenTitle": "Correct grade",
+  "gradingCorrectionLoadingTitle": "Loading form",
+  "gradingCorrectionLoadingMessage": "Fetching the grade record setup context.",
+  "gradingCorrectionErrorTitle": "Could not load the form",
+  "gradingCorrectionTargetHeader": "Target grade",
+  "gradingCorrectionGradeLabel": "Grade ID",
+  "gradingCorrectionScoresHeader": "Scores",
+  "gradingCorrectionScoreLabel": "Score",
+  "gradingCorrectionScoreHint": "0",
+  "gradingCorrectionMaxScoreLabel": "Max score",
+  "gradingCorrectionMaxScoreHint": "100",
+  "gradingCorrectionReasonHeader": "Reason",
+  "gradingCorrectionReasonLabel": "Reason",
+  "gradingCorrectionReasonHint": "Why is this correction needed?",
+  "gradingCorrectionSubmitAction": "Apply correction",
+  "gradingCorrectionSubmitLoading": "Applying…",
+  "gradingCorrectionSuccessTitle": "Grade corrected",
+  "gradingCorrectionSuccessFallback": "The grade record is on file.",
+  "gradingCorrectionSuccessLabel": "Grade {name} corrected",
+  "@gradingCorrectionSuccessLabel": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "gradingCorrectionScoreChip": "Score: {score}",
+  "@gradingCorrectionScoreChip": {
+    "placeholders": {
+      "score": { "type": "double" }
+    }
+  },
+  "gradingCorrectionMaxScoreChip": "Max: {max}",
+  "@gradingCorrectionMaxScoreChip": {
+    "placeholders": {
+      "max": { "type": "double" }
+    }
+  },
+  "gradingCorrectionActorChip": "By {actor}",
+  "@gradingCorrectionActorChip": {
+    "placeholders": {
+      "actor": { "type": "String" }
+    }
+  },
+  "gradingCorrectionTimestampLabel": "Corrected at {timestamp}",
+  "@gradingCorrectionTimestampLabel": {
+    "placeholders": {
+      "timestamp": { "type": "String" }
+    }
+  },
+  "gradingCorrectionAnotherAction": "Correct another",
+  "gradingCorrectionBackAction": "Back to grading",
+  "gradingCorrectionAction": "Correct a grade",
+  "gradingCorrectionPromptTitle": "Correct a grade",
+  "gradingCorrectionPromptHint": "Enter the grade ID (e.g. GR-00001)"
 }

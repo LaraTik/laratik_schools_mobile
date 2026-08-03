@@ -176,6 +176,12 @@ abstract class AppLocalizations {
   /// **'Close'**
   String get commonClose;
 
+  /// No description provided for @commonContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get commonContinue;
+
   /// No description provided for @commonRefresh.
   ///
   /// In en, this message translates to:
@@ -4544,6 +4550,174 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Type your answer…'**
   String get examAttemptAnswerHint;
+
+  /// No description provided for @gradingCorrectionScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Correct grade'**
+  String get gradingCorrectionScreenTitle;
+
+  /// No description provided for @gradingCorrectionLoadingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading form'**
+  String get gradingCorrectionLoadingTitle;
+
+  /// No description provided for @gradingCorrectionLoadingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Fetching the grade record setup context.'**
+  String get gradingCorrectionLoadingMessage;
+
+  /// No description provided for @gradingCorrectionErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load the form'**
+  String get gradingCorrectionErrorTitle;
+
+  /// No description provided for @gradingCorrectionTargetHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Target grade'**
+  String get gradingCorrectionTargetHeader;
+
+  /// No description provided for @gradingCorrectionGradeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Grade ID'**
+  String get gradingCorrectionGradeLabel;
+
+  /// No description provided for @gradingCorrectionScoresHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Scores'**
+  String get gradingCorrectionScoresHeader;
+
+  /// No description provided for @gradingCorrectionScoreLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Score'**
+  String get gradingCorrectionScoreLabel;
+
+  /// No description provided for @gradingCorrectionScoreHint.
+  ///
+  /// In en, this message translates to:
+  /// **'0'**
+  String get gradingCorrectionScoreHint;
+
+  /// No description provided for @gradingCorrectionMaxScoreLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Max score'**
+  String get gradingCorrectionMaxScoreLabel;
+
+  /// No description provided for @gradingCorrectionMaxScoreHint.
+  ///
+  /// In en, this message translates to:
+  /// **'100'**
+  String get gradingCorrectionMaxScoreHint;
+
+  /// No description provided for @gradingCorrectionReasonHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason'**
+  String get gradingCorrectionReasonHeader;
+
+  /// No description provided for @gradingCorrectionReasonLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason'**
+  String get gradingCorrectionReasonLabel;
+
+  /// No description provided for @gradingCorrectionReasonHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Why is this correction needed?'**
+  String get gradingCorrectionReasonHint;
+
+  /// No description provided for @gradingCorrectionSubmitAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply correction'**
+  String get gradingCorrectionSubmitAction;
+
+  /// No description provided for @gradingCorrectionSubmitLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Applying…'**
+  String get gradingCorrectionSubmitLoading;
+
+  /// No description provided for @gradingCorrectionSuccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Grade corrected'**
+  String get gradingCorrectionSuccessTitle;
+
+  /// No description provided for @gradingCorrectionSuccessFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'The grade record is on file.'**
+  String get gradingCorrectionSuccessFallback;
+
+  /// No description provided for @gradingCorrectionSuccessLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Grade {name} corrected'**
+  String gradingCorrectionSuccessLabel(String name);
+
+  /// No description provided for @gradingCorrectionScoreChip.
+  ///
+  /// In en, this message translates to:
+  /// **'Score: {score}'**
+  String gradingCorrectionScoreChip(double score);
+
+  /// No description provided for @gradingCorrectionMaxScoreChip.
+  ///
+  /// In en, this message translates to:
+  /// **'Max: {max}'**
+  String gradingCorrectionMaxScoreChip(double max);
+
+  /// No description provided for @gradingCorrectionActorChip.
+  ///
+  /// In en, this message translates to:
+  /// **'By {actor}'**
+  String gradingCorrectionActorChip(String actor);
+
+  /// No description provided for @gradingCorrectionTimestampLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Corrected at {timestamp}'**
+  String gradingCorrectionTimestampLabel(String timestamp);
+
+  /// No description provided for @gradingCorrectionAnotherAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Correct another'**
+  String get gradingCorrectionAnotherAction;
+
+  /// No description provided for @gradingCorrectionBackAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to grading'**
+  String get gradingCorrectionBackAction;
+
+  /// No description provided for @gradingCorrectionAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Correct a grade'**
+  String get gradingCorrectionAction;
+
+  /// No description provided for @gradingCorrectionPromptTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Correct a grade'**
+  String get gradingCorrectionPromptTitle;
+
+  /// No description provided for @gradingCorrectionPromptHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the grade ID (e.g. GR-00001)'**
+  String get gradingCorrectionPromptHint;
 }
 
 class _AppLocalizationsDelegate

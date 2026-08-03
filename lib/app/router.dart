@@ -29,6 +29,7 @@ import '../features/imports/ui/score_import_detail_screen.dart';
 import '../features/me/ui/acting_as_picker_screen.dart';
 import '../features/operations/ui/operations_health_screen.dart';
 import '../features/governance/ui/governance_screen.dart';
+import '../features/grading/ui/grade_record_correction_screen.dart';
 import '../features/grading/ui/grading_screen.dart';
 import '../features/people/ui/student_create_screen.dart';
 import '../features/people/ui/student_detail_screen.dart';
@@ -522,6 +523,16 @@ GoRouter buildRouter({
             path: '/shell/grading',
             name: 'grading',
             builder: (context, state) => const GradingScreen(),
+          ),
+          // Grade record correction form (admin write flow).
+          // Reachable from the Grading surface as the
+          // `correct_school_grade_record` write flow.
+          GoRoute(
+            path: '/shell/grading/correct/:gradeName',
+            name: 'grading_correct',
+            builder: (context, state) => GradeRecordCorrectionScreen(
+              gradeName: state.pathParameters['gradeName']!,
+            ),
           ),
           // Data imports surface — read-only "Batches" +
           // "Score imports" catalog. Reachable from the "Data

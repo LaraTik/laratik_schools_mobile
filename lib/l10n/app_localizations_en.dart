@@ -48,6 +48,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonClose => 'Close';
 
   @override
+  String get commonContinue => 'Continue';
+
+  @override
   String get commonRefresh => 'Refresh';
 
   @override
@@ -2691,4 +2694,100 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get examAttemptAnswerHint => 'Type your answer…';
+
+  @override
+  String get gradingCorrectionScreenTitle => 'Correct grade';
+
+  @override
+  String get gradingCorrectionLoadingTitle => 'Loading form';
+
+  @override
+  String get gradingCorrectionLoadingMessage =>
+      'Fetching the grade record setup context.';
+
+  @override
+  String get gradingCorrectionErrorTitle => 'Could not load the form';
+
+  @override
+  String get gradingCorrectionTargetHeader => 'Target grade';
+
+  @override
+  String get gradingCorrectionGradeLabel => 'Grade ID';
+
+  @override
+  String get gradingCorrectionScoresHeader => 'Scores';
+
+  @override
+  String get gradingCorrectionScoreLabel => 'Score';
+
+  @override
+  String get gradingCorrectionScoreHint => '0';
+
+  @override
+  String get gradingCorrectionMaxScoreLabel => 'Max score';
+
+  @override
+  String get gradingCorrectionMaxScoreHint => '100';
+
+  @override
+  String get gradingCorrectionReasonHeader => 'Reason';
+
+  @override
+  String get gradingCorrectionReasonLabel => 'Reason';
+
+  @override
+  String get gradingCorrectionReasonHint => 'Why is this correction needed?';
+
+  @override
+  String get gradingCorrectionSubmitAction => 'Apply correction';
+
+  @override
+  String get gradingCorrectionSubmitLoading => 'Applying…';
+
+  @override
+  String get gradingCorrectionSuccessTitle => 'Grade corrected';
+
+  @override
+  String get gradingCorrectionSuccessFallback => 'The grade record is on file.';
+
+  @override
+  String gradingCorrectionSuccessLabel(String name) {
+    return 'Grade $name corrected';
+  }
+
+  @override
+  String gradingCorrectionScoreChip(double score) {
+    return 'Score: $score';
+  }
+
+  @override
+  String gradingCorrectionMaxScoreChip(double max) {
+    return 'Max: $max';
+  }
+
+  @override
+  String gradingCorrectionActorChip(String actor) {
+    return 'By $actor';
+  }
+
+  @override
+  String gradingCorrectionTimestampLabel(String timestamp) {
+    return 'Corrected at $timestamp';
+  }
+
+  @override
+  String get gradingCorrectionAnotherAction => 'Correct another';
+
+  @override
+  String get gradingCorrectionBackAction => 'Back to grading';
+
+  @override
+  String get gradingCorrectionAction => 'Correct a grade';
+
+  @override
+  String get gradingCorrectionPromptTitle => 'Correct a grade';
+
+  @override
+  String get gradingCorrectionPromptHint =>
+      'Enter the grade ID (e.g. GR-00001)';
 }

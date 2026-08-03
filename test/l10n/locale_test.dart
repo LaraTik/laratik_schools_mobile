@@ -791,4 +791,52 @@ void main() {
       },
     );
   });
+
+  group('Grading correction surface localization', () {
+    test(
+      'grading correction ARB keys are pinned in both English and Arabic',
+      () async {
+        final en = await AppLocalizations.delegate.load(const Locale('en'));
+        final ar = await AppLocalizations.delegate.load(const Locale('ar'));
+        expect(en.gradingCorrectionScreenTitle, 'Correct grade');
+        expect(en.gradingCorrectionAction, 'Correct a grade');
+        expect(en.gradingCorrectionPromptTitle, 'Correct a grade');
+        expect(en.gradingCorrectionPromptHint,
+            contains('GR-00001'));
+        expect(en.gradingCorrectionGradeLabel, 'Grade ID');
+        expect(en.gradingCorrectionScoreLabel, 'Score');
+        expect(en.gradingCorrectionMaxScoreLabel, 'Max score');
+        expect(en.gradingCorrectionReasonLabel, 'Reason');
+        expect(en.gradingCorrectionSubmitAction, 'Apply correction');
+        expect(en.gradingCorrectionSubmitLoading, 'Applying…');
+        expect(en.gradingCorrectionSuccessTitle, 'Grade corrected');
+        expect(en.gradingCorrectionSuccessLabel('GR-00001'),
+            contains('GR-00001'));
+        expect(en.gradingCorrectionAnotherAction, 'Correct another');
+        expect(en.gradingCorrectionBackAction, 'Back to grading');
+        expect(en.gradingCorrectionScoreChip(92.0), contains('92'));
+        expect(en.gradingCorrectionMaxScoreChip(100.0), contains('100'));
+        for (final getter in [
+          () => ar.gradingCorrectionScreenTitle,
+          () => ar.gradingCorrectionAction,
+          () => ar.gradingCorrectionPromptTitle,
+          () => ar.gradingCorrectionPromptHint,
+          () => ar.gradingCorrectionGradeLabel,
+          () => ar.gradingCorrectionScoreLabel,
+          () => ar.gradingCorrectionMaxScoreLabel,
+          () => ar.gradingCorrectionReasonLabel,
+          () => ar.gradingCorrectionSubmitAction,
+          () => ar.gradingCorrectionSubmitLoading,
+          () => ar.gradingCorrectionSuccessTitle,
+          () => ar.gradingCorrectionSuccessLabel('GR-00001'),
+          () => ar.gradingCorrectionAnotherAction,
+          () => ar.gradingCorrectionBackAction,
+          () => ar.gradingCorrectionScoreChip(92.0),
+          () => ar.gradingCorrectionMaxScoreChip(100.0),
+        ]) {
+          expect(getter(), isNotEmpty, reason: 'AR missing');
+        }
+      },
+    );
+  });
 }

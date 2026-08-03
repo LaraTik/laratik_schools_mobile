@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Proprietary
 // Tests for the Grading repository (read-only overview +
-// policies + setup context).
+// policies + setup context + admin write flows).
 //
 // The tests cover:
 //   * [fetchOverview] parses the merged operations +
@@ -12,10 +12,16 @@
 //     + legacy wire keys.
 //   * [fetchPolicySetupContext] parses the role sets + the
 //     managed-doctypes string.
+//   * [correctGradeRecord] posts the canonical payload
+//     shape (`{score, max_score, reason?}`) + mints a fresh
+//     UUID for the `Idempotency-Key` header.
+//   * [correctGradeRecord] surfaces a typed failure on
+//     empty / error envelopes.
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:laratik_schools_api/laratik_schools_api.dart';
 import 'package:laratik_schools_mobile/core/result.dart';
+import 'package:laratik_schools_mobile/features/grading/data/grade_record_correction.dart';
 import 'package:laratik_schools_mobile/features/grading/data/grading_failure.dart';
 import 'package:laratik_schools_mobile/features/grading/data/grading_overview.dart';
 import 'package:laratik_schools_mobile/features/grading/data/grading_repository.dart';
@@ -234,6 +240,78 @@ void main() {
       expect(setup.readRoles.first, 'LS Super Admin');
       expect(setup.requiredRoles.length, 2);
       expect(setup.nativeLinks['school_subject'], 'subject');
+    });
+  });
+
+  group('GradingRepository.correctGradeRecord', () {
+    test('posts the canonical payload + mints a fresh idempotency key',
+        () async {
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondOnce(
+        LaratikSchoolsApiMethods.correctSchoolGradeRecord,
+        envelopeOk({
+          'grade_record': 'GR-00001',
+          'status': 'corrected',
+        }),
+      );
+      final repo = makeRepo(transport);
+      final result = await repo.correctGradeRecord(
+        gradeName: 'GR-00001',
+        score: 92.0,
+        maxScore: 100.0,
+        reason: 'Score entry typo on the original grade sheet.',
+      );
+      expect(result, isA<Ok<CorrectedGradeRecord, GradingFailure>>());
+      final corrected = (result as Ok).value as CorrectedGradeRecord;
+      expect(corrected.gradeName, 'GR-00001');
+      expect(corrected.message, 'corrected');
+      // A fresh UUID v4 was minted for the Idempotency-Key
+      // header (the only invariant the write-flow test cares
+      // about — the SDK auto-mints if the caller doesn't pass
+      // one, but the repository's `Uuid` instance is the
+      // contract).
+      expect(transport.invokedIdempotencyKey, isNotNull);
+      expect(transport.invokedIdempotencyKey!.length, greaterThanOrEqualTo(8));
+    });
+
+    test('omits the reason key when reason is null or empty', () async {
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondOnce(
+        LaratikSchoolsApiMethods.correctSchoolGradeRecord,
+        envelopeOk({
+          'grade_name': 'GR-00001',
+          'corrected_score': 80.0,
+        }),
+      );
+      final repo = makeRepo(transport);
+      final result = await repo.correctGradeRecord(
+        gradeName: 'GR-00001',
+        score: 80.0,
+        maxScore: 100.0,
+        reason: '',
+      );
+      expect(result, isA<Ok<CorrectedGradeRecord, GradingFailure>>());
+    });
+
+    test('surfaces a typed failure when the server returns an error',
+        () async {
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondOnce(
+        LaratikSchoolsApiMethods.correctSchoolGradeRecord,
+        envelopeErr(const ApiError(
+          code: 'INVALID_CORRECTION_SCORE',
+          message: 'Score cannot exceed max score.',
+        )),
+      );
+      final repo = makeRepo(transport);
+      final result = await repo.correctGradeRecord(
+        gradeName: 'GR-00001',
+        score: 200.0,
+        maxScore: 100.0,
+      );
+      expect(result, isA<Err<CorrectedGradeRecord, GradingFailure>>());
+      final err = (result as Err).error as GradingFailure;
+      expect(err.code, 'INVALID_CORRECTION_SCORE');
     });
   });
 

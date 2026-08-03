@@ -24,6 +24,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/result.dart';
 import '../../../l10n/app_localizations.dart';
@@ -59,6 +60,11 @@ class GradingScreen extends ConsumerWidget {
             ),
           ),
           actions: [
+            IconButton(
+              tooltip: l.gradingCorrectionAction,
+              icon: const Icon(Icons.assignment_turned_in_outlined),
+              onPressed: () => _showGradeIdPrompt(context, l),
+            ),
             IconButton(
               tooltip: l.commonRefresh,
               icon: const Icon(Icons.refresh),
@@ -767,4 +773,50 @@ class _PolicyRow extends StatelessWidget {
       _ => Icons.help_outline,
     };
   }
+}
+
+/// Show a quick prompt that asks the admin for the grade
+/// id + pushes the correction form at
+/// `/shell/grading/correct/:gradeName`. The v1 server
+/// doesn't expose a "list grade records" endpoint on the
+/// mobile SDK today, so the admin enters the grade id
+/// (the same way the teacher exam manual-grade form
+/// asks for the attempt id).
+Future<void> _showGradeIdPrompt(
+  BuildContext context,
+  AppLocalizations l,
+) async {
+  final controller = TextEditingController();
+  final result = await showDialog<String>(
+    context: context,
+    builder: (ctx) {
+      return AlertDialog(
+        title: Text(l.gradingCorrectionPromptTitle),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          decoration: InputDecoration(
+            labelText: l.gradingCorrectionGradeLabel,
+            hintText: l.gradingCorrectionPromptHint,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text(l.commonCancel),
+          ),
+          FilledButton.tonal(
+            onPressed: () {
+              final id = controller.text.trim();
+              if (id.isEmpty) return;
+              Navigator.of(ctx).pop(id);
+            },
+            child: Text(l.commonContinue),
+          ),
+        ],
+      );
+    },
+  );
+  if (result == null || result.isEmpty || !context.mounted) return;
+  context.go('/shell/grading/correct/$result');
 }
