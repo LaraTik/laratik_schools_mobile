@@ -193,6 +193,41 @@ Update 2026-08-03 (admin Grading surface): the
 > slice; the wizard + the operations write flows remain
 > as follow-ups).
 
+> Update 2026-08-03 (Student + parent fee invoices
+> tile): the parent + student homes gain a "Fee
+> invoices" / "My fee invoices" tile respectively,
+> both launching the same read-only fee plans list at
+> `/shell/fees/plans`. The previous parent-tile gate
+> (`can_view_fees`, admin-only) was wrong — the v1
+> server is expected to filter
+> `get_school_student_fee_plans` to the current user's
+> children when the session is a parent role, so the
+> tile is now rendered for every parent. See §3
+> (Parent + Student) and §5 (item #7 → shipped for
+> the read path).
+
+> Update 2026-08-03 (Student detail + create surface
+> locale + RTL pass): the hardcoded English strings
+> on the student detail + create screens are
+> extracted to ARB keys in both English (source) +
+> Modern Standard Arabic. ~40 new ARB keys cover the
+> section headers (Current enrollment / Identity &
+> contact / Guardians / Recent grades / Identity /
+> Date of birth / Country & nationality / Guardian /
+> Enrollment / Notes), the entry labels (Grade /
+> Class group / Academic year / Status / Enrollment
+> status / Activation / Nationality / Country /
+> ERPNext customer), the field hints + the success
+> modal copy ("Student created" / "Create another"
+> / "Open record"), the country-warning chips +
+> messages, and the loading / error states. The
+> locale test grew from 13 to 14 to pin the new
+> keys in both locales. Closes roadmap #11 for
+> the people feature.
+> §5 (item #9 → fully shipped for the data import
+> slice; the wizard + the operations write flows remain
+> as follow-ups).
+
 > Update 2026-08-03 (Teacher "Exams" surface — exam
 > plan catalog + manual grading): the read-only exam
 > plan catalog ships at `/shell/teachers/exams` (each
