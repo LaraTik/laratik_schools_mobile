@@ -153,6 +153,35 @@ and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ### Added
 
+- **Admin grading write flow — `correct_school_grade_record`.**
+  New screen at `/shell/grading/correct/:gradeName` that
+  lets the admin correct the score + max score of an
+  existing grade record (with a required `reason`).
+  The repository mints a fresh UUID for the
+  `Idempotency-Key` header; the controller invalidates
+  the overview + policies providers on success so the
+  next ref.watch re-fetches the new summary. Reachable
+  from a new "Correct a grade" action on the Grading
+  surface AppBar (which opens a quick prompt for the
+  grade ID and pushes the form — same pattern as the
+  teacher exam "manual grade entry" flow that asks for
+  the attempt ID). The success card surfaces the
+  corrected score + max + actor + timestamp chips.
+  ~30 new ARB keys in en + ar. 3 new repository tests
+  (canonical-payload shape + reason-omission + typed-
+  error envelope) + 1 new locale test. The grading
+  test count grew 7 → 10. The locale test count grew
+  19 → 20. Closes the grading-write slice of roadmap
+  #9. The remaining admin write flows
+  (`approve_school_subject_grade_policy`,
+  `promote_school_assessment_result`,
+  `replay_school_delivery_event`,
+  `receive_school_delivery_callback`,
+  `approve_school_data_governance_settings`) are
+  deferred to follow-up turns.
+
+### Added
+
 - **Locale + RTL pass on the 5 remaining secondary
   surfaces (closes roadmap #11).** Hardcoded English
   strings on the staff list / detail / create + the
