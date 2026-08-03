@@ -262,6 +262,56 @@ Update 2026-08-03 (admin Grading surface): the
 > manual grading + read-only catalog; the authoring
 > wizard + promotion are documented follow-ups).
 
+> Update 2026-08-03 (Locale + RTL pass on the
+> remaining 5 secondary surfaces — closes
+> roadmap #11): the hardcoded English strings on
+> the staff list / detail / create + the guardian
+> list / detail / create + the academics 3-tab
+> screen + the subject create form + the
+> attendance list / capture (incl. the per-row
+> mark widget + the 4-way status segment + the
+> per-status badge) + the exam list / attempt
+> are extracted to ARB keys in both English (source)
+> + Modern Standard Arabic with the six ICU
+> plural categories where the strings carry counts.
+> ~210 new ARB keys cover: the 6 surface titles
+> + the per-surface loading + empty + error states
+> + the 6 role filters (staff role / guardian
+> relation) + the 4 attendance status labels
+> (P / A / L / E + the 4 long forms) + the 4
+> attendance count chips + the success modals +
+> the field labels + the success snackbars. The
+> locale test grew from 14 to 19 tests — every
+> new surface gets a per-surface test group that
+> pins the new keys in both English + Arabic.
+> The RTL pass replaces every `EdgeInsets.only(right:)`
+> + every `EdgeInsets.symmetric(horizontal: ...)`
+> + every `Icons.chevron_right` (raw `Icon` does not
+> auto-mirror like `ListTile` does) with the
+> `EdgeInsetsDirectional` / `Directionality.of(context)`
+> counterparts. The per-row staff + guardian
+> `chevron_right` is mirrored under RTL. The
+> AppBar trailing-edge actions on the 6 new
+> surfaces use `EdgeInsetsDirectional.only(end:)`.
+> The "Submitted {count} record(s) for {date}"
+> + the "{minutes, plural, =1{1 min} other{{minutes} min}}"
+> + the "{marks, plural, =1{1 pt} other{{marks} pts}}"
+> + the "Guardian: {name}" + the "Resolve student: {error}"
+> interpolations are all wired to ICU plurals.
+> Closes roadmap #11 across all 6 secondary
+> surfaces — the mobile is now fully locale-aware
+> (en + ar, with 6 ICU plural categories for
+> Arabic) end-to-end. The hardening pass verified
+> no `MediaQuery.platformBrightnessOf` call sites
+> (only doc comments), no `EdgeInsets.only(left/right:)`
+> survivors, no `Icons.chevron_left/right` without
+> `Directionality.of(context)` guarding, and no
+> `hasCapability('(student|staff|guardian|academics|attendance).read')`
+> shorthand. See §4 (the "Arabic locale shipped
+> end-to-end" note now covers every per-role home
+> + every detail / create / capture / attempt
+> surface) and §5 (item #11 → fully shipped).
+
 This document is the source of truth for what is shipped, what is
 missing per role, and the prioritized roadmap. It supersedes the
 "Phase 0–6 ship" status line in the README — the source bar is met
@@ -533,7 +583,11 @@ feature above were built:
   chevron mirrors itself under RTL, and the AppBar date
   uses `EdgeInsetsDirectional.only(end:)`. The locale test
   suite grew from 6 to 11 tests (pluralization + non-English
-  Arabic guards).
+  Arabic guards). **Roadmap #11 fully closed** in the
+  5-release follow-up turn — staff / guardian / academics /
+  attendance / exam list + attempt surfaces all locale-aware
+  (en + ar, 6 ICU plural categories for Arabic). Locale test
+  suite grew 14 → 19 tests.
 - **No offline support** — explicitly deferred per the AGENTS.md.
   The v1 SDK has `get_school_offline_pull` + `submit_school_offline_mutation`
   for the offline queue; the mobile doesn't read either.
@@ -559,7 +613,7 @@ surface. The rest is feature work.
 | 8 | **Admin enhancements** | Governance (privacy + retention) + Grading (admin side) | 1 turn | **shipped (Governance slice — privacy requests + approve / process / set-legal-hold / retention — + Grading read-only slice — overview + policies + permissions context — in two consecutive turns; write flows for grading deferred to a follow-up turn)** |
 | 9 | **Admin enhancements** | Data import wizard + Operations health | 2 turns | **shipped (Operations read-only slice in the operations turn; data import read-only catalog + score import validate/commit in this turn; the data import upload + dry-run + review + approve + commit wizard + the operations write flows remain as follow-ups)** |
 | 10 | **Quality** | Hard-coded filter values → real `get_school_grades` | 0.5 turn | **shipped (picker release, derived from loaded students — backend follow-up: add `get_school_grades` + `get_school_class_groups`)** |
-| 11 | **Quality** | Arabic locale + a11y audit | 1 turn | **shipped (locale framework + bottom-nav labels + home-surface string extraction + RTL pass; locale test suite grew from 6 to 11 tests covering English + Arabic copy, pluralization, and per-surface pinning)** |
+| 11 | **Quality** | Arabic locale + a11y audit | 1 turn | **fully shipped (locale framework + bottom-nav labels + every per-role home surface + every detail / create / capture / attempt secondary surface; locale test suite grew 6 → 19 tests covering English + Arabic copy + 6 ICU plural categories for Arabic + per-surface key-pinning + RTL directional widgets; hardening pass verified clean: no `MediaQuery.platformBrightnessOf` call sites, no `EdgeInsets.only(left/right:)` survivors, no `Icons.chevron_left/right` without `Directionality.of(context)` guarding, no `hasCapability('(student|staff|guardian|academics|attendance).read')` shorthand)** |
 
 The estimate is "one focused coding turn" (~30–60 min of focused
 work plus tests + commit). Total to "PROD-ready" by the strict
@@ -630,12 +684,15 @@ for role X?" is:
   English and Arabic (Modern Standard) end-to-end. The
   bottom-nav tabs + every per-role home surface + the
   family / child-detail / picker / classes / fees
-  surfaces are all locale-aware. The chevron in every
-  list row mirrors itself under RTL and the notification
-  badge dot stays in the top-trailing corner in both
+  surfaces + the staff / guardian / academics / subject
+  / attendance / exam list + attempt secondary surfaces
+  are all locale-aware. The chevron in every list row
+  mirrors itself under RTL and the notification badge
+  dot stays in the top-trailing corner in both
   directions. The locale test suite covers English +
   Arabic copy, the six ICU plural categories for Arabic,
-  and the per-surface key-pinning.
+  and the per-surface key-pinning across 19 tests
+  (1 per release).
 
 The source bar is met (the team can scaffold against the v1 Dart
 SDK and the foundation features work). The production bar is not.

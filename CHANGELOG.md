@@ -153,6 +153,45 @@ and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ### Added
 
+- **Locale + RTL pass on the 5 remaining secondary
+  surfaces (closes roadmap #11).** Hardcoded English
+  strings on the staff list / detail / create + the
+  guardian list / detail / create + the academics
+  3-tab screen + the subject create form + the
+  attendance list / capture (incl. the per-row mark
+  widget + the 4-way status segment + the per-status
+  badge) + the exam list / attempt are extracted to
+  ARB keys in both English (source) + Modern Standard
+  Arabic with the six ICU plural categories where the
+  strings carry counts. ~210 new ARB keys. The locale
+  test grew 14 → 19 tests (one per release). The RTL
+  pass replaces every `EdgeInsets.only(right:)` +
+  every `EdgeInsets.symmetric(horizontal: ...)` +
+  every `Icons.chevron_right` (raw `Icon` does not
+  auto-mirror like `ListTile` does) with the
+  `EdgeInsetsDirectional` / `Directionality.of(context)`
+  counterparts. The per-row staff + guardian
+  `chevron_right` is mirrored under RTL. The AppBar
+  trailing-edge actions on the 6 new surfaces use
+  `EdgeInsetsDirectional.only(end:)`. The "Submitted
+  {count} record(s) for {date}" + the "{minutes, plural,
+  =1{1 min} other{{minutes} min}}" + the "{marks, plural,
+  =1{1 pt} other{{marks} pts}}" + the "Guardian: {name}"
+  + the "Resolve student: {error}" interpolations are
+  all wired to ICU plurals. The mobile is now fully
+  locale-aware (en + ar, with 6 ICU plural categories
+  for Arabic) end-to-end across every per-role home +
+  every detail / create / capture / attempt surface.
+  The hardening pass verified no
+  `MediaQuery.platformBrightnessOf` call sites (only
+  doc comments), no `EdgeInsets.only(left/right:)`
+  survivors, no `Icons.chevron_left/right` without
+  `Directionality.of(context)` guarding, and no
+  `hasCapability('(student|staff|guardian|academics|attendance).read')`
+  shorthand.
+
+### Added
+
 - **Admin "Grading" surface — read-only overview + policies.**
 
 ### Added
