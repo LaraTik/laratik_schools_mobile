@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../design_tokens.dart';
-
 import '../../ui/app_theme.dart';
 
 /// Reusable text field. Always renders a visible label (no placeholder-only
@@ -20,6 +18,7 @@ class LsTextField extends StatelessWidget {
     this.maxLines = 1,
     this.onChanged,
     this.suffix,
+    this.validator,
     super.key,
   });
 
@@ -34,6 +33,7 @@ class LsTextField extends StatelessWidget {
   final int maxLines;
   final ValueChanged<String>? onChanged;
   final Widget? suffix;
+  final FormFieldValidator<String>? validator;
 
   @override
   Widget build(BuildContext context) {
@@ -64,12 +64,13 @@ class LsTextField extends StatelessWidget {
           ],
         ),
         SizedBox(height: tokens.space.xs),
-        TextField(
+        TextFormField(
           controller: controller,
           obscureText: obscure,
           keyboardType: keyboardType,
           maxLines: obscure ? 1 : maxLines,
           onChanged: onChanged,
+          validator: validator,
           style: tokens.typography.bodyMedium.copyWith(
             color: tokens.text.primary,
           ),

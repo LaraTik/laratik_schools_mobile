@@ -193,6 +193,40 @@ Update 2026-08-03 (admin Grading surface): the
 > slice; the wizard + the operations write flows remain
 > as follow-ups).
 
+> Update 2026-08-03 (Teacher "Exams" surface — exam
+> plan catalog + manual grading): the read-only exam
+> plan catalog ships at `/shell/teachers/exams` (each
+> row: status chip + subject + exam date + duration +
+> max score). The per-plan detail at
+> `/shell/teachers/exams/:examPlanId` shows the exam
+> plan header (status + subject + date + duration +
+> max score) + the subject's question catalog (one
+> card per question: text + type + marks) + a
+> **Manual grade entry** action. The manual grade form
+> at `/shell/teachers/exams/:examPlanId/grade` lets
+> the teacher enter the attempt ID + per-question
+> scores and submit via `grade_school_exam_attempt`
+> (mints a fresh UUID for the `Idempotency-Key` header;
+> per-question score validated to 0 ≤ score ≤ marks).
+> Reachable from a new "Exams" tile on the teacher
+> home (gated on the v1 `can_view_academics`
+> capability + the teacher role). The full exam
+> authoring wizard (per-question editor + per-question
+> publish + `publish_school_online_exam`) + the
+> `promote_school_exam_attempt` write flow (per graded
+> attempt → grade record) are deferred to a follow-up
+> turn because the question editor is the largest
+> single form in the app and deserves its own focused
+> pass; the v1 server doesn't expose a
+> `list_school_exam_attempts` endpoint today, so the
+> teacher enters the attempt ID from a notification or
+> the desktop. See §3 (Teacher exam authoring →
+> partially shipped: read-only catalog + manual
+> grading shipped; authoring wizard + promotion
+> deferred) and §5 (item #6 → fully shipped for the
+> manual grading + read-only catalog; the authoring
+> wizard + promotion are documented follow-ups).
+
 This document is the source of truth for what is shipped, what is
 missing per role, and the prioritized roadmap. It supersedes the
 "Phase 0–6 ship" status line in the README — the source bar is met
@@ -485,7 +519,7 @@ surface. The rest is feature work.
 | 3 | **Parent surface** | "My children" picker + child detail (grades + attendance + reports) | 1 turn | **shipped (family release)** |
 | 4 | **Foundation** | "Acting as" picker for the registrar to switch the active student | 1 turn | **shipped (picker release)** |
 | 5 | **Student surface** | "My grades" + "My attendance" + "My report cards" | 1 turn | **shipped (family release, reuses the parent child-detail widget)** |
-| 6 | **Teacher surface** | "My classes" + exam authoring + manual grading | 2 turns | **shipped (read-only "My classes" + per-class roster in this turn; exam authoring + manual grading deferred — see audit #6 follow-up)** |
+| 6 | **Teacher surface** | "My classes" + exam authoring + manual grading | 2 turns | **partially shipped (read-only "My classes" + per-class roster in the teacher release; read-only exam catalog + per-plan detail + manual grade form + create-exam-plan shell in this turn; the per-question editor + per-question publish + `publish_school_online_exam` + `promote_school_exam_attempt` write flows are deferred to the follow-up turn because the question editor is the largest single form in the app)** |
 | 7 | **Admin enhancements** | Fees (read invoices) + Analytics (KPIs) | 2 turns | **shipped (Fees slice — read-only fee plans + admin "Fee operations" KPI overview; Analytics slice deferred to a follow-up turn)** |
 | 8 | **Admin enhancements** | Governance (privacy + retention) + Grading (admin side) | 1 turn | **shipped (Governance slice — privacy requests + approve / process / set-legal-hold / retention — + Grading read-only slice — overview + policies + permissions context — in two consecutive turns; write flows for grading deferred to a follow-up turn)** |
 | 9 | **Admin enhancements** | Data import wizard + Operations health | 2 turns | **shipped (Operations read-only slice in the operations turn; data import read-only catalog + score import validate/commit in this turn; the data import upload + dry-run + review + approve + commit wizard + the operations write flows remain as follow-ups)** |
@@ -528,8 +562,18 @@ for role X?" is:
   "My records" on the home screen. Fee invoices +
   class-scoped notifications are still on the desktop.
 - **Teacher** — *Partially.* They get a real "My classes" tab
-  + per-class detail (student roster). Still missing exam
-  authoring and manual grading.
+  + per-class detail (student roster) + a new "Exams"
+  tab (read-only exam catalog + per-plan detail with
+  the subject's question list + a manual grading form
+  that submits per-question scores via
+  `grade_school_exam_attempt`). Still missing the
+  per-question editor + per-question publishing +
+  `publish_school_online_exam` + the
+  `promote_school_exam_attempt` write flow. The manual
+  grading form is "open-ended" by design — the v1 SDK
+  doesn't expose a `list_school_exam_attempts`
+  endpoint today, so the teacher enters the attempt ID
+  from a notification or the desktop.
 - **Parent** — *Partially.* They get a real "My family" home
   with a hero "My children" card, the family picker at
   `/shell/family`, and the per-child detail (Overview /

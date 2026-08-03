@@ -37,7 +37,10 @@ import '../features/staff/ui/staff_create_screen.dart';
 import '../features/staff/ui/staff_detail_screen.dart';
 import '../features/staff/ui/staff_list_screen.dart';
 import '../features/teachers/ui/class_detail_screen.dart';
+import '../features/teachers/ui/manual_grade_screen.dart';
 import '../features/teachers/ui/my_classes_screen.dart';
+import '../features/teachers/ui/teacher_exam_detail_screen.dart';
+import '../features/teachers/ui/teacher_exams_screen.dart';
 import '../l10n/app_localizations.dart';
 import '../ui/app_theme.dart';
 import '../ui/widgets/ls_button.dart';
@@ -372,6 +375,59 @@ GoRouter buildRouter({
                   );
                   return ClassDetailScreen(classGroupId: id);
                 },
+              ),
+            ],
+          ),
+          // Teacher "Exams" surface — read-only exam
+          // plan catalog (drafts + closed) + per-plan
+          // detail with the subject's question list +
+          // a manual grading form. Reachable from the
+          // "Exams" tile on the teacher home
+          // (capability-gated on the v1
+          // `can_view_academics` capability plus a
+          // teacher role gate). The full question
+          // authoring + per-question publishing write
+          // flows + the
+          // `promote_school_exam_attempt` write flow
+          // are deferred to a follow-up turn.
+          GoRoute(
+            path: '/shell/teachers/exams',
+            name: 'teacher_exams',
+            builder: (context, state) => const TeacherExamsScreen(),
+            routes: [
+              GoRoute(
+                path: ':examPlanId',
+                name: 'teacher_exam_detail',
+                builder: (context, state) {
+                  final id = Uri.decodeComponent(
+                    state.pathParameters['examPlanId'] ?? '',
+                  );
+                  return TeacherExamDetailScreen(examPlan: id);
+                },
+                routes: [
+                  GoRoute(
+                    path: 'grade',
+                    name: 'manual_grade',
+                    builder: (context, state) {
+                      final id = Uri.decodeComponent(
+                        state.pathParameters['examPlanId'] ?? '',
+                      );
+                      // The subject is resolved from the
+                      // plan via the list provider on the
+                      // first build; the form uses it to
+                      // fetch the per-subject question
+                      // list. An empty subject is fine —
+                      // the form degrades to a no-questions
+                      // empty state.
+                      final subject = state.uri
+                          .queryParameters['subject'] ?? '';
+                      return ManualGradeScreen(
+                        examPlan: id,
+                        subject: subject,
+                      );
+                    },
+                  ),
+                ],
               ),
             ],
           ),

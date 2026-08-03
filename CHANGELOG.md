@@ -8,6 +8,30 @@ and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ### Added
 
+- **Teacher "Exams" surface — read-only exam plan
+  catalog + manual grading form.** New
+  `/shell/teachers/exams` route with the per-plan
+  detail at `/shell/teachers/exams/:examPlanId` (shows
+  status + subject + exam date + duration + max score
+  + the subject's question catalog with marks) and the
+  manual grade form at
+  `/shell/teachers/exams/:examPlanId/grade` (attempt
+  ID + per-question scores, validated to 0 ≤ score ≤
+  marks, submitted via `grade_school_exam_attempt`).
+  Reachable from a new "Exams" tile on the teacher
+  home. Closes roadmap #6 for the read-only catalog +
+  manual grading slice + the create-exam-plan shell
+  (`create_school_exam_plan`). The full question
+  editor + per-question publishing +
+  `publish_school_online_exam` +
+  `promote_school_exam_attempt` write flows are
+  deferred to a follow-up turn.
+- **`LsTextField` now supports `Form` integration.**
+  Added an optional `validator` parameter +
+  swapped the underlying `TextField` for
+  `TextFormField` so the manual grade form can use
+  `_formKey.currentState?.validate()` for inline
+  per-field error reporting.
 - **Admin "Data imports" surface — read-only "Batches" +
   "Score imports" catalog.** New `/shell/imports` route
   with two tabs (Batches + Score imports), the per-batch

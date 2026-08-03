@@ -712,5 +712,102 @@
   },
 
   "homeAdminDataImports": "Data imports",
-  "homeAdminDataImportsSubtitle": "Review batches + score imports"
+  "homeAdminDataImportsSubtitle": "Review batches + score imports",
+
+  "homeTeacherExams": "Exams",
+  "homeTeacherExamsSubtitle": "Author exam plans + grade attempts",
+
+  "teacherExamsScreenTitle": "Exams",
+  "teacherExamsLoadingTitle": "Loading exams",
+  "teacherExamsLoadingMessage": "Fetching your exam plans from the server.",
+  "teacherExamsErrorTitle": "Could not load exams",
+  "teacherExamsEmptyTitle": "No exam plans yet",
+  "teacherExamsEmptyMessage": "When you author an exam, it will appear here.",
+  "teacherExamsDurationChip": "{minutes, plural, =1{1 min} other{{minutes} min}}",
+  "@teacherExamsDurationChip": {
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
+  "teacherExamsMaxScoreChip": "Max {score}",
+  "@teacherExamsMaxScoreChip": {
+    "placeholders": {
+      "score": { "type": "int" }
+    }
+  },
+
+  "teacherExamDetailTitle": "Exam plan",
+  "teacherExamNotFoundTitle": "Exam plan not found",
+  "teacherExamNotFoundMessage": "This exam plan is no longer in the school's catalog.",
+  "teacherExamStatusPublished": "Published",
+  "teacherExamStatusClosed": "Closed",
+  "teacherExamStatusDraft": "Draft",
+  "teacherExamDateChip": "Date {date}",
+  "@teacherExamDateChip": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "teacherExamMarksChip": "{marks, plural, =1{1 mark} other{{marks} marks}}",
+  "@teacherExamMarksChip": {
+    "placeholders": {
+      "marks": { "type": "int" }
+    }
+  },
+  "teacherExamQuestionsHeader": "Questions",
+  "teacherExamQuestionsEmptyTitle": "No questions",
+  "teacherExamQuestionsEmptyMessage": "The subject's question catalog is empty. Add questions via the desktop, or the future mobile wizard.",
+  "teacherExamQuestionFallback": "Untitled question",
+  "teacherExamQuestionTypeChip": "Type: {type}",
+  "@teacherExamQuestionTypeChip": {
+    "placeholders": {
+      "type": { "type": "String" }
+    }
+  },
+  "teacherExamManualGradeAction": "Manual grade entry",
+
+  "manualGradeScreenTitle": "Manual grade",
+  "manualGradeAttemptHeader": "Attempt",
+  "manualGradeAttemptLabel": "Attempt ID",
+  "manualGradeAttemptHint": "Paste the attempt ID from a notification or the desktop",
+  "manualGradeAttemptRequired": "Attempt ID is required",
+  "manualGradeScoresHeader": "{count, plural, =0{No questions} =1{1 question} other{{count} questions}}",
+  "@manualGradeScoresHeader": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "manualGradeScoresEmptyTitle": "No questions",
+  "manualGradeScoresEmptyMessage": "Add questions to this plan first.",
+  "manualGradeScoreLabel": "Score",
+  "manualGradeScoreHint": "0 – {max}",
+  "@manualGradeScoreHint": {
+    "placeholders": {
+      "max": { "type": "int" }
+    }
+  },
+  "manualGradeScoreRequired": "Score is required",
+  "manualGradeScoreInvalid": "Enter a valid number",
+  "manualGradeScoreNegative": "Score cannot be negative",
+  "manualGradeScoreOverMax": "Score cannot exceed {max}",
+  "@manualGradeScoreOverMax": {
+    "placeholders": {
+      "max": { "type": "int" }
+    }
+  },
+  "manualGradeSubmitAction": "Submit grade",
+  "manualGradeSubmitLoading": "Submitting…",
+  "manualGradeSuccessSnack": "Attempt graded. New total score: {score}",
+  "@manualGradeSuccessSnack": {
+    "placeholders": {
+      "score": { "type": "double" }
+    }
+  },
+  "manualGradeSuccessSnackNoScore": "Attempt graded.",
+  "manualGradeErrorSnack": "Grade failed: {message}",
+  "@manualGradeErrorSnack": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  }
 }

@@ -1437,4 +1437,178 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeAdminDataImportsSubtitle => 'Review batches + score imports';
+
+  @override
+  String get homeTeacherExams => 'Exams';
+
+  @override
+  String get homeTeacherExamsSubtitle => 'Author exam plans + grade attempts';
+
+  @override
+  String get teacherExamsScreenTitle => 'Exams';
+
+  @override
+  String get teacherExamsLoadingTitle => 'Loading exams';
+
+  @override
+  String get teacherExamsLoadingMessage =>
+      'Fetching your exam plans from the server.';
+
+  @override
+  String get teacherExamsErrorTitle => 'Could not load exams';
+
+  @override
+  String get teacherExamsEmptyTitle => 'No exam plans yet';
+
+  @override
+  String get teacherExamsEmptyMessage =>
+      'When you author an exam, it will appear here.';
+
+  @override
+  String teacherExamsDurationChip(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '$minutes min',
+      one: '1 min',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String teacherExamsMaxScoreChip(int score) {
+    return 'Max $score';
+  }
+
+  @override
+  String get teacherExamDetailTitle => 'Exam plan';
+
+  @override
+  String get teacherExamNotFoundTitle => 'Exam plan not found';
+
+  @override
+  String get teacherExamNotFoundMessage =>
+      'This exam plan is no longer in the school\'s catalog.';
+
+  @override
+  String get teacherExamStatusPublished => 'Published';
+
+  @override
+  String get teacherExamStatusClosed => 'Closed';
+
+  @override
+  String get teacherExamStatusDraft => 'Draft';
+
+  @override
+  String teacherExamDateChip(String date) {
+    return 'Date $date';
+  }
+
+  @override
+  String teacherExamMarksChip(int marks) {
+    String _temp0 = intl.Intl.pluralLogic(
+      marks,
+      locale: localeName,
+      other: '$marks marks',
+      one: '1 mark',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get teacherExamQuestionsHeader => 'Questions';
+
+  @override
+  String get teacherExamQuestionsEmptyTitle => 'No questions';
+
+  @override
+  String get teacherExamQuestionsEmptyMessage =>
+      'The subject\'s question catalog is empty. Add questions via the desktop, or the future mobile wizard.';
+
+  @override
+  String get teacherExamQuestionFallback => 'Untitled question';
+
+  @override
+  String teacherExamQuestionTypeChip(String type) {
+    return 'Type: $type';
+  }
+
+  @override
+  String get teacherExamManualGradeAction => 'Manual grade entry';
+
+  @override
+  String get manualGradeScreenTitle => 'Manual grade';
+
+  @override
+  String get manualGradeAttemptHeader => 'Attempt';
+
+  @override
+  String get manualGradeAttemptLabel => 'Attempt ID';
+
+  @override
+  String get manualGradeAttemptHint =>
+      'Paste the attempt ID from a notification or the desktop';
+
+  @override
+  String get manualGradeAttemptRequired => 'Attempt ID is required';
+
+  @override
+  String manualGradeScoresHeader(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count questions',
+      one: '1 question',
+      zero: 'No questions',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get manualGradeScoresEmptyTitle => 'No questions';
+
+  @override
+  String get manualGradeScoresEmptyMessage =>
+      'Add questions to this plan first.';
+
+  @override
+  String get manualGradeScoreLabel => 'Score';
+
+  @override
+  String manualGradeScoreHint(int max) {
+    return '0 – $max';
+  }
+
+  @override
+  String get manualGradeScoreRequired => 'Score is required';
+
+  @override
+  String get manualGradeScoreInvalid => 'Enter a valid number';
+
+  @override
+  String get manualGradeScoreNegative => 'Score cannot be negative';
+
+  @override
+  String manualGradeScoreOverMax(int max) {
+    return 'Score cannot exceed $max';
+  }
+
+  @override
+  String get manualGradeSubmitAction => 'Submit grade';
+
+  @override
+  String get manualGradeSubmitLoading => 'Submitting…';
+
+  @override
+  String manualGradeSuccessSnack(double score) {
+    return 'Attempt graded. New total score: $score';
+  }
+
+  @override
+  String get manualGradeSuccessSnackNoScore => 'Attempt graded.';
+
+  @override
+  String manualGradeErrorSnack(String message) {
+    return 'Grade failed: $message';
+  }
 }

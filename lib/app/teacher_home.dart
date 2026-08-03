@@ -103,6 +103,14 @@ class TeacherHomeScreen extends ConsumerWidget {
           SizedBox(height: tokens.space.sm),
           _Tile(
             tokens: tokens,
+            icon: Icons.assignment_outlined,
+            title: l.homeTeacherExams,
+            subtitle: l.homeTeacherExamsSubtitle,
+            onTap: () => context.go('/shell/teachers/exams'),
+          ),
+          SizedBox(height: tokens.space.sm),
+          _Tile(
+            tokens: tokens,
             icon: Icons.notifications_outlined,
             title: l.shellNotifications,
             subtitle: unread == 0

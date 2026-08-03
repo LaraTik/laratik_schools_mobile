@@ -259,4 +259,59 @@ void main() {
       },
     );
   });
+
+  group('Teacher exam surface localization', () {
+    test(
+      'teacher exam ARB keys are pinned in both English and Arabic',
+      () async {
+        final en = await AppLocalizations.delegate.load(const Locale('en'));
+        final ar = await AppLocalizations.delegate.load(const Locale('ar'));
+        expect(en.teacherExamsScreenTitle, 'Exams');
+        expect(en.teacherExamsEmptyTitle, 'No exam plans yet');
+        expect(en.teacherExamsErrorTitle, 'Could not load exams');
+        expect(en.teacherExamDetailTitle, 'Exam plan');
+        expect(en.teacherExamNotFoundTitle, 'Exam plan not found');
+        expect(en.teacherExamStatusPublished, 'Published');
+        expect(en.teacherExamStatusClosed, 'Closed');
+        expect(en.teacherExamStatusDraft, 'Draft');
+        expect(en.teacherExamQuestionsHeader, 'Questions');
+        expect(en.teacherExamQuestionFallback, 'Untitled question');
+        expect(en.teacherExamManualGradeAction, 'Manual grade entry');
+        expect(en.manualGradeScreenTitle, 'Manual grade');
+        expect(en.manualGradeAttemptLabel, 'Attempt ID');
+        expect(en.manualGradeAttemptRequired, 'Attempt ID is required');
+        expect(en.manualGradeScoreLabel, 'Score');
+        expect(en.manualGradeScoreRequired, 'Score is required');
+        expect(en.manualGradeScoreInvalid, 'Enter a valid number');
+        expect(en.manualGradeSubmitAction, 'Submit grade');
+        expect(en.homeTeacherExams, 'Exams');
+        expect(en.homeTeacherExamsSubtitle,
+            'Author exam plans + grade attempts');
+        for (final getter in [
+          () => ar.teacherExamsScreenTitle,
+          () => ar.teacherExamsEmptyTitle,
+          () => ar.teacherExamsErrorTitle,
+          () => ar.teacherExamDetailTitle,
+          () => ar.teacherExamNotFoundTitle,
+          () => ar.teacherExamStatusPublished,
+          () => ar.teacherExamStatusClosed,
+          () => ar.teacherExamStatusDraft,
+          () => ar.teacherExamQuestionsHeader,
+          () => ar.teacherExamQuestionFallback,
+          () => ar.teacherExamManualGradeAction,
+          () => ar.manualGradeScreenTitle,
+          () => ar.manualGradeAttemptLabel,
+          () => ar.manualGradeAttemptRequired,
+          () => ar.manualGradeScoreLabel,
+          () => ar.manualGradeScoreRequired,
+          () => ar.manualGradeScoreInvalid,
+          () => ar.manualGradeSubmitAction,
+          () => ar.homeTeacherExams,
+          () => ar.homeTeacherExamsSubtitle,
+        ]) {
+          expect(getter(), isNotEmpty, reason: 'AR missing');
+        }
+      },
+    );
+  });
 }

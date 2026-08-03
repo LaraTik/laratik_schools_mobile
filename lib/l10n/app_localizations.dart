@@ -2330,6 +2330,264 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Review batches + score imports'**
   String get homeAdminDataImportsSubtitle;
+
+  /// No description provided for @homeTeacherExams.
+  ///
+  /// In en, this message translates to:
+  /// **'Exams'**
+  String get homeTeacherExams;
+
+  /// No description provided for @homeTeacherExamsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Author exam plans + grade attempts'**
+  String get homeTeacherExamsSubtitle;
+
+  /// No description provided for @teacherExamsScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Exams'**
+  String get teacherExamsScreenTitle;
+
+  /// No description provided for @teacherExamsLoadingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading exams'**
+  String get teacherExamsLoadingTitle;
+
+  /// No description provided for @teacherExamsLoadingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Fetching your exam plans from the server.'**
+  String get teacherExamsLoadingMessage;
+
+  /// No description provided for @teacherExamsErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load exams'**
+  String get teacherExamsErrorTitle;
+
+  /// No description provided for @teacherExamsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No exam plans yet'**
+  String get teacherExamsEmptyTitle;
+
+  /// No description provided for @teacherExamsEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'When you author an exam, it will appear here.'**
+  String get teacherExamsEmptyMessage;
+
+  /// No description provided for @teacherExamsDurationChip.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes, plural, =1{1 min} other{{minutes} min}}'**
+  String teacherExamsDurationChip(int minutes);
+
+  /// No description provided for @teacherExamsMaxScoreChip.
+  ///
+  /// In en, this message translates to:
+  /// **'Max {score}'**
+  String teacherExamsMaxScoreChip(int score);
+
+  /// No description provided for @teacherExamDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Exam plan'**
+  String get teacherExamDetailTitle;
+
+  /// No description provided for @teacherExamNotFoundTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Exam plan not found'**
+  String get teacherExamNotFoundTitle;
+
+  /// No description provided for @teacherExamNotFoundMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This exam plan is no longer in the school\'s catalog.'**
+  String get teacherExamNotFoundMessage;
+
+  /// No description provided for @teacherExamStatusPublished.
+  ///
+  /// In en, this message translates to:
+  /// **'Published'**
+  String get teacherExamStatusPublished;
+
+  /// No description provided for @teacherExamStatusClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get teacherExamStatusClosed;
+
+  /// No description provided for @teacherExamStatusDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft'**
+  String get teacherExamStatusDraft;
+
+  /// No description provided for @teacherExamDateChip.
+  ///
+  /// In en, this message translates to:
+  /// **'Date {date}'**
+  String teacherExamDateChip(String date);
+
+  /// No description provided for @teacherExamMarksChip.
+  ///
+  /// In en, this message translates to:
+  /// **'{marks, plural, =1{1 mark} other{{marks} marks}}'**
+  String teacherExamMarksChip(int marks);
+
+  /// No description provided for @teacherExamQuestionsHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Questions'**
+  String get teacherExamQuestionsHeader;
+
+  /// No description provided for @teacherExamQuestionsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No questions'**
+  String get teacherExamQuestionsEmptyTitle;
+
+  /// No description provided for @teacherExamQuestionsEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The subject\'s question catalog is empty. Add questions via the desktop, or the future mobile wizard.'**
+  String get teacherExamQuestionsEmptyMessage;
+
+  /// No description provided for @teacherExamQuestionFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Untitled question'**
+  String get teacherExamQuestionFallback;
+
+  /// No description provided for @teacherExamQuestionTypeChip.
+  ///
+  /// In en, this message translates to:
+  /// **'Type: {type}'**
+  String teacherExamQuestionTypeChip(String type);
+
+  /// No description provided for @teacherExamManualGradeAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Manual grade entry'**
+  String get teacherExamManualGradeAction;
+
+  /// No description provided for @manualGradeScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manual grade'**
+  String get manualGradeScreenTitle;
+
+  /// No description provided for @manualGradeAttemptHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Attempt'**
+  String get manualGradeAttemptHeader;
+
+  /// No description provided for @manualGradeAttemptLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Attempt ID'**
+  String get manualGradeAttemptLabel;
+
+  /// No description provided for @manualGradeAttemptHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste the attempt ID from a notification or the desktop'**
+  String get manualGradeAttemptHint;
+
+  /// No description provided for @manualGradeAttemptRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Attempt ID is required'**
+  String get manualGradeAttemptRequired;
+
+  /// No description provided for @manualGradeScoresHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No questions} =1{1 question} other{{count} questions}}'**
+  String manualGradeScoresHeader(int count);
+
+  /// No description provided for @manualGradeScoresEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No questions'**
+  String get manualGradeScoresEmptyTitle;
+
+  /// No description provided for @manualGradeScoresEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Add questions to this plan first.'**
+  String get manualGradeScoresEmptyMessage;
+
+  /// No description provided for @manualGradeScoreLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Score'**
+  String get manualGradeScoreLabel;
+
+  /// No description provided for @manualGradeScoreHint.
+  ///
+  /// In en, this message translates to:
+  /// **'0 – {max}'**
+  String manualGradeScoreHint(int max);
+
+  /// No description provided for @manualGradeScoreRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Score is required'**
+  String get manualGradeScoreRequired;
+
+  /// No description provided for @manualGradeScoreInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid number'**
+  String get manualGradeScoreInvalid;
+
+  /// No description provided for @manualGradeScoreNegative.
+  ///
+  /// In en, this message translates to:
+  /// **'Score cannot be negative'**
+  String get manualGradeScoreNegative;
+
+  /// No description provided for @manualGradeScoreOverMax.
+  ///
+  /// In en, this message translates to:
+  /// **'Score cannot exceed {max}'**
+  String manualGradeScoreOverMax(int max);
+
+  /// No description provided for @manualGradeSubmitAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit grade'**
+  String get manualGradeSubmitAction;
+
+  /// No description provided for @manualGradeSubmitLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitting…'**
+  String get manualGradeSubmitLoading;
+
+  /// No description provided for @manualGradeSuccessSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Attempt graded. New total score: {score}'**
+  String manualGradeSuccessSnack(double score);
+
+  /// No description provided for @manualGradeSuccessSnackNoScore.
+  ///
+  /// In en, this message translates to:
+  /// **'Attempt graded.'**
+  String get manualGradeSuccessSnackNoScore;
+
+  /// No description provided for @manualGradeErrorSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Grade failed: {message}'**
+  String manualGradeErrorSnack(String message);
 }
 
 class _AppLocalizationsDelegate

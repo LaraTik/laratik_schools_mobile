@@ -1487,4 +1487,185 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get homeAdminDataImportsSubtitle =>
       'مراجعة الدفعات واستيرادات الدرجات';
+
+  @override
+  String get homeTeacherExams => 'الاختبارات';
+
+  @override
+  String get homeTeacherExamsSubtitle =>
+      'إنشاء خطط الاختبارات + تصحيح المحاولات';
+
+  @override
+  String get teacherExamsScreenTitle => 'الاختبارات';
+
+  @override
+  String get teacherExamsLoadingTitle => 'جارٍ تحميل الاختبارات';
+
+  @override
+  String get teacherExamsLoadingMessage => 'يجري جلب خطط اختباراتك من الخادم.';
+
+  @override
+  String get teacherExamsErrorTitle => 'تعذّر تحميل الاختبارات';
+
+  @override
+  String get teacherExamsEmptyTitle => 'لا توجد خطط اختبارات بعد';
+
+  @override
+  String get teacherExamsEmptyMessage => 'عند إنشاء اختبار، سيظهر هنا.';
+
+  @override
+  String teacherExamsDurationChip(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '$minutes دقيقة',
+      many: '$minutes دقيقة',
+      few: '$minutes دقائق',
+      two: 'دقيقتان',
+      one: 'دقيقة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String teacherExamsMaxScoreChip(int score) {
+    return 'الحد الأقصى $score';
+  }
+
+  @override
+  String get teacherExamDetailTitle => 'خطة الاختبار';
+
+  @override
+  String get teacherExamNotFoundTitle => 'خطة الاختبار غير موجودة';
+
+  @override
+  String get teacherExamNotFoundMessage =>
+      'خطة الاختبار هذه لم تعد ضمن كتالوج المدرسة.';
+
+  @override
+  String get teacherExamStatusPublished => 'منشور';
+
+  @override
+  String get teacherExamStatusClosed => 'مغلق';
+
+  @override
+  String get teacherExamStatusDraft => 'مسودة';
+
+  @override
+  String teacherExamDateChip(String date) {
+    return 'التاريخ $date';
+  }
+
+  @override
+  String teacherExamMarksChip(int marks) {
+    String _temp0 = intl.Intl.pluralLogic(
+      marks,
+      locale: localeName,
+      other: '$marks درجة',
+      many: '$marks درجة',
+      few: '$marks درجات',
+      two: 'درجتان',
+      one: 'درجة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get teacherExamQuestionsHeader => 'الأسئلة';
+
+  @override
+  String get teacherExamQuestionsEmptyTitle => 'لا توجد أسئلة';
+
+  @override
+  String get teacherExamQuestionsEmptyMessage =>
+      'كتالوج أسئلة المادة فارغ. أضف الأسئلة عبر سطح المكتب، أو معالج الجوال المستقبلي.';
+
+  @override
+  String get teacherExamQuestionFallback => 'سؤال بلا عنوان';
+
+  @override
+  String teacherExamQuestionTypeChip(String type) {
+    return 'النوع: $type';
+  }
+
+  @override
+  String get teacherExamManualGradeAction => 'إدخال درجة يدويًا';
+
+  @override
+  String get manualGradeScreenTitle => 'تصحيح يدوي';
+
+  @override
+  String get manualGradeAttemptHeader => 'المحاولة';
+
+  @override
+  String get manualGradeAttemptLabel => 'معرّف المحاولة';
+
+  @override
+  String get manualGradeAttemptHint =>
+      'الصق معرّف المحاولة من إشعار أو من سطح المكتب';
+
+  @override
+  String get manualGradeAttemptRequired => 'معرّف المحاولة مطلوب';
+
+  @override
+  String manualGradeScoresHeader(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count سؤال',
+      many: '$count سؤالًا',
+      few: '$count أسئلة',
+      two: 'سؤالان',
+      one: 'سؤال واحد',
+      zero: 'لا توجد أسئلة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get manualGradeScoresEmptyTitle => 'لا توجد أسئلة';
+
+  @override
+  String get manualGradeScoresEmptyMessage => 'أضف أسئلة إلى هذه الخطة أولًا.';
+
+  @override
+  String get manualGradeScoreLabel => 'الدرجة';
+
+  @override
+  String manualGradeScoreHint(int max) {
+    return '0 – $max';
+  }
+
+  @override
+  String get manualGradeScoreRequired => 'الدرجة مطلوبة';
+
+  @override
+  String get manualGradeScoreInvalid => 'أدخل رقمًا صالحًا';
+
+  @override
+  String get manualGradeScoreNegative => 'لا يمكن أن تكون الدرجة سالبة';
+
+  @override
+  String manualGradeScoreOverMax(int max) {
+    return 'لا يمكن أن تتجاوز الدرجة $max';
+  }
+
+  @override
+  String get manualGradeSubmitAction => 'اعتماد الدرجة';
+
+  @override
+  String get manualGradeSubmitLoading => 'جارٍ الاعتماد…';
+
+  @override
+  String manualGradeSuccessSnack(double score) {
+    return 'تم تصحيح المحاولة. المجموع الجديد: $score';
+  }
+
+  @override
+  String get manualGradeSuccessSnackNoScore => 'تم تصحيح المحاولة.';
+
+  @override
+  String manualGradeErrorSnack(String message) {
+    return 'فشل التصحيح: $message';
+  }
 }
