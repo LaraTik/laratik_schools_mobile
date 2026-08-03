@@ -1317,4 +1317,174 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get studentsFirstStudentMessage => 'أضف أول طالب للبدء.';
+
+  @override
+  String get dataImportsScreenTitle => 'استيراد البيانات';
+
+  @override
+  String get dataImportsTabBatches => 'الدفعات';
+
+  @override
+  String get dataImportsTabScoreImports => 'استيراد الدرجات';
+
+  @override
+  String get dataImportsLoadingTitle => 'جارٍ تحميل استيراد البيانات';
+
+  @override
+  String get dataImportsLoadingMessage =>
+      'يجري جلب أحدث الدفعات واستيرادات الدرجات من الخادم.';
+
+  @override
+  String get dataImportsErrorTitle => 'تعذّر تحميل استيراد البيانات';
+
+  @override
+  String get dataImportsBatchesEmptyTitle => 'لا توجد دفعات استيراد بيانات بعد';
+
+  @override
+  String get dataImportsBatchesEmptyMessage =>
+      'عند رفع حزمة (عبر سطح المكتب أو معالج الجوال المستقبلي)، ستظهر هنا.';
+
+  @override
+  String get dataImportsScoreEmptyTitle => 'لا توجد استيرادات درجات بعد';
+
+  @override
+  String get dataImportsScoreEmptyMessage =>
+      'عند رفع ملف درجات (عبر سطح المكتب أو معالج الجوال المستقبلي)، ستظهر هنا.';
+
+  @override
+  String dataImportsHashChip(String hash) {
+    return 'التجزئة $hash';
+  }
+
+  @override
+  String dataImportsRowCountChip(String doctype, int count) {
+    return '$doctype · $count';
+  }
+
+  @override
+  String dataImportsBatchCreatedAt(String when) {
+    return 'تاريخ الرفع $when';
+  }
+
+  @override
+  String dataImportsScoreCreatedAt(String when) {
+    return 'تاريخ الرفع $when';
+  }
+
+  @override
+  String get dataImportsBatchDetailTitle => 'مطابقة الدفعة';
+
+  @override
+  String get dataImportsBatchFallbackHeader => 'جارٍ تحميل ملخص الدفعة…';
+
+  @override
+  String dataImportsReconciliationHeader(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count صف',
+      many: '$count صفًا',
+      few: '$count صفوف',
+      two: 'صفّان',
+      one: 'صف واحد',
+      zero: 'لا توجد صفوف',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get dataImportsReconciliationEmptyTitle => 'لا توجد صفوف للمطابقة';
+
+  @override
+  String get dataImportsReconciliationEmptyMessage =>
+      'لا تحتوي هذه الدفعة على قرارات لكل صف للمراجعة.';
+
+  @override
+  String get dataImportsReconciliationDoctypeFallback => 'صف غير مصنّف';
+
+  @override
+  String dataImportsReconciliationRowIndex(int index) {
+    return 'الصف $index';
+  }
+
+  @override
+  String dataImportsPayloadChip(String key, String value) {
+    return '$key · $value';
+  }
+
+  @override
+  String get dataImportsScoreDetailTitle => 'استيراد الدرجات';
+
+  @override
+  String get dataImportsScoreNotFoundTitle => 'استيراد الدرجات غير موجود';
+
+  @override
+  String get dataImportsScoreNotFoundMessage =>
+      'استيراد الدرجات هذا لم يعد ضمن كتالوج المدرسة.';
+
+  @override
+  String dataImportsScoreColumnsHeader(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count عمود',
+      many: '$count عمودًا',
+      few: '$count أعمدة',
+      two: 'عمودان',
+      one: 'عمود واحد',
+      zero: 'لا توجد أعمدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String dataImportsScoreColumnChip(String source, String target) {
+    return '$source → $target';
+  }
+
+  @override
+  String dataImportsScoreColumnsChip(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count عمود',
+      many: '$count عمودًا',
+      few: '$count أعمدة',
+      two: 'عمودان',
+      one: 'عمود واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get dataImportsScoreCountsHeader => 'عدادات التحقق';
+
+  @override
+  String dataImportsScoreCountChip(String key, String value) {
+    return '$key · $value';
+  }
+
+  @override
+  String get dataImportsScoreValidateAction => 'تحقّق';
+
+  @override
+  String get dataImportsScoreCommitAction => 'اعتماد';
+
+  @override
+  String get dataImportsScoreValidatedSnack => 'تم التحقق من استيراد الدرجات.';
+
+  @override
+  String get dataImportsScoreCommittedSnack => 'تم اعتماد استيراد الدرجات.';
+
+  @override
+  String dataImportsScoreErrorSnack(String message) {
+    return 'فشل الإجراء: $message';
+  }
+
+  @override
+  String get homeAdminDataImports => 'استيراد البيانات';
+
+  @override
+  String get homeAdminDataImportsSubtitle =>
+      'مراجعة الدفعات واستيرادات الدرجات';
 }

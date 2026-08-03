@@ -264,6 +264,14 @@ class _QuickStartGrid extends ConsumerWidget {
           tone: LsChipTone.success,
           onTap: () => context.go('/shell/grading'),
         ),
+      if (canManageBranches)
+        _QuickItem(
+          label: l.homeAdminDataImports,
+          description: l.homeAdminDataImportsSubtitle,
+          icon: Icons.archive_outlined,
+          tone: LsChipTone.info,
+          onTap: () => context.go('/shell/imports'),
+        ),
       _QuickItem(
         label: l.shellNotifications,
         description: unread == 0

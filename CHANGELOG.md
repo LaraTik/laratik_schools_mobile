@@ -8,6 +8,34 @@ and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ### Added
 
+- **Admin "Data imports" surface — read-only "Batches" +
+  "Score imports" catalog.** New `/shell/imports` route
+  with two tabs (Batches + Score imports), the per-batch
+  reconciliation detail at `/shell/imports/:batchId`, and
+  the per-score-import detail at
+  `/shell/imports/scores/:scoreImportId` (with working
+  **Validate** + **Commit** buttons for the score
+  import slice). Closes roadmap #9 for the data
+  import catalog + the score import write flows. The
+  full upload + dry-run + review + approve + commit
+  wizard is deferred to a follow-up turn because the
+  v1 SDK's `upload_school_data_import_package` endpoint
+  expects a pre-uploaded `package_file` (Frappe's file
+  API) which is outside the v1 SDK scope today.
+- **New "Data imports" tile on the admin home.**
+  Capability-gated on `can_manage_branches` (admin-only
+  on the v1 wire; the v1 server does not yet expose a
+  dedicated `can_view_imports` capability — see
+  `docs/PROD_READINESS_AUDIT.md` §4 follow-up for the
+  future hardening).
+- **`FakeLaratikSchoolsTransport` now tracks the
+  `Idempotency-Key` header** (`invokedIdempotencyKey` /
+  `invokedIdempotencyKeys` getters) so future write-flow
+  tests can assert "a fresh UUID v4 was minted for the
+  `Idempotency-Key` header" without poking the transport
+  internals. The new data import repository test exercises
+  this for `validate_school_score_import` +
+  `commit_school_score_import`.
 - **Login + Notifications + Students list surfaces fully
   localized.** Closes the final leg of the #11
   follow-up on the highest-traffic surfaces. New ARB

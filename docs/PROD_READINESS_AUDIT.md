@@ -155,6 +155,44 @@ Update 2026-08-03 (admin Grading surface): the
 > for the read-only slice) and §5 (item #8 → fully
 > shipped for the read-only grading slice).
 
+> Update 2026-08-03 (admin Data imports surface): the
+> read-only "Batches" + "Score imports" catalog ships
+> at `/shell/imports`. The Batches tab lists past data
+> import batches from `get_school_data_import_batches`
+> (each row: status chip, source label, package hash,
+> row-count chip strip, created-at sub-line). The
+> Score imports tab lists past score imports from
+> `get_school_score_imports` (each row: status chip,
+> source label, file hash, column count, created-at
+> sub-line). The per-batch detail at
+> `/shell/imports/:batchId` renders the per-row
+> reconciliation records from
+> `get_school_data_import_reconciliation` (one card per
+> record: doctype, row index, status chip, message, the
+> first 3 payload key/value pairs). The per-score-import
+> detail at `/shell/imports/scores/:scoreImportId`
+> renders the import's mapped columns (source → target)
+> as a chip strip + the per-stage counts, and ships a
+> **Validate** button (calls
+> `validate_school_score_import`) and a **Commit**
+> button (calls `commit_school_score_import`); both mint
+> a fresh UUID for the `Idempotency-Key` header and
+> invalidate the list on success. Reachable from a new
+> "Data imports" tile on the admin home, capability-
+> gated on `can_manage_branches` (admin-only on the v1
+> wire; the v1 server does not yet expose a dedicated
+> `can_view_imports` capability — see the §4 follow-up).
+> The full upload + dry-run + review + approve + commit
+> wizard is deferred to a follow-up turn because the
+> v1 SDK's `upload_school_data_import_package` endpoint
+> expects a pre-uploaded `package_file` (Frappe's file
+> API) which is outside the v1 SDK scope today. See §3
+> (Admin Data imports → shipped for the read-only
+> catalog + the score import validate/commit slice) and
+> §5 (item #9 → fully shipped for the data import
+> slice; the wizard + the operations write flows remain
+> as follow-ups).
+
 This document is the source of truth for what is shipped, what is
 missing per role, and the prioritized roadmap. It supersedes the
 "Phase 0–6 ship" status line in the README — the source bar is met
@@ -290,10 +328,21 @@ shortcuts.
   `promote_school_assessment_result`,
   `approve_school_subject_grade_policy`) are deferred
   to follow-up turns.
-- **Data import** — no wizard. Backend has a 6-step flow
-  (`upload_school_data_import_package`, `dry_run_school_data_import`,
-  `review_school_data_import_records`, `approve_school_data_import`,
-  `commit_school_data_import`). *(README only.)*
+- **Data import** — **shipped** for the read-only "Batches" +
+  "Score imports" catalog at `/shell/imports` (with the
+  per-batch reconciliation detail at `/shell/imports/:batchId`
+  + the per-score-import detail at
+  `/shell/imports/scores/:scoreImportId` shipping the
+  `validate_school_score_import` + `commit_school_score_import`
+  write flows). The full upload + dry-run + review + approve
+  + commit wizard is deferred to a follow-up turn because
+  `upload_school_data_import_package` expects a
+  pre-uploaded `package_file` (Frappe's file API) which
+  is outside the v1 SDK scope today. Reachable from a
+  new "Data imports" tile on the admin home, capability-
+  gated on `can_manage_branches` (admin-only on the v1
+  wire; the v1 server does not yet expose a dedicated
+  `can_view_imports` capability).
 - **Operations health** — **shipped** for the read-only
   slice. The new `OperationsHealthScreen` at
   `/shell/operations` has three tabs (Health / Delivery /
@@ -439,7 +488,7 @@ surface. The rest is feature work.
 | 6 | **Teacher surface** | "My classes" + exam authoring + manual grading | 2 turns | **shipped (read-only "My classes" + per-class roster in this turn; exam authoring + manual grading deferred — see audit #6 follow-up)** |
 | 7 | **Admin enhancements** | Fees (read invoices) + Analytics (KPIs) | 2 turns | **shipped (Fees slice — read-only fee plans + admin "Fee operations" KPI overview; Analytics slice deferred to a follow-up turn)** |
 | 8 | **Admin enhancements** | Governance (privacy + retention) + Grading (admin side) | 1 turn | **shipped (Governance slice — privacy requests + approve / process / set-legal-hold / retention — + Grading read-only slice — overview + policies + permissions context — in two consecutive turns; write flows for grading deferred to a follow-up turn)** |
-| 9 | **Admin enhancements** | Data import wizard + Operations health | 2 turns | **partially shipped (Operations read-only slice — health + delivery + audit — in this turn; data import wizard + the operations write flows deferred to a follow-up turn)** |
+| 9 | **Admin enhancements** | Data import wizard + Operations health | 2 turns | **shipped (Operations read-only slice in the operations turn; data import read-only catalog + score import validate/commit in this turn; the data import upload + dry-run + review + approve + commit wizard + the operations write flows remain as follow-ups)** |
 | 10 | **Quality** | Hard-coded filter values → real `get_school_grades` | 0.5 turn | **shipped (picker release, derived from loaded students — backend follow-up: add `get_school_grades` + `get_school_class_groups`)** |
 | 11 | **Quality** | Arabic locale + a11y audit | 1 turn | **shipped (locale framework + bottom-nav labels + home-surface string extraction + RTL pass; locale test suite grew from 6 to 11 tests covering English + Arabic copy, pluralization, and per-surface pinning)** |
 
@@ -458,19 +507,22 @@ for role X?" is:
   operations (roster, attendance, **read-only fees**,
   **read-only operations health + delivery + audit**,
   **privacy + legal-hold + retention queue**,
-  **read-only grading overview + policies**) and the
-  role-aware bottom nav now renders correctly. Cannot
-  yet manage imports, replay delivery events, or correct
-  / promote individual grade records. The fee write
-  flows (invoice preview + draft creation + payment
-  recording) and the Analytics KPI surface are still on
-  the desktop. The Operations + Governance + Grading
-  tiles on the admin home are capability-gated on
-  `can_manage_branches` (admin-only on the v1 wire) — a
-  future backend pass should add dedicated
-  `can_view_operations` + `can_view_governance` +
-  `can_view_grading` capabilities so the gates can be
-  more specific.
+  **read-only grading overview + policies**,
+  **read-only data import batches + score imports**)
+  and the role-aware bottom nav now renders correctly.
+  Cannot yet run the full data import wizard (the
+  upload step requires a Frappe file API call outside
+  the v1 SDK scope today), replay delivery events, or
+  correct / promote individual grade records. The fee
+  write flows (invoice preview + draft creation +
+  payment recording) and the Analytics KPI surface are
+  still on the desktop. The Operations + Governance +
+  Grading + Data imports tiles on the admin home are
+  capability-gated on `can_manage_branches` (admin-only
+  on the v1 wire) — a future backend pass should add
+  dedicated `can_view_operations` + `can_view_governance`
+  + `can_view_grading` + `can_view_imports` capabilities
+  so the gates can be more specific.
 - **Student** — *Partially.* They can take exams end-to-end
   and now see their grades / attendance / report cards under
   "My records" on the home screen. Fee invoices +

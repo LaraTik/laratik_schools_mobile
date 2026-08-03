@@ -25,6 +25,7 @@ class FakeLaratikSchoolsTransport implements LaratikSchoolsTransport {
   final Map<String, List<JsonMap>> _queue = {};
   final List<String> _invokedMethods = [];
   final List<JsonMap> _invokedArguments = [];
+  final List<String?> _invokedIdempotencyKeys = [];
 
   /// Read-only list of method names the fake has seen, in call order.
   /// Useful for assertions like "the controller called the
@@ -35,6 +36,19 @@ class FakeLaratikSchoolsTransport implements LaratikSchoolsTransport {
   /// (parallel to [invokedMethods]). Useful for asserting wire-level
   /// fields such as `school_enrollment` were forwarded through.
   List<JsonMap> get invokedArguments => List.unmodifiable(_invokedArguments);
+
+  /// Read-only list of idempotency keys the fake has seen, in call
+  /// order (parallel to [invokedMethods]). Useful for assertions like
+  /// "the repository minted a fresh UUID v4 for the Idempotency-Key
+  /// header on this mutating call".
+  List<String?> get invokedIdempotencyKeys =>
+      List.unmodifiable(_invokedIdempotencyKeys);
+
+  /// Convenience for "the most recent idempotency key" — handy for
+  /// single-call write tests.
+  String? get invokedIdempotencyKey => _invokedIdempotencyKeys.isEmpty
+      ? null
+      : _invokedIdempotencyKeys.last;
 
   /// Queue one or more wire envelopes to be returned for [method] in
   /// order. The first invocation consumes the first envelope, etc.
@@ -59,6 +73,7 @@ class FakeLaratikSchoolsTransport implements LaratikSchoolsTransport {
   }) async {
     _invokedMethods.add(method);
     _invokedArguments.add(Map<String, Object?>.from(arguments));
+    _invokedIdempotencyKeys.add(idempotencyKey);
     final queue = _queue[method];
     if (queue == null || queue.isEmpty) {
       throw StateError(

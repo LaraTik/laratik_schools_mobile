@@ -2108,6 +2108,228 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add the first student to get started.'**
   String get studentsFirstStudentMessage;
+
+  /// No description provided for @dataImportsScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Data imports'**
+  String get dataImportsScreenTitle;
+
+  /// No description provided for @dataImportsTabBatches.
+  ///
+  /// In en, this message translates to:
+  /// **'Batches'**
+  String get dataImportsTabBatches;
+
+  /// No description provided for @dataImportsTabScoreImports.
+  ///
+  /// In en, this message translates to:
+  /// **'Score imports'**
+  String get dataImportsTabScoreImports;
+
+  /// No description provided for @dataImportsLoadingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading data imports'**
+  String get dataImportsLoadingTitle;
+
+  /// No description provided for @dataImportsLoadingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Fetching the latest batches + score imports from the server.'**
+  String get dataImportsLoadingMessage;
+
+  /// No description provided for @dataImportsErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load data imports'**
+  String get dataImportsErrorTitle;
+
+  /// No description provided for @dataImportsBatchesEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No data import batches yet'**
+  String get dataImportsBatchesEmptyTitle;
+
+  /// No description provided for @dataImportsBatchesEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'When a package is uploaded (via the desktop or the future mobile wizard), it will appear here.'**
+  String get dataImportsBatchesEmptyMessage;
+
+  /// No description provided for @dataImportsScoreEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No score imports yet'**
+  String get dataImportsScoreEmptyTitle;
+
+  /// No description provided for @dataImportsScoreEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'When a score file is uploaded (via the desktop or the future mobile wizard), it will appear here.'**
+  String get dataImportsScoreEmptyMessage;
+
+  /// No description provided for @dataImportsHashChip.
+  ///
+  /// In en, this message translates to:
+  /// **'Hash {hash}'**
+  String dataImportsHashChip(String hash);
+
+  /// No description provided for @dataImportsRowCountChip.
+  ///
+  /// In en, this message translates to:
+  /// **'{doctype} · {count}'**
+  String dataImportsRowCountChip(String doctype, int count);
+
+  /// No description provided for @dataImportsBatchCreatedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitted {when}'**
+  String dataImportsBatchCreatedAt(String when);
+
+  /// No description provided for @dataImportsScoreCreatedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitted {when}'**
+  String dataImportsScoreCreatedAt(String when);
+
+  /// No description provided for @dataImportsBatchDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Batch reconciliation'**
+  String get dataImportsBatchDetailTitle;
+
+  /// No description provided for @dataImportsBatchFallbackHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading batch summary…'**
+  String get dataImportsBatchFallbackHeader;
+
+  /// No description provided for @dataImportsReconciliationHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No rows} =1{1 row} other{{count} rows}}'**
+  String dataImportsReconciliationHeader(int count);
+
+  /// No description provided for @dataImportsReconciliationEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No reconciliation rows'**
+  String get dataImportsReconciliationEmptyTitle;
+
+  /// No description provided for @dataImportsReconciliationEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This batch has no per-row decisions to review.'**
+  String get dataImportsReconciliationEmptyMessage;
+
+  /// No description provided for @dataImportsReconciliationDoctypeFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Untyped row'**
+  String get dataImportsReconciliationDoctypeFallback;
+
+  /// No description provided for @dataImportsReconciliationRowIndex.
+  ///
+  /// In en, this message translates to:
+  /// **'Row {index}'**
+  String dataImportsReconciliationRowIndex(int index);
+
+  /// No description provided for @dataImportsPayloadChip.
+  ///
+  /// In en, this message translates to:
+  /// **'{key} · {value}'**
+  String dataImportsPayloadChip(String key, String value);
+
+  /// No description provided for @dataImportsScoreDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Score import'**
+  String get dataImportsScoreDetailTitle;
+
+  /// No description provided for @dataImportsScoreNotFoundTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Score import not found'**
+  String get dataImportsScoreNotFoundTitle;
+
+  /// No description provided for @dataImportsScoreNotFoundMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This score import is no longer in the school\'s catalog.'**
+  String get dataImportsScoreNotFoundMessage;
+
+  /// No description provided for @dataImportsScoreColumnsHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No columns} =1{1 column} other{{count} columns}}'**
+  String dataImportsScoreColumnsHeader(int count);
+
+  /// No description provided for @dataImportsScoreColumnChip.
+  ///
+  /// In en, this message translates to:
+  /// **'{source} → {target}'**
+  String dataImportsScoreColumnChip(String source, String target);
+
+  /// No description provided for @dataImportsScoreColumnsChip.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 column} other{{count} columns}}'**
+  String dataImportsScoreColumnsChip(int count);
+
+  /// No description provided for @dataImportsScoreCountsHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Validate counts'**
+  String get dataImportsScoreCountsHeader;
+
+  /// No description provided for @dataImportsScoreCountChip.
+  ///
+  /// In en, this message translates to:
+  /// **'{key} · {value}'**
+  String dataImportsScoreCountChip(String key, String value);
+
+  /// No description provided for @dataImportsScoreValidateAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Validate'**
+  String get dataImportsScoreValidateAction;
+
+  /// No description provided for @dataImportsScoreCommitAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Commit'**
+  String get dataImportsScoreCommitAction;
+
+  /// No description provided for @dataImportsScoreValidatedSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Score import validated.'**
+  String get dataImportsScoreValidatedSnack;
+
+  /// No description provided for @dataImportsScoreCommittedSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Score import committed.'**
+  String get dataImportsScoreCommittedSnack;
+
+  /// No description provided for @dataImportsScoreErrorSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Action failed: {message}'**
+  String dataImportsScoreErrorSnack(String message);
+
+  /// No description provided for @homeAdminDataImports.
+  ///
+  /// In en, this message translates to:
+  /// **'Data imports'**
+  String get homeAdminDataImports;
+
+  /// No description provided for @homeAdminDataImportsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Review batches + score imports'**
+  String get homeAdminDataImportsSubtitle;
 }
 
 class _AppLocalizationsDelegate

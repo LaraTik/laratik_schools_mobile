@@ -417,3 +417,24 @@ Prevention:
   `hasCapability\('(student|staff|guardian|academics|attendance)\.read'\)`
   in the mobile codebase and route hits through the canonical
   names.
+
+### 2026-08-03 — FakeLaratikSchoolsTransport did not track the Idempotency-Key header
+
+Symptom: writing a repository test against
+`validate_school_score_import` / `commit_school_score_import`
+needed to assert the fresh UUID was minted, but the fake
+transport had no getter for the idempotency key.
+
+Root cause: `test/helpers/mock_api_client.dart` tracked
+`_invokedMethods` + `_invokedArguments` but discarded the
+`idempotencyKey` parameter on the way through `invoke()`.
+
+Fix: added `_invokedIdempotencyKeys` + a `invokedIdempotencyKey`
+getter on the fake so any future write-flow test can assert
+"a fresh UUID v4 was minted for the Idempotency-Key header".
+
+Prevention: any new `LaratikSchoolsTransport` mock for a
+mutating v1 endpoint should preserve the `idempotencyKey`
+parameter on the call so the test can assert the
+`idempotency-key auto-mint` invariant from
+`lib/core/result.dart`.

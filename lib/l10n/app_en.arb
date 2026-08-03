@@ -609,5 +609,108 @@
   "studentsNoMatchMessage": "Try clearing the search or the grade filter.",
   "studentsErrorTitle": "Could not load students",
   "studentsAddStudentButton": "Add student",
-  "studentsFirstStudentMessage": "Add the first student to get started."
+  "studentsFirstStudentMessage": "Add the first student to get started.",
+
+  "dataImportsScreenTitle": "Data imports",
+  "dataImportsTabBatches": "Batches",
+  "dataImportsTabScoreImports": "Score imports",
+  "dataImportsLoadingTitle": "Loading data imports",
+  "dataImportsLoadingMessage": "Fetching the latest batches + score imports from the server.",
+  "dataImportsErrorTitle": "Could not load data imports",
+  "dataImportsBatchesEmptyTitle": "No data import batches yet",
+  "dataImportsBatchesEmptyMessage": "When a package is uploaded (via the desktop or the future mobile wizard), it will appear here.",
+  "dataImportsScoreEmptyTitle": "No score imports yet",
+  "dataImportsScoreEmptyMessage": "When a score file is uploaded (via the desktop or the future mobile wizard), it will appear here.",
+  "dataImportsHashChip": "Hash {hash}",
+  "@dataImportsHashChip": {
+    "placeholders": {
+      "hash": { "type": "String" }
+    }
+  },
+  "dataImportsRowCountChip": "{doctype} · {count}",
+  "@dataImportsRowCountChip": {
+    "placeholders": {
+      "doctype": { "type": "String" },
+      "count": { "type": "int" }
+    }
+  },
+  "dataImportsBatchCreatedAt": "Submitted {when}",
+  "@dataImportsBatchCreatedAt": {
+    "placeholders": {
+      "when": { "type": "String" }
+    }
+  },
+  "dataImportsScoreCreatedAt": "Submitted {when}",
+  "@dataImportsScoreCreatedAt": {
+    "placeholders": {
+      "when": { "type": "String" }
+    }
+  },
+  "dataImportsBatchDetailTitle": "Batch reconciliation",
+  "dataImportsBatchFallbackHeader": "Loading batch summary…",
+  "dataImportsReconciliationHeader": "{count, plural, =0{No rows} =1{1 row} other{{count} rows}}",
+  "@dataImportsReconciliationHeader": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "dataImportsReconciliationEmptyTitle": "No reconciliation rows",
+  "dataImportsReconciliationEmptyMessage": "This batch has no per-row decisions to review.",
+  "dataImportsReconciliationDoctypeFallback": "Untyped row",
+  "dataImportsReconciliationRowIndex": "Row {index}",
+  "@dataImportsReconciliationRowIndex": {
+    "placeholders": {
+      "index": { "type": "int" }
+    }
+  },
+  "dataImportsPayloadChip": "{key} · {value}",
+  "@dataImportsPayloadChip": {
+    "placeholders": {
+      "key": { "type": "String" },
+      "value": { "type": "String" }
+    }
+  },
+  "dataImportsScoreDetailTitle": "Score import",
+  "dataImportsScoreNotFoundTitle": "Score import not found",
+  "dataImportsScoreNotFoundMessage": "This score import is no longer in the school's catalog.",
+  "dataImportsScoreColumnsHeader": "{count, plural, =0{No columns} =1{1 column} other{{count} columns}}",
+  "@dataImportsScoreColumnsHeader": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "dataImportsScoreColumnChip": "{source} → {target}",
+  "@dataImportsScoreColumnChip": {
+    "placeholders": {
+      "source": { "type": "String" },
+      "target": { "type": "String" }
+    }
+  },
+  "dataImportsScoreColumnsChip": "{count, plural, =1{1 column} other{{count} columns}}",
+  "@dataImportsScoreColumnsChip": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "dataImportsScoreCountsHeader": "Validate counts",
+  "dataImportsScoreCountChip": "{key} · {value}",
+  "@dataImportsScoreCountChip": {
+    "placeholders": {
+      "key": { "type": "String" },
+      "value": { "type": "String" }
+    }
+  },
+  "dataImportsScoreValidateAction": "Validate",
+  "dataImportsScoreCommitAction": "Commit",
+  "dataImportsScoreValidatedSnack": "Score import validated.",
+  "dataImportsScoreCommittedSnack": "Score import committed.",
+  "dataImportsScoreErrorSnack": "Action failed: {message}",
+  "@dataImportsScoreErrorSnack": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
+
+  "homeAdminDataImports": "Data imports",
+  "homeAdminDataImportsSubtitle": "Review batches + score imports"
 }

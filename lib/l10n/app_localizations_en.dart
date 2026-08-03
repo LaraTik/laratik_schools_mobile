@@ -1277,4 +1277,164 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get studentsFirstStudentMessage =>
       'Add the first student to get started.';
+
+  @override
+  String get dataImportsScreenTitle => 'Data imports';
+
+  @override
+  String get dataImportsTabBatches => 'Batches';
+
+  @override
+  String get dataImportsTabScoreImports => 'Score imports';
+
+  @override
+  String get dataImportsLoadingTitle => 'Loading data imports';
+
+  @override
+  String get dataImportsLoadingMessage =>
+      'Fetching the latest batches + score imports from the server.';
+
+  @override
+  String get dataImportsErrorTitle => 'Could not load data imports';
+
+  @override
+  String get dataImportsBatchesEmptyTitle => 'No data import batches yet';
+
+  @override
+  String get dataImportsBatchesEmptyMessage =>
+      'When a package is uploaded (via the desktop or the future mobile wizard), it will appear here.';
+
+  @override
+  String get dataImportsScoreEmptyTitle => 'No score imports yet';
+
+  @override
+  String get dataImportsScoreEmptyMessage =>
+      'When a score file is uploaded (via the desktop or the future mobile wizard), it will appear here.';
+
+  @override
+  String dataImportsHashChip(String hash) {
+    return 'Hash $hash';
+  }
+
+  @override
+  String dataImportsRowCountChip(String doctype, int count) {
+    return '$doctype · $count';
+  }
+
+  @override
+  String dataImportsBatchCreatedAt(String when) {
+    return 'Submitted $when';
+  }
+
+  @override
+  String dataImportsScoreCreatedAt(String when) {
+    return 'Submitted $when';
+  }
+
+  @override
+  String get dataImportsBatchDetailTitle => 'Batch reconciliation';
+
+  @override
+  String get dataImportsBatchFallbackHeader => 'Loading batch summary…';
+
+  @override
+  String dataImportsReconciliationHeader(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count rows',
+      one: '1 row',
+      zero: 'No rows',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get dataImportsReconciliationEmptyTitle => 'No reconciliation rows';
+
+  @override
+  String get dataImportsReconciliationEmptyMessage =>
+      'This batch has no per-row decisions to review.';
+
+  @override
+  String get dataImportsReconciliationDoctypeFallback => 'Untyped row';
+
+  @override
+  String dataImportsReconciliationRowIndex(int index) {
+    return 'Row $index';
+  }
+
+  @override
+  String dataImportsPayloadChip(String key, String value) {
+    return '$key · $value';
+  }
+
+  @override
+  String get dataImportsScoreDetailTitle => 'Score import';
+
+  @override
+  String get dataImportsScoreNotFoundTitle => 'Score import not found';
+
+  @override
+  String get dataImportsScoreNotFoundMessage =>
+      'This score import is no longer in the school\'s catalog.';
+
+  @override
+  String dataImportsScoreColumnsHeader(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count columns',
+      one: '1 column',
+      zero: 'No columns',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String dataImportsScoreColumnChip(String source, String target) {
+    return '$source → $target';
+  }
+
+  @override
+  String dataImportsScoreColumnsChip(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count columns',
+      one: '1 column',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get dataImportsScoreCountsHeader => 'Validate counts';
+
+  @override
+  String dataImportsScoreCountChip(String key, String value) {
+    return '$key · $value';
+  }
+
+  @override
+  String get dataImportsScoreValidateAction => 'Validate';
+
+  @override
+  String get dataImportsScoreCommitAction => 'Commit';
+
+  @override
+  String get dataImportsScoreValidatedSnack => 'Score import validated.';
+
+  @override
+  String get dataImportsScoreCommittedSnack => 'Score import committed.';
+
+  @override
+  String dataImportsScoreErrorSnack(String message) {
+    return 'Action failed: $message';
+  }
+
+  @override
+  String get homeAdminDataImports => 'Data imports';
+
+  @override
+  String get homeAdminDataImportsSubtitle => 'Review batches + score imports';
 }

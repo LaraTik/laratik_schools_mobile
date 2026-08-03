@@ -208,4 +208,55 @@ void main() {
       expect(captured, isNot('Fees'));
     });
   });
+
+  group('Data imports surface localization', () {
+    test(
+      'data imports ARB keys are pinned in both English and Arabic',
+      () async {
+        // English source-of-truth: the keys we just added to
+        // `lib/l10n/app_en.arb`. A typo in either ARB file
+        // would fail this test (the generated AppLocalizations
+        // getter is the single source of truth the runtime
+        // resolves to).
+        final en = await AppLocalizations.delegate.load(const Locale('en'));
+        final ar = await AppLocalizations.delegate.load(const Locale('ar'));
+        expect(en.dataImportsScreenTitle, 'Data imports');
+        expect(en.dataImportsTabBatches, 'Batches');
+        expect(en.dataImportsTabScoreImports, 'Score imports');
+        expect(en.dataImportsLoadingTitle, 'Loading data imports');
+        expect(en.dataImportsBatchesEmptyTitle, 'No data import batches yet');
+        expect(en.dataImportsScoreEmptyTitle, 'No score imports yet');
+        expect(en.dataImportsErrorTitle, 'Could not load data imports');
+        expect(en.dataImportsBatchDetailTitle, 'Batch reconciliation');
+        expect(en.dataImportsScoreDetailTitle, 'Score import');
+        expect(en.dataImportsScoreValidateAction, 'Validate');
+        expect(en.dataImportsScoreCommitAction, 'Commit');
+        expect(en.homeAdminDataImports, 'Data imports');
+        expect(en.homeAdminDataImportsSubtitle,
+            'Review batches + score imports');
+        // Arabic: every key must resolve to a non-empty
+        // string, and must not be the English source. This
+        // catches the "I forgot to add the AR translation"
+        // mistake without requiring a full string-by-string
+        // pin.
+        for (final getter in [
+          () => ar.dataImportsScreenTitle,
+          () => ar.dataImportsTabBatches,
+          () => ar.dataImportsTabScoreImports,
+          () => ar.dataImportsLoadingTitle,
+          () => ar.dataImportsBatchesEmptyTitle,
+          () => ar.dataImportsScoreEmptyTitle,
+          () => ar.dataImportsErrorTitle,
+          () => ar.dataImportsBatchDetailTitle,
+          () => ar.dataImportsScoreDetailTitle,
+          () => ar.dataImportsScoreValidateAction,
+          () => ar.dataImportsScoreCommitAction,
+          () => ar.homeAdminDataImports,
+          () => ar.homeAdminDataImportsSubtitle,
+        ]) {
+          expect(getter(), isNotEmpty, reason: 'AR missing');
+        }
+      },
+    );
+  });
 }

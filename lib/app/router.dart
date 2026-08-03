@@ -23,6 +23,9 @@ import '../features/fees/ui/fee_plans_screen.dart';
 import '../features/guardians/ui/guardian_create_screen.dart';
 import '../features/guardians/ui/guardian_detail_screen.dart';
 import '../features/guardians/ui/guardians_list_screen.dart';
+import '../features/imports/ui/data_import_batch_detail_screen.dart';
+import '../features/imports/ui/data_imports_screen.dart';
+import '../features/imports/ui/score_import_detail_screen.dart';
 import '../features/me/ui/acting_as_picker_screen.dart';
 import '../features/operations/ui/operations_health_screen.dart';
 import '../features/governance/ui/governance_screen.dart';
@@ -447,6 +450,56 @@ GoRouter buildRouter({
             path: '/shell/grading',
             name: 'grading',
             builder: (context, state) => const GradingScreen(),
+          ),
+          // Data imports surface — read-only "Batches" +
+          // "Score imports" catalog. Reachable from the "Data
+          // imports" tile on the admin home (capability-gated
+          // on `can_manage_branches` — admin-only; the v1
+          // server does not yet expose a dedicated
+          // `can_view_imports` capability). The full upload +
+          // dry-run + review + approve + commit wizard is
+          // deferred to a follow-up turn because the
+          // `upload_school_data_import_package` endpoint
+          // expects a pre-uploaded `package_file` (Frappe's
+          // file API) which is outside the v1 SDK scope today.
+          GoRoute(
+            path: '/shell/imports',
+            name: 'data_imports',
+            builder: (context, state) => const DataImportsScreen(),
+            routes: [
+              GoRoute(
+                path: ':batchId',
+                name: 'data_import_batch',
+                builder: (context, state) {
+                  final id = Uri.decodeComponent(
+                    state.pathParameters['batchId'] ?? '',
+                  );
+                  return DataImportBatchDetailScreen(batch: id);
+                },
+                routes: [
+                  GoRoute(
+                    path: 'scores/:scoreImportId',
+                    name: 'data_import_score',
+                    builder: (context, state) {
+                      final id = Uri.decodeComponent(
+                        state.pathParameters['scoreImportId'] ?? '',
+                      );
+                      return ScoreImportDetailScreen(scoreImport: id);
+                    },
+                  ),
+                ],
+              ),
+              GoRoute(
+                path: 'scores/:scoreImportId',
+                name: 'data_import_score_top',
+                builder: (context, state) {
+                  final id = Uri.decodeComponent(
+                    state.pathParameters['scoreImportId'] ?? '',
+                  );
+                  return ScoreImportDetailScreen(scoreImport: id);
+                },
+              ),
+            ],
           ),
         ],
       ),
