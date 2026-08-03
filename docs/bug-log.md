@@ -449,3 +449,37 @@ Root cause: the field was typed `String?` to "just hold the message", but `submi
 Fix: typed `_error` as `GovernanceFailure?` and assigned `(result as Err<...>).error` on failure. The form's error container now uses `_error!.message` directly, with no string-conversion round-trip.
 
 Prevention: any new write-flow form in this repo should type its `_error` field as the failure type from the matching `Result` envelope (e.g. `StudentFailure?` for `Result<X, StudentFailure>`). The `String?` shortcut is wrong because the typed failure already carries a `message` getter.
+
+### 2026-08-03 — `PersonCard` rendered a raw `Icons.chevron_right` that didn't mirror under RTL
+
+Symptom: a hardening grep over `lib/` for raw
+`Icons.chevron_right` / `Icons.chevron_left` (without
+`Directionality.of(context)` guarding) turned up a
+single hit at
+`lib/features/people/ui/widgets/person_card.dart:78`.
+Every other surface in the app already used the
+`Directionality.of(context) == TextDirection.rtl
+? Icons.chevron_left : Icons.chevron_right` ternary.
+
+Root cause: the card was added before the
+`#ui-ux-pro-max` sweep introduced the directional
+chevron convention. Raw `Icon` widgets do not
+auto-mirror under RTL the way `ListTile` does — the
+visual "next →" stays on the trailing edge in both
+LTR and RTL, which reads wrong for users who expect
+a mirrored UI.
+
+Fix: replaced the raw `Icon(Icons.chevron_right)`
+with the `Directionality.of(context) == TextDirection.rtl
+? Icons.chevron_left : Icons.chevron_right` ternary
+used by the 24 other surfaces in the mobile, with
+a doc comment that explains the rationale + a pointer
+to the other call sites.
+
+Prevention: any new row tile in this repo should
+copy the `Directionality.of(context) == TextDirection.rtl
+? Icons.chevron_left : Icons.chevron_right` pattern
+rather than a raw `Icon`. The hardening grep
+`grep -r "Icons\.chevron_(right|left)" lib/`
+should be a CI step (or at least a pre-commit hook)
+so this drift is caught before merge.

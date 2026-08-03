@@ -457,6 +457,36 @@ Update 2026-08-03 (admin Grading surface): the
 > manual grading + per-question
 > authoring + per-question publish +
 > exam publish + promote attempt).
+>
+> Update 2026-08-03 (Hardening pass —
+> RTL chevron on `PersonCard`): the
+> person / student / staff / guardian
+> row tile at
+> `lib/features/people/ui/widgets/person_card.dart`
+> was rendering a raw
+> `Icons.chevron_right` instead of the
+> `Directionality.of(context) == TextDirection.rtl
+? Icons.chevron_left : Icons.chevron_right`
+> ternary used by the other 24
+> surfaces. Replaced the raw `Icon`
+> with the directional pattern so the
+> visual "next →" mirrors correctly
+> under RTL. The hardening grep over
+> `lib/` is now clean: no raw
+> `Icons.chevron_right` /
+> `Icons.chevron_left` survivors, no
+> `MediaQuery.platformBrightnessOf`
+> call sites, no
+> `EdgeInsets.only(left/right:)`
+> survivors, no
+> `hasCapability('(student|staff|guardian|academics|attendance).read')`
+> shorthand, and no hard-coded grade
+> filter literals. The mobile is at
+> `b132d56` (after the teacher
+> promote write-flow commit). See §4
+> (the hardening checklist is now
+> verified clean for the full
+> codebase).
 
 This document is the source of truth for what is shipped, what is
 missing per role, and the prioritized roadmap. It supersedes the

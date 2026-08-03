@@ -75,7 +75,15 @@ class PersonCard extends StatelessWidget {
                 LsStatusChip(label: person.status, tone: tone),
                 SizedBox(width: tokens.space.xs),
                 Icon(
-                  Icons.chevron_right,
+                  // Mirror the chevron under RTL so the
+                  // visual "next →" stays consistent with
+                  // the text flow. The pattern matches the
+                  // student + parent + teacher home tiles
+                  // (raw `Icon` does not auto-mirror like
+                  // `ListTile` does).
+                  Directionality.of(context) == TextDirection.rtl
+                      ? Icons.chevron_left
+                      : Icons.chevron_right,
                   size: 20,
                   color: tokens.text.tertiary,
                 ),

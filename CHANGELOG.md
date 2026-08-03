@@ -27,6 +27,26 @@ and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
   test grew from 25 to 26 to pin the new keys in both
   English and Modern Standard Arabic. Closes the
   remaining teacher write-flow gap.
+- **Hardening pass: directional chevron on
+  `PersonCard`.** The person / student / staff /
+  guardian row tile at
+  `lib/features/people/ui/widgets/person_card.dart`
+  was rendering a raw `Icons.chevron_right` instead
+  of the
+  `Directionality.of(context) == TextDirection.rtl
+? Icons.chevron_left : Icons.chevron_right` ternary
+  used by the other 24 surfaces. Replaced the raw
+  `Icon` with the directional pattern (with a doc
+  comment that explains the rationale) so the visual
+  "next →" mirrors correctly under RTL. The hardening
+  grep over `lib/` is now clean: no raw
+  `Icons.chevron_right` / `Icons.chevron_left`
+  survivors, no `MediaQuery.platformBrightnessOf`
+  call sites, no `EdgeInsets.only(left/right:)`
+  survivors, no
+  `hasCapability('(student|staff|guardian|academics|attendance).read')`
+  shorthand, and no hard-coded grade filter
+  literals.
 - **Privacy request submit form (parent + student write
   flow).** New 5-tab choice-chip form at
   `/shell/governance/submit/:requesterType/:subjectType/:subject`
