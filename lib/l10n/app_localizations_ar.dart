@@ -2351,4 +2351,114 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get guardianCreateSubmitLoading => 'جارٍ الإنشاء…';
+
+  @override
+  String get commonActive => 'نشط';
+
+  @override
+  String get commonPrimary => 'رئيسي';
+
+  @override
+  String get academicsScreenTitle => 'الأكاديميات';
+
+  @override
+  String get academicsNewSubjectAction => 'مادة جديدة';
+
+  @override
+  String get academicsTabSubjects => 'المواد';
+
+  @override
+  String get academicsTabTimetable => 'الجدول';
+
+  @override
+  String get academicsTabBranches => 'الفروع';
+
+  @override
+  String get academicsSearchHint => 'ابحث بالاسم أو الرمز أو القسم';
+
+  @override
+  String get academicsLoadingSubjects => 'جارٍ تحميل المواد';
+
+  @override
+  String get academicsErrorSubjects => 'تعذّر تحميل المواد';
+
+  @override
+  String get academicsEmptySubjectsTitle => 'لا توجد مواد بعد';
+
+  @override
+  String get academicsEmptySubjectsMessage => 'أضف أول مادة للبدء.';
+
+  @override
+  String get academicsAddSubjectAction => 'إضافة مادة';
+
+  @override
+  String get academicsLoadingTimetable => 'جارٍ تحميل الجدول';
+
+  @override
+  String get academicsErrorTimetable => 'تعذّر تحميل الجدول';
+
+  @override
+  String get academicsEmptyTimetableTitle => 'لا توجد حصص في الجدول';
+
+  @override
+  String get academicsEmptyTimetableMessage =>
+      'لم تنشر المدرسة أي حصص في الجدول بعد.';
+
+  @override
+  String get academicsLoadingBranches => 'جارٍ تحميل الفروع';
+
+  @override
+  String get academicsErrorBranches => 'تعذّر تحميل الفروع';
+
+  @override
+  String get academicsEmptyBranchesTitle => 'لا توجد فروع بعد';
+
+  @override
+  String get academicsEmptyBranchesMessage =>
+      'أضف أول فرع من وحدة تحكم إدارة المدرسة.';
+
+  @override
+  String get subjectCreateScreenTitle => 'مادة جديدة';
+
+  @override
+  String get subjectCreateSuccessTitle => 'تم إنشاء المادة';
+
+  @override
+  String get subjectCreateBackAction => 'العودة إلى الأكاديميات';
+
+  @override
+  String get subjectCreateNameLabel => 'اسم المادة';
+
+  @override
+  String get subjectCreateNameHint => 'الرياضيات، العربية، …';
+
+  @override
+  String get subjectCreateCodeLabel => 'رمز المادة';
+
+  @override
+  String get subjectCreateCodeHint => 'MATH-101';
+
+  @override
+  String get subjectCreateDepartmentLabel => 'القسم';
+
+  @override
+  String get subjectCreateDepartmentHint => 'العلوم، الإنسانيات، …';
+
+  @override
+  String get subjectCreateGradeLevelLabel => 'المستوى الدراسي';
+
+  @override
+  String get subjectCreateGradeLevelHint => 'الصف 3';
+
+  @override
+  String get subjectCreateCreditHoursLabel => 'ساعات الاعتماد';
+
+  @override
+  String get subjectCreateDescriptionLabel => 'الوصف';
+
+  @override
+  String get subjectCreateSubmitAction => 'إنشاء مادة';
+
+  @override
+  String get subjectCreateSubmitLoading => 'جارٍ الإنشاء…';
 }

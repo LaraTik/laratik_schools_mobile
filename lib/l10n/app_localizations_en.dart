@@ -2292,4 +2292,115 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guardianCreateSubmitLoading => 'Creating…';
+
+  @override
+  String get commonActive => 'Active';
+
+  @override
+  String get commonPrimary => 'Primary';
+
+  @override
+  String get academicsScreenTitle => 'Academics';
+
+  @override
+  String get academicsNewSubjectAction => 'New subject';
+
+  @override
+  String get academicsTabSubjects => 'Subjects';
+
+  @override
+  String get academicsTabTimetable => 'Timetable';
+
+  @override
+  String get academicsTabBranches => 'Branches';
+
+  @override
+  String get academicsSearchHint => 'Search by name, code, or department';
+
+  @override
+  String get academicsLoadingSubjects => 'Loading subjects';
+
+  @override
+  String get academicsErrorSubjects => 'Could not load subjects';
+
+  @override
+  String get academicsEmptySubjectsTitle => 'No subjects yet';
+
+  @override
+  String get academicsEmptySubjectsMessage =>
+      'Add the first subject to get started.';
+
+  @override
+  String get academicsAddSubjectAction => 'Add subject';
+
+  @override
+  String get academicsLoadingTimetable => 'Loading timetable';
+
+  @override
+  String get academicsErrorTimetable => 'Could not load timetable';
+
+  @override
+  String get academicsEmptyTimetableTitle => 'No timetable slots';
+
+  @override
+  String get academicsEmptyTimetableMessage =>
+      'The school has not published any timetable slots yet.';
+
+  @override
+  String get academicsLoadingBranches => 'Loading branches';
+
+  @override
+  String get academicsErrorBranches => 'Could not load branches';
+
+  @override
+  String get academicsEmptyBranchesTitle => 'No branches yet';
+
+  @override
+  String get academicsEmptyBranchesMessage =>
+      'Add the first branch from the school admin console.';
+
+  @override
+  String get subjectCreateScreenTitle => 'New subject';
+
+  @override
+  String get subjectCreateSuccessTitle => 'Subject created';
+
+  @override
+  String get subjectCreateBackAction => 'Back to academics';
+
+  @override
+  String get subjectCreateNameLabel => 'Subject name';
+
+  @override
+  String get subjectCreateNameHint => 'Mathematics, Arabic, …';
+
+  @override
+  String get subjectCreateCodeLabel => 'Subject code';
+
+  @override
+  String get subjectCreateCodeHint => 'MATH-101';
+
+  @override
+  String get subjectCreateDepartmentLabel => 'Department';
+
+  @override
+  String get subjectCreateDepartmentHint => 'Sciences, Humanities, …';
+
+  @override
+  String get subjectCreateGradeLevelLabel => 'Grade level';
+
+  @override
+  String get subjectCreateGradeLevelHint => 'Grade 3';
+
+  @override
+  String get subjectCreateCreditHoursLabel => 'Credit hours';
+
+  @override
+  String get subjectCreateDescriptionLabel => 'Description';
+
+  @override
+  String get subjectCreateSubmitAction => 'Create subject';
+
+  @override
+  String get subjectCreateSubmitLoading => 'Creating…';
 }

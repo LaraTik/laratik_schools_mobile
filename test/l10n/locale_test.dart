@@ -596,4 +596,54 @@ void main() {
       },
     );
   });
+
+  group('Academics surface localization', () {
+    test(
+      'academics + subject create ARB keys are pinned in both English and Arabic',
+      () async {
+        final en = await AppLocalizations.delegate.load(const Locale('en'));
+        final ar = await AppLocalizations.delegate.load(const Locale('ar'));
+        expect(en.academicsScreenTitle, 'Academics');
+        expect(en.academicsNewSubjectAction, 'New subject');
+        expect(en.academicsTabSubjects, 'Subjects');
+        expect(en.academicsTabTimetable, 'Timetable');
+        expect(en.academicsTabBranches, 'Branches');
+        expect(en.academicsSearchHint, 'Search by name, code, or department');
+        expect(en.academicsEmptySubjectsTitle, 'No subjects yet');
+        expect(en.academicsEmptyTimetableTitle, 'No timetable slots');
+        expect(en.academicsEmptyBranchesTitle, 'No branches yet');
+        expect(en.commonActive, 'Active');
+        expect(en.commonPrimary, 'Primary');
+        expect(en.subjectCreateScreenTitle, 'New subject');
+        expect(en.subjectCreateNameLabel, 'Subject name');
+        expect(en.subjectCreateCodeLabel, 'Subject code');
+        expect(en.subjectCreateDepartmentLabel, 'Department');
+        expect(en.subjectCreateCreditHoursLabel, 'Credit hours');
+        expect(en.subjectCreateSuccessTitle, 'Subject created');
+        expect(en.subjectCreateSubmitAction, 'Create subject');
+        for (final getter in [
+          () => ar.academicsScreenTitle,
+          () => ar.academicsNewSubjectAction,
+          () => ar.academicsTabSubjects,
+          () => ar.academicsTabTimetable,
+          () => ar.academicsTabBranches,
+          () => ar.academicsSearchHint,
+          () => ar.academicsEmptySubjectsTitle,
+          () => ar.academicsEmptyTimetableTitle,
+          () => ar.academicsEmptyBranchesTitle,
+          () => ar.commonActive,
+          () => ar.commonPrimary,
+          () => ar.subjectCreateScreenTitle,
+          () => ar.subjectCreateNameLabel,
+          () => ar.subjectCreateCodeLabel,
+          () => ar.subjectCreateDepartmentLabel,
+          () => ar.subjectCreateCreditHoursLabel,
+          () => ar.subjectCreateSuccessTitle,
+          () => ar.subjectCreateSubmitAction,
+        ]) {
+          expect(getter(), isNotEmpty, reason: 'AR missing');
+        }
+      },
+    );
+  });
 }

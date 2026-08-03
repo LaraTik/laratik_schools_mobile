@@ -3866,6 +3866,222 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Creating…'**
   String get guardianCreateSubmitLoading;
+
+  /// No description provided for @commonActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get commonActive;
+
+  /// No description provided for @commonPrimary.
+  ///
+  /// In en, this message translates to:
+  /// **'Primary'**
+  String get commonPrimary;
+
+  /// No description provided for @academicsScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Academics'**
+  String get academicsScreenTitle;
+
+  /// No description provided for @academicsNewSubjectAction.
+  ///
+  /// In en, this message translates to:
+  /// **'New subject'**
+  String get academicsNewSubjectAction;
+
+  /// No description provided for @academicsTabSubjects.
+  ///
+  /// In en, this message translates to:
+  /// **'Subjects'**
+  String get academicsTabSubjects;
+
+  /// No description provided for @academicsTabTimetable.
+  ///
+  /// In en, this message translates to:
+  /// **'Timetable'**
+  String get academicsTabTimetable;
+
+  /// No description provided for @academicsTabBranches.
+  ///
+  /// In en, this message translates to:
+  /// **'Branches'**
+  String get academicsTabBranches;
+
+  /// No description provided for @academicsSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name, code, or department'**
+  String get academicsSearchHint;
+
+  /// No description provided for @academicsLoadingSubjects.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading subjects'**
+  String get academicsLoadingSubjects;
+
+  /// No description provided for @academicsErrorSubjects.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load subjects'**
+  String get academicsErrorSubjects;
+
+  /// No description provided for @academicsEmptySubjectsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No subjects yet'**
+  String get academicsEmptySubjectsTitle;
+
+  /// No description provided for @academicsEmptySubjectsMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the first subject to get started.'**
+  String get academicsEmptySubjectsMessage;
+
+  /// No description provided for @academicsAddSubjectAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Add subject'**
+  String get academicsAddSubjectAction;
+
+  /// No description provided for @academicsLoadingTimetable.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading timetable'**
+  String get academicsLoadingTimetable;
+
+  /// No description provided for @academicsErrorTimetable.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load timetable'**
+  String get academicsErrorTimetable;
+
+  /// No description provided for @academicsEmptyTimetableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No timetable slots'**
+  String get academicsEmptyTimetableTitle;
+
+  /// No description provided for @academicsEmptyTimetableMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The school has not published any timetable slots yet.'**
+  String get academicsEmptyTimetableMessage;
+
+  /// No description provided for @academicsLoadingBranches.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading branches'**
+  String get academicsLoadingBranches;
+
+  /// No description provided for @academicsErrorBranches.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load branches'**
+  String get academicsErrorBranches;
+
+  /// No description provided for @academicsEmptyBranchesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No branches yet'**
+  String get academicsEmptyBranchesTitle;
+
+  /// No description provided for @academicsEmptyBranchesMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the first branch from the school admin console.'**
+  String get academicsEmptyBranchesMessage;
+
+  /// No description provided for @subjectCreateScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New subject'**
+  String get subjectCreateScreenTitle;
+
+  /// No description provided for @subjectCreateSuccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Subject created'**
+  String get subjectCreateSuccessTitle;
+
+  /// No description provided for @subjectCreateBackAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to academics'**
+  String get subjectCreateBackAction;
+
+  /// No description provided for @subjectCreateNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Subject name'**
+  String get subjectCreateNameLabel;
+
+  /// No description provided for @subjectCreateNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Mathematics, Arabic, …'**
+  String get subjectCreateNameHint;
+
+  /// No description provided for @subjectCreateCodeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Subject code'**
+  String get subjectCreateCodeLabel;
+
+  /// No description provided for @subjectCreateCodeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'MATH-101'**
+  String get subjectCreateCodeHint;
+
+  /// No description provided for @subjectCreateDepartmentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Department'**
+  String get subjectCreateDepartmentLabel;
+
+  /// No description provided for @subjectCreateDepartmentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Sciences, Humanities, …'**
+  String get subjectCreateDepartmentHint;
+
+  /// No description provided for @subjectCreateGradeLevelLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Grade level'**
+  String get subjectCreateGradeLevelLabel;
+
+  /// No description provided for @subjectCreateGradeLevelHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Grade 3'**
+  String get subjectCreateGradeLevelHint;
+
+  /// No description provided for @subjectCreateCreditHoursLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit hours'**
+  String get subjectCreateCreditHoursLabel;
+
+  /// No description provided for @subjectCreateDescriptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get subjectCreateDescriptionLabel;
+
+  /// No description provided for @subjectCreateSubmitAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Create subject'**
+  String get subjectCreateSubmitAction;
+
+  /// No description provided for @subjectCreateSubmitLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Creating…'**
+  String get subjectCreateSubmitLoading;
 }
 
 class _AppLocalizationsDelegate

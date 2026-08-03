@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/result.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../ui/design_tokens.dart';
 import '../../../ui/widgets/ls_button.dart';
 import '../../../ui/widgets/ls_text_field.dart';
@@ -93,6 +94,7 @@ class _SubjectCreateScreenState extends ConsumerState<SubjectCreateScreen> {
       context: context,
       builder: (sheetContext) {
         final tokens = sheetContext.laratik;
+        final l = AppLocalizations.of(sheetContext);
         return SafeArea(
           child: Padding(
             padding: EdgeInsets.all(tokens.space.lg),
@@ -105,7 +107,7 @@ class _SubjectCreateScreenState extends ConsumerState<SubjectCreateScreen> {
                     Icon(Icons.check_circle, color: tokens.status.success),
                     SizedBox(width: tokens.space.sm),
                     Text(
-                      'Subject created',
+                      l.subjectCreateSuccessTitle,
                       style: tokens.typography.titleLarge.copyWith(
                         color: tokens.text.primary,
                       ),
@@ -121,7 +123,7 @@ class _SubjectCreateScreenState extends ConsumerState<SubjectCreateScreen> {
                 ),
                 SizedBox(height: tokens.space.lg),
                 LsButton.primary(
-                  label: 'Back to academics',
+                  label: l.subjectCreateBackAction,
                   icon: Icons.arrow_back,
                   onPressed: () {
                     Navigator.of(sheetContext).pop();
@@ -139,6 +141,7 @@ class _SubjectCreateScreenState extends ConsumerState<SubjectCreateScreen> {
   @override
   Widget build(BuildContext context) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     _isWide = MediaQuery.sizeOf(context).width >= 720;
     return Scaffold(
       backgroundColor: tokens.surface.canvas,
@@ -150,7 +153,7 @@ class _SubjectCreateScreenState extends ConsumerState<SubjectCreateScreen> {
           onPressed: () => context.go('/shell/academics'),
         ),
         title: Text(
-          'New subject',
+          l.subjectCreateScreenTitle,
           style: tokens.typography.titleLarge.copyWith(
             color: tokens.text.primary,
           ),
@@ -162,37 +165,37 @@ class _SubjectCreateScreenState extends ConsumerState<SubjectCreateScreen> {
           padding: EdgeInsets.all(tokens.space.md),
           children: [
             LsTextField(
-              label: 'Subject name',
+              label: l.subjectCreateNameLabel,
               required: true,
               controller: _nameController,
-              hint: 'Mathematics, Arabic, …',
+              hint: l.subjectCreateNameHint,
               onChanged: (_) {},
             ),
             SizedBox(height: tokens.space.md),
             _buildFieldsColumnOrRow([
               LsTextField(
-                label: 'Subject code',
+                label: l.subjectCreateCodeLabel,
                 controller: _codeController,
-                hint: 'MATH-101',
+                hint: l.subjectCreateCodeHint,
                 onChanged: (_) {},
               ),
               LsTextField(
-                label: 'Department',
+                label: l.subjectCreateDepartmentLabel,
                 controller: _departmentController,
-                hint: 'Sciences, Humanities, …',
+                hint: l.subjectCreateDepartmentHint,
                 onChanged: (_) {},
               ),
             ], tokens),
             SizedBox(height: tokens.space.md),
             _buildFieldsColumnOrRow([
               LsTextField(
-                label: 'Grade level',
+                label: l.subjectCreateGradeLevelLabel,
                 controller: _gradeLevelController,
-                hint: 'Grade 3',
+                hint: l.subjectCreateGradeLevelHint,
                 onChanged: (_) {},
               ),
               LsTextField(
-                label: 'Credit hours',
+                label: l.subjectCreateCreditHoursLabel,
                 controller: _creditHoursController,
                 keyboardType: TextInputType.number,
                 onChanged: (_) {},
@@ -200,7 +203,7 @@ class _SubjectCreateScreenState extends ConsumerState<SubjectCreateScreen> {
             ], tokens),
             SizedBox(height: tokens.space.md),
             LsTextField(
-              label: 'Description',
+              label: l.subjectCreateDescriptionLabel,
               controller: _descriptionController,
               maxLines: 4,
               onChanged: (_) {},
@@ -233,7 +236,9 @@ class _SubjectCreateScreenState extends ConsumerState<SubjectCreateScreen> {
               ),
             if (_generalError != null) SizedBox(height: tokens.space.md),
             LsButton.primary(
-              label: _submitting ? 'Creating…' : 'Create subject',
+              label: _submitting
+                  ? l.subjectCreateSubmitLoading
+                  : l.subjectCreateSubmitAction,
               icon: Icons.check,
               isLoading: _submitting,
               onPressed: _submitting ? null : _submit,

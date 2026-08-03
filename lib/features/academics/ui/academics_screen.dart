@@ -3,12 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/result.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../ui/design_tokens.dart';
 import '../../../ui/widgets/ls_button.dart';
 import '../../../ui/widgets/ls_empty_state.dart';
 import '../../../ui/widgets/ls_search_bar.dart';
 import '../../../ui/widgets/ls_status_chip.dart';
-import '../../people/data/person_failure.dart';
 import '../data/academics_providers.dart';
 import '../data/academics_repository.dart';
 import '../data/subject.dart';
@@ -24,6 +24,7 @@ class AcademicsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -33,16 +34,16 @@ class AcademicsScreen extends ConsumerWidget {
           elevation: 0,
           scrolledUnderElevation: 1,
           title: Text(
-            'Academics',
+            l.academicsScreenTitle,
             style: tokens.typography.titleLarge.copyWith(
               color: tokens.text.primary,
             ),
           ),
           actions: [
             Padding(
-              padding: EdgeInsets.only(right: tokens.space.sm),
+              padding: EdgeInsetsDirectional.only(end: tokens.space.sm),
               child: LsButton.primary(
-                label: 'New subject',
+                label: l.academicsNewSubjectAction,
                 icon: Icons.add,
                 expand: false,
                 onPressed: () => context.go('/shell/academics/subjects/new'),
@@ -53,10 +54,10 @@ class AcademicsScreen extends ConsumerWidget {
             labelColor: tokens.brand.primary,
             unselectedLabelColor: tokens.text.secondary,
             indicatorColor: tokens.brand.primary,
-            tabs: const [
-              Tab(text: 'Subjects'),
-              Tab(text: 'Timetable'),
-              Tab(text: 'Branches'),
+            tabs: [
+              Tab(text: l.academicsTabSubjects),
+              Tab(text: l.academicsTabTimetable),
+              Tab(text: l.academicsTabBranches),
             ],
           ),
         ),
@@ -256,26 +257,31 @@ class _TimetableTabState extends ConsumerState<_TimetableTab> {
   @override
   Widget build(BuildContext context) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     final asyncPage = ref.watch(timetableListProvider);
     return asyncPage.when(
-      data: (page) => _buildGrid(page, tokens),
-      loading: () => const LsStateView.loading(title: 'Loading timetable'),
+      data: (page) => _buildGrid(page, tokens, l),
+      loading: () => LsStateView.loading(title: l.academicsLoadingTimetable),
       error: (err, _) => LsStateView.error(
         icon: Icons.error_outline,
-        title: 'Could not load timetable',
+        title: l.academicsErrorTimetable,
         message: err.toString(),
       ),
     );
   }
 
-  Widget _buildGrid(TimetablePage page, DesignTokens tokens) {
+  Widget _buildGrid(
+    TimetablePage page,
+    DesignTokens tokens,
+    AppLocalizations l,
+  ) {
     final slots = page.slots;
     final byDay = _groupByDay(slots);
     if (slots.isEmpty) {
       return LsStateView.empty(
         icon: Icons.calendar_today_outlined,
-        title: 'No timetable slots',
-        message: 'The school has not published any timetable slots yet.',
+        title: l.academicsEmptyTimetableTitle,
+        message: l.academicsEmptyTimetableMessage,
       );
     }
     return ListView(
@@ -284,7 +290,7 @@ class _TimetableTabState extends ConsumerState<_TimetableTab> {
       children: [
         for (final entry in byDay.entries) ...[
           Padding(
-            padding: EdgeInsets.only(bottom: tokens.space.xs),
+            padding: EdgeInsetsDirectional.only(bottom: tokens.space.xs),
             child: Text(
               entry.key,
               style: tokens.typography.titleSmall.copyWith(
@@ -345,7 +351,7 @@ class _DayCard extends StatelessWidget {
           for (var i = 0; i < slots.length; i++) ...[
             if (i > 0) Divider(height: 1, color: tokens.surface.outlineVariant),
             ListTile(
-              contentPadding: EdgeInsets.symmetric(
+              contentPadding: EdgeInsetsDirectional.symmetric(
                 horizontal: tokens.space.md,
                 vertical: tokens.space.xxs,
               ),
@@ -400,31 +406,36 @@ class _BranchesTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     final asyncPage = ref.watch(branchesListProvider(null));
     return asyncPage.when(
       data: (result) => switch (result) {
-        Ok(:final value) => _buildList(value, tokens),
+        Ok(:final value) => _buildList(value, tokens, l),
         Err(:final error) => LsStateView.error(
             icon: Icons.error_outline,
-            title: 'Could not load branches',
+            title: l.academicsErrorBranches,
             message: error.message,
           ),
       },
-      loading: () => const LsStateView.loading(title: 'Loading branches'),
+      loading: () => LsStateView.loading(title: l.academicsLoadingBranches),
       error: (err, _) => LsStateView.error(
         icon: Icons.error_outline,
-        title: 'Could not load branches',
+        title: l.academicsErrorBranches,
         message: err.toString(),
       ),
     );
   }
 
-  Widget _buildList(BranchPage page, DesignTokens tokens) {
+  Widget _buildList(
+    BranchPage page,
+    DesignTokens tokens,
+    AppLocalizations l,
+  ) {
     if (page.branches.isEmpty) {
       return LsStateView.empty(
         icon: Icons.account_tree_outlined,
-        title: 'No branches yet',
-        message: 'Add the first branch from the school admin console.',
+        title: l.academicsEmptyBranchesTitle,
+        message: l.academicsEmptyBranchesMessage,
       );
     }
     return ListView.separated(
@@ -473,8 +484,8 @@ class _BranchesTab extends ConsumerWidget {
                 ),
               ),
               if (b.isPrimary)
-                const LsStatusChip(
-                  label: 'Primary',
+                LsStatusChip(
+                  label: l.commonPrimary,
                   icon: Icons.star,
                   tone: LsChipTone.brand,
                 ),
