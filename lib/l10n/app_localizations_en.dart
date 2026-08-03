@@ -1172,4 +1172,109 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get gradingPermissionsRequiredRoles => 'Required roles for approval';
+
+  @override
+  String get loginScreenTitle => 'Laratik Schools';
+
+  @override
+  String get loginSignInSubtitle => 'Sign in to continue';
+
+  @override
+  String get loginOAuthPkceTitle => 'OAuth + PKCE';
+
+  @override
+  String get loginOAuthPkceMessage =>
+      'S256, in-app webview, system-broker redirect.';
+
+  @override
+  String get loginSsoChip => 'Laratik SSO';
+
+  @override
+  String get loginButton => 'Sign in with Laratik';
+
+  @override
+  String get loginButtonLoading => 'Opening browser…';
+
+  @override
+  String get notificationsTitle => 'Notifications';
+
+  @override
+  String get notificationsFilterAll => 'All';
+
+  @override
+  String get notificationsFilterUnread => 'Unread';
+
+  @override
+  String get notificationsLoadingTitle => 'Loading notifications';
+
+  @override
+  String get notificationsLoadingMessage =>
+      'Fetching the latest inbox from the server.';
+
+  @override
+  String get notificationsEmptyTitle => 'No notifications';
+
+  @override
+  String get notificationsEmptyMessage => 'You are all caught up.';
+
+  @override
+  String get notificationsErrorTitle => 'Could not load notifications';
+
+  @override
+  String get studentsTitle => 'Students';
+
+  @override
+  String get studentsNewButton => 'New student';
+
+  @override
+  String get studentsSearchPlaceholder => 'Search by name or student number';
+
+  @override
+  String get studentsFilterByGrade => 'Filter by grade';
+
+  @override
+  String get studentsFilterByClassGroup => 'Filter by class group';
+
+  @override
+  String get studentsGradeFilterChip => 'Grade';
+
+  @override
+  String get studentsClassGroupFilterChip => 'Class group';
+
+  @override
+  String get studentsFilterClear => 'Clear';
+
+  @override
+  String get studentsFilterApply => 'Apply';
+
+  @override
+  String get studentsLoadingTitle => 'Loading students';
+
+  @override
+  String get studentsLoadingMessage =>
+      'Fetching the latest roster from the server.';
+
+  @override
+  String get studentsEmptyTitle => 'No students yet';
+
+  @override
+  String get studentsEmptyMessage =>
+      'When you add a student to the roster, they will appear here.';
+
+  @override
+  String get studentsNoMatchTitle => 'No students match the current filter';
+
+  @override
+  String get studentsNoMatchMessage =>
+      'Try clearing the search or the grade filter.';
+
+  @override
+  String get studentsErrorTitle => 'Could not load students';
+
+  @override
+  String get studentsAddStudentButton => 'Add student';
+
+  @override
+  String get studentsFirstStudentMessage =>
+      'Add the first student to get started.';
 }

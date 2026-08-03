@@ -573,5 +573,41 @@
     }
   },
   "gradingPermissionsReadRoles": "Read roles",
-  "gradingPermissionsRequiredRoles": "Required roles for approval"
+  "gradingPermissionsRequiredRoles": "Required roles for approval",
+
+  "loginScreenTitle": "Laratik Schools",
+  "loginSignInSubtitle": "Sign in to continue",
+  "loginOAuthPkceTitle": "OAuth + PKCE",
+  "loginOAuthPkceMessage": "S256, in-app webview, system-broker redirect.",
+  "loginSsoChip": "Laratik SSO",
+  "loginButton": "Sign in with Laratik",
+  "loginButtonLoading": "Opening browser…",
+
+  "notificationsTitle": "Notifications",
+  "notificationsFilterAll": "All",
+  "notificationsFilterUnread": "Unread",
+  "notificationsLoadingTitle": "Loading notifications",
+  "notificationsLoadingMessage": "Fetching the latest inbox from the server.",
+  "notificationsEmptyTitle": "No notifications",
+  "notificationsEmptyMessage": "You are all caught up.",
+  "notificationsErrorTitle": "Could not load notifications",
+
+  "studentsTitle": "Students",
+  "studentsNewButton": "New student",
+  "studentsSearchPlaceholder": "Search by name or student number",
+  "studentsFilterByGrade": "Filter by grade",
+  "studentsFilterByClassGroup": "Filter by class group",
+  "studentsGradeFilterChip": "Grade",
+  "studentsClassGroupFilterChip": "Class group",
+  "studentsFilterClear": "Clear",
+  "studentsFilterApply": "Apply",
+  "studentsLoadingTitle": "Loading students",
+  "studentsLoadingMessage": "Fetching the latest roster from the server.",
+  "studentsEmptyTitle": "No students yet",
+  "studentsEmptyMessage": "When you add a student to the roster, they will appear here.",
+  "studentsNoMatchTitle": "No students match the current filter",
+  "studentsNoMatchMessage": "Try clearing the search or the grade filter.",
+  "studentsErrorTitle": "Could not load students",
+  "studentsAddStudentButton": "Add student",
+  "studentsFirstStudentMessage": "Add the first student to get started."
 }

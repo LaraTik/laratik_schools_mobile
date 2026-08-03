@@ -114,7 +114,26 @@
 > (item #8 → partially shipped; governance slice done,
 > grading slice deferred).
 >
-> Update 2026-08-03 (admin Grading surface): the
+> Update 2026-08-03 (a11y + locale sweep on the final
+> highest-traffic surfaces): the login + notifications +
+> students list surfaces are now fully locale-aware
+> (English source + Modern Standard Arabic with the six
+> ICU plural categories where the strings carry counts).
+> The Students list AppBar uses
+> `EdgeInsetsDirectional.only(end:)` so the "New student"
+> button hugs the trailing edge in both LTR and RTL.
+> This closes the final leg of the #11 follow-up on the
+> highest-traffic surfaces; the remaining surfaces
+> (attendance, people detail / create, staff, guardians,
+> academics, exam list / attempt) still carry hardcoded
+> English strings and are deferred to a follow-up pass.
+> See §4 (the locale gap is now narrowed to the
+> create / detail / secondary surfaces; the bottom-nav,
+> the role-routed homes, the family / classes / fees
+> / operations / governance / grading / notifications
+> / login / students-list surfaces are all locale-aware).
+
+Update 2026-08-03 (admin Grading surface): the
 > read-only overview + policies ship at
 > `/shell/grading`. The Overview tab renders the four
 > headline KPIs (total / published / draft / average) as

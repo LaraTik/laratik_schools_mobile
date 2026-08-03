@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../ui/design_tokens.dart';
 import '../../../ui/widgets/ls_button.dart';
 import '../../../ui/widgets/ls_empty_state.dart';
@@ -48,6 +49,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
   @override
   Widget build(BuildContext context) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     final asyncPage = ref.watch(notificationsListProvider);
     return Scaffold(
       backgroundColor: tokens.surface.canvas,
@@ -55,18 +57,19 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         backgroundColor: tokens.surface.surface,
         elevation: 0,
         leading: IconButton(
+          tooltip: l.commonBack,
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.go('/shell'),
         ),
         title: Text(
-          'Notifications',
+          l.notificationsTitle,
           style: tokens.typography.titleLarge.copyWith(
             color: tokens.text.primary,
           ),
         ),
         actions: [
           IconButton(
-            tooltip: 'Refresh',
+            tooltip: l.commonRefresh,
             icon: const Icon(Icons.refresh),
             onPressed: () =>
                 ref.read(notificationsListProvider.notifier).refresh(),
@@ -84,7 +87,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
             child: Row(
               children: [
                 _FilterChip(
-                  label: 'All',
+                  label: l.notificationsFilterAll,
                   selected: true,
                   onTap: () => ref
                       .read(notificationsListProvider.notifier)
@@ -92,7 +95,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                 ),
                 SizedBox(width: tokens.space.xs),
                 _FilterChip(
-                  label: 'Unread',
+                  label: l.notificationsFilterUnread,
                   selected: false,
                   onTap: () => ref
                       .read(notificationsListProvider.notifier)
@@ -107,11 +110,11 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         onRefresh: () => ref.read(notificationsListProvider.notifier).refresh(),
         child: asyncPage.when(
           data: (page) => _buildList(page, tokens),
-          loading: () => const LsStateView.loading(
-            title: 'Loading notifications',
-            message: 'Fetching the latest inbox from the server.',
+          loading: () => LsStateView.loading(
+            title: l.notificationsLoadingTitle,
+            message: l.notificationsLoadingMessage,
           ),
-          error: (err, _) => _buildError(err, tokens),
+          error: (err, _) => _buildError(err, tokens, l),
         ),
       ),
     );
@@ -120,14 +123,15 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
   Widget _buildList(NotificationPage page, DesignTokens tokens) {
     final items = page.items;
     if (items.isEmpty) {
+      final l = AppLocalizations.of(context);
       return ListView(
         physics: const AlwaysScrollableScrollPhysics(),
         children: [
           SizedBox(height: tokens.space.xxxl * 2),
-          const LsStateView.empty(
+          LsStateView.empty(
             icon: Icons.notifications_none,
-            title: 'No notifications',
-            message: 'You are all caught up.',
+            title: l.notificationsEmptyTitle,
+            message: l.notificationsEmptyMessage,
           ),
         ],
       );
@@ -204,7 +208,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     );
   }
 
-  Widget _buildError(Object err, DesignTokens tokens) {
+  Widget _buildError(Object err, DesignTokens tokens, AppLocalizations l) {
     final failure = err is PersonFailure ? err : null;
     return ListView(
       physics: const AlwaysScrollableScrollPhysics(),
@@ -212,10 +216,10 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         SizedBox(height: tokens.space.xxxl * 2),
         LsStateView.error(
           icon: Icons.error_outline,
-          title: 'Could not load notifications',
+          title: l.notificationsErrorTitle,
           message: failure?.message ?? err.toString(),
           action: LsButton.primary(
-            label: 'Try again',
+            label: l.commonTryAgain,
             icon: Icons.refresh,
             expand: false,
             onPressed: () =>

@@ -1216,4 +1216,105 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get gradingPermissionsRequiredRoles => 'الأدوار المطلوبة للموافقة';
+
+  @override
+  String get loginScreenTitle => 'لاراتيك سكولز';
+
+  @override
+  String get loginSignInSubtitle => 'سجّل الدخول للمتابعة';
+
+  @override
+  String get loginOAuthPkceTitle => 'OAuth + PKCE';
+
+  @override
+  String get loginOAuthPkceMessage =>
+      'S256، عرض ويب داخل التطبيق، إعادة توجيه عبر وسيط النظام.';
+
+  @override
+  String get loginSsoChip => 'Laratik SSO';
+
+  @override
+  String get loginButton => 'تسجيل الدخول عبر لاراتيك';
+
+  @override
+  String get loginButtonLoading => 'جارٍ فتح المتصفح…';
+
+  @override
+  String get notificationsTitle => 'الإشعارات';
+
+  @override
+  String get notificationsFilterAll => 'الكل';
+
+  @override
+  String get notificationsFilterUnread => 'غير المقروءة';
+
+  @override
+  String get notificationsLoadingTitle => 'جارٍ تحميل الإشعارات';
+
+  @override
+  String get notificationsLoadingMessage => 'نجلب أحدث صندوق الوارد من الخادم.';
+
+  @override
+  String get notificationsEmptyTitle => 'لا توجد إشعارات';
+
+  @override
+  String get notificationsEmptyMessage => 'أنت على اطلاع بكل شيء.';
+
+  @override
+  String get notificationsErrorTitle => 'تعذّر تحميل الإشعارات';
+
+  @override
+  String get studentsTitle => 'الطلاب';
+
+  @override
+  String get studentsNewButton => 'طالب جديد';
+
+  @override
+  String get studentsSearchPlaceholder => 'البحث بالاسم أو رقم الطالب';
+
+  @override
+  String get studentsFilterByGrade => 'تصفية حسب الصف';
+
+  @override
+  String get studentsFilterByClassGroup => 'تصفية حسب المجموعة الصفية';
+
+  @override
+  String get studentsGradeFilterChip => 'الصف';
+
+  @override
+  String get studentsClassGroupFilterChip => 'المجموعة الصفية';
+
+  @override
+  String get studentsFilterClear => 'مسح';
+
+  @override
+  String get studentsFilterApply => 'تطبيق';
+
+  @override
+  String get studentsLoadingTitle => 'جارٍ تحميل الطلاب';
+
+  @override
+  String get studentsLoadingMessage => 'نجلب أحدث قائمة من الخادم.';
+
+  @override
+  String get studentsEmptyTitle => 'لا يوجد طلاب بعد';
+
+  @override
+  String get studentsEmptyMessage =>
+      'عندما تضيف طالبًا إلى القائمة، سيظهر هنا.';
+
+  @override
+  String get studentsNoMatchTitle => 'لا يوجد طلاب يطابقون التصفية الحالية';
+
+  @override
+  String get studentsNoMatchMessage => 'جرّب مسح البحث أو تصفية الصف.';
+
+  @override
+  String get studentsErrorTitle => 'تعذّر تحميل الطلاب';
+
+  @override
+  String get studentsAddStudentButton => 'إضافة طالب';
+
+  @override
+  String get studentsFirstStudentMessage => 'أضف أول طالب للبدء.';
 }

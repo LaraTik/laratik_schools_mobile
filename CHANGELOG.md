@@ -8,6 +8,56 @@ and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ### Added
 
+- **Login + Notifications + Students list surfaces fully
+  localized.** Closes the final leg of the #11
+  follow-up on the highest-traffic surfaces. New ARB
+  keys (login screen + SSO + OAuth + PKCE + in-app
+  webview, notifications inbox title + filter chips +
+  loading / error / empty copy, students list title +
+  search + filters + new-student button + error copy)
+  in both `app_en.arb` (English source) and `app_ar.arb`
+  (Modern Standard Arabic).
+- **RTL fix in the Students list AppBar.** The literal
+  `EdgeInsets.only(right:)` on the "New student" button
+  is replaced with `EdgeInsetsDirectional.only(end:)`
+  so the button hugs the trailing edge in both
+  directions. Combined with the localized strings, the
+  surface now reads cleanly under Arabic.
+
+### Changed
+
+- `lib/app/login_screen.dart` — every hardcoded string
+  (the "Laratik Schools" title, the "Sign in to continue"
+  subtitle, the "OAuth + PKCE" + "S256, in-app webview"
+  security card, the "Laratik SSO" chip, the
+  "Sign in with Laratik" + "Opening browser…" button
+  labels) is now locale-aware. The `WebViewOauthBrowserLauncher`
+  title now uses the same localized label.
+- `lib/features/communication/ui/notifications_screen.dart`
+  — the AppBar back-button + refresh + filter chips
+  (All / Unread) + loading / error / empty copy are now
+  locale-aware.
+- `lib/features/people/ui/students_list_screen.dart` —
+  the AppBar title + refresh tooltip + "New student"
+  button + search placeholder + filter chip labels
+  (Grade / Class group / Clear) + filter sheet titles
+  (Filter by grade / Filter by class group) + loading /
+  empty / no-match / error copy are now locale-aware.
+
+### Tests
+
+- No new tests in this release (all changes are
+  mechanical string replacements). Total test count
+  unchanged: **126 passed, 5 pre-existing failures**.
+
+## [Unreleased]
+
+### Added
+
+- **Admin "Grading" surface — read-only overview + policies.**
+
+### Added
+
 - **Admin "Grading" surface — read-only overview + policies.**
   Closes roadmap #8 for the grading slice. New files:
   - `lib/features/grading/data/grading_overview.dart` —

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../ui/design_tokens.dart';
 import '../../../ui/widgets/ls_button.dart';
 import '../../../ui/widgets/ls_empty_state.dart';
@@ -56,6 +57,7 @@ class _StudentsListScreenState extends ConsumerState<StudentsListScreen> {
   @override
   Widget build(BuildContext context) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     final filter = ref.watch(studentsFilterProvider);
     final asyncPage = ref.watch(studentsListProvider);
     final filterIsEmpty = filter.isEmpty;
@@ -67,21 +69,21 @@ class _StudentsListScreenState extends ConsumerState<StudentsListScreen> {
         elevation: 0,
         scrolledUnderElevation: 1,
         title: Text(
-          'Students',
+          l.studentsTitle,
           style: tokens.typography.titleLarge.copyWith(
             color: tokens.text.primary,
           ),
         ),
         actions: [
           IconButton(
-            tooltip: 'Refresh',
+            tooltip: l.commonRefresh,
             icon: const Icon(Icons.refresh),
             onPressed: () => ref.read(studentsListProvider.notifier).refresh(),
           ),
           Padding(
-            padding: EdgeInsets.only(right: tokens.space.sm),
+            padding: EdgeInsetsDirectional.only(end: tokens.space.sm),
             child: LsButton.primary(
-              label: 'New student',
+              label: l.studentsNewButton,
               icon: Icons.add,
               expand: false,
               onPressed: () => context.go('/shell/students/new'),
@@ -101,7 +103,7 @@ class _StudentsListScreenState extends ConsumerState<StudentsListScreen> {
               children: [
                 LsSearchBar(
                   initialValue: filter.search,
-                  placeholder: 'Search by name or student number',
+                  placeholder: l.studentsSearchPlaceholder,
                   onChanged: (value) {
                     ref.read(studentsFilterProvider.notifier).update(
                           (f) => f.copyWith(search: value),
@@ -118,12 +120,12 @@ class _StudentsListScreenState extends ConsumerState<StudentsListScreen> {
       body: RefreshIndicator(
         onRefresh: () => ref.read(studentsListProvider.notifier).refresh(),
         child: asyncPage.when(
-          data: (page) => _buildList(page, filterIsEmpty, tokens),
-          loading: () => const LsStateView.loading(
-            title: 'Loading students',
-            message: 'Fetching the latest roster from the server.',
+          data: (page) => _buildList(page, filterIsEmpty, tokens, l),
+          loading: () => LsStateView.loading(
+            title: l.studentsLoadingTitle,
+            message: l.studentsLoadingMessage,
           ),
-          error: (err, _) => _buildError(err, tokens),
+          error: (err, _) => _buildError(err, tokens, l),
         ),
       ),
     );
@@ -133,6 +135,7 @@ class _StudentsListScreenState extends ConsumerState<StudentsListScreen> {
     PersonPage page,
     bool filterIsEmpty,
     DesignTokens tokens,
+    AppLocalizations l,
   ) {
     final people = page.people;
     if (people.isEmpty) {
@@ -142,15 +145,14 @@ class _StudentsListScreenState extends ConsumerState<StudentsListScreen> {
           SizedBox(height: tokens.space.xxxl * 2),
           LsStateView.empty(
             icon: Icons.school_outlined,
-            title: filterIsEmpty
-                ? 'No students yet'
-                : 'No students match the current filter',
+            title:
+                filterIsEmpty ? l.studentsEmptyTitle : l.studentsNoMatchTitle,
             message: filterIsEmpty
-                ? 'Add the first student to get started.'
-                : 'Try clearing the search or the grade filter.',
+                ? l.studentsFirstStudentMessage
+                : l.studentsNoMatchMessage,
             action: filterIsEmpty
                 ? LsButton.primary(
-                    label: 'Add student',
+                    label: l.studentsAddStudentButton,
                     icon: Icons.add,
                     onPressed: () => context.go('/shell/students/new'),
                   )
@@ -192,7 +194,11 @@ class _StudentsListScreenState extends ConsumerState<StudentsListScreen> {
     );
   }
 
-  Widget _buildError(Object err, DesignTokens tokens) {
+  Widget _buildError(
+    Object err,
+    DesignTokens tokens,
+    AppLocalizations l,
+  ) {
     final failure = err is PersonFailure ? err : null;
     return ListView(
       physics: const AlwaysScrollableScrollPhysics(),
@@ -200,10 +206,10 @@ class _StudentsListScreenState extends ConsumerState<StudentsListScreen> {
         SizedBox(height: tokens.space.xxxl * 2),
         LsStateView.error(
           icon: Icons.error_outline,
-          title: 'Could not load students',
+          title: l.studentsErrorTitle,
           message: failure?.message ?? err.toString(),
           action: LsButton.primary(
-            label: 'Try again',
+            label: l.commonTryAgain,
             icon: Icons.refresh,
             expand: false,
             onPressed: () => ref.read(studentsListProvider.notifier).refresh(),
@@ -222,6 +228,7 @@ class _FilterRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     final asyncPage = ref.watch(studentsListProvider);
     // The v1 SDK does not expose a "list grades" / "list class
     // groups" endpoint today, so the filter values are derived from
@@ -244,15 +251,15 @@ class _FilterRow extends ConsumerWidget {
         scrollDirection: Axis.horizontal,
         children: [
           _FilterChip(
-            label: filter.gradeId ?? 'Grade',
+            label: filter.gradeId ?? l.studentsGradeFilterChip,
             selected: filter.gradeId != null,
             onTap: derived.grades.isEmpty
                 ? null
-                : () => _showGradeFilter(context, ref, derived.grades),
+                : () => _showGradeFilter(context, ref, derived.grades, l),
           ),
           SizedBox(width: tokens.space.xs),
           _FilterChip(
-            label: filter.classGroupId ?? 'Class group',
+            label: filter.classGroupId ?? l.studentsClassGroupFilterChip,
             selected: filter.classGroupId != null,
             onTap: derived.classGroups.isEmpty
                 ? null
@@ -260,12 +267,13 @@ class _FilterRow extends ConsumerWidget {
                       context,
                       ref,
                       derived.classGroups,
+                      l,
                     ),
           ),
           SizedBox(width: tokens.space.xs),
           if (!filter.isEmpty)
             _FilterChip(
-              label: 'Clear',
+              label: l.studentsFilterClear,
               icon: Icons.close,
               onTap: () => ref
                   .read(studentsFilterProvider.notifier)
@@ -280,11 +288,12 @@ class _FilterRow extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     List<String> options,
+    AppLocalizations l,
   ) {
     showModalBottomSheet<void>(
       context: context,
       builder: (context) => _SimpleFilterSheet(
-        title: 'Filter by grade',
+        title: l.studentsFilterByGrade,
         options: options,
         onSelected: (value) {
           ref.read(studentsFilterProvider.notifier).update(
@@ -299,11 +308,12 @@ class _FilterRow extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     List<String> options,
+    AppLocalizations l,
   ) {
     showModalBottomSheet<void>(
       context: context,
       builder: (context) => _SimpleFilterSheet(
-        title: 'Filter by class group',
+        title: l.studentsFilterByClassGroup,
         options: options,
         onSelected: (value) {
           ref.read(studentsFilterProvider.notifier).update(

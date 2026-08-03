@@ -8,6 +8,7 @@ import '../auth/session.dart';
 import '../config/flavor_loader.dart';
 import '../core/clock.dart';
 import '../core/logging.dart';
+import '../l10n/app_localizations.dart';
 import '../ui/app_theme.dart';
 import '../ui/widgets/ls_button.dart';
 import '../ui/widgets/ls_status_chip.dart';
@@ -84,7 +85,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       launcher: WebViewOauthBrowserLauncher(
         navigator: Navigator.of(context, rootNavigator: true),
         callbackScheme: config.oauthRedirectScheme,
-        title: 'Sign in with Laratik',
+        title: AppLocalizations.of(context).loginButton,
       ),
     );
   }
@@ -92,6 +93,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: tokens.surface.canvas,
       body: SafeArea(
@@ -105,7 +107,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    'Laratik Schools',
+                    l.loginScreenTitle,
                     textAlign: TextAlign.center,
                     style: tokens.typography.headlineLarge.copyWith(
                       color: tokens.text.primary,
@@ -113,7 +115,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                   SizedBox(height: tokens.space.sm),
                   Text(
-                    'Sign in to continue',
+                    l.loginSignInSubtitle,
                     textAlign: TextAlign.center,
                     style: tokens.typography.bodyLarge.copyWith(
                       color: tokens.text.secondary,
@@ -139,14 +141,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'OAuth + PKCE',
+                                l.loginOAuthPkceTitle,
                                 style: tokens.typography.titleSmall.copyWith(
                                   color: tokens.text.primary,
                                 ),
                               ),
                               SizedBox(height: tokens.space.xxs),
                               Text(
-                                'S256, in-app webview, system-broker redirect.',
+                                l.loginOAuthPkceMessage,
                                 style: tokens.typography.bodySmall.copyWith(
                                   color: tokens.text.secondary,
                                 ),
@@ -154,8 +156,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             ],
                           ),
                         ),
-                        const LsStatusChip(
-                          label: 'Laratik SSO',
+                        LsStatusChip(
+                          label: l.loginSsoChip,
                           tone: LsChipTone.brand,
                         ),
                       ],
@@ -192,9 +194,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                   if (_error != null) SizedBox(height: tokens.space.md),
                   LsButton.primary(
-                    label: _signingIn
-                        ? 'Opening browser…'
-                        : 'Sign in with Laratik',
+                    label: _signingIn ? l.loginButtonLoading : l.loginButton,
                     icon: _signingIn ? Icons.hourglass_empty : Icons.login,
                     isLoading: _signingIn,
                     onPressed: _signingIn ? null : _signIn,

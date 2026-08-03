@@ -1910,6 +1910,204 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Required roles for approval'**
   String get gradingPermissionsRequiredRoles;
+
+  /// No description provided for @loginScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Laratik Schools'**
+  String get loginScreenTitle;
+
+  /// No description provided for @loginSignInSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to continue'**
+  String get loginSignInSubtitle;
+
+  /// No description provided for @loginOAuthPkceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'OAuth + PKCE'**
+  String get loginOAuthPkceTitle;
+
+  /// No description provided for @loginOAuthPkceMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'S256, in-app webview, system-broker redirect.'**
+  String get loginOAuthPkceMessage;
+
+  /// No description provided for @loginSsoChip.
+  ///
+  /// In en, this message translates to:
+  /// **'Laratik SSO'**
+  String get loginSsoChip;
+
+  /// No description provided for @loginButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with Laratik'**
+  String get loginButton;
+
+  /// No description provided for @loginButtonLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening browser…'**
+  String get loginButtonLoading;
+
+  /// No description provided for @notificationsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notificationsTitle;
+
+  /// No description provided for @notificationsFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get notificationsFilterAll;
+
+  /// No description provided for @notificationsFilterUnread.
+  ///
+  /// In en, this message translates to:
+  /// **'Unread'**
+  String get notificationsFilterUnread;
+
+  /// No description provided for @notificationsLoadingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading notifications'**
+  String get notificationsLoadingTitle;
+
+  /// No description provided for @notificationsLoadingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Fetching the latest inbox from the server.'**
+  String get notificationsLoadingMessage;
+
+  /// No description provided for @notificationsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications'**
+  String get notificationsEmptyTitle;
+
+  /// No description provided for @notificationsEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You are all caught up.'**
+  String get notificationsEmptyMessage;
+
+  /// No description provided for @notificationsErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load notifications'**
+  String get notificationsErrorTitle;
+
+  /// No description provided for @studentsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Students'**
+  String get studentsTitle;
+
+  /// No description provided for @studentsNewButton.
+  ///
+  /// In en, this message translates to:
+  /// **'New student'**
+  String get studentsNewButton;
+
+  /// No description provided for @studentsSearchPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name or student number'**
+  String get studentsSearchPlaceholder;
+
+  /// No description provided for @studentsFilterByGrade.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by grade'**
+  String get studentsFilterByGrade;
+
+  /// No description provided for @studentsFilterByClassGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by class group'**
+  String get studentsFilterByClassGroup;
+
+  /// No description provided for @studentsGradeFilterChip.
+  ///
+  /// In en, this message translates to:
+  /// **'Grade'**
+  String get studentsGradeFilterChip;
+
+  /// No description provided for @studentsClassGroupFilterChip.
+  ///
+  /// In en, this message translates to:
+  /// **'Class group'**
+  String get studentsClassGroupFilterChip;
+
+  /// No description provided for @studentsFilterClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get studentsFilterClear;
+
+  /// No description provided for @studentsFilterApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get studentsFilterApply;
+
+  /// No description provided for @studentsLoadingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading students'**
+  String get studentsLoadingTitle;
+
+  /// No description provided for @studentsLoadingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Fetching the latest roster from the server.'**
+  String get studentsLoadingMessage;
+
+  /// No description provided for @studentsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No students yet'**
+  String get studentsEmptyTitle;
+
+  /// No description provided for @studentsEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'When you add a student to the roster, they will appear here.'**
+  String get studentsEmptyMessage;
+
+  /// No description provided for @studentsNoMatchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No students match the current filter'**
+  String get studentsNoMatchTitle;
+
+  /// No description provided for @studentsNoMatchMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Try clearing the search or the grade filter.'**
+  String get studentsNoMatchMessage;
+
+  /// No description provided for @studentsErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load students'**
+  String get studentsErrorTitle;
+
+  /// No description provided for @studentsAddStudentButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add student'**
+  String get studentsAddStudentButton;
+
+  /// No description provided for @studentsFirstStudentMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the first student to get started.'**
+  String get studentsFirstStudentMessage;
 }
 
 class _AppLocalizationsDelegate
