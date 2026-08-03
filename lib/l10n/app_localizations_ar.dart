@@ -2461,4 +2461,143 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get subjectCreateSubmitLoading => 'جارٍ الإنشاء…';
+
+  @override
+  String get attendanceListScreenTitle => 'الحضور';
+
+  @override
+  String get attendanceListCaptureAction => 'تسجيل';
+
+  @override
+  String get attendanceListLoadingTitle => 'جارٍ تحميل الحضور';
+
+  @override
+  String get attendanceListLoadingMessage => 'يجري جلب أحدث السجلات من الخادم.';
+
+  @override
+  String get attendanceListEmptyTitle => 'لا توجد سجلات حضور بعد';
+
+  @override
+  String get attendanceListEmptyMessage =>
+      'انقر تسجيل لبدء حضور يومي لمجموعة صفية.';
+
+  @override
+  String get attendanceListStartCaptureAction => 'بدء التسجيل';
+
+  @override
+  String get attendanceListErrorTitle => 'تعذّر تحميل الحضور';
+
+  @override
+  String get attendanceListPickClassGroup => 'اختر مجموعة صفية';
+
+  @override
+  String attendanceListClassGroupLabel(String name) {
+    return 'المجموعة الصفية $name';
+  }
+
+  @override
+  String get attendanceStatusPresent => 'ح';
+
+  @override
+  String get attendanceStatusAbsent => 'غ';
+
+  @override
+  String get attendanceStatusLate => 'م';
+
+  @override
+  String get attendanceStatusExcused => 'مـ';
+
+  @override
+  String get attendanceStatusPresentLong => 'حاضر';
+
+  @override
+  String get attendanceStatusAbsentLong => 'غائب';
+
+  @override
+  String get attendanceStatusLateLong => 'متأخر';
+
+  @override
+  String get attendanceStatusExcusedLong => 'بعذر';
+
+  @override
+  String attendanceCaptureTitle(String classGroup) {
+    return 'الحضور · $classGroup';
+  }
+
+  @override
+  String get attendanceCaptureRosterErrorTitle => 'تعذّر تحميل قائمة الصف';
+
+  @override
+  String get attendanceCaptureRosterLoadingTitle => 'جارٍ تحميل القائمة';
+
+  @override
+  String get attendanceCaptureRosterLoadingMessage =>
+      'يجري جلب المجموعة الصفية من الخادم.';
+
+  @override
+  String get attendanceCaptureEmptyTitle => 'لا يوجد طلاب في هذه المجموعة';
+
+  @override
+  String get attendanceCaptureEmptyMessage =>
+      'بمجرد تسجيل الطلاب، يصبح تسجيل الحضور ممكنًا.';
+
+  @override
+  String attendanceCaptureCountPresent(int count) {
+    return 'ح $count';
+  }
+
+  @override
+  String attendanceCaptureCountAbsent(int count) {
+    return 'غ $count';
+  }
+
+  @override
+  String attendanceCaptureCountLate(int count) {
+    return 'م $count';
+  }
+
+  @override
+  String attendanceCaptureCountExcused(int count) {
+    return 'مـ $count';
+  }
+
+  @override
+  String get attendanceCaptureMarkAllPresent => 'تعليم الكل حاضرًا';
+
+  @override
+  String get attendanceCaptureMarkAllAbsent => 'تعليم الكل غائبًا';
+
+  @override
+  String attendanceCaptureSuccessAll(int count, String date) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count سجل',
+      many: '$count سجلًا',
+      few: '$count سجلات',
+      two: 'سجلين',
+      one: 'سجل واحد',
+      zero: 'بدون سجلات',
+    );
+    return 'تم إرسال $_temp0 لتاريخ $date.';
+  }
+
+  @override
+  String attendanceCaptureSuccessPartial(int succeeded, int failed, int total) {
+    return 'تم إرسال $succeeded، فشل $failed من $total.';
+  }
+
+  @override
+  String get attendanceCaptureSubmit => 'إرسال الحضور';
+
+  @override
+  String get attendanceCaptureResubmit => 'إعادة الإرسال';
+
+  @override
+  String get attendanceCaptureSubmitLoading => 'جارٍ الإرسال…';
+
+  @override
+  String attendanceGuardianLabel(String name) {
+    return 'ولي الأمر: $name';
+  }
 }

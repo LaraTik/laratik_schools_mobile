@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../ui/design_tokens.dart';
 import '../../../ui/widgets/ls_button.dart';
 import '../../../ui/widgets/ls_empty_state.dart';
@@ -51,6 +52,7 @@ class _AttendanceListScreenState extends ConsumerState<AttendanceListScreen> {
   @override
   Widget build(BuildContext context) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     final asyncPage = ref.watch(attendanceListProvider);
     return Scaffold(
       backgroundColor: tokens.surface.canvas,
@@ -59,22 +61,22 @@ class _AttendanceListScreenState extends ConsumerState<AttendanceListScreen> {
         elevation: 0,
         scrolledUnderElevation: 1,
         title: Text(
-          'Attendance',
+          l.attendanceListScreenTitle,
           style: tokens.typography.titleLarge.copyWith(
             color: tokens.text.primary,
           ),
         ),
         actions: [
           IconButton(
-            tooltip: 'Refresh',
+            tooltip: l.commonRefresh,
             icon: const Icon(Icons.refresh),
             onPressed: () =>
                 ref.read(attendanceListProvider.notifier).refresh(),
           ),
           Padding(
-            padding: EdgeInsets.only(right: tokens.space.sm),
+            padding: EdgeInsetsDirectional.only(end: tokens.space.sm),
             child: LsButton.primary(
-              label: 'Capture',
+              label: l.attendanceListCaptureAction,
               icon: Icons.fact_check_outlined,
               expand: false,
               onPressed: () => _showClassGroupPicker(context),
@@ -85,18 +87,22 @@ class _AttendanceListScreenState extends ConsumerState<AttendanceListScreen> {
       body: RefreshIndicator(
         onRefresh: () => ref.read(attendanceListProvider.notifier).refresh(),
         child: asyncPage.when(
-          data: (page) => _buildList(page, tokens),
-          loading: () => const LsStateView.loading(
-            title: 'Loading attendance',
-            message: 'Fetching the latest records from the server.',
+          data: (page) => _buildList(page, tokens, l),
+          loading: () => LsStateView.loading(
+            title: l.attendanceListLoadingTitle,
+            message: l.attendanceListLoadingMessage,
           ),
-          error: (err, _) => _buildError(err, tokens),
+          error: (err, _) => _buildError(err, tokens, l),
         ),
       ),
     );
   }
 
-  Widget _buildList(AttendancePage page, DesignTokens tokens) {
+  Widget _buildList(
+    AttendancePage page,
+    DesignTokens tokens,
+    AppLocalizations l,
+  ) {
     final records = page.records;
     if (records.isEmpty) {
       return ListView(
@@ -105,11 +111,10 @@ class _AttendanceListScreenState extends ConsumerState<AttendanceListScreen> {
           SizedBox(height: tokens.space.xxxl * 2),
           LsStateView.empty(
             icon: Icons.fact_check_outlined,
-            title: 'No attendance records yet',
-            message:
-                'Tap Capture to start the daily attendance for a class group.',
+            title: l.attendanceListEmptyTitle,
+            message: l.attendanceListEmptyMessage,
             action: LsButton.primary(
-              label: 'Start capture',
+              label: l.attendanceListStartCaptureAction,
               icon: Icons.play_arrow,
               onPressed: () => _showClassGroupPicker(context),
             ),
@@ -119,7 +124,7 @@ class _AttendanceListScreenState extends ConsumerState<AttendanceListScreen> {
     }
     return ListView.separated(
       controller: _scrollController,
-      padding: EdgeInsets.only(bottom: tokens.space.xl),
+      padding: EdgeInsetsDirectional.only(bottom: tokens.space.xl),
       itemCount: records.length + (page.hasMore ? 1 : 0),
       separatorBuilder: (_, __) => Divider(
         height: 1,
@@ -143,7 +148,7 @@ class _AttendanceListScreenState extends ConsumerState<AttendanceListScreen> {
         }
         final r = records[index];
         return ListTile(
-          contentPadding: EdgeInsets.symmetric(
+          contentPadding: EdgeInsetsDirectional.symmetric(
             horizontal: tokens.space.md,
             vertical: tokens.space.xxs,
           ),
@@ -177,7 +182,7 @@ class _AttendanceListScreenState extends ConsumerState<AttendanceListScreen> {
     );
   }
 
-  Widget _buildError(Object err, DesignTokens tokens) {
+  Widget _buildError(Object err, DesignTokens tokens, AppLocalizations l) {
     final failure = err is PersonFailure ? err : null;
     return ListView(
       physics: const AlwaysScrollableScrollPhysics(),
@@ -185,10 +190,10 @@ class _AttendanceListScreenState extends ConsumerState<AttendanceListScreen> {
         SizedBox(height: tokens.space.xxxl * 2),
         LsStateView.error(
           icon: Icons.error_outline,
-          title: 'Could not load attendance',
+          title: l.attendanceListErrorTitle,
           message: failure?.message ?? err.toString(),
           action: LsButton.primary(
-            label: 'Try again',
+            label: l.commonTryAgain,
             icon: Icons.refresh,
             expand: false,
             onPressed: () =>
@@ -204,20 +209,21 @@ class _AttendanceListScreenState extends ConsumerState<AttendanceListScreen> {
       context: context,
       builder: (sheetContext) {
         final tokens = sheetContext.laratik;
+        final l = AppLocalizations.of(sheetContext);
         return SafeArea(
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: tokens.space.md),
+            padding: EdgeInsetsDirectional.symmetric(vertical: tokens.space.md),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Padding(
-                  padding: EdgeInsets.symmetric(
+                  padding: EdgeInsetsDirectional.symmetric(
                     horizontal: tokens.space.md,
                     vertical: tokens.space.xs,
                   ),
                   child: Text(
-                    'Pick a class group',
+                    l.attendanceListPickClassGroup,
                     style: tokens.typography.titleMedium.copyWith(
                       color: tokens.text.primary,
                     ),
@@ -225,7 +231,7 @@ class _AttendanceListScreenState extends ConsumerState<AttendanceListScreen> {
                 ),
                 for (final cg in const ['A', 'B', 'C', 'D'])
                   ListTile(
-                    title: Text('Class group $cg'),
+                    title: Text(l.attendanceListClassGroupLabel(cg)),
                     onTap: () {
                       Navigator.of(sheetContext).pop();
                       context.go('/shell/attendance/capture/$cg');

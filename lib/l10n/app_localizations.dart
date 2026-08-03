@@ -4082,6 +4082,222 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Creating…'**
   String get subjectCreateSubmitLoading;
+
+  /// No description provided for @attendanceListScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Attendance'**
+  String get attendanceListScreenTitle;
+
+  /// No description provided for @attendanceListCaptureAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Capture'**
+  String get attendanceListCaptureAction;
+
+  /// No description provided for @attendanceListLoadingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading attendance'**
+  String get attendanceListLoadingTitle;
+
+  /// No description provided for @attendanceListLoadingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Fetching the latest records from the server.'**
+  String get attendanceListLoadingMessage;
+
+  /// No description provided for @attendanceListEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No attendance records yet'**
+  String get attendanceListEmptyTitle;
+
+  /// No description provided for @attendanceListEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap Capture to start the daily attendance for a class group.'**
+  String get attendanceListEmptyMessage;
+
+  /// No description provided for @attendanceListStartCaptureAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Start capture'**
+  String get attendanceListStartCaptureAction;
+
+  /// No description provided for @attendanceListErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load attendance'**
+  String get attendanceListErrorTitle;
+
+  /// No description provided for @attendanceListPickClassGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a class group'**
+  String get attendanceListPickClassGroup;
+
+  /// No description provided for @attendanceListClassGroupLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Class group {name}'**
+  String attendanceListClassGroupLabel(String name);
+
+  /// No description provided for @attendanceStatusPresent.
+  ///
+  /// In en, this message translates to:
+  /// **'P'**
+  String get attendanceStatusPresent;
+
+  /// No description provided for @attendanceStatusAbsent.
+  ///
+  /// In en, this message translates to:
+  /// **'A'**
+  String get attendanceStatusAbsent;
+
+  /// No description provided for @attendanceStatusLate.
+  ///
+  /// In en, this message translates to:
+  /// **'L'**
+  String get attendanceStatusLate;
+
+  /// No description provided for @attendanceStatusExcused.
+  ///
+  /// In en, this message translates to:
+  /// **'E'**
+  String get attendanceStatusExcused;
+
+  /// No description provided for @attendanceStatusPresentLong.
+  ///
+  /// In en, this message translates to:
+  /// **'Present'**
+  String get attendanceStatusPresentLong;
+
+  /// No description provided for @attendanceStatusAbsentLong.
+  ///
+  /// In en, this message translates to:
+  /// **'Absent'**
+  String get attendanceStatusAbsentLong;
+
+  /// No description provided for @attendanceStatusLateLong.
+  ///
+  /// In en, this message translates to:
+  /// **'Late'**
+  String get attendanceStatusLateLong;
+
+  /// No description provided for @attendanceStatusExcusedLong.
+  ///
+  /// In en, this message translates to:
+  /// **'Excused'**
+  String get attendanceStatusExcusedLong;
+
+  /// No description provided for @attendanceCaptureTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Attendance · {classGroup}'**
+  String attendanceCaptureTitle(String classGroup);
+
+  /// No description provided for @attendanceCaptureRosterErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load the roster'**
+  String get attendanceCaptureRosterErrorTitle;
+
+  /// No description provided for @attendanceCaptureRosterLoadingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading roster'**
+  String get attendanceCaptureRosterLoadingTitle;
+
+  /// No description provided for @attendanceCaptureRosterLoadingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Fetching the class group from the server.'**
+  String get attendanceCaptureRosterLoadingMessage;
+
+  /// No description provided for @attendanceCaptureEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No students in this class group'**
+  String get attendanceCaptureEmptyTitle;
+
+  /// No description provided for @attendanceCaptureEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Once students are enrolled, attendance capture is enabled.'**
+  String get attendanceCaptureEmptyMessage;
+
+  /// No description provided for @attendanceCaptureCountPresent.
+  ///
+  /// In en, this message translates to:
+  /// **'P {count}'**
+  String attendanceCaptureCountPresent(int count);
+
+  /// No description provided for @attendanceCaptureCountAbsent.
+  ///
+  /// In en, this message translates to:
+  /// **'A {count}'**
+  String attendanceCaptureCountAbsent(int count);
+
+  /// No description provided for @attendanceCaptureCountLate.
+  ///
+  /// In en, this message translates to:
+  /// **'L {count}'**
+  String attendanceCaptureCountLate(int count);
+
+  /// No description provided for @attendanceCaptureCountExcused.
+  ///
+  /// In en, this message translates to:
+  /// **'E {count}'**
+  String attendanceCaptureCountExcused(int count);
+
+  /// No description provided for @attendanceCaptureMarkAllPresent.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all present'**
+  String get attendanceCaptureMarkAllPresent;
+
+  /// No description provided for @attendanceCaptureMarkAllAbsent.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all absent'**
+  String get attendanceCaptureMarkAllAbsent;
+
+  /// No description provided for @attendanceCaptureSuccessAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitted {count, plural, =1{1 record} other{{count} records}} for {date}.'**
+  String attendanceCaptureSuccessAll(int count, String date);
+
+  /// No description provided for @attendanceCaptureSuccessPartial.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitted {succeeded}, failed {failed} of {total}.'**
+  String attendanceCaptureSuccessPartial(int succeeded, int failed, int total);
+
+  /// No description provided for @attendanceCaptureSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit attendance'**
+  String get attendanceCaptureSubmit;
+
+  /// No description provided for @attendanceCaptureResubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Re-submit'**
+  String get attendanceCaptureResubmit;
+
+  /// No description provided for @attendanceCaptureSubmitLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitting…'**
+  String get attendanceCaptureSubmitLoading;
+
+  /// No description provided for @attendanceGuardianLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Guardian: {name}'**
+  String attendanceGuardianLabel(String name);
 }
 
 class _AppLocalizationsDelegate

@@ -2403,4 +2403,140 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get subjectCreateSubmitLoading => 'Creating…';
+
+  @override
+  String get attendanceListScreenTitle => 'Attendance';
+
+  @override
+  String get attendanceListCaptureAction => 'Capture';
+
+  @override
+  String get attendanceListLoadingTitle => 'Loading attendance';
+
+  @override
+  String get attendanceListLoadingMessage =>
+      'Fetching the latest records from the server.';
+
+  @override
+  String get attendanceListEmptyTitle => 'No attendance records yet';
+
+  @override
+  String get attendanceListEmptyMessage =>
+      'Tap Capture to start the daily attendance for a class group.';
+
+  @override
+  String get attendanceListStartCaptureAction => 'Start capture';
+
+  @override
+  String get attendanceListErrorTitle => 'Could not load attendance';
+
+  @override
+  String get attendanceListPickClassGroup => 'Pick a class group';
+
+  @override
+  String attendanceListClassGroupLabel(String name) {
+    return 'Class group $name';
+  }
+
+  @override
+  String get attendanceStatusPresent => 'P';
+
+  @override
+  String get attendanceStatusAbsent => 'A';
+
+  @override
+  String get attendanceStatusLate => 'L';
+
+  @override
+  String get attendanceStatusExcused => 'E';
+
+  @override
+  String get attendanceStatusPresentLong => 'Present';
+
+  @override
+  String get attendanceStatusAbsentLong => 'Absent';
+
+  @override
+  String get attendanceStatusLateLong => 'Late';
+
+  @override
+  String get attendanceStatusExcusedLong => 'Excused';
+
+  @override
+  String attendanceCaptureTitle(String classGroup) {
+    return 'Attendance · $classGroup';
+  }
+
+  @override
+  String get attendanceCaptureRosterErrorTitle => 'Could not load the roster';
+
+  @override
+  String get attendanceCaptureRosterLoadingTitle => 'Loading roster';
+
+  @override
+  String get attendanceCaptureRosterLoadingMessage =>
+      'Fetching the class group from the server.';
+
+  @override
+  String get attendanceCaptureEmptyTitle => 'No students in this class group';
+
+  @override
+  String get attendanceCaptureEmptyMessage =>
+      'Once students are enrolled, attendance capture is enabled.';
+
+  @override
+  String attendanceCaptureCountPresent(int count) {
+    return 'P $count';
+  }
+
+  @override
+  String attendanceCaptureCountAbsent(int count) {
+    return 'A $count';
+  }
+
+  @override
+  String attendanceCaptureCountLate(int count) {
+    return 'L $count';
+  }
+
+  @override
+  String attendanceCaptureCountExcused(int count) {
+    return 'E $count';
+  }
+
+  @override
+  String get attendanceCaptureMarkAllPresent => 'Mark all present';
+
+  @override
+  String get attendanceCaptureMarkAllAbsent => 'Mark all absent';
+
+  @override
+  String attendanceCaptureSuccessAll(int count, String date) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count records',
+      one: '1 record',
+    );
+    return 'Submitted $_temp0 for $date.';
+  }
+
+  @override
+  String attendanceCaptureSuccessPartial(int succeeded, int failed, int total) {
+    return 'Submitted $succeeded, failed $failed of $total.';
+  }
+
+  @override
+  String get attendanceCaptureSubmit => 'Submit attendance';
+
+  @override
+  String get attendanceCaptureResubmit => 'Re-submit';
+
+  @override
+  String get attendanceCaptureSubmitLoading => 'Submitting…';
+
+  @override
+  String attendanceGuardianLabel(String name) {
+    return 'Guardian: $name';
+  }
 }

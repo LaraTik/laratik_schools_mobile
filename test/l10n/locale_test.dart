@@ -646,4 +646,78 @@ void main() {
       },
     );
   });
+
+  group('Attendance surface localization', () {
+    test(
+      'attendance ARB keys are pinned in both English and Arabic',
+      () async {
+        final en = await AppLocalizations.delegate.load(const Locale('en'));
+        final ar = await AppLocalizations.delegate.load(const Locale('ar'));
+        // List
+        expect(en.attendanceListScreenTitle, 'Attendance');
+        expect(en.attendanceListCaptureAction, 'Capture');
+        expect(en.attendanceListLoadingTitle, 'Loading attendance');
+        expect(en.attendanceListEmptyTitle, 'No attendance records yet');
+        expect(en.attendanceListStartCaptureAction, 'Start capture');
+        expect(en.attendanceListErrorTitle, 'Could not load attendance');
+        expect(en.attendanceListPickClassGroup, 'Pick a class group');
+        expect(en.attendanceListClassGroupLabel('A'), 'Class group A');
+        // Status labels (4 + 4 long)
+        expect(en.attendanceStatusPresent, 'P');
+        expect(en.attendanceStatusAbsent, 'A');
+        expect(en.attendanceStatusLate, 'L');
+        expect(en.attendanceStatusExcused, 'E');
+        expect(en.attendanceStatusPresentLong, 'Present');
+        expect(en.attendanceStatusAbsentLong, 'Absent');
+        expect(en.attendanceStatusLateLong, 'Late');
+        expect(en.attendanceStatusExcusedLong, 'Excused');
+        // Capture
+        expect(en.attendanceCaptureTitle('A'), 'Attendance · A');
+        expect(en.attendanceCaptureRosterErrorTitle,
+            'Could not load the roster');
+        expect(en.attendanceCaptureEmptyTitle,
+            'No students in this class group');
+        expect(en.attendanceCaptureCountPresent(3), 'P 3');
+        expect(en.attendanceCaptureCountAbsent(0), 'A 0');
+        expect(en.attendanceCaptureMarkAllPresent, 'Mark all present');
+        expect(en.attendanceCaptureMarkAllAbsent, 'Mark all absent');
+        expect(en.attendanceCaptureSuccessAll(3, '2026-08-03'),
+            contains('2026-08-03'));
+        expect(en.attendanceCaptureSubmit, 'Submit attendance');
+        expect(en.attendanceCaptureResubmit, 'Re-submit');
+        expect(en.attendanceGuardianLabel('Ahmad'), 'Guardian: Ahmad');
+        for (final getter in [
+          () => ar.attendanceListScreenTitle,
+          () => ar.attendanceListCaptureAction,
+          () => ar.attendanceListLoadingTitle,
+          () => ar.attendanceListEmptyTitle,
+          () => ar.attendanceListStartCaptureAction,
+          () => ar.attendanceListErrorTitle,
+          () => ar.attendanceListPickClassGroup,
+          () => ar.attendanceListClassGroupLabel('A'),
+          () => ar.attendanceStatusPresent,
+          () => ar.attendanceStatusAbsent,
+          () => ar.attendanceStatusLate,
+          () => ar.attendanceStatusExcused,
+          () => ar.attendanceStatusPresentLong,
+          () => ar.attendanceStatusAbsentLong,
+          () => ar.attendanceStatusLateLong,
+          () => ar.attendanceStatusExcusedLong,
+          () => ar.attendanceCaptureTitle('A'),
+          () => ar.attendanceCaptureRosterErrorTitle,
+          () => ar.attendanceCaptureEmptyTitle,
+          () => ar.attendanceCaptureCountPresent(3),
+          () => ar.attendanceCaptureCountAbsent(0),
+          () => ar.attendanceCaptureMarkAllPresent,
+          () => ar.attendanceCaptureMarkAllAbsent,
+          () => ar.attendanceCaptureSuccessAll(3, '2026-08-03'),
+          () => ar.attendanceCaptureSubmit,
+          () => ar.attendanceCaptureResubmit,
+          () => ar.attendanceGuardianLabel('Ahmad'),
+        ]) {
+          expect(getter(), isNotEmpty, reason: 'AR missing');
+        }
+      },
+    );
+  });
 }

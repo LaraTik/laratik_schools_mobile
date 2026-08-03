@@ -1112,5 +1112,92 @@
   "subjectCreateCreditHoursLabel": "Credit hours",
   "subjectCreateDescriptionLabel": "Description",
   "subjectCreateSubmitAction": "Create subject",
-  "subjectCreateSubmitLoading": "Creating…"
+  "subjectCreateSubmitLoading": "Creating…",
+
+  "attendanceListScreenTitle": "Attendance",
+  "attendanceListCaptureAction": "Capture",
+  "attendanceListLoadingTitle": "Loading attendance",
+  "attendanceListLoadingMessage": "Fetching the latest records from the server.",
+  "attendanceListEmptyTitle": "No attendance records yet",
+  "attendanceListEmptyMessage": "Tap Capture to start the daily attendance for a class group.",
+  "attendanceListStartCaptureAction": "Start capture",
+  "attendanceListErrorTitle": "Could not load attendance",
+  "attendanceListPickClassGroup": "Pick a class group",
+  "attendanceListClassGroupLabel": "Class group {name}",
+  "@attendanceListClassGroupLabel": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+
+  "attendanceStatusPresent": "P",
+  "attendanceStatusAbsent": "A",
+  "attendanceStatusLate": "L",
+  "attendanceStatusExcused": "E",
+  "attendanceStatusPresentLong": "Present",
+  "attendanceStatusAbsentLong": "Absent",
+  "attendanceStatusLateLong": "Late",
+  "attendanceStatusExcusedLong": "Excused",
+
+  "attendanceCaptureTitle": "Attendance · {classGroup}",
+  "@attendanceCaptureTitle": {
+    "placeholders": {
+      "classGroup": { "type": "String" }
+    }
+  },
+  "attendanceCaptureRosterErrorTitle": "Could not load the roster",
+  "attendanceCaptureRosterLoadingTitle": "Loading roster",
+  "attendanceCaptureRosterLoadingMessage": "Fetching the class group from the server.",
+  "attendanceCaptureEmptyTitle": "No students in this class group",
+  "attendanceCaptureEmptyMessage": "Once students are enrolled, attendance capture is enabled.",
+  "attendanceCaptureCountPresent": "P {count}",
+  "@attendanceCaptureCountPresent": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "attendanceCaptureCountAbsent": "A {count}",
+  "@attendanceCaptureCountAbsent": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "attendanceCaptureCountLate": "L {count}",
+  "@attendanceCaptureCountLate": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "attendanceCaptureCountExcused": "E {count}",
+  "@attendanceCaptureCountExcused": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "attendanceCaptureMarkAllPresent": "Mark all present",
+  "attendanceCaptureMarkAllAbsent": "Mark all absent",
+  "attendanceCaptureSuccessAll": "Submitted {count, plural, =1{1 record} other{{count} records}} for {date}.",
+  "@attendanceCaptureSuccessAll": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "date": { "type": "String" }
+    }
+  },
+  "attendanceCaptureSuccessPartial": "Submitted {succeeded}, failed {failed} of {total}.",
+  "@attendanceCaptureSuccessPartial": {
+    "placeholders": {
+      "succeeded": { "type": "int" },
+      "failed": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "attendanceCaptureSubmit": "Submit attendance",
+  "attendanceCaptureResubmit": "Re-submit",
+  "attendanceCaptureSubmitLoading": "Submitting…",
+  "attendanceGuardianLabel": "Guardian: {name}",
+  "@attendanceGuardianLabel": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  }
 }

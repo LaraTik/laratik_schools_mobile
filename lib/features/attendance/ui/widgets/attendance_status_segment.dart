@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../../ui/design_tokens.dart';
 import '../../../../ui/widgets/ls_status_chip.dart';
 import '../../data/attendance_record.dart';
@@ -30,6 +31,7 @@ class AttendanceStatusSegment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     return SizedBox(
       height: 36,
       child: Row(
@@ -38,6 +40,7 @@ class AttendanceStatusSegment extends StatelessWidget {
             Expanded(
               child: _SegmentButton(
                 status: _options[i],
+                label: _labelFor(_options[i], l),
                 selected: _options[i].value == value.value,
                 onTap: () => onChanged(_options[i]),
               ),
@@ -48,16 +51,33 @@ class AttendanceStatusSegment extends StatelessWidget {
       ),
     );
   }
+
+  String _labelFor(AttendanceStatus status, AppLocalizations l) {
+    switch (status.tone) {
+      case AttendanceTone.present:
+        return l.attendanceStatusPresent;
+      case AttendanceTone.absent:
+        return l.attendanceStatusAbsent;
+      case AttendanceTone.late:
+        return l.attendanceStatusLate;
+      case AttendanceTone.excused:
+        return l.attendanceStatusExcused;
+      case AttendanceTone.neutral:
+        return status.value;
+    }
+  }
 }
 
 class _SegmentButton extends StatelessWidget {
   const _SegmentButton({
     required this.status,
+    required this.label,
     required this.selected,
     required this.onTap,
   });
 
   final AttendanceStatus status;
+  final String label;
   final bool selected;
   final VoidCallback onTap;
 
@@ -120,7 +140,7 @@ class _SegmentButton extends StatelessWidget {
         onTap: onTap,
         child: Center(
           child: Text(
-            status.value,
+            label,
             style: tokens.typography.labelSmall.copyWith(color: fg),
           ),
         ),
@@ -137,8 +157,16 @@ class AttendanceStatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final label = switch (status.tone) {
+      AttendanceTone.present => l.attendanceStatusPresent,
+      AttendanceTone.absent => l.attendanceStatusAbsent,
+      AttendanceTone.late => l.attendanceStatusLate,
+      AttendanceTone.excused => l.attendanceStatusExcused,
+      AttendanceTone.neutral => status.value,
+    };
     return LsStatusChip(
-      label: status.value,
+      label: label,
       tone: switch (status.tone) {
         AttendanceTone.present => LsChipTone.success,
         AttendanceTone.absent => LsChipTone.error,

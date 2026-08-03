@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../../ui/design_tokens.dart';
 import '../../data/attendance_record.dart';
 import 'attendance_status_segment.dart';
@@ -22,8 +23,9 @@ class AttendanceMarkRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     return Container(
-      padding: EdgeInsets.symmetric(
+      padding: EdgeInsetsDirectional.symmetric(
         horizontal: tokens.space.md,
         vertical: tokens.space.sm,
       ),
@@ -53,7 +55,7 @@ class AttendanceMarkRow extends StatelessWidget {
                     if (mark.guardianName != null &&
                         mark.guardianName!.isNotEmpty)
                       Text(
-                        'Guardian: ${mark.guardianName!}',
+                        l.attendanceGuardianLabel(mark.guardianName!),
                         style: tokens.typography.bodySmall.copyWith(
                           color: tokens.text.tertiary,
                         ),

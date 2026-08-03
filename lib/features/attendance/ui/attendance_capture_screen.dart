@@ -3,11 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/result.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../ui/design_tokens.dart';
 import '../../../ui/widgets/ls_button.dart';
 import '../../../ui/widgets/ls_empty_state.dart';
 import '../../../ui/widgets/ls_status_chip.dart';
-import '../../people/data/person_failure.dart';
 import '../data/attendance_providers.dart';
 import '../data/attendance_record.dart';
 import '../data/attendance_repository.dart';
@@ -105,6 +105,7 @@ class _AttendanceCaptureScreenState
   @override
   Widget build(BuildContext context) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     final asyncRoster = ref.watch(attendanceRosterProvider(
       AttendanceRosterArgs(
         gradeId: widget.gradeId,
@@ -122,14 +123,14 @@ class _AttendanceCaptureScreenState
           onPressed: () => context.go('/shell/attendance'),
         ),
         title: Text(
-          'Attendance · ${widget.classGroupId}',
+          l.attendanceCaptureTitle(widget.classGroupId),
           style: tokens.typography.titleLarge.copyWith(
             color: tokens.text.primary,
           ),
         ),
         actions: [
           Padding(
-            padding: EdgeInsets.symmetric(
+            padding: EdgeInsetsDirectional.symmetric(
               horizontal: tokens.space.md,
               vertical: tokens.space.sm,
             ),
@@ -149,14 +150,14 @@ class _AttendanceCaptureScreenState
         data: (result) => switch (result) {
           Ok(:final value) => () {
               _seedDefault(value);
-              return _buildRoster(value, tokens);
+              return _buildRoster(value, tokens, l);
             }(),
           Err(:final error) => LsStateView.error(
               icon: Icons.error_outline,
-              title: 'Could not load the roster',
+              title: l.attendanceCaptureRosterErrorTitle,
               message: error.message,
               action: LsButton.primary(
-                label: 'Try again',
+                label: l.commonTryAgain,
                 expand: false,
                 onPressed: () => ref.invalidate(attendanceRosterProvider(
                   AttendanceRosterArgs(
@@ -167,25 +168,29 @@ class _AttendanceCaptureScreenState
               ),
             ),
         },
-        loading: () => const LsStateView.loading(
-          title: 'Loading roster',
-          message: 'Fetching the class group from the server.',
+        loading: () => LsStateView.loading(
+          title: l.attendanceCaptureRosterLoadingTitle,
+          message: l.attendanceCaptureRosterLoadingMessage,
         ),
         error: (err, _) => LsStateView.error(
           icon: Icons.error_outline,
-          title: 'Could not load the roster',
+          title: l.attendanceCaptureRosterErrorTitle,
           message: err.toString(),
         ),
       ),
     );
   }
 
-  Widget _buildRoster(List<AttendanceMark> roster, DesignTokens tokens) {
+  Widget _buildRoster(
+    List<AttendanceMark> roster,
+    DesignTokens tokens,
+    AppLocalizations l,
+  ) {
     if (roster.isEmpty) {
       return LsStateView.empty(
         icon: Icons.groups_outlined,
-        title: 'No students in this class group',
-        message: 'Once students are enrolled, attendance capture is enabled.',
+        title: l.attendanceCaptureEmptyTitle,
+        message: l.attendanceCaptureEmptyMessage,
       );
     }
     final present =
@@ -200,7 +205,7 @@ class _AttendanceCaptureScreenState
       children: [
         Container(
           color: tokens.surface.surfaceContainerLow,
-          padding: EdgeInsets.symmetric(
+          padding: EdgeInsetsDirectional.symmetric(
             horizontal: tokens.space.md,
             vertical: tokens.space.sm,
           ),
@@ -212,19 +217,19 @@ class _AttendanceCaptureScreenState
                   runSpacing: tokens.space.xs,
                   children: [
                     LsStatusChip(
-                      label: 'P $present',
+                      label: l.attendanceCaptureCountPresent(present),
                       tone: LsChipTone.success,
                     ),
                     LsStatusChip(
-                      label: 'A $absent',
+                      label: l.attendanceCaptureCountAbsent(absent),
                       tone: LsChipTone.error,
                     ),
                     LsStatusChip(
-                      label: 'L $late',
+                      label: l.attendanceCaptureCountLate(late),
                       tone: LsChipTone.warning,
                     ),
                     LsStatusChip(
-                      label: 'E $excused',
+                      label: l.attendanceCaptureCountExcused(excused),
                       tone: LsChipTone.info,
                     ),
                   ],
@@ -237,18 +242,18 @@ class _AttendanceCaptureScreenState
           height: 48,
           child: ListView(
             scrollDirection: Axis.horizontal,
-            padding: EdgeInsets.symmetric(
+            padding: EdgeInsetsDirectional.symmetric(
               horizontal: tokens.space.md,
               vertical: tokens.space.xs,
             ),
             children: [
               _MarkAllButton(
-                label: 'Mark all present',
+                label: l.attendanceCaptureMarkAllPresent,
                 onTap: () => _markAll(AttendanceStatus.present, roster),
               ),
               SizedBox(width: tokens.space.xs),
               _MarkAllButton(
-                label: 'Mark all absent',
+                label: l.attendanceCaptureMarkAllAbsent,
                 onTap: () => _markAll(AttendanceStatus.absent, roster),
               ),
             ],
@@ -313,8 +318,13 @@ class _AttendanceCaptureScreenState
                     ),
                     child: Text(
                       _result!.failed == 0
-                          ? 'Submitted ${_result!.succeeded} record(s) for $_selectedDate.'
-                          : 'Submitted ${_result!.succeeded}, failed ${_result!.failed} of ${_result!.succeeded + _result!.failed}.',
+                          ? l.attendanceCaptureSuccessAll(
+                              _result!.succeeded, _selectedDate)
+                          : l.attendanceCaptureSuccessPartial(
+                              _result!.succeeded,
+                              _result!.failed,
+                              _result!.succeeded + _result!.failed,
+                            ),
                       style: tokens.typography.bodyMedium.copyWith(
                         color: tokens.status.success,
                       ),
@@ -324,10 +334,10 @@ class _AttendanceCaptureScreenState
                   SizedBox(height: tokens.space.sm),
                 LsButton.primary(
                   label: _submitting
-                      ? 'Submitting…'
+                      ? l.attendanceCaptureSubmitLoading
                       : _submitted
-                          ? 'Re-submit'
-                          : 'Submit attendance',
+                          ? l.attendanceCaptureResubmit
+                          : l.attendanceCaptureSubmit,
                   icon: Icons.check,
                   isLoading: _submitting,
                   onPressed: _submitting ? null : () => _submit(roster),
