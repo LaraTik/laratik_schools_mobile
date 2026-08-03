@@ -17,14 +17,23 @@
 //     UUID for the `Idempotency-Key` header.
 //   * [correctGradeRecord] surfaces a typed failure on
 //     empty / error envelopes.
+//   * [approveSubjectGradePolicy] forwards the policy name
+//     + mints a fresh UUID for the `Idempotency-Key` header
+//     + surfaces a typed failure on a wire error.
+//   * [promoteAssessmentResult] forwards the assessment
+//     result name + the policy name + mints a fresh UUID
+//     for the `Idempotency-Key` header + surfaces a typed
+//     failure on a wire error.
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:laratik_schools_api/laratik_schools_api.dart';
 import 'package:laratik_schools_mobile/core/result.dart';
+import 'package:laratik_schools_mobile/features/grading/data/approved_policy.dart';
 import 'package:laratik_schools_mobile/features/grading/data/grade_record_correction.dart';
 import 'package:laratik_schools_mobile/features/grading/data/grading_failure.dart';
 import 'package:laratik_schools_mobile/features/grading/data/grading_overview.dart';
 import 'package:laratik_schools_mobile/features/grading/data/grading_repository.dart';
+import 'package:laratik_schools_mobile/features/grading/data/promoted_result.dart';
 
 import '../../helpers/mock_api_client.dart';
 
@@ -312,6 +321,109 @@ void main() {
       expect(result, isA<Err<CorrectedGradeRecord, GradingFailure>>());
       final err = (result as Err).error as GradingFailure;
       expect(err.code, 'INVALID_CORRECTION_SCORE');
+    });
+  });
+
+  group('GradingRepository.approveSubjectGradePolicy', () {
+    test('forwards the policy name + mints a fresh idempotency key',
+        () async {
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondOnce(
+        LaratikSchoolsApiMethods.approveSchoolSubjectGradePolicy,
+        envelopeOk({
+          'policy': 'EDU-SGP-2026-00002',
+          'status': 'approved',
+        }),
+      );
+      final repo = makeRepo(transport);
+      final result = await repo.approveSubjectGradePolicy(
+        policyName: 'EDU-SGP-2026-00002',
+      );
+      expect(result, isA<Ok<ApprovedPolicy, GradingFailure>>());
+      final approved = (result as Ok).value as ApprovedPolicy;
+      expect(approved.policy, 'EDU-SGP-2026-00002');
+      expect(approved.isApproved, isTrue);
+      // The SDK takes the policy name as a top-level
+      // argument (NOT inside a `payload` envelope) — the
+      // test inspects `arguments` directly.
+      final args = transport.invokedArguments.last;
+      expect(args['policy_name'], 'EDU-SGP-2026-00002');
+      // A fresh UUID v4 was minted for the Idempotency-Key
+      // header.
+      expect(transport.invokedIdempotencyKey, isNotNull);
+      expect(transport.invokedIdempotencyKey!.length, greaterThanOrEqualTo(8));
+    });
+
+    test('surfaces a typed failure when the server returns an error',
+        () async {
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondError(
+        LaratikSchoolsApiMethods.approveSchoolSubjectGradePolicy,
+        const ApiError(
+          code: 'POLICY_NOT_PENDING',
+          message: 'Only pending policies can be approved.',
+        ),
+      );
+      final repo = makeRepo(transport);
+      final result = await repo.approveSubjectGradePolicy(
+        policyName: 'EDU-SGP-2026-00002',
+      );
+      expect(result, isA<Err<ApprovedPolicy, GradingFailure>>());
+      final err = (result as Err).error as GradingFailure;
+      expect(err.code, 'POLICY_NOT_PENDING');
+      expect(err.isRetryable, isFalse);
+    });
+  });
+
+  group('GradingRepository.promoteAssessmentResult', () {
+    test('forwards the result name + policy name + mints a fresh idempotency '
+        'key', () async {
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondOnce(
+        LaratikSchoolsApiMethods.promoteSchoolAssessmentResult,
+        envelopeOk({
+          'grade_record': 'GR-00042',
+          'status': 'promoted',
+        }),
+      );
+      final repo = makeRepo(transport);
+      final result = await repo.promoteAssessmentResult(
+        assessmentResultName: 'AR-00001',
+        policyName: 'EDU-SGP-2026-00001',
+      );
+      expect(result, isA<Ok<PromotedAssessmentResult, GradingFailure>>());
+      final promoted = (result as Ok).value as PromotedAssessmentResult;
+      expect(promoted.gradeRecord, 'GR-00042');
+      expect(promoted.isPromoted, isTrue);
+      // The SDK takes both names as top-level arguments.
+      final args = transport.invokedArguments.last;
+      expect(args['assessment_result_name'], 'AR-00001');
+      expect(args['policy_name'], 'EDU-SGP-2026-00001');
+      // A fresh UUID v4 was minted for the Idempotency-Key
+      // header.
+      expect(transport.invokedIdempotencyKey, isNotNull);
+      expect(transport.invokedIdempotencyKey!.length, greaterThanOrEqualTo(8));
+    });
+
+    test('surfaces a typed failure when the server returns an error',
+        () async {
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondError(
+        LaratikSchoolsApiMethods.promoteSchoolAssessmentResult,
+        const ApiError(
+          code: 'ASSESSMENT_RESULT_NOT_SUBMITTED',
+          message: 'Only submitted assessment results can be promoted.',
+        ),
+      );
+      final repo = makeRepo(transport);
+      final result = await repo.promoteAssessmentResult(
+        assessmentResultName: 'AR-00001',
+        policyName: 'EDU-SGP-2026-00001',
+      );
+      expect(result, isA<Err<PromotedAssessmentResult, GradingFailure>>());
+      final err = (result as Err).error as GradingFailure;
+      expect(err.code, 'ASSESSMENT_RESULT_NOT_SUBMITTED');
+      expect(err.isRetryable, isFalse);
     });
   });
 

@@ -21,20 +21,27 @@
 //     fresh UUID for the `Idempotency-Key` header; the
 //     overview provider is invalidated on success so the
 //     next ref.watch re-fetches the new summary.
-//
-// Future (deferred to follow-up turns):
-//   * `promoteAssessmentResult` — admin promotes a grade
-//     from an assessment result to a grade record.
-//   * `approvePolicy` — admin approves a pending policy.
+//   * `approveSubjectGradePolicy(ref, ...)` — top-level
+//     widget helper for the
+//     `approve_school_subject_grade_policy` write flow.
+//     Invalidates the policies provider on success so the
+//     next ref.watch re-fetches the new approval state.
+//   * `promoteAssessmentResult(ref, ...)` — top-level widget
+//     helper for the `promote_school_assessment_result`
+//     write flow. Invalidates the overview + policies
+//     providers on success so the next ref.watch re-fetches
+//     the new summary.
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/result.dart';
 import '../../people/data/person_providers.dart';
+import 'approved_policy.dart';
 import 'grade_record_correction.dart';
 import 'grading_failure.dart';
 import 'grading_overview.dart';
 import 'grading_repository.dart';
+import 'promoted_result.dart';
 
 /// Single grading repository per app session. All Grading
 /// feature code reads it from this provider.
@@ -184,3 +191,53 @@ final correctGradeRecordProvider = AsyncNotifierProvider.autoDispose<
     CorrectGradeRecordController, CorrectedGradeRecord?>(
   CorrectGradeRecordController.new,
 );
+
+/// Top-level widget helper for the
+/// `approve_school_subject_grade_policy` write flow. The
+/// repository mints a fresh UUID for the `Idempotency-Key`
+/// header so a retry of the same approve is safe to send
+/// again. Takes a [WidgetRef] (not a [Ref]) because the
+/// only callers are widget-side helpers — the Riverpod
+/// `Ref` type lives inside a provider closure, not in a
+/// widget's build method.
+///
+/// On success the policies provider is invalidated so the
+/// next ref.watch re-fetches the new approval state.
+Future<Result<ApprovedPolicy, GradingFailure>> approveSubjectGradePolicy(
+  WidgetRef ref, {
+  required String policyName,
+}) async {
+  final repo = ref.read(gradingRepositoryProvider);
+  final result = await repo.approveSubjectGradePolicy(
+    policyName: policyName,
+  );
+  if (result is Ok) {
+    ref.invalidate(gradingPoliciesProvider);
+  }
+  return result;
+}
+
+/// Top-level widget helper for the
+/// `promote_school_assessment_result` write flow. The
+/// repository mints a fresh UUID for the `Idempotency-Key`
+/// header. Takes a [WidgetRef] (not a [Ref]).
+///
+/// On success the overview + policies providers are
+/// invalidated so the next ref.watch re-fetches the new
+/// summary.
+Future<Result<PromotedAssessmentResult, GradingFailure>> promoteAssessmentResult(
+  WidgetRef ref, {
+  required String assessmentResultName,
+  required String policyName,
+}) async {
+  final repo = ref.read(gradingRepositoryProvider);
+  final result = await repo.promoteAssessmentResult(
+    assessmentResultName: assessmentResultName,
+    policyName: policyName,
+  );
+  if (result is Ok) {
+    ref.invalidate(gradingOverviewProvider);
+    ref.invalidate(gradingPoliciesProvider);
+  }
+  return result;
+}

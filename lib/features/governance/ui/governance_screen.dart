@@ -20,6 +20,15 @@
 // and the provider invalidates `privacyRequestsProvider` on
 // success so the list re-fetches the latest state.
 //
+// The AppBar ships three read-side / admin actions:
+//   * **Run retention** (Calls
+//     `evaluate_school_data_retention`).
+//   * **Approve settings** (Calls
+//     `approve_school_data_governance_settings` — opens a
+//     2-field prompt for the policy version + an optional
+//     reason).
+//   * **Refresh** (manual re-fetch).
+//
 // Every user-facing string is locale-aware via
 // [AppLocalizations.of(context)]; the chevron mirrors itself
 // under RTL so the visual flow stays consistent with the
@@ -69,6 +78,11 @@ class GovernanceScreen extends ConsumerWidget {
             tooltip: l.governanceEvaluateRetentionTooltip,
             icon: const Icon(Icons.cleaning_services_outlined),
             onPressed: () => _onEvaluateRetention(context, ref),
+          ),
+          IconButton(
+            tooltip: l.governanceApproveSettingsAction,
+            icon: const Icon(Icons.policy_outlined),
+            onPressed: () => _showApproveSettingsPrompt(context, ref, l),
           ),
           IconButton(
             tooltip: l.commonRefresh,
@@ -847,4 +861,101 @@ class _SheetAction extends StatelessWidget {
       LsChipTone.neutral => tokens.text.secondary,
     };
   }
+}
+
+/// Show a 2-field prompt that asks the admin for the policy
+/// version + an optional reason, then calls
+/// pprove_school_data_governance_settings on Continue.
+/// The v1 SDK doesn't expose a "list governance settings"
+/// endpoint on the mobile SDK today, so the admin enters
+/// the policy version (the same pattern as the
+/// "Correct a grade" + "Replay event" prompts).
+Future<void> _showApproveSettingsPrompt(
+  BuildContext context,
+  WidgetRef ref,
+  AppLocalizations l,
+) async {
+  final versionController = TextEditingController();
+  final reasonController = TextEditingController();
+  final result = await showDialog<(int, String)>(
+    context: context,
+    builder: (ctx) {
+      return AlertDialog(
+        title: Text(l.governanceApproveSettingsPromptTitle),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextField(
+                controller: versionController,
+                autofocus: true,
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: false,
+                  signed: false,
+                ),
+                decoration: InputDecoration(
+                  labelText: l.governanceApproveSettingsVersionLabel,
+                  hintText: l.governanceApproveSettingsVersionHint,
+                ),
+              ),
+              SizedBox(height: 12),
+              TextField(
+                controller: reasonController,
+                decoration: InputDecoration(
+                  labelText: l.governanceApproveSettingsReasonLabel,
+                  hintText: l.governanceApproveSettingsReasonHint,
+                ),
+                maxLines: 2,
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text(l.commonCancel),
+          ),
+          FilledButton.tonal(
+            onPressed: () {
+              final versionText = versionController.text.trim();
+              final reason = reasonController.text.trim();
+              if (versionText.isEmpty) return;
+              final version = int.tryParse(versionText);
+              if (version == null) return;
+              Navigator.of(ctx).pop((version, reason));
+            },
+            child: Text(l.commonContinue),
+          ),
+        ],
+      );
+    },
+  );
+  if (result == null || !context.mounted) return;
+  final messenger = ScaffoldMessenger.of(context);
+  final tokens = context.laratik;
+  final outcome = await approveDataGovernanceSettings(
+    ref,
+    policyVersion: result.$1,
+    reason: result.$2.isEmpty ? null : result.$2,
+  );
+  messenger.showSnackBar(
+    SnackBar(
+      content: Text(
+        switch (outcome) {
+          Ok(:final value) => value.hasVersion
+              ? l.governanceApproveSettingsSuccess(value.policyVersion!)
+              : l.governanceApproveSettingsSuccessFallback,
+          Err(:final error) => l.governanceApproveSettingsError(
+              error.message,
+            ),
+        },
+      ),
+      duration: const Duration(seconds: 3),
+      backgroundColor: switch (outcome) {
+        Ok() => tokens.status.success,
+        Err() => tokens.status.error,
+      },
+    ),
+  );
 }

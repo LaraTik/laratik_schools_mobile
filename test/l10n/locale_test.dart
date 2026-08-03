@@ -978,4 +978,78 @@ void main() {
       },
     );
   });
+
+  group('Grading write flows localization (approve + promote)', () {
+    test(
+      'grading approve + promote ARB keys are pinned in both English and Arabic',
+      () async {
+        final en = await AppLocalizations.delegate.load(const Locale('en'));
+        final ar = await AppLocalizations.delegate.load(const Locale('ar'));
+        // Per-row approve action + snackbar copy.
+        expect(en.gradingApprovePolicyAction, 'Approve policy');
+        expect(en.gradingApprovePolicySuccess('SGP-MATH-G7'),
+            contains('SGP-MATH-G7'));
+        expect(en.gradingApprovePolicyError('boom'), contains('boom'));
+        // Promote AppBar action + prompt + snackbar copy.
+        expect(en.gradingPromoteAction, 'Promote assessment result');
+        expect(en.gradingPromotePromptTitle, 'Promote assessment result');
+        expect(en.gradingPromoteResultLabel, 'Assessment result ID');
+        expect(en.gradingPromoteResultHint, contains('AR-'));
+        expect(en.gradingPromotePolicyLabel, 'Policy name');
+        expect(en.gradingPromotePolicyHint, contains('SGP-'));
+        expect(en.gradingPromoteSuccess('GR-00042'), contains('GR-00042'));
+        expect(en.gradingPromoteSuccessFallback, isNotEmpty);
+        expect(en.gradingPromoteError('boom'), contains('boom'));
+        for (final getter in [
+          () => ar.gradingApprovePolicyAction,
+          () => ar.gradingApprovePolicySuccess('SGP-MATH-G7'),
+          () => ar.gradingApprovePolicyError('boom'),
+          () => ar.gradingPromoteAction,
+          () => ar.gradingPromotePromptTitle,
+          () => ar.gradingPromoteResultLabel,
+          () => ar.gradingPromoteResultHint,
+          () => ar.gradingPromotePolicyLabel,
+          () => ar.gradingPromotePolicyHint,
+          () => ar.gradingPromoteSuccess('GR-00042'),
+          () => ar.gradingPromoteSuccessFallback,
+          () => ar.gradingPromoteError('boom'),
+        ]) {
+          expect(getter(), isNotEmpty, reason: 'AR missing');
+        }
+      },
+    );
+  });
+
+  group('Governance approve-settings write flow localization', () {
+    test(
+      'governance approve-settings ARB keys are pinned in both English and Arabic',
+      () async {
+        final en = await AppLocalizations.delegate.load(const Locale('en'));
+        final ar = await AppLocalizations.delegate.load(const Locale('ar'));
+        expect(en.governanceApproveSettingsAction, 'Approve settings');
+        expect(en.governanceApproveSettingsPromptTitle,
+            'Approve governance settings');
+        expect(en.governanceApproveSettingsVersionLabel, 'Policy version');
+        expect(en.governanceApproveSettingsVersionHint, isNotEmpty);
+        expect(en.governanceApproveSettingsReasonLabel, contains('Reason'));
+        expect(en.governanceApproveSettingsReasonHint, isNotEmpty);
+        expect(en.governanceApproveSettingsSuccess(3), contains('3'));
+        expect(en.governanceApproveSettingsSuccessFallback, isNotEmpty);
+        expect(en.governanceApproveSettingsError('boom'), contains('boom'));
+        for (final getter in [
+          () => ar.governanceApproveSettingsAction,
+          () => ar.governanceApproveSettingsPromptTitle,
+          () => ar.governanceApproveSettingsVersionLabel,
+          () => ar.governanceApproveSettingsVersionHint,
+          () => ar.governanceApproveSettingsReasonLabel,
+          () => ar.governanceApproveSettingsReasonHint,
+          () => ar.governanceApproveSettingsSuccess(3),
+          () => ar.governanceApproveSettingsSuccessFallback,
+          () => ar.governanceApproveSettingsError('boom'),
+        ]) {
+          expect(getter(), isNotEmpty, reason: 'AR missing');
+        }
+      },
+    );
+  });
 }

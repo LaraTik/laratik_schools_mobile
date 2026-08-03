@@ -26,6 +26,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:laratik_schools_api/laratik_schools_api.dart';
 import 'package:laratik_schools_mobile/core/result.dart';
+import 'package:laratik_schools_mobile/features/governance/data/approved_settings.dart';
 import 'package:laratik_schools_mobile/features/governance/data/governance_failure.dart';
 import 'package:laratik_schools_mobile/features/governance/data/governance_request.dart';
 import 'package:laratik_schools_mobile/features/governance/data/governance_repository.dart';
@@ -244,6 +245,82 @@ void main() {
       final err =
           (result as Err<SubmittedPrivacyRequest, GovernanceFailure>).error;
       expect(err.code, 'PRIVACY_REQUESTER_FORBIDDEN');
+      expect(err.isRetryable, isFalse);
+    });
+  });
+
+  group('GovernanceRepository.approveDataGovernanceSettings', () {
+    test('forwards the policy version + reason + mints a fresh idempotency '
+        'key', () async {
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondOnce(
+        LaratikSchoolsApiMethods.approveSchoolDataGovernanceSettings,
+        envelopeOk({
+          'policy_version': 3,
+          'status': 'approved',
+        }),
+      );
+      final repo = makeRepo(transport);
+      final result = await repo.approveDataGovernanceSettings(
+        policyVersion: 3,
+        reason: 'Retention window updated per district policy.',
+      );
+      expect(result,
+          isA<Ok<ApprovedGovernanceSettings, GovernanceFailure>>());
+      final approved = (result as Ok).value as ApprovedGovernanceSettings;
+      expect(approved.policyVersion, 3);
+      expect(approved.isApproved, isTrue);
+      // The SDK wraps the caller's payload under a `payload`
+      // key, so the test inspects `arguments['payload']`.
+      final args = transport.invokedArguments.last;
+      final payload = args['payload'] as Map<String, Object?>;
+      expect(payload['policy_version'], 3);
+      expect(payload['reason'],
+          'Retention window updated per district policy.');
+      // A fresh UUID v4 was minted for the Idempotency-Key
+      // header.
+      expect(transport.invokedIdempotencyKey, isNotNull);
+      expect(transport.invokedIdempotencyKey!.length,
+          greaterThanOrEqualTo(8));
+    });
+
+    test('omits the policy_version key when policyVersion is null', () async {
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondOnce(
+        LaratikSchoolsApiMethods.approveSchoolDataGovernanceSettings,
+        envelopeOk({
+          'policy_version': 4,
+          'status': 'approved',
+        }),
+      );
+      final repo = makeRepo(transport);
+      final result = await repo.approveDataGovernanceSettings();
+      expect(result,
+          isA<Ok<ApprovedGovernanceSettings, GovernanceFailure>>());
+      final args = transport.invokedArguments.last;
+      final payload = args['payload'] as Map<String, Object?>;
+      expect(payload.containsKey('policy_version'), isFalse);
+      expect(payload.containsKey('reason'), isFalse);
+    });
+
+    test('surfaces a typed failure when the server returns an error',
+        () async {
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondError(
+        LaratikSchoolsApiMethods.approveSchoolDataGovernanceSettings,
+        const ApiError(
+          code: 'GOVERNANCE_SETTINGS_NOT_PENDING',
+          message: 'No pending settings change to approve.',
+        ),
+      );
+      final repo = makeRepo(transport);
+      final result = await repo.approveDataGovernanceSettings(
+        policyVersion: 3,
+      );
+      expect(result,
+          isA<Err<ApprovedGovernanceSettings, GovernanceFailure>>());
+      final err = (result as Err).error as GovernanceFailure;
+      expect(err.code, 'GOVERNANCE_SETTINGS_NOT_PENDING');
       expect(err.isRetryable, isFalse);
     });
   });

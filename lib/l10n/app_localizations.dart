@@ -4743,6 +4743,78 @@ abstract class AppLocalizations {
   /// **'Enter the grade ID (e.g. GR-00001)'**
   String get gradingCorrectionPromptHint;
 
+  /// No description provided for @gradingApprovePolicyAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve policy'**
+  String get gradingApprovePolicyAction;
+
+  /// No description provided for @gradingApprovePolicySuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved {name}.'**
+  String gradingApprovePolicySuccess(String name);
+
+  /// No description provided for @gradingApprovePolicyError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not approve policy: {message}'**
+  String gradingApprovePolicyError(String message);
+
+  /// No description provided for @gradingPromoteAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Promote assessment result'**
+  String get gradingPromoteAction;
+
+  /// No description provided for @gradingPromotePromptTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Promote assessment result'**
+  String get gradingPromotePromptTitle;
+
+  /// No description provided for @gradingPromoteResultLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Assessment result ID'**
+  String get gradingPromoteResultLabel;
+
+  /// No description provided for @gradingPromoteResultHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. AR-00001'**
+  String get gradingPromoteResultHint;
+
+  /// No description provided for @gradingPromotePolicyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Policy name'**
+  String get gradingPromotePolicyLabel;
+
+  /// No description provided for @gradingPromotePolicyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. SGP-MATH-G7'**
+  String get gradingPromotePolicyHint;
+
+  /// No description provided for @gradingPromoteSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Promoted to grade record {id}.'**
+  String gradingPromoteSuccess(String id);
+
+  /// No description provided for @gradingPromoteSuccessFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Assessment result promoted.'**
+  String get gradingPromoteSuccessFallback;
+
+  /// No description provided for @gradingPromoteError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not promote: {message}'**
+  String gradingPromoteError(String message);
+
   /// No description provided for @operationsReplayAction.
   ///
   /// In en, this message translates to:
@@ -5072,6 +5144,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Communications'**
   String get privacyRequestCategoryCommunications;
+
+  /// No description provided for @governanceApproveSettingsAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve settings'**
+  String get governanceApproveSettingsAction;
+
+  /// No description provided for @governanceApproveSettingsPromptTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve governance settings'**
+  String get governanceApproveSettingsPromptTitle;
+
+  /// No description provided for @governanceApproveSettingsVersionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Policy version'**
+  String get governanceApproveSettingsVersionLabel;
+
+  /// No description provided for @governanceApproveSettingsVersionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. 3'**
+  String get governanceApproveSettingsVersionHint;
+
+  /// No description provided for @governanceApproveSettingsReasonLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason (optional)'**
+  String get governanceApproveSettingsReasonLabel;
+
+  /// No description provided for @governanceApproveSettingsReasonHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Why is the approval needed?'**
+  String get governanceApproveSettingsReasonHint;
+
+  /// No description provided for @governanceApproveSettingsSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved policy version {version}.'**
+  String governanceApproveSettingsSuccess(int version);
+
+  /// No description provided for @governanceApproveSettingsSuccessFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings approved.'**
+  String get governanceApproveSettingsSuccessFallback;
+
+  /// No description provided for @governanceApproveSettingsError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not approve settings: {message}'**
+  String governanceApproveSettingsError(String message);
 }
 
 class _AppLocalizationsDelegate

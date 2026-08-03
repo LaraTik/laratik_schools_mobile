@@ -3,7 +3,8 @@
 // parent / student privacy + retention surface needs.
 //
 // Today (read-only privacy requests + admin approve / process /
-// set legal hold + retention + requester submit):
+// set legal hold + retention + requester submit + settings
+// approval):
 //   * `get_school_privacy_requests` → list of privacy requests
 //     (data export / data deletion / data access / consent
 //     withdrawal / legal hold / governance settings). The
@@ -23,16 +24,17 @@
 //     student submits a new privacy request. The mobile
 //     mints a fresh UUID for the `Idempotency-Key` header
 //     and the `client_request_id` field on the payload.
-//
-// The `approve_school_data_governance_settings` endpoint is
-// the approve action for the governance settings change
-// (e.g. updating the retention policy). Deferred to the
-// settings follow-up.
+//   * `approve_school_data_governance_settings` (write) —
+//     admin approves a settings change (e.g. updating
+//     the retention policy). The mobile passes a
+//     `payload: { 'policy_version': <int>, 'reason'? }`
+//     and a fresh idempotency key.
 
 import 'package:laratik_schools_api/laratik_schools_api.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../core/result.dart';
+import 'approved_settings.dart';
 import 'governance_failure.dart';
 import 'governance_request.dart';
 
@@ -223,6 +225,44 @@ class GovernanceRepository {
         );
       }
       return Ok(value: SubmittedPrivacyRequest.fromJson(data.toJson()));
+    } on Exception catch (e) {
+      return Err(error: _exceptionFailure(e));
+    }
+  }
+
+  /// Approve a pending data governance settings change. The
+  /// v1 server requires `require_governance_approval_access()`
+  /// (admin role) and the SDK takes an optional
+  /// `payload: { 'policy_version', 'reason'? }`. The
+  /// repository mints a fresh UUID for the `Idempotency-Key`
+  /// header so a retry of the same approve is safe to send
+  /// again.
+  Future<Result<ApprovedGovernanceSettings, GovernanceFailure>>
+      approveDataGovernanceSettings({
+    int? policyVersion,
+    String? reason,
+  }) async {
+    try {
+      final response = await _api.approveSchoolDataGovernanceSettings(
+        payload: <String, Object?>{
+          if (policyVersion != null) 'policy_version': policyVersion,
+          if (reason != null && reason.isNotEmpty) 'reason': reason,
+        },
+        idempotencyKey: _uuid.v4(),
+      );
+      final data = response.data;
+      if (response.error != null) {
+        return Err(error: _failureFromApi(response.error));
+      }
+      if (data == null) {
+        return const Err(
+          error: GovernanceFailure(
+            code: 'EMPTY_RESPONSE',
+            message: 'The server returned no approved settings data.',
+          ),
+        );
+      }
+      return Ok(value: ApprovedGovernanceSettings.fromJson(data.toJson()));
     } on Exception catch (e) {
       return Err(error: _exceptionFailure(e));
     }

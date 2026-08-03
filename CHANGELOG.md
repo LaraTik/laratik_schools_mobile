@@ -30,6 +30,44 @@ and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
   strip + summary card + success card + summary rows all
   honor `EdgeInsetsDirectional`. Closes the
   parent + student write-flow gap of the privacy roadmap.
+- **Admin grading + governance write flows.** Three new
+  admin write flows ship:
+  * `approve_school_subject_grade_policy` — per-row
+    **Approve** action on the Grading Policies tab
+    (the IconButton is hidden once the policy is
+    already in a terminal state — approved or
+    rejected). Calls the SDK with the policy name as
+    a top-level argument.
+  * `promote_school_assessment_result` — new **Promote
+    assessment result** AppBar action on the Grading
+    surface. Opens a 2-field prompt (assessment
+    result id + policy name) and calls the SDK with
+    both names as top-level arguments.
+  * `approve_school_data_governance_settings` — new
+    **Approve settings** AppBar action on the
+    Governance surface. Opens a 2-field prompt
+    (policy version as an integer + an optional
+    reason) and calls the SDK with a
+    `payload: { 'policy_version', 'reason'? }`
+    envelope.
+  Each new method mints a fresh UUID v4 for the
+  `Idempotency-Key` header inside the repository (so
+  a retry of the same write is always safe to send
+  again). Each new provider helper invalidates the
+  relevant list / overview providers on success so
+  the next ref.watch re-fetches the new state. Two
+  new forward-compat result models
+  (`ApprovedPolicy` + `PromotedAssessmentResult` +
+  `ApprovedGovernanceSettings`) walk the canonical
+  wire key first, then the legacy aliases, so a
+  future server schema change doesn't break the
+  parse. The locale test grew from 23 to 25 to pin
+  the new keys in both English and Modern Standard
+  Arabic. Closes the remaining admin write-flow
+  gaps of the Grading + Governance roadmaps; the
+  only remaining deferral is the data-import
+  wizard upload step (blocked on the
+  `file_picker` dep).
 
 - **Student + parent "Fee invoices" tile.** New
   `My fee invoices` (student) + `Fee invoices` (parent)

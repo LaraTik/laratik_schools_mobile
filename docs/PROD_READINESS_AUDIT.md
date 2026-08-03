@@ -379,6 +379,52 @@ Update 2026-08-03 (admin Grading surface): the
 > fully shipped for the requester role; the
 > remaining admin write flows are still
 > deferred).
+>
+> Update 2026-08-03 (Admin grading +
+> governance write flows): three new admin
+> write flows ship on the Grading +
+> Governance surfaces. (1) Per-row
+> **Approve** action on the Grading Policies
+> tab (calls
+> `approve_school_subject_grade_policy`;
+> the IconButton is hidden once the policy
+> is already approved or rejected). (2)
+> **Promote assessment result** AppBar
+> action on the Grading surface — opens a
+> 2-field prompt (assessment result id +
+> policy name) and calls
+> `promote_school_assessment_result`. (3)
+> **Approve settings** AppBar action on the
+> Governance surface — opens a 2-field
+> prompt (policy version as an integer +
+> an optional reason) and calls
+> `approve_school_data_governance_settings`.
+> Each new method mints a fresh UUID v4 for
+> the `Idempotency-Key` header inside the
+> repository (so a retry of the same write
+> is always safe to send again). Each new
+> provider helper invalidates the relevant
+> list / overview providers on success so
+> the next ref.watch re-fetches the new
+> state. Three new forward-compat result
+> models (`ApprovedPolicy` +
+> `PromotedAssessmentResult` +
+> `ApprovedGovernanceSettings`) walk the
+> canonical wire key first, then the legacy
+> aliases, so a future server schema
+> change doesn't break the parse. The
+> locale test grew from 23 to 25 to pin
+> the new keys in both English and Modern
+> Standard Arabic. Closes the remaining
+> admin write-flow gaps of the Grading +
+> Governance roadmaps; the only remaining
+> deferral is the data-import wizard
+> upload step (blocked on the `file_picker`
+> dep). See §3 (Admin Grading → all
+> 3 write flows shipped; Admin Governance
+> → all 4 write flows shipped) and §5
+> (item #8 → fully shipped across grading
+> + governance).
 
 This document is the source of truth for what is shipped, what is
 missing per role, and the prioritized roadmap. It supersedes the

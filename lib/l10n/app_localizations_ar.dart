@@ -2872,6 +2872,50 @@ class AppLocalizationsAr extends AppLocalizations {
       'أدخل معرّف الدرجة (مثال: GR-00001)';
 
   @override
+  String get gradingApprovePolicyAction => 'اعتماد السياسة';
+
+  @override
+  String gradingApprovePolicySuccess(String name) {
+    return 'تم اعتماد $name.';
+  }
+
+  @override
+  String gradingApprovePolicyError(String message) {
+    return 'تعذّر اعتماد السياسة: $message';
+  }
+
+  @override
+  String get gradingPromoteAction => 'ترقية نتيجة التقييم';
+
+  @override
+  String get gradingPromotePromptTitle => 'ترقية نتيجة التقييم';
+
+  @override
+  String get gradingPromoteResultLabel => 'معرّف نتيجة التقييم';
+
+  @override
+  String get gradingPromoteResultHint => 'مثال: AR-00001';
+
+  @override
+  String get gradingPromotePolicyLabel => 'اسم السياسة';
+
+  @override
+  String get gradingPromotePolicyHint => 'مثال: SGP-MATH-G7';
+
+  @override
+  String gradingPromoteSuccess(String id) {
+    return 'تمت الترقية إلى سجل درجة $id.';
+  }
+
+  @override
+  String get gradingPromoteSuccessFallback => 'تمت ترقية نتيجة التقييم.';
+
+  @override
+  String gradingPromoteError(String message) {
+    return 'تعذّرت الترقية: $message';
+  }
+
+  @override
   String get operationsReplayAction => 'إعادة تشغيل';
 
   @override
@@ -3053,4 +3097,35 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get privacyRequestCategoryCommunications => 'التواصل';
+
+  @override
+  String get governanceApproveSettingsAction => 'اعتماد الإعدادات';
+
+  @override
+  String get governanceApproveSettingsPromptTitle => 'اعتماد إعدادات الحوكمة';
+
+  @override
+  String get governanceApproveSettingsVersionLabel => 'إصدار السياسة';
+
+  @override
+  String get governanceApproveSettingsVersionHint => 'مثال: 3';
+
+  @override
+  String get governanceApproveSettingsReasonLabel => 'السبب (اختياري)';
+
+  @override
+  String get governanceApproveSettingsReasonHint => 'لماذا الاعتماد مطلوب؟';
+
+  @override
+  String governanceApproveSettingsSuccess(int version) {
+    return 'تم اعتماد إصدار السياسة $version.';
+  }
+
+  @override
+  String get governanceApproveSettingsSuccessFallback => 'تم اعتماد الإعدادات.';
+
+  @override
+  String governanceApproveSettingsError(String message) {
+    return 'تعذّر اعتماد الإعدادات: $message';
+  }
 }

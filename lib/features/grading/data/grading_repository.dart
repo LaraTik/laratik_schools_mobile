@@ -23,20 +23,23 @@
 //   * `correct_school_grade_record` — admin corrects an
 //     existing grade record. Mints a fresh UUID for the
 //     `Idempotency-Key` header.
-//
-// Write flows (deferred to follow-up turns):
-//   * `promote_school_assessment_result` — admin promotes
-//     a grade from an assessment result to a grade record.
 //   * `approve_school_subject_grade_policy` — admin approves
-//     a pending policy.
+//     a pending policy. Mints a fresh UUID for the
+//     `Idempotency-Key` header.
+//   * `promote_school_assessment_result` — admin promotes
+//     a graded assessment result into a grade record
+//     using a named policy. Mints a fresh UUID for the
+//     `Idempotency-Key` header.
 
 import 'package:laratik_schools_api/laratik_schools_api.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../core/result.dart';
+import 'approved_policy.dart';
 import 'grade_record_correction.dart';
 import 'grading_failure.dart';
 import 'grading_overview.dart';
+import 'promoted_result.dart';
 
 class GradingRepository {
   GradingRepository({
@@ -195,6 +198,74 @@ class GradingRepository {
         );
       }
       return Ok(value: CorrectedGradeRecord.fromJson(data.toJson()));
+    } on Exception catch (e) {
+      return Err(error: _exceptionFailure(e));
+    }
+  }
+
+  /// Approve a pending subject grade policy. The v1 server
+  /// requires `require_grade_approval_access()` (admin role)
+  /// and the SDK takes the policy name as a top-level
+  /// argument (NOT inside a `payload` envelope). The
+  /// repository mints a fresh UUID for the `Idempotency-Key`
+  /// header so a retry of the same approve is safe to send
+  /// again.
+  Future<Result<ApprovedPolicy, GradingFailure>> approveSubjectGradePolicy({
+    required String policyName,
+  }) async {
+    try {
+      final response = await _api.approveSchoolSubjectGradePolicy(
+        policyName: policyName,
+        idempotencyKey: _uuid.v4(),
+      );
+      final data = response.data;
+      if (response.error != null) {
+        return Err(error: _failureFromApi(response.error));
+      }
+      if (data == null) {
+        return const Err(
+          error: GradingFailure(
+            code: 'EMPTY_RESPONSE',
+            message: 'The server returned no approved policy data.',
+          ),
+        );
+      }
+      return Ok(value: ApprovedPolicy.fromJson(data.toJson()));
+    } on Exception catch (e) {
+      return Err(error: _exceptionFailure(e));
+    }
+  }
+
+  /// Promote a graded assessment result into a grade
+  /// record using a named policy. The v1 server requires
+  /// `require_grade_approval_access()` (admin role) and
+  /// the SDK takes the assessment result name + the
+  /// policy name as top-level arguments. The repository
+  /// mints a fresh UUID for the `Idempotency-Key` header.
+  Future<Result<PromotedAssessmentResult, GradingFailure>>
+      promoteAssessmentResult({
+    required String assessmentResultName,
+    required String policyName,
+  }) async {
+    try {
+      final response = await _api.promoteSchoolAssessmentResult(
+        assessmentResultName: assessmentResultName,
+        policyName: policyName,
+        idempotencyKey: _uuid.v4(),
+      );
+      final data = response.data;
+      if (response.error != null) {
+        return Err(error: _failureFromApi(response.error));
+      }
+      if (data == null) {
+        return const Err(
+          error: GradingFailure(
+            code: 'EMPTY_RESPONSE',
+            message: 'The server returned no promotion data.',
+          ),
+        );
+      }
+      return Ok(value: PromotedAssessmentResult.fromJson(data.toJson()));
     } on Exception catch (e) {
       return Err(error: _exceptionFailure(e));
     }

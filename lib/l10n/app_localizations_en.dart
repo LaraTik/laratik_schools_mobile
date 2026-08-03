@@ -2806,6 +2806,50 @@ class AppLocalizationsEn extends AppLocalizations {
       'Enter the grade ID (e.g. GR-00001)';
 
   @override
+  String get gradingApprovePolicyAction => 'Approve policy';
+
+  @override
+  String gradingApprovePolicySuccess(String name) {
+    return 'Approved $name.';
+  }
+
+  @override
+  String gradingApprovePolicyError(String message) {
+    return 'Could not approve policy: $message';
+  }
+
+  @override
+  String get gradingPromoteAction => 'Promote assessment result';
+
+  @override
+  String get gradingPromotePromptTitle => 'Promote assessment result';
+
+  @override
+  String get gradingPromoteResultLabel => 'Assessment result ID';
+
+  @override
+  String get gradingPromoteResultHint => 'e.g. AR-00001';
+
+  @override
+  String get gradingPromotePolicyLabel => 'Policy name';
+
+  @override
+  String get gradingPromotePolicyHint => 'e.g. SGP-MATH-G7';
+
+  @override
+  String gradingPromoteSuccess(String id) {
+    return 'Promoted to grade record $id.';
+  }
+
+  @override
+  String get gradingPromoteSuccessFallback => 'Assessment result promoted.';
+
+  @override
+  String gradingPromoteError(String message) {
+    return 'Could not promote: $message';
+  }
+
+  @override
   String get operationsReplayAction => 'Replay';
 
   @override
@@ -2991,4 +3035,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacyRequestCategoryCommunications => 'Communications';
+
+  @override
+  String get governanceApproveSettingsAction => 'Approve settings';
+
+  @override
+  String get governanceApproveSettingsPromptTitle =>
+      'Approve governance settings';
+
+  @override
+  String get governanceApproveSettingsVersionLabel => 'Policy version';
+
+  @override
+  String get governanceApproveSettingsVersionHint => 'e.g. 3';
+
+  @override
+  String get governanceApproveSettingsReasonLabel => 'Reason (optional)';
+
+  @override
+  String get governanceApproveSettingsReasonHint =>
+      'Why is the approval needed?';
+
+  @override
+  String governanceApproveSettingsSuccess(int version) {
+    return 'Approved policy version $version.';
+  }
+
+  @override
+  String get governanceApproveSettingsSuccessFallback => 'Settings approved.';
+
+  @override
+  String governanceApproveSettingsError(String message) {
+    return 'Could not approve settings: $message';
+  }
 }

@@ -1328,6 +1328,38 @@
   "gradingCorrectionAction": "Correct a grade",
   "gradingCorrectionPromptTitle": "Correct a grade",
   "gradingCorrectionPromptHint": "Enter the grade ID (e.g. GR-00001)",
+  "gradingApprovePolicyAction": "Approve policy",
+  "gradingApprovePolicySuccess": "Approved {name}.",
+  "@gradingApprovePolicySuccess": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "gradingApprovePolicyError": "Could not approve policy: {message}",
+  "@gradingApprovePolicyError": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
+  "gradingPromoteAction": "Promote assessment result",
+  "gradingPromotePromptTitle": "Promote assessment result",
+  "gradingPromoteResultLabel": "Assessment result ID",
+  "gradingPromoteResultHint": "e.g. AR-00001",
+  "gradingPromotePolicyLabel": "Policy name",
+  "gradingPromotePolicyHint": "e.g. SGP-MATH-G7",
+  "gradingPromoteSuccess": "Promoted to grade record {id}.",
+  "@gradingPromoteSuccess": {
+    "placeholders": {
+      "id": { "type": "String" }
+    }
+  },
+  "gradingPromoteSuccessFallback": "Assessment result promoted.",
+  "gradingPromoteError": "Could not promote: {message}",
+  "@gradingPromoteError": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
 
   "operationsReplayAction": "Replay",
   "operationsReceiveCallbackAction": "Receive callback",
@@ -1419,5 +1451,24 @@
   "privacyRequestCategoryGrades": "Grades",
   "privacyRequestCategoryFees": "Fees",
   "privacyRequestCategoryHealth": "Health",
-  "privacyRequestCategoryCommunications": "Communications"
+  "privacyRequestCategoryCommunications": "Communications",
+  "governanceApproveSettingsAction": "Approve settings",
+  "governanceApproveSettingsPromptTitle": "Approve governance settings",
+  "governanceApproveSettingsVersionLabel": "Policy version",
+  "governanceApproveSettingsVersionHint": "e.g. 3",
+  "governanceApproveSettingsReasonLabel": "Reason (optional)",
+  "governanceApproveSettingsReasonHint": "Why is the approval needed?",
+  "governanceApproveSettingsSuccess": "Approved policy version {version}.",
+  "@governanceApproveSettingsSuccess": {
+    "placeholders": {
+      "version": { "type": "int" }
+    }
+  },
+  "governanceApproveSettingsSuccessFallback": "Settings approved.",
+  "governanceApproveSettingsError": "Could not approve settings: {message}",
+  "@governanceApproveSettingsError": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  }
 }

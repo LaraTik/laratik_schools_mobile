@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: Proprietary
-// Admin "Grading" surface — read-only overview + policies.
+// Admin "Grading" surface — read-only overview + policies +
+// write flows.
 //
 // The screen has two tabs:
 //   * **Overview** — top-level KPIs (total / published /
@@ -8,9 +9,12 @@
 //     as a chip strip + a feature / coverage sub-line.
 //   * **Policies** — the list of subject grade policies
 //     with the subject, grade band, pass threshold, and
-//     approval status per row. The header shows the
-//     permissions context (read roles + required roles)
-//     so the admin can see who can view / approve.
+//     approval status per row. Each row ships a per-policy
+//     **Approve** action (calls
+//     `approve_school_subject_grade_policy`); the AppBar
+//     also ships a **Promote** action that opens a 2-field
+//     prompt (assessment result id + policy name) and calls
+//     `promote_school_assessment_result`.
 //
 // Every user-facing string is locale-aware via
 // [AppLocalizations.of(context)]; the chevron mirrors itself
@@ -64,6 +68,11 @@ class GradingScreen extends ConsumerWidget {
               tooltip: l.gradingCorrectionAction,
               icon: const Icon(Icons.assignment_turned_in_outlined),
               onPressed: () => _showGradeIdPrompt(context, l),
+            ),
+            IconButton(
+              tooltip: l.gradingPromoteAction,
+              icon: const Icon(Icons.upgrade_outlined),
+              onPressed: () => _showPromoteResultPrompt(context, ref, l),
             ),
             IconButton(
               tooltip: l.commonRefresh,
@@ -634,13 +643,26 @@ class _PermissionsCard extends StatelessWidget {
   }
 }
 
-class _PolicyRow extends StatelessWidget {
+class _PolicyRow extends ConsumerStatefulWidget {
   const _PolicyRow({required this.tokens, required this.policy});
   final DesignTokens tokens;
   final SubjectGradePolicy policy;
 
   @override
+  ConsumerState<_PolicyRow> createState() => _PolicyRowState();
+}
+
+class _PolicyRowState extends ConsumerState<_PolicyRow> {
+  bool _approving = false;
+
+  bool get _isApprovable =>
+      widget.policy.statusFamily != 'approved' &&
+      widget.policy.statusFamily != 'rejected';
+
+  @override
   Widget build(BuildContext context) {
+    final tokens = widget.tokens;
+    final policy = widget.policy;
     final l = AppLocalizations.of(context);
     return Material(
       color: tokens.surface.surface,
@@ -734,17 +756,63 @@ class _PolicyRow extends StatelessWidget {
                   ],
                 ),
               ),
-              Icon(
-                // Mirror the chevron under RTL so the visual
-                // "next →" stays consistent with the text flow.
-                Directionality.of(context) == TextDirection.rtl
-                    ? Icons.chevron_left
-                    : Icons.chevron_right,
-                color: tokens.text.tertiary,
-              ),
+              // Per-row "Approve" action. Disabled once the
+              // policy is already approved or rejected so the
+              // admin doesn't accidentally re-call the write
+              // flow on a terminal state.
+              if (_isApprovable)
+                IconButton(
+                  tooltip: l.gradingApprovePolicyAction,
+                  icon: _approving
+                      ? SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(
+                            color: tokens.brand.primary,
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : const Icon(Icons.check_circle_outline),
+                  onPressed: _approving
+                      ? null
+                      : () => _onApprove(context, policy),
+                ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Future<void> _onApprove(
+    BuildContext context,
+    SubjectGradePolicy policy,
+  ) async {
+    final l = AppLocalizations.of(context);
+    final tokens = widget.tokens;
+    final messenger = ScaffoldMessenger.of(context);
+    setState(() => _approving = true);
+    final result = await approveSubjectGradePolicy(
+      ref,
+      policyName: policy.id,
+    );
+    if (!context.mounted) return;
+    setState(() => _approving = false);
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(
+          switch (result) {
+            Ok() => l.gradingApprovePolicySuccess(policy.name),
+            Err(:final error) => l.gradingApprovePolicyError(
+                (error as GradingFailure).message,
+              ),
+          },
+        ),
+        duration: const Duration(seconds: 3),
+        backgroundColor: switch (result) {
+          Ok() => tokens.status.success,
+          Err() => tokens.status.error,
+        },
       ),
     );
   }
@@ -819,4 +887,95 @@ Future<void> _showGradeIdPrompt(
   );
   if (result == null || result.isEmpty || !context.mounted) return;
   context.go('/shell/grading/correct/$result');
+}
+
+/// Show a 2-field prompt that asks the admin for the
+/// assessment result id + the policy name, then calls
+/// `promote_school_assessment_result` on Continue. The
+/// v1 SDK doesn't expose a "list assessment results"
+/// endpoint on the mobile SDK today, so the admin
+/// enters both ids (the same pattern as the
+/// "Correct a grade" prompt + the teacher manual-grade
+/// form).
+Future<void> _showPromoteResultPrompt(
+  BuildContext context,
+  WidgetRef ref,
+  AppLocalizations l,
+) async {
+  final resultController = TextEditingController();
+  final policyController = TextEditingController();
+  final result = await showDialog<(String, String)>(
+    context: context,
+    builder: (ctx) {
+      return AlertDialog(
+        title: Text(l.gradingPromotePromptTitle),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextField(
+                controller: resultController,
+                autofocus: true,
+                decoration: InputDecoration(
+                  labelText: l.gradingPromoteResultLabel,
+                  hintText: l.gradingPromoteResultHint,
+                ),
+              ),
+              SizedBox(height: 12),
+              TextField(
+                controller: policyController,
+                decoration: InputDecoration(
+                  labelText: l.gradingPromotePolicyLabel,
+                  hintText: l.gradingPromotePolicyHint,
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text(l.commonCancel),
+          ),
+          FilledButton.tonal(
+            onPressed: () {
+              final result = resultController.text.trim();
+              final policy = policyController.text.trim();
+              if (result.isEmpty || policy.isEmpty) return;
+              Navigator.of(ctx).pop((result, policy));
+            },
+            child: Text(l.commonContinue),
+          ),
+        ],
+      );
+    },
+  );
+  if (result == null || !context.mounted) return;
+  final messenger = ScaffoldMessenger.of(context);
+  final tokens = context.laratik;
+  final outcome = await promoteAssessmentResult(
+    ref,
+    assessmentResultName: result.$1,
+    policyName: result.$2,
+  );
+  messenger.showSnackBar(
+    SnackBar(
+      content: Text(
+        switch (outcome) {
+          Ok(:final value) => value.hasGradeRecord
+              ? l.gradingPromoteSuccess(value.gradeRecord)
+              : l.gradingPromoteSuccessFallback,
+          Err(:final error) => l.gradingPromoteError(
+              (error as GradingFailure).message,
+            ),
+        },
+      ),
+      duration: const Duration(seconds: 3),
+      backgroundColor: switch (outcome) {
+        Ok() => tokens.status.success,
+        Err() => tokens.status.error,
+      },
+    ),
+  );
 }

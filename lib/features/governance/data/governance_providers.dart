@@ -31,6 +31,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/result.dart';
 import '../../people/data/person_providers.dart';
+import 'approved_settings.dart';
 import 'governance_failure.dart';
 import 'governance_request.dart';
 import 'governance_repository.dart';
@@ -143,6 +144,33 @@ Future<Result<void, GovernanceFailure>> setPrivacyLegalHold(
 Future<Result<void, GovernanceFailure>> evaluateRetention(WidgetRef ref) async {
   final repo = ref.read(governanceRepositoryProvider);
   final result = await repo.evaluateRetention();
+  if (result is Ok) {
+    ref.invalidate(privacyRequestsProvider);
+  }
+  return result;
+}
+
+/// Top-level helper to approve a pending data governance
+/// settings change. The repository mints a fresh UUID for
+/// the `Idempotency-Key` header. Takes a [WidgetRef] (not
+/// a [Ref]) because the only callers are widget-side
+/// helpers.
+///
+/// On success the list provider is invalidated so the
+/// privacy list re-fetches the latest state (some
+/// governance settings changes cascade into the per-row
+/// retention policy).
+Future<Result<ApprovedGovernanceSettings, GovernanceFailure>>
+    approveDataGovernanceSettings(
+  WidgetRef ref, {
+  int? policyVersion,
+  String? reason,
+}) async {
+  final repo = ref.read(governanceRepositoryProvider);
+  final result = await repo.approveDataGovernanceSettings(
+    policyVersion: policyVersion,
+    reason: reason,
+  );
   if (result is Ok) {
     ref.invalidate(privacyRequestsProvider);
   }
