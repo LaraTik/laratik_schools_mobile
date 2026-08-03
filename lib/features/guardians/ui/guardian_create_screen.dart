@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:laratik_schools_api/laratik_schools_api.dart';
 
 import '../../../core/result.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../ui/design_tokens.dart';
 import '../../../ui/widgets/ls_button.dart';
 import '../../../ui/widgets/ls_empty_state.dart';
@@ -142,6 +143,7 @@ class _GuardianCreateScreenState extends ConsumerState<GuardianCreateScreen> {
       isScrollControlled: true,
       builder: (sheetContext) {
         final tokens = sheetContext.laratik;
+        final l = AppLocalizations.of(sheetContext);
         return SafeArea(
           child: Padding(
             padding: EdgeInsets.all(tokens.space.lg),
@@ -154,7 +156,7 @@ class _GuardianCreateScreenState extends ConsumerState<GuardianCreateScreen> {
                     Icon(Icons.check_circle, color: tokens.status.success),
                     SizedBox(width: tokens.space.sm),
                     Text(
-                      'Guardian created',
+                      l.guardianCreateSuccessTitle,
                       style: tokens.typography.titleLarge.copyWith(
                         color: tokens.text.primary,
                       ),
@@ -164,7 +166,7 @@ class _GuardianCreateScreenState extends ConsumerState<GuardianCreateScreen> {
                 SizedBox(height: tokens.space.sm),
                 Text(
                   result.guardianName.isEmpty
-                      ? 'The guardian record is on file.'
+                      ? l.guardianCreateSuccessFallback
                       : result.guardianName,
                   style: tokens.typography.bodyMedium.copyWith(
                     color: tokens.text.secondary,
@@ -175,7 +177,7 @@ class _GuardianCreateScreenState extends ConsumerState<GuardianCreateScreen> {
                   children: [
                     Expanded(
                       child: LsButton.secondary(
-                        label: 'Create another',
+                        label: l.guardianCreateAnotherAction,
                         icon: Icons.add,
                         onPressed: () {
                           Navigator.of(sheetContext).pop();
@@ -186,7 +188,7 @@ class _GuardianCreateScreenState extends ConsumerState<GuardianCreateScreen> {
                     SizedBox(width: tokens.space.sm),
                     Expanded(
                       child: LsButton.primary(
-                        label: 'Open record',
+                        label: l.guardianCreateOpenRecordAction,
                         icon: Icons.arrow_forward,
                         onPressed: () {
                           Navigator.of(sheetContext).pop();
@@ -222,6 +224,7 @@ class _GuardianCreateScreenState extends ConsumerState<GuardianCreateScreen> {
   @override
   Widget build(BuildContext context) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     _isWide = MediaQuery.sizeOf(context).width >= 720;
     final asyncContext = ref.watch(guardianSetupContextProvider(null));
     return Scaffold(
@@ -234,7 +237,7 @@ class _GuardianCreateScreenState extends ConsumerState<GuardianCreateScreen> {
           onPressed: () => context.go('/shell/guardians'),
         ),
         title: Text(
-          'New guardian',
+          l.guardianCreateScreenTitle,
           style: tokens.typography.titleLarge.copyWith(
             color: tokens.text.primary,
           ),
@@ -242,33 +245,37 @@ class _GuardianCreateScreenState extends ConsumerState<GuardianCreateScreen> {
       ),
       body: asyncContext.when(
         data: (result) => switch (result) {
-          Ok(:final value) => _buildForm(value, tokens),
+          Ok(:final value) => _buildForm(value, tokens, l),
           Err(:final error) => LsStateView.error(
               icon: Icons.error_outline,
-              title: 'Could not load the form schema',
+              title: l.guardianCreateErrorTitle,
               message: error.message,
               action: LsButton.primary(
-                label: 'Try again',
+                label: l.commonTryAgain,
                 expand: false,
                 onPressed: () =>
                     ref.invalidate(guardianSetupContextProvider(null)),
               ),
             ),
         },
-        loading: () => const LsStateView.loading(
-          title: 'Loading form',
-          message: 'Fetching the school guardian setup context.',
+        loading: () => LsStateView.loading(
+          title: l.guardianCreateLoadingTitle,
+          message: l.guardianCreateLoadingMessage,
         ),
         error: (err, _) => LsStateView.error(
           icon: Icons.error_outline,
-          title: 'Could not load the form schema',
+          title: l.guardianCreateErrorTitle,
           message: err.toString(),
         ),
       ),
     );
   }
 
-  Widget _buildForm(JsonMap setupContext, DesignTokens tokens) {
+  Widget _buildForm(
+    JsonMap setupContext,
+    DesignTokens tokens,
+    AppLocalizations l,
+  ) {
     final defaults = setupContext['defaults'] is JsonMap
         ? setupContext['defaults'] as JsonMap
         : const <String, Object?>{};
@@ -277,9 +284,9 @@ class _GuardianCreateScreenState extends ConsumerState<GuardianCreateScreen> {
       child: ListView(
         padding: EdgeInsets.all(tokens.space.md),
         children: [
-          _SectionLabel('Identity', tokens: tokens),
+          _SectionLabel(l.guardianCreateIdentityHeader, tokens: tokens),
           LsTextField(
-            label: 'Guardian name',
+            label: l.guardianCreateNameLabel,
             required: true,
             controller: _nameController,
             hint: defaults['guardian_name']?.toString() ?? '',
@@ -287,19 +294,19 @@ class _GuardianCreateScreenState extends ConsumerState<GuardianCreateScreen> {
             onChanged: (_) => _onFieldChanged(),
           ),
           SizedBox(height: tokens.space.md),
-          _SectionLabel('Relation', tokens: tokens),
+          _SectionLabel(l.guardianCreateRelationHeader, tokens: tokens),
           LsTextField(
-            label: 'Relation',
+            label: l.guardianCreateRelationLabel,
             controller: _relationController,
-            hint: 'Father, Mother, …',
+            hint: l.guardianCreateRelationHint,
             errorText: _errorFor('relation'),
             onChanged: (_) => _onFieldChanged(),
           ),
           SizedBox(height: tokens.space.md),
-          _SectionLabel('Contact', tokens: tokens),
+          _SectionLabel(l.guardianCreateContactHeader, tokens: tokens),
           _buildFieldsColumnOrRow([
             LsTextField(
-              label: 'Phone',
+              label: l.guardianCreatePhoneLabel,
               required: true,
               controller: _phoneController,
               keyboardType: TextInputType.phone,
@@ -307,7 +314,7 @@ class _GuardianCreateScreenState extends ConsumerState<GuardianCreateScreen> {
               onChanged: (_) => _onFieldChanged(),
             ),
             LsTextField(
-              label: 'Email',
+              label: l.guardianCreateEmailLabel,
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
               errorText: _errorFor('email'),
@@ -316,22 +323,22 @@ class _GuardianCreateScreenState extends ConsumerState<GuardianCreateScreen> {
           ], tokens),
           SizedBox(height: tokens.space.md),
           LsTextField(
-            label: 'Occupation',
+            label: l.guardianCreateOccupationLabel,
             controller: _occupationController,
             errorText: _errorFor('occupation'),
             onChanged: (_) => _onFieldChanged(),
           ),
           SizedBox(height: tokens.space.md),
-          _SectionLabel('Address', tokens: tokens),
+          _SectionLabel(l.guardianCreateAddressHeader, tokens: tokens),
           LsTextField(
-            label: 'Address line 1',
+            label: l.guardianCreateAddressLine1Label,
             controller: _addressLine1Controller,
             errorText: _errorFor('address_line_1'),
             onChanged: (_) => _onFieldChanged(),
           ),
           SizedBox(height: tokens.space.md),
           LsTextField(
-            label: 'Address line 2',
+            label: l.guardianCreateAddressLine2Label,
             controller: _addressLine2Controller,
             errorText: _errorFor('address_line_2'),
             onChanged: (_) => _onFieldChanged(),
@@ -339,13 +346,13 @@ class _GuardianCreateScreenState extends ConsumerState<GuardianCreateScreen> {
           SizedBox(height: tokens.space.md),
           _buildFieldsColumnOrRow([
             LsTextField(
-              label: 'City',
+              label: l.guardianCreateCityLabel,
               controller: _cityController,
               errorText: _errorFor('city'),
               onChanged: (_) => _onFieldChanged(),
             ),
             LsTextField(
-              label: 'Postal code',
+              label: l.guardianCreatePostalCodeLabel,
               controller: _postalCodeController,
               errorText: _errorFor('postal_code'),
               onChanged: (_) => _onFieldChanged(),
@@ -354,13 +361,13 @@ class _GuardianCreateScreenState extends ConsumerState<GuardianCreateScreen> {
           SizedBox(height: tokens.space.md),
           _buildFieldsColumnOrRow([
             LsTextField(
-              label: 'Nationality',
+              label: l.guardianCreateNationalityLabel,
               controller: _nationalityController,
               errorText: _errorFor('nationality'),
               onChanged: (_) => _onFieldChanged(),
             ),
             LsTextField(
-              label: 'Country',
+              label: l.guardianCreateCountryLabel,
               controller: _countryController,
               errorText: _errorFor('country'),
               onChanged: (_) => _onFieldChanged(),
@@ -394,7 +401,9 @@ class _GuardianCreateScreenState extends ConsumerState<GuardianCreateScreen> {
             ),
           if (_generalError != null) SizedBox(height: tokens.space.md),
           LsButton.primary(
-            label: _submitting ? 'Creating…' : 'Create guardian',
+            label: _submitting
+                ? l.guardianCreateSubmitLoading
+                : l.guardianCreateSubmitAction,
             icon: Icons.check,
             isLoading: _submitting,
             onPressed: _submitting ? null : _submit,

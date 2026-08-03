@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../ui/design_tokens.dart';
 import '../../../ui/widgets/ls_button.dart';
 import '../../../ui/widgets/ls_empty_state.dart';
@@ -49,6 +50,7 @@ class _GuardiansListScreenState extends ConsumerState<GuardiansListScreen> {
   @override
   Widget build(BuildContext context) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     final filter = ref.watch(guardianFilterProvider);
     final asyncPage = ref.watch(guardianListProvider);
 
@@ -59,21 +61,21 @@ class _GuardiansListScreenState extends ConsumerState<GuardiansListScreen> {
         elevation: 0,
         scrolledUnderElevation: 1,
         title: Text(
-          'Guardians',
+          l.guardianListScreenTitle,
           style: tokens.typography.titleLarge.copyWith(
             color: tokens.text.primary,
           ),
         ),
         actions: [
           IconButton(
-            tooltip: 'Refresh',
+            tooltip: l.commonRefresh,
             icon: const Icon(Icons.refresh),
             onPressed: () => ref.read(guardianListProvider.notifier).refresh(),
           ),
           Padding(
-            padding: EdgeInsets.only(right: tokens.space.sm),
+            padding: EdgeInsetsDirectional.only(end: tokens.space.sm),
             child: LsButton.primary(
-              label: 'New guardian',
+              label: l.guardianListNewGuardianAction,
               icon: Icons.person_add,
               expand: false,
               onPressed: () => context.go('/shell/guardians/new'),
@@ -83,7 +85,7 @@ class _GuardiansListScreenState extends ConsumerState<GuardiansListScreen> {
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(56 + tokens.space.md * 2),
           child: Padding(
-            padding: EdgeInsets.fromLTRB(
+            padding: EdgeInsetsDirectional.fromSTEB(
               tokens.space.md,
               0,
               tokens.space.md,
@@ -93,7 +95,7 @@ class _GuardiansListScreenState extends ConsumerState<GuardiansListScreen> {
               children: [
                 LsSearchBar(
                   initialValue: filter.search,
-                  placeholder: 'Search by name, phone, or email',
+                  placeholder: l.guardianListSearchHint,
                   onChanged: (value) {
                     ref.read(guardianFilterProvider.notifier).update(
                           (f) => f.copyWith(search: value),
@@ -110,12 +112,12 @@ class _GuardiansListScreenState extends ConsumerState<GuardiansListScreen> {
       body: RefreshIndicator(
         onRefresh: () => ref.read(guardianListProvider.notifier).refresh(),
         child: asyncPage.when(
-          data: (page) => _buildList(page, filter.isEmpty, tokens),
-          loading: () => const LsStateView.loading(
-            title: 'Loading guardians',
-            message: 'Fetching the latest roster from the server.',
+          data: (page) => _buildList(page, filter.isEmpty, tokens, l),
+          loading: () => LsStateView.loading(
+            title: l.guardianListLoadingTitle,
+            message: l.guardianListLoadingMessage,
           ),
-          error: (err, _) => _buildError(err, tokens),
+          error: (err, _) => _buildError(err, tokens, l),
         ),
       ),
     );
@@ -125,6 +127,7 @@ class _GuardiansListScreenState extends ConsumerState<GuardiansListScreen> {
     GuardianPage page,
     bool filterIsEmpty,
     DesignTokens tokens,
+    AppLocalizations l,
   ) {
     final guardians = page.guardians;
     if (guardians.isEmpty) {
@@ -135,14 +138,14 @@ class _GuardiansListScreenState extends ConsumerState<GuardiansListScreen> {
           LsStateView.empty(
             icon: Icons.people_outline,
             title: filterIsEmpty
-                ? 'No guardians yet'
-                : 'No guardians match the current filter',
+                ? l.guardianListEmptyTitle
+                : l.guardianListEmptyFilterTitle,
             message: filterIsEmpty
-                ? 'Add the first guardian to get started.'
-                : 'Try clearing the search or the relation filter.',
+                ? l.guardianListEmptyMessage
+                : l.guardianListEmptyFilterMessage,
             action: filterIsEmpty
                 ? LsButton.primary(
-                    label: 'Add guardian',
+                    label: l.guardianListAddGuardianAction,
                     icon: Icons.person_add,
                     onPressed: () => context.go('/shell/guardians/new'),
                   )
@@ -153,7 +156,7 @@ class _GuardiansListScreenState extends ConsumerState<GuardiansListScreen> {
     }
     return ListView.separated(
       controller: _scrollController,
-      padding: EdgeInsets.only(bottom: tokens.space.xl),
+      padding: EdgeInsetsDirectional.only(bottom: tokens.space.xl),
       itemCount: guardians.length + (page.hasMore ? 1 : 0),
       separatorBuilder: (_, __) => Divider(
         height: 1,
@@ -184,7 +187,7 @@ class _GuardiansListScreenState extends ConsumerState<GuardiansListScreen> {
     );
   }
 
-  Widget _buildError(Object err, DesignTokens tokens) {
+  Widget _buildError(Object err, DesignTokens tokens, AppLocalizations l) {
     final failure = err is PersonFailure ? err : null;
     return ListView(
       physics: const AlwaysScrollableScrollPhysics(),
@@ -192,10 +195,10 @@ class _GuardiansListScreenState extends ConsumerState<GuardiansListScreen> {
         SizedBox(height: tokens.space.xxxl * 2),
         LsStateView.error(
           icon: Icons.error_outline,
-          title: 'Could not load guardians',
+          title: l.guardianListErrorTitle,
           message: failure?.message ?? err.toString(),
           action: LsButton.primary(
-            label: 'Try again',
+            label: l.commonTryAgain,
             icon: Icons.refresh,
             expand: false,
             onPressed: () => ref.read(guardianListProvider.notifier).refresh(),
@@ -213,20 +216,21 @@ class _FilterRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     return SizedBox(
       height: 36,
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: [
           _FilterChip(
-            label: filter.relation ?? 'Relation',
+            label: filter.relation ?? l.guardianListFilterRelation,
             selected: filter.relation != null,
-            onTap: () => _showRelationFilter(context, ref),
+            onTap: () => _showRelationFilter(context, ref, l),
           ),
           SizedBox(width: tokens.space.xs),
           if (!filter.isEmpty)
             _FilterChip(
-              label: 'Clear',
+              label: l.guardianListFilterClear,
               icon: Icons.close,
               onTap: () => ref
                   .read(guardianFilterProvider.notifier)
@@ -237,20 +241,24 @@ class _FilterRow extends ConsumerWidget {
     );
   }
 
-  void _showRelationFilter(BuildContext context, WidgetRef ref) {
+  void _showRelationFilter(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l,
+  ) {
     showModalBottomSheet<void>(
       context: context,
       builder: (context) => _SimpleFilterSheet(
-        title: 'Filter by relation',
-        options: const [
-          'Father',
-          'Mother',
-          'Brother',
-          'Sister',
-          'Uncle',
-          'Aunt',
-          'Grandparent',
-          'Other',
+        title: l.guardianListFilterRelationTitle,
+        options: [
+          l.guardianListFilterRelationFather,
+          l.guardianListFilterRelationMother,
+          l.guardianListFilterRelationBrother,
+          l.guardianListFilterRelationSister,
+          l.guardianListFilterRelationUncle,
+          l.guardianListFilterRelationAunt,
+          l.guardianListFilterRelationGrandparent,
+          l.guardianListFilterRelationOther,
         ],
         onSelected: (value) {
           ref.read(guardianFilterProvider.notifier).update(

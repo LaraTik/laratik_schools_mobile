@@ -504,4 +504,96 @@ void main() {
       },
     );
   });
+
+  group('Guardian surface localization', () {
+    test(
+      'guardian ARB keys are pinned in both English and Arabic',
+      () async {
+        final en = await AppLocalizations.delegate.load(const Locale('en'));
+        final ar = await AppLocalizations.delegate.load(const Locale('ar'));
+        // List
+        expect(en.guardianListScreenTitle, 'Guardians');
+        expect(en.guardianListSearchHint, 'Search by name, phone, or email');
+        expect(en.guardianListNewGuardianAction, 'New guardian');
+        expect(en.guardianListLoadingTitle, 'Loading guardians');
+        expect(en.guardianListEmptyTitle, 'No guardians yet');
+        expect(en.guardianListEmptyFilterTitle,
+            'No guardians match the current filter');
+        expect(en.guardianListAddGuardianAction, 'Add guardian');
+        expect(en.guardianListErrorTitle, 'Could not load guardians');
+        expect(en.guardianListFilterRelation, 'Relation');
+        expect(en.guardianListFilterRelationFather, 'Father');
+        expect(en.guardianListLinkedChip(1), '1 student');
+        expect(en.guardianListLinkedChip(3), '3 students');
+        // Detail
+        expect(en.guardianDetailScreenTitle, 'Guardian');
+        expect(en.guardianDetailLinkedHeader, 'Linked students');
+        expect(en.guardianDetailContactHeader, 'Contact');
+        expect(en.guardianDetailPhoneLabel, 'Phone');
+        expect(en.guardianDetailEmailLabel, 'Email');
+        expect(en.guardianDetailOccupationLabel, 'Occupation');
+        expect(en.guardianDetailAddressHeader, 'Address');
+        expect(en.guardianDetailCityLabel, 'City');
+        expect(en.guardianDetailNoDataLabel, 'No data on file.');
+        // Create
+        expect(en.guardianCreateScreenTitle, 'New guardian');
+        expect(en.guardianCreateIdentityHeader, 'Identity');
+        expect(en.guardianCreateNameLabel, 'Guardian name');
+        expect(en.guardianCreateRelationHeader, 'Relation');
+        expect(en.guardianCreatePhoneLabel, 'Phone');
+        expect(en.guardianCreateEmailLabel, 'Email');
+        expect(en.guardianCreateOccupationLabel, 'Occupation');
+        expect(en.guardianCreateAddressHeader, 'Address');
+        expect(en.guardianCreateAddressLine1Label, 'Address line 1');
+        expect(en.guardianCreateCityLabel, 'City');
+        expect(en.guardianCreatePostalCodeLabel, 'Postal code');
+        expect(en.guardianCreateCountryLabel, 'Country');
+        expect(en.guardianCreateSuccessTitle, 'Guardian created');
+        expect(en.guardianCreateAnotherAction, 'Create another');
+        expect(en.guardianCreateOpenRecordAction, 'Open record');
+        expect(en.guardianCreateSubmitAction, 'Create guardian');
+        for (final getter in [
+          () => ar.guardianListScreenTitle,
+          () => ar.guardianListSearchHint,
+          () => ar.guardianListNewGuardianAction,
+          () => ar.guardianListLoadingTitle,
+          () => ar.guardianListEmptyTitle,
+          () => ar.guardianListEmptyFilterTitle,
+          () => ar.guardianListAddGuardianAction,
+          () => ar.guardianListErrorTitle,
+          () => ar.guardianListFilterRelation,
+          () => ar.guardianListFilterRelationFather,
+          () => ar.guardianListLinkedChip(1),
+          () => ar.guardianListLinkedChip(3),
+          () => ar.guardianDetailScreenTitle,
+          () => ar.guardianDetailLinkedHeader,
+          () => ar.guardianDetailContactHeader,
+          () => ar.guardianDetailPhoneLabel,
+          () => ar.guardianDetailEmailLabel,
+          () => ar.guardianDetailOccupationLabel,
+          () => ar.guardianDetailAddressHeader,
+          () => ar.guardianDetailCityLabel,
+          () => ar.guardianDetailNoDataLabel,
+          () => ar.guardianCreateScreenTitle,
+          () => ar.guardianCreateIdentityHeader,
+          () => ar.guardianCreateNameLabel,
+          () => ar.guardianCreateRelationHeader,
+          () => ar.guardianCreatePhoneLabel,
+          () => ar.guardianCreateEmailLabel,
+          () => ar.guardianCreateOccupationLabel,
+          () => ar.guardianCreateAddressHeader,
+          () => ar.guardianCreateAddressLine1Label,
+          () => ar.guardianCreateCityLabel,
+          () => ar.guardianCreatePostalCodeLabel,
+          () => ar.guardianCreateCountryLabel,
+          () => ar.guardianCreateSuccessTitle,
+          () => ar.guardianCreateAnotherAction,
+          () => ar.guardianCreateOpenRecordAction,
+          () => ar.guardianCreateSubmitAction,
+        ]) {
+          expect(getter(), isNotEmpty, reason: 'AR missing');
+        }
+      },
+    );
+  });
 }

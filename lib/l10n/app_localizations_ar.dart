@@ -2141,4 +2141,214 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get staffCreateSubmitLoading => 'جارٍ الإنشاء…';
+
+  @override
+  String get guardianListScreenTitle => 'أولياء الأمور';
+
+  @override
+  String get guardianListSearchHint => 'ابحث بالاسم أو الهاتف أو البريد';
+
+  @override
+  String get guardianListNewGuardianAction => 'ولي أمر جديد';
+
+  @override
+  String get guardianListLoadingTitle => 'جارٍ تحميل أولياء الأمور';
+
+  @override
+  String get guardianListLoadingMessage => 'يجري جلب أحدث قائمة من الخادم.';
+
+  @override
+  String get guardianListEmptyTitle => 'لا يوجد أولياء أمور بعد';
+
+  @override
+  String get guardianListEmptyFilterTitle =>
+      'لا يوجد أولياء أمور يطابقون المرشح الحالي';
+
+  @override
+  String get guardianListEmptyMessage => 'أضف أول ولي أمر للبدء.';
+
+  @override
+  String get guardianListEmptyFilterMessage =>
+      'حاول مسح البحث أو مرشح العلاقة.';
+
+  @override
+  String get guardianListAddGuardianAction => 'إضافة ولي أمر';
+
+  @override
+  String get guardianListErrorTitle => 'تعذّر تحميل أولياء الأمور';
+
+  @override
+  String get guardianListFilterRelation => 'العلاقة';
+
+  @override
+  String get guardianListFilterClear => 'مسح';
+
+  @override
+  String get guardianListFilterRelationTitle => 'تصفية حسب العلاقة';
+
+  @override
+  String get guardianListFilterRelationFather => 'أب';
+
+  @override
+  String get guardianListFilterRelationMother => 'أم';
+
+  @override
+  String get guardianListFilterRelationBrother => 'أخ';
+
+  @override
+  String get guardianListFilterRelationSister => 'أخت';
+
+  @override
+  String get guardianListFilterRelationUncle => 'عم/خال';
+
+  @override
+  String get guardianListFilterRelationAunt => 'عمة/خالة';
+
+  @override
+  String get guardianListFilterRelationGrandparent => 'جد/جدة';
+
+  @override
+  String get guardianListFilterRelationOther => 'أخرى';
+
+  @override
+  String guardianListLinkedChip(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count طالب',
+      many: '$count طالبًا',
+      few: '$count طلاب',
+      two: 'طالبان',
+      one: 'طالب واحد',
+      zero: 'لا يوجد طلاب',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get guardianDetailScreenTitle => 'ولي الأمر';
+
+  @override
+  String get guardianDetailLoadingTitle => 'جارٍ تحميل ولي الأمر';
+
+  @override
+  String get guardianDetailErrorTitle => 'تعذّر تحميل ولي الأمر';
+
+  @override
+  String get guardianDetailLinkedHeader => 'الطلاب المرتبطون';
+
+  @override
+  String get guardianDetailContactHeader => 'التواصل';
+
+  @override
+  String get guardianDetailPhoneLabel => 'الهاتف';
+
+  @override
+  String get guardianDetailEmailLabel => 'البريد الإلكتروني';
+
+  @override
+  String get guardianDetailOccupationLabel => 'المهنة';
+
+  @override
+  String get guardianDetailAddressHeader => 'العنوان';
+
+  @override
+  String get guardianDetailAddressLine1Label => 'سطر العنوان 1';
+
+  @override
+  String get guardianDetailAddressLine2Label => 'سطر العنوان 2';
+
+  @override
+  String get guardianDetailCityLabel => 'المدينة';
+
+  @override
+  String get guardianDetailPostalCodeLabel => 'الرمز البريدي';
+
+  @override
+  String get guardianDetailCountryLabel => 'البلد';
+
+  @override
+  String get guardianDetailNationalityLabel => 'الجنسية';
+
+  @override
+  String get guardianDetailNoDataLabel => 'لا توجد بيانات.';
+
+  @override
+  String get guardianCreateScreenTitle => 'ولي أمر جديد';
+
+  @override
+  String get guardianCreateLoadingTitle => 'جارٍ تحميل النموذج';
+
+  @override
+  String get guardianCreateLoadingMessage =>
+      'يجري جلب إعدادات أولياء الأمور للمدرسة.';
+
+  @override
+  String get guardianCreateErrorTitle => 'تعذّر تحميل مخطط النموذج';
+
+  @override
+  String get guardianCreateIdentityHeader => 'الهوية';
+
+  @override
+  String get guardianCreateNameLabel => 'اسم ولي الأمر';
+
+  @override
+  String get guardianCreateRelationHeader => 'العلاقة';
+
+  @override
+  String get guardianCreateRelationLabel => 'العلاقة';
+
+  @override
+  String get guardianCreateRelationHint => 'أب، أم، …';
+
+  @override
+  String get guardianCreateContactHeader => 'التواصل';
+
+  @override
+  String get guardianCreatePhoneLabel => 'الهاتف';
+
+  @override
+  String get guardianCreateEmailLabel => 'البريد الإلكتروني';
+
+  @override
+  String get guardianCreateOccupationLabel => 'المهنة';
+
+  @override
+  String get guardianCreateAddressHeader => 'العنوان';
+
+  @override
+  String get guardianCreateAddressLine1Label => 'سطر العنوان 1';
+
+  @override
+  String get guardianCreateAddressLine2Label => 'سطر العنوان 2';
+
+  @override
+  String get guardianCreateCityLabel => 'المدينة';
+
+  @override
+  String get guardianCreatePostalCodeLabel => 'الرمز البريدي';
+
+  @override
+  String get guardianCreateNationalityLabel => 'الجنسية';
+
+  @override
+  String get guardianCreateCountryLabel => 'البلد';
+
+  @override
+  String get guardianCreateSuccessTitle => 'تم إنشاء ولي الأمر';
+
+  @override
+  String get guardianCreateSuccessFallback => 'سجل ولي الأمر موجود.';
+
+  @override
+  String get guardianCreateAnotherAction => 'إنشاء ولي أمر آخر';
+
+  @override
+  String get guardianCreateOpenRecordAction => 'فتح السجل';
+
+  @override
+  String get guardianCreateSubmitAction => 'إنشاء ولي أمر';
+
+  @override
+  String get guardianCreateSubmitLoading => 'جارٍ الإنشاء…';
 }

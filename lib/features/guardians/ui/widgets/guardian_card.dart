@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../../ui/design_tokens.dart';
 import '../../../../ui/widgets/ls_status_chip.dart';
 import '../../data/guardian.dart';
@@ -76,13 +77,16 @@ class GuardianCard extends StatelessWidget {
                 LsStatusChip(
                   label: linked.isEmpty
                       ? guardian.status
-                      : '${linked.length} student${linked.length == 1 ? '' : 's'}',
+                      : AppLocalizations.of(context)
+                          .guardianListLinkedChip(linked.length),
                   tone: linked.isEmpty ? LsChipTone.neutral : LsChipTone.brand,
                   icon: linked.isEmpty ? null : Icons.people_outline,
                 ),
                 SizedBox(width: tokens.space.xs),
                 Icon(
-                  Icons.chevron_right,
+                  Directionality.of(context) == TextDirection.rtl
+                      ? Icons.chevron_left
+                      : Icons.chevron_right,
                   size: 20,
                   color: tokens.text.tertiary,
                 ),

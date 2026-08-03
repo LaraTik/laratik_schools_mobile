@@ -2084,4 +2084,212 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get staffCreateSubmitLoading => 'Creating…';
+
+  @override
+  String get guardianListScreenTitle => 'Guardians';
+
+  @override
+  String get guardianListSearchHint => 'Search by name, phone, or email';
+
+  @override
+  String get guardianListNewGuardianAction => 'New guardian';
+
+  @override
+  String get guardianListLoadingTitle => 'Loading guardians';
+
+  @override
+  String get guardianListLoadingMessage =>
+      'Fetching the latest roster from the server.';
+
+  @override
+  String get guardianListEmptyTitle => 'No guardians yet';
+
+  @override
+  String get guardianListEmptyFilterTitle =>
+      'No guardians match the current filter';
+
+  @override
+  String get guardianListEmptyMessage =>
+      'Add the first guardian to get started.';
+
+  @override
+  String get guardianListEmptyFilterMessage =>
+      'Try clearing the search or the relation filter.';
+
+  @override
+  String get guardianListAddGuardianAction => 'Add guardian';
+
+  @override
+  String get guardianListErrorTitle => 'Could not load guardians';
+
+  @override
+  String get guardianListFilterRelation => 'Relation';
+
+  @override
+  String get guardianListFilterClear => 'Clear';
+
+  @override
+  String get guardianListFilterRelationTitle => 'Filter by relation';
+
+  @override
+  String get guardianListFilterRelationFather => 'Father';
+
+  @override
+  String get guardianListFilterRelationMother => 'Mother';
+
+  @override
+  String get guardianListFilterRelationBrother => 'Brother';
+
+  @override
+  String get guardianListFilterRelationSister => 'Sister';
+
+  @override
+  String get guardianListFilterRelationUncle => 'Uncle';
+
+  @override
+  String get guardianListFilterRelationAunt => 'Aunt';
+
+  @override
+  String get guardianListFilterRelationGrandparent => 'Grandparent';
+
+  @override
+  String get guardianListFilterRelationOther => 'Other';
+
+  @override
+  String guardianListLinkedChip(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count students',
+      one: '1 student',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get guardianDetailScreenTitle => 'Guardian';
+
+  @override
+  String get guardianDetailLoadingTitle => 'Loading guardian';
+
+  @override
+  String get guardianDetailErrorTitle => 'Could not load guardian';
+
+  @override
+  String get guardianDetailLinkedHeader => 'Linked students';
+
+  @override
+  String get guardianDetailContactHeader => 'Contact';
+
+  @override
+  String get guardianDetailPhoneLabel => 'Phone';
+
+  @override
+  String get guardianDetailEmailLabel => 'Email';
+
+  @override
+  String get guardianDetailOccupationLabel => 'Occupation';
+
+  @override
+  String get guardianDetailAddressHeader => 'Address';
+
+  @override
+  String get guardianDetailAddressLine1Label => 'Address line 1';
+
+  @override
+  String get guardianDetailAddressLine2Label => 'Address line 2';
+
+  @override
+  String get guardianDetailCityLabel => 'City';
+
+  @override
+  String get guardianDetailPostalCodeLabel => 'Postal code';
+
+  @override
+  String get guardianDetailCountryLabel => 'Country';
+
+  @override
+  String get guardianDetailNationalityLabel => 'Nationality';
+
+  @override
+  String get guardianDetailNoDataLabel => 'No data on file.';
+
+  @override
+  String get guardianCreateScreenTitle => 'New guardian';
+
+  @override
+  String get guardianCreateLoadingTitle => 'Loading form';
+
+  @override
+  String get guardianCreateLoadingMessage =>
+      'Fetching the school guardian setup context.';
+
+  @override
+  String get guardianCreateErrorTitle => 'Could not load the form schema';
+
+  @override
+  String get guardianCreateIdentityHeader => 'Identity';
+
+  @override
+  String get guardianCreateNameLabel => 'Guardian name';
+
+  @override
+  String get guardianCreateRelationHeader => 'Relation';
+
+  @override
+  String get guardianCreateRelationLabel => 'Relation';
+
+  @override
+  String get guardianCreateRelationHint => 'Father, Mother, …';
+
+  @override
+  String get guardianCreateContactHeader => 'Contact';
+
+  @override
+  String get guardianCreatePhoneLabel => 'Phone';
+
+  @override
+  String get guardianCreateEmailLabel => 'Email';
+
+  @override
+  String get guardianCreateOccupationLabel => 'Occupation';
+
+  @override
+  String get guardianCreateAddressHeader => 'Address';
+
+  @override
+  String get guardianCreateAddressLine1Label => 'Address line 1';
+
+  @override
+  String get guardianCreateAddressLine2Label => 'Address line 2';
+
+  @override
+  String get guardianCreateCityLabel => 'City';
+
+  @override
+  String get guardianCreatePostalCodeLabel => 'Postal code';
+
+  @override
+  String get guardianCreateNationalityLabel => 'Nationality';
+
+  @override
+  String get guardianCreateCountryLabel => 'Country';
+
+  @override
+  String get guardianCreateSuccessTitle => 'Guardian created';
+
+  @override
+  String get guardianCreateSuccessFallback => 'The guardian record is on file.';
+
+  @override
+  String get guardianCreateAnotherAction => 'Create another';
+
+  @override
+  String get guardianCreateOpenRecordAction => 'Open record';
+
+  @override
+  String get guardianCreateSubmitAction => 'Create guardian';
+
+  @override
+  String get guardianCreateSubmitLoading => 'Creating…';
 }

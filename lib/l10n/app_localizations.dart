@@ -3476,6 +3476,396 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Creating…'**
   String get staffCreateSubmitLoading;
+
+  /// No description provided for @guardianListScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Guardians'**
+  String get guardianListScreenTitle;
+
+  /// No description provided for @guardianListSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name, phone, or email'**
+  String get guardianListSearchHint;
+
+  /// No description provided for @guardianListNewGuardianAction.
+  ///
+  /// In en, this message translates to:
+  /// **'New guardian'**
+  String get guardianListNewGuardianAction;
+
+  /// No description provided for @guardianListLoadingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading guardians'**
+  String get guardianListLoadingTitle;
+
+  /// No description provided for @guardianListLoadingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Fetching the latest roster from the server.'**
+  String get guardianListLoadingMessage;
+
+  /// No description provided for @guardianListEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No guardians yet'**
+  String get guardianListEmptyTitle;
+
+  /// No description provided for @guardianListEmptyFilterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No guardians match the current filter'**
+  String get guardianListEmptyFilterTitle;
+
+  /// No description provided for @guardianListEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the first guardian to get started.'**
+  String get guardianListEmptyMessage;
+
+  /// No description provided for @guardianListEmptyFilterMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Try clearing the search or the relation filter.'**
+  String get guardianListEmptyFilterMessage;
+
+  /// No description provided for @guardianListAddGuardianAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Add guardian'**
+  String get guardianListAddGuardianAction;
+
+  /// No description provided for @guardianListErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load guardians'**
+  String get guardianListErrorTitle;
+
+  /// No description provided for @guardianListFilterRelation.
+  ///
+  /// In en, this message translates to:
+  /// **'Relation'**
+  String get guardianListFilterRelation;
+
+  /// No description provided for @guardianListFilterClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get guardianListFilterClear;
+
+  /// No description provided for @guardianListFilterRelationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by relation'**
+  String get guardianListFilterRelationTitle;
+
+  /// No description provided for @guardianListFilterRelationFather.
+  ///
+  /// In en, this message translates to:
+  /// **'Father'**
+  String get guardianListFilterRelationFather;
+
+  /// No description provided for @guardianListFilterRelationMother.
+  ///
+  /// In en, this message translates to:
+  /// **'Mother'**
+  String get guardianListFilterRelationMother;
+
+  /// No description provided for @guardianListFilterRelationBrother.
+  ///
+  /// In en, this message translates to:
+  /// **'Brother'**
+  String get guardianListFilterRelationBrother;
+
+  /// No description provided for @guardianListFilterRelationSister.
+  ///
+  /// In en, this message translates to:
+  /// **'Sister'**
+  String get guardianListFilterRelationSister;
+
+  /// No description provided for @guardianListFilterRelationUncle.
+  ///
+  /// In en, this message translates to:
+  /// **'Uncle'**
+  String get guardianListFilterRelationUncle;
+
+  /// No description provided for @guardianListFilterRelationAunt.
+  ///
+  /// In en, this message translates to:
+  /// **'Aunt'**
+  String get guardianListFilterRelationAunt;
+
+  /// No description provided for @guardianListFilterRelationGrandparent.
+  ///
+  /// In en, this message translates to:
+  /// **'Grandparent'**
+  String get guardianListFilterRelationGrandparent;
+
+  /// No description provided for @guardianListFilterRelationOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get guardianListFilterRelationOther;
+
+  /// No description provided for @guardianListLinkedChip.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 student} other{{count} students}}'**
+  String guardianListLinkedChip(int count);
+
+  /// No description provided for @guardianDetailScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Guardian'**
+  String get guardianDetailScreenTitle;
+
+  /// No description provided for @guardianDetailLoadingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading guardian'**
+  String get guardianDetailLoadingTitle;
+
+  /// No description provided for @guardianDetailErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load guardian'**
+  String get guardianDetailErrorTitle;
+
+  /// No description provided for @guardianDetailLinkedHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked students'**
+  String get guardianDetailLinkedHeader;
+
+  /// No description provided for @guardianDetailContactHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact'**
+  String get guardianDetailContactHeader;
+
+  /// No description provided for @guardianDetailPhoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get guardianDetailPhoneLabel;
+
+  /// No description provided for @guardianDetailEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get guardianDetailEmailLabel;
+
+  /// No description provided for @guardianDetailOccupationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Occupation'**
+  String get guardianDetailOccupationLabel;
+
+  /// No description provided for @guardianDetailAddressHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get guardianDetailAddressHeader;
+
+  /// No description provided for @guardianDetailAddressLine1Label.
+  ///
+  /// In en, this message translates to:
+  /// **'Address line 1'**
+  String get guardianDetailAddressLine1Label;
+
+  /// No description provided for @guardianDetailAddressLine2Label.
+  ///
+  /// In en, this message translates to:
+  /// **'Address line 2'**
+  String get guardianDetailAddressLine2Label;
+
+  /// No description provided for @guardianDetailCityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'City'**
+  String get guardianDetailCityLabel;
+
+  /// No description provided for @guardianDetailPostalCodeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Postal code'**
+  String get guardianDetailPostalCodeLabel;
+
+  /// No description provided for @guardianDetailCountryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Country'**
+  String get guardianDetailCountryLabel;
+
+  /// No description provided for @guardianDetailNationalityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Nationality'**
+  String get guardianDetailNationalityLabel;
+
+  /// No description provided for @guardianDetailNoDataLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'No data on file.'**
+  String get guardianDetailNoDataLabel;
+
+  /// No description provided for @guardianCreateScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New guardian'**
+  String get guardianCreateScreenTitle;
+
+  /// No description provided for @guardianCreateLoadingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading form'**
+  String get guardianCreateLoadingTitle;
+
+  /// No description provided for @guardianCreateLoadingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Fetching the school guardian setup context.'**
+  String get guardianCreateLoadingMessage;
+
+  /// No description provided for @guardianCreateErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load the form schema'**
+  String get guardianCreateErrorTitle;
+
+  /// No description provided for @guardianCreateIdentityHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Identity'**
+  String get guardianCreateIdentityHeader;
+
+  /// No description provided for @guardianCreateNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Guardian name'**
+  String get guardianCreateNameLabel;
+
+  /// No description provided for @guardianCreateRelationHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Relation'**
+  String get guardianCreateRelationHeader;
+
+  /// No description provided for @guardianCreateRelationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Relation'**
+  String get guardianCreateRelationLabel;
+
+  /// No description provided for @guardianCreateRelationHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Father, Mother, …'**
+  String get guardianCreateRelationHint;
+
+  /// No description provided for @guardianCreateContactHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact'**
+  String get guardianCreateContactHeader;
+
+  /// No description provided for @guardianCreatePhoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get guardianCreatePhoneLabel;
+
+  /// No description provided for @guardianCreateEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get guardianCreateEmailLabel;
+
+  /// No description provided for @guardianCreateOccupationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Occupation'**
+  String get guardianCreateOccupationLabel;
+
+  /// No description provided for @guardianCreateAddressHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get guardianCreateAddressHeader;
+
+  /// No description provided for @guardianCreateAddressLine1Label.
+  ///
+  /// In en, this message translates to:
+  /// **'Address line 1'**
+  String get guardianCreateAddressLine1Label;
+
+  /// No description provided for @guardianCreateAddressLine2Label.
+  ///
+  /// In en, this message translates to:
+  /// **'Address line 2'**
+  String get guardianCreateAddressLine2Label;
+
+  /// No description provided for @guardianCreateCityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'City'**
+  String get guardianCreateCityLabel;
+
+  /// No description provided for @guardianCreatePostalCodeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Postal code'**
+  String get guardianCreatePostalCodeLabel;
+
+  /// No description provided for @guardianCreateNationalityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Nationality'**
+  String get guardianCreateNationalityLabel;
+
+  /// No description provided for @guardianCreateCountryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Country'**
+  String get guardianCreateCountryLabel;
+
+  /// No description provided for @guardianCreateSuccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Guardian created'**
+  String get guardianCreateSuccessTitle;
+
+  /// No description provided for @guardianCreateSuccessFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'The guardian record is on file.'**
+  String get guardianCreateSuccessFallback;
+
+  /// No description provided for @guardianCreateAnotherAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Create another'**
+  String get guardianCreateAnotherAction;
+
+  /// No description provided for @guardianCreateOpenRecordAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Open record'**
+  String get guardianCreateOpenRecordAction;
+
+  /// No description provided for @guardianCreateSubmitAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Create guardian'**
+  String get guardianCreateSubmitAction;
+
+  /// No description provided for @guardianCreateSubmitLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Creating…'**
+  String get guardianCreateSubmitLoading;
 }
 
 class _AppLocalizationsDelegate
