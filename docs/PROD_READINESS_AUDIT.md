@@ -502,39 +502,70 @@ but the production bar (Phase 9 mobile-ready slice) is deferred.
 The operator who runs the school day-to-day. Today: can manage the
 student / staff / guardian / subject / class roster (Phase 1.x CRUD),
 capture attendance (Phase 1.4), browse the assessment catalog
-(Phase 5), and read the notifications inbox (Phase 6). Cannot yet:
-review fees / invoices, set grading policy, manage data imports,
-respond to privacy / retention requests, see the operations health
-surface (delivery, audit, replay), or look at academic analytics.
+(Phase 5), and read the notifications inbox (Phase 6). Eight admin
+surfaces ship on the dashboard (roster, attendance, fees, operations,
+governance, grading, data imports) + 6 admin / registrar write
+flows:
+* `correct_school_grade_record` (correct a grade score / max score)
+* `approve_school_subject_grade_policy` (approve a pending policy)
+* `promote_school_assessment_result` (promote a graded attempt to a
+  grade record)
+* `replay_school_delivery_event` (replay a failed delivery event)
+* `receive_school_delivery_callback` (receive a delivery callback)
+* `approve_school_data_governance_settings` (approve a settings
+  change)
+The only remaining admin deferrals: the data-import wizard upload
+step (blocked on the `file_picker` dep) + the v1-server
+`can_view_operations` / `can_view_governance` / `can_view_grading` /
+`can_view_imports` capabilities (the mobile currently uses
+`can_manage_branches` as the admin-only fallback gate).
 
 ### Student (primary role: `Student`)
 
 The user who takes exams. Today: sees the published exam catalog
 filtered by eligibility, completes an exam with autosave + submit,
-checks the result once it's published. Cannot yet: see "my grades"
-(history of grade records), "my attendance" (their own attendance
-history), or "my report cards" (the consolidated term report).
+checks the result once it's published. The "my records" detail
+shows the student's grades + attendance + guardians + recent
+enrollments; the "my fee invoices" tile launches the read-only fee
+plans list (server filters to the student's own plans); the
+"Submit a privacy request" tile launches the privacy request
+submit form (data access / rectification / erasure / consent
+withdrawal / legal hold). The locale surface is fully en + ar
+with the six ICU plural categories. Only the class-scoped
+notifications deep-link is deferred.
 
 ### Teacher (primary role: `Teacher`)
 
 The user who teaches classes and marks work. Today: lands on a
 dedicated teacher home with a hero "My classes" tile (live
 count from `myClassesProvider`) + attendance + notifications
-tiles. A new "My classes" tab in the bottom nav lists the
+tiles. A "My classes" tab in the bottom nav lists the
 teaching assignments owned by the current staff member, each
 tappable into the per-class detail (identity card + student
-roster filtered by `classGroupId`). Cannot yet: author exam
-plans / questions, or manually grade exam attempts. The
-`mark_exam_attempt` API exists server-side and is exposed via
-v1; the mobile has no UI for it.
+roster filtered by `classGroupId`). The "Exams" surface ships
+the read-only exam plan catalog + per-plan detail with the
+subject's question catalog + per-question authoring (text +
+type + marks + dynamic options) + per-question publish +
+exam publish + manual grading + **promote exam attempt** (the
+v1 `promote_school_exam_attempt` write flow, which turns a
+graded attempt into a grade record). Every user-facing string
+is locale-aware (en + ar).
 
 ### Parent (primary role: `Guardian`)
 
 The user who is the legal guardian of one or more students. Today:
-the mobile treats them as the same as a registrar — they see the
-roster screens. Cannot yet: see "my children" (the only students
-they are linked to via the guardian record), view their children's
-grades / attendance / report cards, or read their fee invoices.
+the "My family" picker lists only the students linked to the current
+guardian; tapping a child opens the per-child detail (identity,
+current enrollment, recent grades, attendance summary, guardians
+list). The "Fee invoices" tile shows the children's fee plans
+(server filters to the children's own plans). The "Submit a
+privacy request" tile launches the privacy request submit form
+on behalf of a linked child. The locale surface is fully en + ar.
+The only remaining deferral is `can_view_own_fees` (the v1
+server is expected to filter fee plans to the parent's children;
+the bottom-nav "Fees" tab remains capability-gated on
+`can_view_fees`, so parents launch the surface from the home
+tile rather than the bottom nav).
 
 ---
 

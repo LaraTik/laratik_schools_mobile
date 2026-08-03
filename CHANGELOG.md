@@ -6,7 +6,49 @@ and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-### Added
+### Added (v1 PROD-readiness sweep — 4 commits this turn)
+
+- **Parent + student privacy request submit form** (`7a1e5eb`).
+  New 5-tab choice-chip form at
+  `/shell/governance/submit/:requesterType/:subjectType/:subject`
+  for submitting a data access / rectification / erasure /
+  consent_withdrawal / legal_hold request. Two new home
+  tiles (parent + student) launch the form. Locale test
+  22 → 23.
+- **Admin grading + governance write flows** (`8ff9ca0`).
+  Three new admin write flows ship: per-row **Approve**
+  on the Grading Policies tab
+  (`approve_school_subject_grade_policy`),
+  **Promote assessment result** AppBar action on the
+  Grading surface
+  (`promote_school_assessment_result`), and
+  **Approve settings** AppBar action on the Governance
+  surface (`approve_school_data_governance_settings`).
+  Locale test 23 → 25.
+- **Teacher promote exam attempt write flow** (`b132d56`).
+  New **Promote attempt** AppBar action on the teacher
+  exam plan detail screen, calling
+  `promote_school_exam_attempt` with a
+  `payload: { 'attempt': <id> }` envelope + a fresh
+  UUID v4 for the `Idempotency-Key` header. Locale
+  test 25 → 26.
+- **Hardening pass — directional chevron on
+  `PersonCard`** (`5f66f73`). The person / student /
+  staff / guardian row tile was rendering a raw
+  `Icons.chevron_right` instead of the
+  `Directionality.of(context) == TextDirection.rtl
+? Icons.chevron_left : Icons.chevron_right` ternary
+  used by the other 24 surfaces. Replaced the raw
+  `Icon` with the directional pattern so the visual
+  "next →" mirrors correctly under RTL. The hardening
+  grep over `lib/` is now clean: no raw
+  `Icons.chevron_right` / `Icons.chevron_left`
+  survivors, no `MediaQuery.platformBrightnessOf`
+  call sites, no `EdgeInsets.only(left/right:)`
+  survivors, no
+  `hasCapability('(student|staff|guardian|academics|attendance).read')`
+  shorthand, and no hard-coded grade filter
+  literals.
 
 - **Teacher promote exam attempt write flow.** New
   **Promote attempt** AppBar action on the teacher exam
