@@ -350,6 +350,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeAdminOperationsSubtitle => 'صحة النظام، التسليم، سجل التدقيق';
 
   @override
+  String get homeAdminGovernance => 'الحوكمة';
+
+  @override
+  String get homeAdminGovernanceSubtitle =>
+      'طلبات الخصوصية، الحجز القانوني، الاحتفاظ';
+
+  @override
   String get homeAdminNotificationsSubtitle => 'صندوق الوارد + الإعلانات';
 
   @override
@@ -1020,4 +1027,103 @@ class AppLocalizationsAr extends AppLocalizations {
   String operationsAuditFromIp(String ip) {
     return 'من $ip';
   }
+
+  @override
+  String get governanceScreenTitle => 'الحوكمة';
+
+  @override
+  String get governanceLoadingTitle => 'جارٍ تحميل طلبات الخصوصية';
+
+  @override
+  String get governanceLoadingMessage =>
+      'نجمع أحدث قائمة للخصوصية والحجز القانوني.';
+
+  @override
+  String get governanceErrorTitle => 'تعذّر تحميل طلبات الخصوصية';
+
+  @override
+  String get governanceEmptyTitle => 'لا توجد طلبات خصوصية';
+
+  @override
+  String get governanceEmptyMessage =>
+      'القائمة فارغة. عندما يقدم ولي أمر أو موظف طلبًا (تصدير بيانات / حذف / موافقة / حجز قانوني)، سيظهر هنا للمراجعة.';
+
+  @override
+  String governanceQueueHeader(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count طلب خصوصية',
+      many: '$count طلباً للخصوصية',
+      few: '$count طلبات خصوصية',
+      two: 'طلبا خصوصية',
+      one: 'طلب خصوصية واحد',
+      zero: 'لا توجد طلبات',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String governanceLegalHoldCountChip(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count حالة حجز',
+      many: '$count حالة حجز',
+      few: '$count حالات حجز',
+      two: 'حالتا حجز',
+      one: 'حالة حجز واحدة',
+      zero: 'لا توجد حالات حجز',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get governanceLegalHoldChip => 'حجز قانوني';
+
+  @override
+  String get governanceUnknownSubject => 'موضوع غير معروف';
+
+  @override
+  String get governanceActionsTitle => 'إجراءات الطلب';
+
+  @override
+  String get governanceActionProcess => 'وضع تحت المراجعة';
+
+  @override
+  String get governanceActionProcessDescription =>
+      'نقل هذا الطلب إلى \"قيد المراجعة\" ليعرف الفريق أنه قيد المعالجة.';
+
+  @override
+  String get governanceActionApprove => 'الموافقة على الطلب';
+
+  @override
+  String get governanceActionApproveDescription =>
+      'الموافقة على هذا الطلب. سيتم إخطار مقدم الطلب وتسجيل الإجراء.';
+
+  @override
+  String get governanceActionSetHold => 'فرض حجز قانوني';
+
+  @override
+  String get governanceActionSetHoldDescription =>
+      'وضع هذا الطلب تحت حجز قانوني. ستبقى البيانات محفوظة حتى يُرفع الحجز.';
+
+  @override
+  String get governanceActionReleaseHold => 'رفع الحجز القانوني';
+
+  @override
+  String get governanceActionReleaseHoldDescription =>
+      'رفع الحجز القانوني. يمكن بعد ذلك الموافقة على الطلب أو رفضه.';
+
+  @override
+  String get governanceActionSuccess => 'تم تطبيق الإجراء.';
+
+  @override
+  String get governanceEvaluateRetentionTooltip => 'تشغيل تقييم الاحتفاظ';
+
+  @override
+  String get governanceEvaluateRetentionSuccess => 'بدأ تقييم الاحتفاظ.';
+
+  @override
+  String get governanceEvaluateRetentionFailure => 'تعذّر بدء تقييم الاحتفاظ.';
 }

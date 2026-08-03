@@ -638,6 +638,18 @@ abstract class AppLocalizations {
   /// **'System health, delivery, audit log'**
   String get homeAdminOperationsSubtitle;
 
+  /// No description provided for @homeAdminGovernance.
+  ///
+  /// In en, this message translates to:
+  /// **'Governance'**
+  String get homeAdminGovernance;
+
+  /// No description provided for @homeAdminGovernanceSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy requests, legal hold, retention'**
+  String get homeAdminGovernanceSubtitle;
+
   /// No description provided for @homeAdminNotificationsSubtitle.
   ///
   /// In en, this message translates to:
@@ -1604,6 +1616,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'From {ip}'**
   String operationsAuditFromIp(String ip);
+
+  /// No description provided for @governanceScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Governance'**
+  String get governanceScreenTitle;
+
+  /// No description provided for @governanceLoadingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading privacy requests'**
+  String get governanceLoadingTitle;
+
+  /// No description provided for @governanceLoadingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Aggregating the latest privacy + legal hold queue.'**
+  String get governanceLoadingMessage;
+
+  /// No description provided for @governanceErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load privacy requests'**
+  String get governanceErrorTitle;
+
+  /// No description provided for @governanceEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No privacy requests'**
+  String get governanceEmptyTitle;
+
+  /// No description provided for @governanceEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The queue is empty. When a parent or staff member submits a request (data export / deletion / consent / legal hold), it\'ll appear here for review.'**
+  String get governanceEmptyMessage;
+
+  /// No description provided for @governanceQueueHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No requests} =1{1 privacy request} other{{count} privacy requests}}'**
+  String governanceQueueHeader(int count);
+
+  /// No description provided for @governanceLegalHoldCountChip.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 under legal hold} other{{count} under legal hold}}'**
+  String governanceLegalHoldCountChip(int count);
+
+  /// No description provided for @governanceLegalHoldChip.
+  ///
+  /// In en, this message translates to:
+  /// **'Legal hold'**
+  String get governanceLegalHoldChip;
+
+  /// No description provided for @governanceUnknownSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown subject'**
+  String get governanceUnknownSubject;
+
+  /// No description provided for @governanceActionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Request actions'**
+  String get governanceActionsTitle;
+
+  /// No description provided for @governanceActionProcess.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as in review'**
+  String get governanceActionProcess;
+
+  /// No description provided for @governanceActionProcessDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Move this request to \"Under Review\" so the team knows it\'s being worked on.'**
+  String get governanceActionProcessDescription;
+
+  /// No description provided for @governanceActionApprove.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve request'**
+  String get governanceActionApprove;
+
+  /// No description provided for @governanceActionApproveDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve this request. The requester will be notified and the action is logged.'**
+  String get governanceActionApproveDescription;
+
+  /// No description provided for @governanceActionSetHold.
+  ///
+  /// In en, this message translates to:
+  /// **'Set legal hold'**
+  String get governanceActionSetHold;
+
+  /// No description provided for @governanceActionSetHoldDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Place this request under a legal hold. The data is preserved until the hold is released.'**
+  String get governanceActionSetHoldDescription;
+
+  /// No description provided for @governanceActionReleaseHold.
+  ///
+  /// In en, this message translates to:
+  /// **'Release legal hold'**
+  String get governanceActionReleaseHold;
+
+  /// No description provided for @governanceActionReleaseHoldDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Release the legal hold. The request can then be approved or rejected.'**
+  String get governanceActionReleaseHoldDescription;
+
+  /// No description provided for @governanceActionSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Action applied.'**
+  String get governanceActionSuccess;
+
+  /// No description provided for @governanceEvaluateRetentionTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Run retention evaluation'**
+  String get governanceEvaluateRetentionTooltip;
+
+  /// No description provided for @governanceEvaluateRetentionSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Retention evaluation started.'**
+  String get governanceEvaluateRetentionSuccess;
+
+  /// No description provided for @governanceEvaluateRetentionFailure.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not start retention evaluation.'**
+  String get governanceEvaluateRetentionFailure;
 }
 
 class _AppLocalizationsDelegate

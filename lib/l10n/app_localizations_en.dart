@@ -338,6 +338,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'System health, delivery, audit log';
 
   @override
+  String get homeAdminGovernance => 'Governance';
+
+  @override
+  String get homeAdminGovernanceSubtitle =>
+      'Privacy requests, legal hold, retention';
+
+  @override
   String get homeAdminNotificationsSubtitle => 'Inbox + announcements';
 
   @override
@@ -981,4 +988,98 @@ class AppLocalizationsEn extends AppLocalizations {
   String operationsAuditFromIp(String ip) {
     return 'From $ip';
   }
+
+  @override
+  String get governanceScreenTitle => 'Governance';
+
+  @override
+  String get governanceLoadingTitle => 'Loading privacy requests';
+
+  @override
+  String get governanceLoadingMessage =>
+      'Aggregating the latest privacy + legal hold queue.';
+
+  @override
+  String get governanceErrorTitle => 'Could not load privacy requests';
+
+  @override
+  String get governanceEmptyTitle => 'No privacy requests';
+
+  @override
+  String get governanceEmptyMessage =>
+      'The queue is empty. When a parent or staff member submits a request (data export / deletion / consent / legal hold), it\'ll appear here for review.';
+
+  @override
+  String governanceQueueHeader(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count privacy requests',
+      one: '1 privacy request',
+      zero: 'No requests',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String governanceLegalHoldCountChip(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count under legal hold',
+      one: '1 under legal hold',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get governanceLegalHoldChip => 'Legal hold';
+
+  @override
+  String get governanceUnknownSubject => 'Unknown subject';
+
+  @override
+  String get governanceActionsTitle => 'Request actions';
+
+  @override
+  String get governanceActionProcess => 'Mark as in review';
+
+  @override
+  String get governanceActionProcessDescription =>
+      'Move this request to \"Under Review\" so the team knows it\'s being worked on.';
+
+  @override
+  String get governanceActionApprove => 'Approve request';
+
+  @override
+  String get governanceActionApproveDescription =>
+      'Approve this request. The requester will be notified and the action is logged.';
+
+  @override
+  String get governanceActionSetHold => 'Set legal hold';
+
+  @override
+  String get governanceActionSetHoldDescription =>
+      'Place this request under a legal hold. The data is preserved until the hold is released.';
+
+  @override
+  String get governanceActionReleaseHold => 'Release legal hold';
+
+  @override
+  String get governanceActionReleaseHoldDescription =>
+      'Release the legal hold. The request can then be approved or rejected.';
+
+  @override
+  String get governanceActionSuccess => 'Action applied.';
+
+  @override
+  String get governanceEvaluateRetentionTooltip => 'Run retention evaluation';
+
+  @override
+  String get governanceEvaluateRetentionSuccess =>
+      'Retention evaluation started.';
+
+  @override
+  String get governanceEvaluateRetentionFailure =>
+      'Could not start retention evaluation.';
 }

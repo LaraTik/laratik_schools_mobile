@@ -87,6 +87,32 @@
 > (Admin Operations → shipped for the read-only slice)
 > and §5 (item #9 → partially shipped; operations slice
 > done, data import slice deferred).
+>
+> Update 2026-08-03 (admin Governance surface): the
+> read-only privacy requests queue + per-row approve /
+> process / set-legal-hold actions ship at
+> `/shell/governance`. The list groups rows by lifecycle
+> status (chip strip) and renders each row with a 44dp
+> type-family icon + subject name + id + status + type
+> + legal-hold chip + the requester's email + the
+> submitted-at sub-line. Tapping a row opens a modal
+> bottom sheet with the per-row actions (Mark in review
+> / Approve / Set hold / Release hold). All four actions
+> are write flows; the repository mints a fresh UUID
+> for the `Idempotency-Key` header and the provider
+> invalidates the list on success. Reachable from a
+> new "Governance" tile on the admin home, capability-
+> gated on `can_manage_branches` (admin-only; the v1
+> server does not yet expose a dedicated
+> `can_view_governance` capability — see the §4 follow-
+> up for the future hardening). The retention evaluation
+> action is a one-click "Run retention" button in the
+> AppBar that calls
+> `evaluate_school_data_retention` and shows a snackbar
+> on completion. See §3 (Admin Governance → shipped for
+> the privacy + legal-hold + retention slice) and §5
+> (item #8 → partially shipped; governance slice done,
+> grading slice deferred).
 
 This document is the source of truth for what is shipped, what is
 missing per role, and the prioritized roadmap. It supersedes the
@@ -185,11 +211,27 @@ shortcuts.
   write-side flows (`preview_school_fee_invoice`,
   `create_school_fee_invoice_draft`, `create_school_fee_policy`)
   are deferred to a follow-up turn.
-- **Governance** — no mobile code. Backend has
-  `submit_school_privacy_request`, `process_school_privacy_request`,
-  `approve_school_privacy_request`, `get_school_privacy_requests`,
-  `set_school_privacy_legal_hold`, plus the governance settings
-  DocType. The mobile needs an approver-only surface. *(README only.)*
+- **Governance** — **shipped** for the privacy + legal-hold +
+  retention slice. The new `GovernanceScreen` at
+  `/shell/governance` is the approver-only privacy queue:
+  read-only list of `get_school_privacy_requests` with a
+  per-row action sheet (Mark in review / Approve / Set
+  hold / Release hold) that calls the v1 write endpoints
+  (`approve_school_privacy_request`,
+  `process_school_privacy_request`,
+  `set_school_privacy_legal_hold`). The retention
+  evaluation action is a one-click "Run retention"
+  button in the AppBar that calls
+  `evaluate_school_data_retention`. The list groups
+  rows by lifecycle status (chip strip with
+  success / warning / error / info / brand tones).
+  Reachable from a new "Governance" tile on the admin
+  home, capability-gated on `can_manage_branches`
+  (admin-only on the v1 wire). The requester-side flow
+  (`submit_school_privacy_request` from a parent /
+  student) and the governance settings approval
+  (`approve_school_data_governance_settings`) are
+  deferred to follow-up turns.
 - **Grading (admin side)** — no grading-policy or grade-record admin
   surface. The grade records are *promoted* by
   `promote_school_exam_attempt` (Phase 5) but the admin can't review /
@@ -344,7 +386,7 @@ surface. The rest is feature work.
 | 5 | **Student surface** | "My grades" + "My attendance" + "My report cards" | 1 turn | **shipped (family release, reuses the parent child-detail widget)** |
 | 6 | **Teacher surface** | "My classes" + exam authoring + manual grading | 2 turns | **shipped (read-only "My classes" + per-class roster in this turn; exam authoring + manual grading deferred — see audit #6 follow-up)** |
 | 7 | **Admin enhancements** | Fees (read invoices) + Analytics (KPIs) | 2 turns | **shipped (Fees slice — read-only fee plans + admin "Fee operations" KPI overview; Analytics slice deferred to a follow-up turn)** |
-| 8 | **Admin enhancements** | Governance (privacy + retention) + Grading (admin side) | 1 turn | after #7 |
+| 8 | **Admin enhancements** | Governance (privacy + retention) + Grading (admin side) | 1 turn | **partially shipped (Governance slice — privacy requests + approve / process / set-legal-hold / retention — in this turn; Grading slice — overview + policy setup + per-record review — deferred to a follow-up turn)** |
 | 9 | **Admin enhancements** | Data import wizard + Operations health | 2 turns | **partially shipped (Operations read-only slice — health + delivery + audit — in this turn; data import wizard + the operations write flows deferred to a follow-up turn)** |
 | 10 | **Quality** | Hard-coded filter values → real `get_school_grades` | 0.5 turn | **shipped (picker release, derived from loaded students — backend follow-up: add `get_school_grades` + `get_school_class_groups`)** |
 | 11 | **Quality** | Arabic locale + a11y audit | 1 turn | **shipped (locale framework + bottom-nav labels + home-surface string extraction + RTL pass; locale test suite grew from 6 to 11 tests covering English + Arabic copy, pluralization, and per-surface pinning)** |
@@ -362,16 +404,18 @@ for role X?" is:
 
 - **Admin / Registrar** — *Partially.* They can run the daily
   operations (roster, attendance, **read-only fees**,
-  **read-only operations health + delivery + audit**) and
-  the role-aware bottom nav now renders correctly. Cannot
-  yet manage imports, replay delivery events, or respond
-  to privacy requests. The fee write flows (invoice
+  **read-only operations health + delivery + audit**,
+  **privacy + legal-hold + retention queue**) and the
+  role-aware bottom nav now renders correctly. Cannot
+  yet manage imports, replay delivery events, or review
+  the grading policy. The fee write flows (invoice
   preview + draft creation + payment recording) and the
   Analytics KPI surface are still on the desktop. The
-  Operations tile on the admin home is capability-gated on
-  `can_manage_branches` (admin-only) — a future backend
-  pass should add a dedicated `can_view_operations`
-  capability so the gate can be more specific.
+  Operations + Governance tiles on the admin home are
+  capability-gated on `can_manage_branches` (admin-only
+  on the v1 wire) — a future backend pass should add
+  dedicated `can_view_operations` + `can_view_governance`
+  capabilities so the gates can be more specific.
 - **Student** — *Partially.* They can take exams end-to-end
   and now see their grades / attendance / report cards under
   "My records" on the home screen. Fee invoices +

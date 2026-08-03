@@ -142,6 +142,8 @@
   "homeAdminFeeOperationsSubtitle": "Invoiced / collected / outstanding",
   "homeAdminOperations": "Operations",
   "homeAdminOperationsSubtitle": "System health, delivery, audit log",
+  "homeAdminGovernance": "Governance",
+  "homeAdminGovernanceSubtitle": "Privacy requests, legal hold, retention",
   "homeAdminNotificationsSubtitle": "Inbox + announcements",
 
   "myChildrenHeaderTotal": "{count, plural, =0{No linked children} =1{1 linked child} other{{count} linked children}}",
@@ -485,5 +487,39 @@
     "placeholders": {
       "ip": { "type": "String" }
     }
-  }
+  },
+
+  "governanceScreenTitle": "Governance",
+  "governanceLoadingTitle": "Loading privacy requests",
+  "governanceLoadingMessage": "Aggregating the latest privacy + legal hold queue.",
+  "governanceErrorTitle": "Could not load privacy requests",
+  "governanceEmptyTitle": "No privacy requests",
+  "governanceEmptyMessage": "The queue is empty. When a parent or staff member submits a request (data export / deletion / consent / legal hold), it'll appear here for review.",
+  "governanceQueueHeader": "{count, plural, =0{No requests} =1{1 privacy request} other{{count} privacy requests}}",
+  "@governanceQueueHeader": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "governanceLegalHoldCountChip": "{count, plural, =1{1 under legal hold} other{{count} under legal hold}}",
+  "@governanceLegalHoldCountChip": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "governanceLegalHoldChip": "Legal hold",
+  "governanceUnknownSubject": "Unknown subject",
+  "governanceActionsTitle": "Request actions",
+  "governanceActionProcess": "Mark as in review",
+  "governanceActionProcessDescription": "Move this request to \"Under Review\" so the team knows it's being worked on.",
+  "governanceActionApprove": "Approve request",
+  "governanceActionApproveDescription": "Approve this request. The requester will be notified and the action is logged.",
+  "governanceActionSetHold": "Set legal hold",
+  "governanceActionSetHoldDescription": "Place this request under a legal hold. The data is preserved until the hold is released.",
+  "governanceActionReleaseHold": "Release legal hold",
+  "governanceActionReleaseHoldDescription": "Release the legal hold. The request can then be approved or rejected.",
+  "governanceActionSuccess": "Action applied.",
+  "governanceEvaluateRetentionTooltip": "Run retention evaluation",
+  "governanceEvaluateRetentionSuccess": "Retention evaluation started.",
+  "governanceEvaluateRetentionFailure": "Could not start retention evaluation."
 }

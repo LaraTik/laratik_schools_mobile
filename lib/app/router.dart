@@ -25,6 +25,7 @@ import '../features/guardians/ui/guardian_detail_screen.dart';
 import '../features/guardians/ui/guardians_list_screen.dart';
 import '../features/me/ui/acting_as_picker_screen.dart';
 import '../features/operations/ui/operations_health_screen.dart';
+import '../features/governance/ui/governance_screen.dart';
 import '../features/people/ui/student_create_screen.dart';
 import '../features/people/ui/student_detail_screen.dart';
 import '../features/people/ui/students_list_screen.dart';
@@ -412,6 +413,25 @@ GoRouter buildRouter({
             path: '/shell/operations',
             name: 'operations',
             builder: (context, state) => const OperationsHealthScreen(),
+          ),
+          // Governance surface — read-only privacy requests queue
+          // with per-row approve / process / set-legal-hold
+          // actions. Reachable from the "Governance" tile on the
+          // admin home (capability-gated on
+          // `can_manage_branches` — admin-only; the v1 server does
+          // not yet expose a dedicated `can_view_governance`
+          // capability). The action sheet calls
+          // `approve_school_privacy_request` /
+          // `process_school_privacy_request` /
+          // `set_school_privacy_legal_hold` /
+          // `evaluate_school_data_retention`; each mints a fresh
+          // UUID for the `Idempotency-Key` header and the
+          // provider invalidates the privacy list on success so
+          // the next frame shows the new state.
+          GoRoute(
+            path: '/shell/governance',
+            name: 'governance',
+            builder: (context, state) => const GovernanceScreen(),
           ),
         ],
       ),

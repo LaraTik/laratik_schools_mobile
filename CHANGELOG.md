@@ -8,6 +8,102 @@ and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ### Added
 
+- **Admin "Governance" surface — read-only privacy requests
+  queue with per-row approve / process / set-legal-hold
+  actions.** Closes roadmap #8 for the privacy slice. New
+  files:
+  - `lib/features/governance/data/governance_request.dart` —
+    typed `PrivacyRequest`, `PrivacyRequestPage`, and
+    `PrivacyRequestTimeline` models. `PrivacyRequest`
+    parses the v1 envelope forward-compatibly (canonical
+    `school_student` / `request_type` AND legacy
+    `subject` / `type`). `PrivacyRequest.statusFamily`
+    maps the wire status to a coarse family (pending /
+    review / approved / rejected / hold / other) for the
+    chip tone. `PrivacyRequest.typeFamily` maps the wire
+    type to a coarse family (access / deletion / consent
+    / legal_hold / governance / other) for the row icon.
+  - `lib/features/governance/data/governance_failure.dart` —
+    typed `GovernanceFailure` mirroring `FeesFailure` /
+    `OperationsFailure`.
+  - `lib/features/governance/data/governance_repository.dart` —
+    wraps the v1 read endpoint
+    `get_school_privacy_requests` and the write endpoints
+    `approve_school_privacy_request`,
+    `process_school_privacy_request`,
+    `set_school_privacy_legal_hold`, and
+    `evaluate_school_data_retention`. Each write mints
+    a fresh UUID for the `Idempotency-Key` header.
+  - `lib/features/governance/data/governance_providers.dart` —
+    `governanceRepositoryProvider` +
+    `PrivacyRequestsController` (with manual `refresh`) +
+    four top-level helpers (`approvePrivacyRequest` /
+    `processPrivacyRequest` / `setPrivacyLegalHold` /
+    `evaluateRetention`) that take a `WidgetRef` and
+    invalidate `privacyRequestsProvider` on success so
+    the list re-fetches the latest state.
+  - `lib/features/governance/ui/governance_screen.dart` —
+    the read-only privacy requests queue + per-row
+    action sheet. The list groups rows by lifecycle
+    status (chip strip with success / warning / error /
+    info / brand tones) and renders each row with a 44dp
+    icon (the request-type family) + subject name + id
+    + status chip + type chip + legal-hold chip + the
+    requester's email + submitted-at sub-line. Tapping
+    a row opens a modal bottom sheet with the per-row
+    actions (Mark in review / Approve / Set hold /
+    Release hold). All four actions are write flows;
+    success shows a success-toned snackbar and closes
+    the sheet; failure renders the typed error message
+    inline.
+  - `test/features/governance/governance_repository_test.dart` —
+    7 tests pinning the parse (canonical + legacy wire
+    keys), the wire-error path, the
+    `approve_school_privacy_request` payload forwarding
+    (request name + reason), the
+    `set_school_privacy_legal_hold` payload forwarding
+    (request name + hold + reason), the status-family
+    mapping, and the type-family mapping.
+  - **~15 new ARB keys** for the governance surface
+    (screen title, loading / error / empty / queue
+    header, status strip, action sheet, per-action
+    labels + descriptions, retention snackbar copy) in
+    both `app_en.arb` (English source) and `app_ar.arb`
+    (Modern Standard Arabic, with the six ICU plural
+    categories where the strings carry counts).
+- **"Governance" tile** on the admin dashboard,
+  capability-gated on `can_manage_branches` (admin-only
+  on the v1 wire; the v1 server does not yet expose a
+  dedicated `can_view_governance` capability — see the
+  audit's §4 follow-up for the future hardening).
+
+### Changed
+
+- `lib/app/router.dart` — added the `/shell/governance`
+  route inside the existing `ShellRoute` so it keeps
+  the chrome + the bottom nav.
+- `lib/app/dashboard_screen.dart` — the admin
+  quick-start now conditionally renders the "Governance"
+  tile when the user can manage branches.
+
+### Tests
+
+- 7 new governance repository tests (full coverage of the
+  parse, the wire-error path, the write payload forwarding,
+  and the family mapping). Total test count:
+  **119 passed, 5 pre-existing failures** (2 in
+  `test/platform/transport_test.dart`, 3 in the user's
+  in-flight `test/features/assessment/current_student_provider_test.dart`).
+
+## [Unreleased]
+
+### Added
+
+- **Admin "Operations" surface — read-only operations health +
+  delivery health + auth audit events.** Closes roadmap #9
+
+### Added
+
 - **Admin "Operations" surface — read-only operations health +
   delivery health + auth audit events.** Closes roadmap #9
   for the operations slice. New files:
