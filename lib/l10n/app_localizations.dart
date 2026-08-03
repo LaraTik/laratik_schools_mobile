@@ -3092,6 +3092,390 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save failed: {message}'**
   String teacherExamQuestionErrorSnack(String message);
+
+  /// No description provided for @staffListScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff'**
+  String get staffListScreenTitle;
+
+  /// No description provided for @staffListSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name or role'**
+  String get staffListSearchHint;
+
+  /// No description provided for @staffListNewStaffAction.
+  ///
+  /// In en, this message translates to:
+  /// **'New staff'**
+  String get staffListNewStaffAction;
+
+  /// No description provided for @staffListLoadingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading staff'**
+  String get staffListLoadingTitle;
+
+  /// No description provided for @staffListLoadingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Fetching the latest roster from the server.'**
+  String get staffListLoadingMessage;
+
+  /// No description provided for @staffListEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No staff yet'**
+  String get staffListEmptyTitle;
+
+  /// No description provided for @staffListEmptyFilterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No staff match the current filter'**
+  String get staffListEmptyFilterTitle;
+
+  /// No description provided for @staffListEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the first staff member to get started.'**
+  String get staffListEmptyMessage;
+
+  /// No description provided for @staffListEmptyFilterMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Try clearing the search or the role filter.'**
+  String get staffListEmptyFilterMessage;
+
+  /// No description provided for @staffListAddStaffAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Add staff'**
+  String get staffListAddStaffAction;
+
+  /// No description provided for @staffListErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load staff'**
+  String get staffListErrorTitle;
+
+  /// No description provided for @staffListFilterRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get staffListFilterRole;
+
+  /// No description provided for @staffListFilterClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get staffListFilterClear;
+
+  /// No description provided for @staffListFilterRoleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by role'**
+  String get staffListFilterRoleTitle;
+
+  /// No description provided for @staffListFilterRoleTeacher.
+  ///
+  /// In en, this message translates to:
+  /// **'Teacher'**
+  String get staffListFilterRoleTeacher;
+
+  /// No description provided for @staffListFilterRolePrincipal.
+  ///
+  /// In en, this message translates to:
+  /// **'Principal'**
+  String get staffListFilterRolePrincipal;
+
+  /// No description provided for @staffListFilterRoleVicePrincipal.
+  ///
+  /// In en, this message translates to:
+  /// **'Vice Principal'**
+  String get staffListFilterRoleVicePrincipal;
+
+  /// No description provided for @staffListFilterRoleCounselor.
+  ///
+  /// In en, this message translates to:
+  /// **'Counselor'**
+  String get staffListFilterRoleCounselor;
+
+  /// No description provided for @staffListFilterRoleLibrarian.
+  ///
+  /// In en, this message translates to:
+  /// **'Librarian'**
+  String get staffListFilterRoleLibrarian;
+
+  /// No description provided for @staffListFilterRoleAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin'**
+  String get staffListFilterRoleAdmin;
+
+  /// No description provided for @staffDetailScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff'**
+  String get staffDetailScreenTitle;
+
+  /// No description provided for @staffDetailLoadingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading staff'**
+  String get staffDetailLoadingTitle;
+
+  /// No description provided for @staffDetailErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load staff'**
+  String get staffDetailErrorTitle;
+
+  /// No description provided for @staffDetailRoleBranchHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Role & branch'**
+  String get staffDetailRoleBranchHeader;
+
+  /// No description provided for @staffDetailRoleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get staffDetailRoleLabel;
+
+  /// No description provided for @staffDetailBranchLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch'**
+  String get staffDetailBranchLabel;
+
+  /// No description provided for @staffDetailStatusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get staffDetailStatusLabel;
+
+  /// No description provided for @staffDetailDateOfJoiningLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of joining'**
+  String get staffDetailDateOfJoiningLabel;
+
+  /// No description provided for @staffDetailUserAccountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'User account'**
+  String get staffDetailUserAccountLabel;
+
+  /// No description provided for @staffDetailIdentityHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Identity & contact'**
+  String get staffDetailIdentityHeader;
+
+  /// No description provided for @staffDetailGenderLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Gender'**
+  String get staffDetailGenderLabel;
+
+  /// No description provided for @staffDetailNationalityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Nationality'**
+  String get staffDetailNationalityLabel;
+
+  /// No description provided for @staffDetailCountryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Country'**
+  String get staffDetailCountryLabel;
+
+  /// No description provided for @staffDetailErpnextEmployeeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'ERPNext employee'**
+  String get staffDetailErpnextEmployeeLabel;
+
+  /// No description provided for @staffDetailNoDataLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'No data on file.'**
+  String get staffDetailNoDataLabel;
+
+  /// No description provided for @staffStatusActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get staffStatusActive;
+
+  /// No description provided for @staffCreateScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New staff'**
+  String get staffCreateScreenTitle;
+
+  /// No description provided for @staffCreateLoadingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading form'**
+  String get staffCreateLoadingTitle;
+
+  /// No description provided for @staffCreateLoadingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Fetching the school staff setup context.'**
+  String get staffCreateLoadingMessage;
+
+  /// No description provided for @staffCreateErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load the form schema'**
+  String get staffCreateErrorTitle;
+
+  /// No description provided for @staffCreateIdentityHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Identity'**
+  String get staffCreateIdentityHeader;
+
+  /// No description provided for @staffCreateFirstNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'First name'**
+  String get staffCreateFirstNameLabel;
+
+  /// No description provided for @staffCreateLastNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Last name'**
+  String get staffCreateLastNameLabel;
+
+  /// No description provided for @staffCreateRoleHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get staffCreateRoleHeader;
+
+  /// No description provided for @staffCreateRoleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get staffCreateRoleLabel;
+
+  /// No description provided for @staffCreateRoleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Teacher'**
+  String get staffCreateRoleHint;
+
+  /// No description provided for @staffCreateContactHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact'**
+  String get staffCreateContactHeader;
+
+  /// No description provided for @staffCreateEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get staffCreateEmailLabel;
+
+  /// No description provided for @staffCreatePhoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get staffCreatePhoneLabel;
+
+  /// No description provided for @staffCreateCountryHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Country & nationality'**
+  String get staffCreateCountryHeader;
+
+  /// No description provided for @staffCreateNationalityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Nationality'**
+  String get staffCreateNationalityLabel;
+
+  /// No description provided for @staffCreateCountryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Country of residence'**
+  String get staffCreateCountryLabel;
+
+  /// No description provided for @staffCreateDateHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Joining date'**
+  String get staffCreateDateHeader;
+
+  /// No description provided for @staffCreateDateOfJoiningLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of joining'**
+  String get staffCreateDateOfJoiningLabel;
+
+  /// No description provided for @staffCreateDateOfJoiningHint.
+  ///
+  /// In en, this message translates to:
+  /// **'YYYY-MM-DD'**
+  String get staffCreateDateOfJoiningHint;
+
+  /// No description provided for @staffCreateNotesHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get staffCreateNotesHeader;
+
+  /// No description provided for @staffCreateNotesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get staffCreateNotesLabel;
+
+  /// No description provided for @staffCreateSuccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff member created'**
+  String get staffCreateSuccessTitle;
+
+  /// No description provided for @staffCreateSuccessFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'The staff record is on file.'**
+  String get staffCreateSuccessFallback;
+
+  /// No description provided for @staffCreateEmployeeChip.
+  ///
+  /// In en, this message translates to:
+  /// **'Employee: {id}'**
+  String staffCreateEmployeeChip(String id);
+
+  /// No description provided for @staffCreateAnotherAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Create another'**
+  String get staffCreateAnotherAction;
+
+  /// No description provided for @staffCreateOpenRecordAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Open record'**
+  String get staffCreateOpenRecordAction;
+
+  /// No description provided for @staffCreateSubmitAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Create staff'**
+  String get staffCreateSubmitAction;
+
+  /// No description provided for @staffCreateSubmitLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Creating…'**
+  String get staffCreateSubmitLoading;
 }
 
 class _AppLocalizationsDelegate

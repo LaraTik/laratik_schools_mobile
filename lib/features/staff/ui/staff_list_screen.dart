@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../ui/design_tokens.dart';
 import '../../../ui/widgets/ls_button.dart';
 import '../../../ui/widgets/ls_empty_state.dart';
@@ -48,6 +49,7 @@ class _StaffListScreenState extends ConsumerState<StaffListScreen> {
   @override
   Widget build(BuildContext context) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     final filter = ref.watch(staffFilterProvider);
     final asyncPage = ref.watch(staffListProvider);
 
@@ -58,21 +60,21 @@ class _StaffListScreenState extends ConsumerState<StaffListScreen> {
         elevation: 0,
         scrolledUnderElevation: 1,
         title: Text(
-          'Staff',
+          l.staffListScreenTitle,
           style: tokens.typography.titleLarge.copyWith(
             color: tokens.text.primary,
           ),
         ),
         actions: [
           IconButton(
-            tooltip: 'Refresh',
+            tooltip: l.commonRefresh,
             icon: const Icon(Icons.refresh),
             onPressed: () => ref.read(staffListProvider.notifier).refresh(),
           ),
           Padding(
-            padding: EdgeInsets.only(right: tokens.space.sm),
+            padding: EdgeInsetsDirectional.only(end: tokens.space.sm),
             child: LsButton.primary(
-              label: 'New staff',
+              label: l.staffListNewStaffAction,
               icon: Icons.person_add_alt_1,
               expand: false,
               onPressed: () => context.go('/shell/staff/new'),
@@ -82,7 +84,7 @@ class _StaffListScreenState extends ConsumerState<StaffListScreen> {
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(56 + tokens.space.md * 2),
           child: Padding(
-            padding: EdgeInsets.fromLTRB(
+            padding: EdgeInsetsDirectional.fromSTEB(
               tokens.space.md,
               0,
               tokens.space.md,
@@ -92,7 +94,7 @@ class _StaffListScreenState extends ConsumerState<StaffListScreen> {
               children: [
                 LsSearchBar(
                   initialValue: filter.search,
-                  placeholder: 'Search by name or role',
+                  placeholder: l.staffListSearchHint,
                   onChanged: (value) {
                     ref.read(staffFilterProvider.notifier).update(
                           (f) => f.copyWith(search: value),
@@ -109,12 +111,12 @@ class _StaffListScreenState extends ConsumerState<StaffListScreen> {
       body: RefreshIndicator(
         onRefresh: () => ref.read(staffListProvider.notifier).refresh(),
         child: asyncPage.when(
-          data: (page) => _buildList(page, filter.isEmpty, tokens),
-          loading: () => const LsStateView.loading(
-            title: 'Loading staff',
-            message: 'Fetching the latest roster from the server.',
+          data: (page) => _buildList(page, filter.isEmpty, tokens, l),
+          loading: () => LsStateView.loading(
+            title: l.staffListLoadingTitle,
+            message: l.staffListLoadingMessage,
           ),
-          error: (err, _) => _buildError(err, tokens),
+          error: (err, _) => _buildError(err, tokens, l),
         ),
       ),
     );
@@ -124,6 +126,7 @@ class _StaffListScreenState extends ConsumerState<StaffListScreen> {
     StaffPage page,
     bool filterIsEmpty,
     DesignTokens tokens,
+    AppLocalizations l,
   ) {
     final staff = page.staff;
     if (staff.isEmpty) {
@@ -134,14 +137,14 @@ class _StaffListScreenState extends ConsumerState<StaffListScreen> {
           LsStateView.empty(
             icon: Icons.badge_outlined,
             title: filterIsEmpty
-                ? 'No staff yet'
-                : 'No staff match the current filter',
+                ? l.staffListEmptyTitle
+                : l.staffListEmptyFilterTitle,
             message: filterIsEmpty
-                ? 'Add the first staff member to get started.'
-                : 'Try clearing the search or the role filter.',
+                ? l.staffListEmptyMessage
+                : l.staffListEmptyFilterMessage,
             action: filterIsEmpty
                 ? LsButton.primary(
-                    label: 'Add staff',
+                    label: l.staffListAddStaffAction,
                     icon: Icons.person_add_alt_1,
                     onPressed: () => context.go('/shell/staff/new'),
                   )
@@ -152,7 +155,7 @@ class _StaffListScreenState extends ConsumerState<StaffListScreen> {
     }
     return ListView.separated(
       controller: _scrollController,
-      padding: EdgeInsets.only(bottom: tokens.space.xl),
+      padding: EdgeInsetsDirectional.only(bottom: tokens.space.xl),
       itemCount: staff.length + (page.hasMore ? 1 : 0),
       separatorBuilder: (_, __) => Divider(
         height: 1,
@@ -183,7 +186,7 @@ class _StaffListScreenState extends ConsumerState<StaffListScreen> {
     );
   }
 
-  Widget _buildError(Object err, DesignTokens tokens) {
+  Widget _buildError(Object err, DesignTokens tokens, AppLocalizations l) {
     final failure = err is PersonFailure ? err : null;
     return ListView(
       physics: const AlwaysScrollableScrollPhysics(),
@@ -191,10 +194,10 @@ class _StaffListScreenState extends ConsumerState<StaffListScreen> {
         SizedBox(height: tokens.space.xxxl * 2),
         LsStateView.error(
           icon: Icons.error_outline,
-          title: 'Could not load staff',
+          title: l.staffListErrorTitle,
           message: failure?.message ?? err.toString(),
           action: LsButton.primary(
-            label: 'Try again',
+            label: l.commonTryAgain,
             icon: Icons.refresh,
             expand: false,
             onPressed: () => ref.read(staffListProvider.notifier).refresh(),
@@ -212,20 +215,21 @@ class _FilterRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     return SizedBox(
       height: 36,
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: [
           _FilterChip(
-            label: filter.staffRole ?? 'Role',
+            label: filter.staffRole ?? l.staffListFilterRole,
             selected: filter.staffRole != null,
-            onTap: () => _showRoleFilter(context, ref),
+            onTap: () => _showRoleFilter(context, ref, l),
           ),
           SizedBox(width: tokens.space.xs),
           if (!filter.isEmpty)
             _FilterChip(
-              label: 'Clear',
+              label: l.staffListFilterClear,
               icon: Icons.close,
               onTap: () => ref
                   .read(staffFilterProvider.notifier)
@@ -236,18 +240,18 @@ class _FilterRow extends ConsumerWidget {
     );
   }
 
-  void _showRoleFilter(BuildContext context, WidgetRef ref) {
+  void _showRoleFilter(BuildContext context, WidgetRef ref, AppLocalizations l) {
     showModalBottomSheet<void>(
       context: context,
       builder: (context) => _SimpleFilterSheet(
-        title: 'Filter by role',
-        options: const [
-          'Teacher',
-          'Principal',
-          'Vice Principal',
-          'Counselor',
-          'Librarian',
-          'Admin',
+        title: l.staffListFilterRoleTitle,
+        options: [
+          l.staffListFilterRoleTeacher,
+          l.staffListFilterRolePrincipal,
+          l.staffListFilterRoleVicePrincipal,
+          l.staffListFilterRoleCounselor,
+          l.staffListFilterRoleLibrarian,
+          l.staffListFilterRoleAdmin,
         ],
         onSelected: (value) {
           ref.read(staffFilterProvider.notifier).update(

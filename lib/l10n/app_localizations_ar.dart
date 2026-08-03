@@ -1946,4 +1946,199 @@ class AppLocalizationsAr extends AppLocalizations {
   String teacherExamQuestionErrorSnack(String message) {
     return 'فشل الحفظ: $message';
   }
+
+  @override
+  String get staffListScreenTitle => 'الموظفون';
+
+  @override
+  String get staffListSearchHint => 'ابحث بالاسم أو الدور';
+
+  @override
+  String get staffListNewStaffAction => 'موظف جديد';
+
+  @override
+  String get staffListLoadingTitle => 'جارٍ تحميل الموظفين';
+
+  @override
+  String get staffListLoadingMessage => 'يجري جلب أحدث قائمة من الخادم.';
+
+  @override
+  String get staffListEmptyTitle => 'لا يوجد موظفون بعد';
+
+  @override
+  String get staffListEmptyFilterTitle =>
+      'لا يوجد موظفون يطابقون المرشح الحالي';
+
+  @override
+  String get staffListEmptyMessage => 'أضف أول موظف للبدء.';
+
+  @override
+  String get staffListEmptyFilterMessage => 'حاول مسح البحث أو مرشح الدور.';
+
+  @override
+  String get staffListAddStaffAction => 'إضافة موظف';
+
+  @override
+  String get staffListErrorTitle => 'تعذّر تحميل الموظفين';
+
+  @override
+  String get staffListFilterRole => 'الدور';
+
+  @override
+  String get staffListFilterClear => 'مسح';
+
+  @override
+  String get staffListFilterRoleTitle => 'تصفية حسب الدور';
+
+  @override
+  String get staffListFilterRoleTeacher => 'معلّم';
+
+  @override
+  String get staffListFilterRolePrincipal => 'مدير المدرسة';
+
+  @override
+  String get staffListFilterRoleVicePrincipal => 'نائب المدير';
+
+  @override
+  String get staffListFilterRoleCounselor => 'مشير';
+
+  @override
+  String get staffListFilterRoleLibrarian => 'أمين المكتبة';
+
+  @override
+  String get staffListFilterRoleAdmin => 'مسؤول';
+
+  @override
+  String get staffDetailScreenTitle => 'الموظف';
+
+  @override
+  String get staffDetailLoadingTitle => 'جارٍ تحميل الموظف';
+
+  @override
+  String get staffDetailErrorTitle => 'تعذّر تحميل الموظف';
+
+  @override
+  String get staffDetailRoleBranchHeader => 'الدور والفرع';
+
+  @override
+  String get staffDetailRoleLabel => 'الدور';
+
+  @override
+  String get staffDetailBranchLabel => 'الفرع';
+
+  @override
+  String get staffDetailStatusLabel => 'الحالة';
+
+  @override
+  String get staffDetailDateOfJoiningLabel => 'تاريخ الالتحاق';
+
+  @override
+  String get staffDetailUserAccountLabel => 'حساب المستخدم';
+
+  @override
+  String get staffDetailIdentityHeader => 'الهوية والتواصل';
+
+  @override
+  String get staffDetailGenderLabel => 'الجنس';
+
+  @override
+  String get staffDetailNationalityLabel => 'الجنسية';
+
+  @override
+  String get staffDetailCountryLabel => 'البلد';
+
+  @override
+  String get staffDetailErpnextEmployeeLabel => 'موظف إيربنكست';
+
+  @override
+  String get staffDetailNoDataLabel => 'لا توجد بيانات.';
+
+  @override
+  String get staffStatusActive => 'نشط';
+
+  @override
+  String get staffCreateScreenTitle => 'موظف جديد';
+
+  @override
+  String get staffCreateLoadingTitle => 'جارٍ تحميل النموذج';
+
+  @override
+  String get staffCreateLoadingMessage => 'يجري جلب إعدادات الموظفين للمدرسة.';
+
+  @override
+  String get staffCreateErrorTitle => 'تعذّر تحميل مخطط النموذج';
+
+  @override
+  String get staffCreateIdentityHeader => 'الهوية';
+
+  @override
+  String get staffCreateFirstNameLabel => 'الاسم الأول';
+
+  @override
+  String get staffCreateLastNameLabel => 'الاسم الأخير';
+
+  @override
+  String get staffCreateRoleHeader => 'الدور';
+
+  @override
+  String get staffCreateRoleLabel => 'الدور';
+
+  @override
+  String get staffCreateRoleHint => 'معلّم';
+
+  @override
+  String get staffCreateContactHeader => 'التواصل';
+
+  @override
+  String get staffCreateEmailLabel => 'البريد الإلكتروني';
+
+  @override
+  String get staffCreatePhoneLabel => 'الهاتف';
+
+  @override
+  String get staffCreateCountryHeader => 'البلد والجنسية';
+
+  @override
+  String get staffCreateNationalityLabel => 'الجنسية';
+
+  @override
+  String get staffCreateCountryLabel => 'بلد الإقامة';
+
+  @override
+  String get staffCreateDateHeader => 'تاريخ الالتحاق';
+
+  @override
+  String get staffCreateDateOfJoiningLabel => 'تاريخ الالتحاق';
+
+  @override
+  String get staffCreateDateOfJoiningHint => 'YYYY-MM-DD';
+
+  @override
+  String get staffCreateNotesHeader => 'ملاحظات';
+
+  @override
+  String get staffCreateNotesLabel => 'ملاحظات';
+
+  @override
+  String get staffCreateSuccessTitle => 'تم إنشاء بيان الموظف';
+
+  @override
+  String get staffCreateSuccessFallback => 'بيان الموظف موجود.';
+
+  @override
+  String staffCreateEmployeeChip(String id) {
+    return 'الموظف: $id';
+  }
+
+  @override
+  String get staffCreateAnotherAction => 'إنشاء موظف آخر';
+
+  @override
+  String get staffCreateOpenRecordAction => 'فتح السجل';
+
+  @override
+  String get staffCreateSubmitAction => 'إنشاء موظف';
+
+  @override
+  String get staffCreateSubmitLoading => 'جارٍ الإنشاء…';
 }

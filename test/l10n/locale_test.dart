@@ -415,4 +415,93 @@ void main() {
       },
     );
   });
+
+  group('Staff surface localization', () {
+    test(
+      'staff ARB keys are pinned in both English and Arabic',
+      () async {
+        final en = await AppLocalizations.delegate.load(const Locale('en'));
+        final ar = await AppLocalizations.delegate.load(const Locale('ar'));
+        // List
+        expect(en.staffListScreenTitle, 'Staff');
+        expect(en.staffListSearchHint, 'Search by name or role');
+        expect(en.staffListNewStaffAction, 'New staff');
+        expect(en.staffListLoadingTitle, 'Loading staff');
+        expect(en.staffListEmptyTitle, 'No staff yet');
+        expect(en.staffListEmptyFilterTitle, 'No staff match the current filter');
+        expect(en.staffListAddStaffAction, 'Add staff');
+        expect(en.staffListErrorTitle, 'Could not load staff');
+        expect(en.staffListFilterRole, 'Role');
+        expect(en.staffListFilterRoleTeacher, 'Teacher');
+        // Detail
+        expect(en.staffDetailScreenTitle, 'Staff');
+        expect(en.staffDetailRoleBranchHeader, 'Role & branch');
+        expect(en.staffDetailRoleLabel, 'Role');
+        expect(en.staffDetailBranchLabel, 'Branch');
+        expect(en.staffDetailStatusLabel, 'Status');
+        expect(en.staffDetailIdentityHeader, 'Identity & contact');
+        expect(en.staffDetailNationalityLabel, 'Nationality');
+        expect(en.staffDetailCountryLabel, 'Country');
+        expect(en.staffDetailErpnextEmployeeLabel, 'ERPNext employee');
+        expect(en.staffDetailNoDataLabel, 'No data on file.');
+        // Create
+        expect(en.staffCreateScreenTitle, 'New staff');
+        expect(en.staffCreateLoadingTitle, 'Loading form');
+        expect(en.staffCreateIdentityHeader, 'Identity');
+        expect(en.staffCreateFirstNameLabel, 'First name');
+        expect(en.staffCreateLastNameLabel, 'Last name');
+        expect(en.staffCreateRoleHeader, 'Role');
+        expect(en.staffCreateEmailLabel, 'Email');
+        expect(en.staffCreatePhoneLabel, 'Phone');
+        expect(en.staffCreateNationalityLabel, 'Nationality');
+        expect(en.staffCreateCountryLabel, 'Country of residence');
+        expect(en.staffCreateDateOfJoiningLabel, 'Date of joining');
+        expect(en.staffCreateNotesHeader, 'Notes');
+        expect(en.staffCreateSuccessTitle, 'Staff member created');
+        expect(en.staffCreateAnotherAction, 'Create another');
+        expect(en.staffCreateOpenRecordAction, 'Open record');
+        expect(en.staffCreateSubmitAction, 'Create staff');
+        for (final getter in [
+          () => ar.staffListScreenTitle,
+          () => ar.staffListSearchHint,
+          () => ar.staffListNewStaffAction,
+          () => ar.staffListLoadingTitle,
+          () => ar.staffListEmptyTitle,
+          () => ar.staffListEmptyFilterTitle,
+          () => ar.staffListAddStaffAction,
+          () => ar.staffListErrorTitle,
+          () => ar.staffListFilterRole,
+          () => ar.staffListFilterRoleTeacher,
+          () => ar.staffDetailScreenTitle,
+          () => ar.staffDetailRoleBranchHeader,
+          () => ar.staffDetailRoleLabel,
+          () => ar.staffDetailBranchLabel,
+          () => ar.staffDetailStatusLabel,
+          () => ar.staffDetailIdentityHeader,
+          () => ar.staffDetailNationalityLabel,
+          () => ar.staffDetailCountryLabel,
+          () => ar.staffDetailErpnextEmployeeLabel,
+          () => ar.staffDetailNoDataLabel,
+          () => ar.staffCreateScreenTitle,
+          () => ar.staffCreateLoadingTitle,
+          () => ar.staffCreateIdentityHeader,
+          () => ar.staffCreateFirstNameLabel,
+          () => ar.staffCreateLastNameLabel,
+          () => ar.staffCreateRoleHeader,
+          () => ar.staffCreateEmailLabel,
+          () => ar.staffCreatePhoneLabel,
+          () => ar.staffCreateNationalityLabel,
+          () => ar.staffCreateCountryLabel,
+          () => ar.staffCreateDateOfJoiningLabel,
+          () => ar.staffCreateNotesHeader,
+          () => ar.staffCreateSuccessTitle,
+          () => ar.staffCreateAnotherAction,
+          () => ar.staffCreateOpenRecordAction,
+          () => ar.staffCreateSubmitAction,
+        ]) {
+          expect(getter(), isNotEmpty, reason: 'AR missing');
+        }
+      },
+    );
+  });
 }

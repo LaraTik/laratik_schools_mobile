@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../../ui/design_tokens.dart';
 import '../../../../ui/widgets/ls_status_chip.dart';
 import '../../data/staff_member.dart';
@@ -65,12 +66,14 @@ class StaffCard extends StatelessWidget {
                 ),
                 SizedBox(width: tokens.space.sm),
                 LsStatusChip(
-                  label: _chipLabel(member),
+                  label: _chipLabel(member, context),
                   tone: _toneForStatus(member),
                 ),
                 SizedBox(width: tokens.space.xs),
                 Icon(
-                  Icons.chevron_right,
+                  Directionality.of(context) == TextDirection.rtl
+                      ? Icons.chevron_left
+                      : Icons.chevron_right,
                   size: 20,
                   color: tokens.text.tertiary,
                 ),
@@ -94,14 +97,14 @@ class StaffCard extends StatelessWidget {
     return parts.join(' · ');
   }
 
-  String _chipLabel(StaffMember m) {
+  String _chipLabel(StaffMember m, BuildContext context) {
     if (m.status.isNotEmpty && m.status.toLowerCase() != 'active') {
       return m.status;
     }
     if (m.staffRole != null && m.staffRole!.isNotEmpty) {
       return m.staffRole!;
     }
-    return 'Active';
+    return AppLocalizations.of(context).staffStatusActive;
   }
 
   LsChipTone _toneForStatus(StaffMember m) {

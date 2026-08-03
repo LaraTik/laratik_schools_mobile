@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:laratik_schools_api/laratik_schools_api.dart';
 
 import '../../../core/result.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../ui/design_tokens.dart';
 import '../../../ui/widgets/ls_button.dart';
 import '../../../ui/widgets/ls_empty_state.dart';
@@ -135,6 +136,7 @@ class _StaffCreateScreenState extends ConsumerState<StaffCreateScreen> {
       isScrollControlled: true,
       builder: (sheetContext) {
         final tokens = sheetContext.laratik;
+        final l = AppLocalizations.of(sheetContext);
         return SafeArea(
           child: Padding(
             padding: EdgeInsets.all(tokens.space.lg),
@@ -147,7 +149,7 @@ class _StaffCreateScreenState extends ConsumerState<StaffCreateScreen> {
                     Icon(Icons.check_circle, color: tokens.status.success),
                     SizedBox(width: tokens.space.sm),
                     Text(
-                      'Staff member created',
+                      l.staffCreateSuccessTitle,
                       style: tokens.typography.titleLarge.copyWith(
                         color: tokens.text.primary,
                       ),
@@ -157,7 +159,7 @@ class _StaffCreateScreenState extends ConsumerState<StaffCreateScreen> {
                 SizedBox(height: tokens.space.sm),
                 Text(
                   result.staffName.isEmpty
-                      ? 'The staff record is on file.'
+                      ? l.staffCreateSuccessFallback
                       : result.staffName,
                   style: tokens.typography.bodyMedium.copyWith(
                     color: tokens.text.secondary,
@@ -167,7 +169,7 @@ class _StaffCreateScreenState extends ConsumerState<StaffCreateScreen> {
                 if (result.erpnextEmployee != null &&
                     result.erpnextEmployee!.isNotEmpty)
                   LsStatusChip(
-                    label: 'Employee: ${result.erpnextEmployee}',
+                    label: l.staffCreateEmployeeChip(result.erpnextEmployee!),
                     icon: Icons.badge_outlined,
                     tone: LsChipTone.info,
                   ),
@@ -176,7 +178,7 @@ class _StaffCreateScreenState extends ConsumerState<StaffCreateScreen> {
                   children: [
                     Expanded(
                       child: LsButton.secondary(
-                        label: 'Create another',
+                        label: l.staffCreateAnotherAction,
                         icon: Icons.add,
                         onPressed: () {
                           Navigator.of(sheetContext).pop();
@@ -187,7 +189,7 @@ class _StaffCreateScreenState extends ConsumerState<StaffCreateScreen> {
                     SizedBox(width: tokens.space.sm),
                     Expanded(
                       child: LsButton.primary(
-                        label: 'Open record',
+                        label: l.staffCreateOpenRecordAction,
                         icon: Icons.arrow_forward,
                         onPressed: () {
                           Navigator.of(sheetContext).pop();
@@ -220,6 +222,7 @@ class _StaffCreateScreenState extends ConsumerState<StaffCreateScreen> {
   @override
   Widget build(BuildContext context) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     _isWide = MediaQuery.sizeOf(context).width >= 720;
     final asyncContext = ref.watch(staffSetupContextProvider(null));
     return Scaffold(
@@ -232,7 +235,7 @@ class _StaffCreateScreenState extends ConsumerState<StaffCreateScreen> {
           onPressed: () => context.go('/shell/staff'),
         ),
         title: Text(
-          'New staff',
+          l.staffCreateScreenTitle,
           style: tokens.typography.titleLarge.copyWith(
             color: tokens.text.primary,
           ),
@@ -240,33 +243,37 @@ class _StaffCreateScreenState extends ConsumerState<StaffCreateScreen> {
       ),
       body: asyncContext.when(
         data: (result) => switch (result) {
-          Ok(:final value) => _buildForm(value, tokens),
+          Ok(:final value) => _buildForm(value, tokens, l),
           Err(:final error) => LsStateView.error(
               icon: Icons.error_outline,
-              title: 'Could not load the form schema',
+              title: l.staffCreateErrorTitle,
               message: error.message,
               action: LsButton.primary(
-                label: 'Try again',
+                label: l.commonTryAgain,
                 expand: false,
                 onPressed: () =>
                     ref.invalidate(staffSetupContextProvider(null)),
               ),
             ),
         },
-        loading: () => const LsStateView.loading(
-          title: 'Loading form',
-          message: 'Fetching the school staff setup context.',
+        loading: () => LsStateView.loading(
+          title: l.staffCreateLoadingTitle,
+          message: l.staffCreateLoadingMessage,
         ),
         error: (err, _) => LsStateView.error(
           icon: Icons.error_outline,
-          title: 'Could not load the form schema',
+          title: l.staffCreateErrorTitle,
           message: err.toString(),
         ),
       ),
     );
   }
 
-  Widget _buildForm(JsonMap setupContext, DesignTokens tokens) {
+  Widget _buildForm(
+    JsonMap setupContext,
+    DesignTokens tokens,
+    AppLocalizations l,
+  ) {
     final defaults = setupContext['defaults'] is JsonMap
         ? setupContext['defaults'] as JsonMap
         : const <String, Object?>{};
@@ -275,17 +282,17 @@ class _StaffCreateScreenState extends ConsumerState<StaffCreateScreen> {
       child: ListView(
         padding: EdgeInsets.all(tokens.space.md),
         children: [
-          _SectionLabel('Identity', tokens: tokens),
+          _SectionLabel(l.staffCreateIdentityHeader, tokens: tokens),
           _buildFieldsColumnOrRow([
             LsTextField(
-              label: 'First name',
+              label: l.staffCreateFirstNameLabel,
               required: true,
               controller: _firstNameController,
               errorText: _errorFor('first_name'),
               onChanged: (_) => _onFieldChanged(),
             ),
             LsTextField(
-              label: 'Last name',
+              label: l.staffCreateLastNameLabel,
               required: true,
               controller: _lastNameController,
               errorText: _errorFor('last_name'),
@@ -293,27 +300,27 @@ class _StaffCreateScreenState extends ConsumerState<StaffCreateScreen> {
             ),
           ], tokens),
           SizedBox(height: tokens.space.md),
-          _SectionLabel('Role', tokens: tokens),
+          _SectionLabel(l.staffCreateRoleHeader, tokens: tokens),
           LsTextField(
-            label: 'Role',
+            label: l.staffCreateRoleLabel,
             required: true,
             controller: _roleController,
-            hint: defaults['staff_role']?.toString() ?? 'Teacher',
+            hint: defaults['staff_role']?.toString() ?? l.staffCreateRoleHint,
             errorText: _errorFor('staff_role'),
             onChanged: (_) => _onFieldChanged(),
           ),
           SizedBox(height: tokens.space.md),
-          _SectionLabel('Contact', tokens: tokens),
+          _SectionLabel(l.staffCreateContactHeader, tokens: tokens),
           _buildFieldsColumnOrRow([
             LsTextField(
-              label: 'Email',
+              label: l.staffCreateEmailLabel,
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
               errorText: _errorFor('email'),
               onChanged: (_) => _onFieldChanged(),
             ),
             LsTextField(
-              label: 'Phone',
+              label: l.staffCreatePhoneLabel,
               controller: _phoneController,
               keyboardType: TextInputType.phone,
               errorText: _errorFor('phone'),
@@ -321,34 +328,34 @@ class _StaffCreateScreenState extends ConsumerState<StaffCreateScreen> {
             ),
           ], tokens),
           SizedBox(height: tokens.space.md),
-          _SectionLabel('Country & nationality', tokens: tokens),
+          _SectionLabel(l.staffCreateCountryHeader, tokens: tokens),
           _buildFieldsColumnOrRow([
             LsTextField(
-              label: 'Nationality',
+              label: l.staffCreateNationalityLabel,
               controller: _nationalityController,
               errorText: _errorFor('nationality'),
               onChanged: (_) => _onFieldChanged(),
             ),
             LsTextField(
-              label: 'Country of residence',
+              label: l.staffCreateCountryLabel,
               controller: _countryController,
               errorText: _errorFor('country'),
               onChanged: (_) => _onFieldChanged(),
             ),
           ], tokens),
           SizedBox(height: tokens.space.md),
-          _SectionLabel('Joining date', tokens: tokens),
+          _SectionLabel(l.staffCreateDateHeader, tokens: tokens),
           LsTextField(
-            label: 'Date of joining',
+            label: l.staffCreateDateOfJoiningLabel,
             controller: _dateOfJoiningController,
-            hint: 'YYYY-MM-DD',
+            hint: l.staffCreateDateOfJoiningHint,
             errorText: _errorFor('date_of_joining'),
             onChanged: (_) => _onFieldChanged(),
           ),
           SizedBox(height: tokens.space.md),
-          _SectionLabel('Notes', tokens: tokens),
+          _SectionLabel(l.staffCreateNotesHeader, tokens: tokens),
           LsTextField(
-            label: 'Notes',
+            label: l.staffCreateNotesLabel,
             controller: _notesController,
             maxLines: 4,
             errorText: _errorFor('notes'),
@@ -382,7 +389,9 @@ class _StaffCreateScreenState extends ConsumerState<StaffCreateScreen> {
             ),
           if (_generalError != null) SizedBox(height: tokens.space.md),
           LsButton.primary(
-            label: _submitting ? 'Creating…' : 'Create staff',
+            label: _submitting
+                ? l.staffCreateSubmitLoading
+                : l.staffCreateSubmitAction,
             icon: Icons.check,
             isLoading: _submitting,
             onPressed: _submitting ? null : _submit,

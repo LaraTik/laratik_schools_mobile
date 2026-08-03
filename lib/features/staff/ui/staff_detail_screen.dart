@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/result.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../ui/design_tokens.dart';
 import '../../../ui/widgets/ls_button.dart';
 import '../../../ui/widgets/ls_empty_state.dart';
@@ -21,6 +22,7 @@ class StaffDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     final asyncProfile = ref.watch(staffProfileProvider(staffId));
 
     return Scaffold(
@@ -33,7 +35,7 @@ class StaffDetailScreen extends ConsumerWidget {
           onPressed: () => context.go('/shell/staff'),
         ),
         title: Text(
-          'Staff',
+          l.staffDetailScreenTitle,
           style: tokens.typography.titleLarge.copyWith(
             color: tokens.text.primary,
           ),
@@ -41,22 +43,22 @@ class StaffDetailScreen extends ConsumerWidget {
       ),
       body: asyncProfile.when(
         data: (result) => switch (result) {
-          Ok(:final value) => _buildBody(context, value, tokens),
+          Ok(:final value) => _buildBody(context, value, tokens, l),
           Err(:final error) => LsStateView.error(
               icon: Icons.error_outline,
-              title: 'Could not load staff',
+              title: l.staffDetailErrorTitle,
               message: error.message,
               action: LsButton.primary(
-                label: 'Try again',
+                label: l.commonTryAgain,
                 expand: false,
                 onPressed: () => ref.invalidate(staffProfileProvider(staffId)),
               ),
             ),
         },
-        loading: () => const LsStateView.loading(title: 'Loading staff'),
+        loading: () => LsStateView.loading(title: l.staffDetailLoadingTitle),
         error: (err, _) => LsStateView.error(
           icon: Icons.error_outline,
-          title: 'Could not load staff',
+          title: l.staffDetailErrorTitle,
           message: err.toString(),
         ),
       ),
@@ -67,6 +69,7 @@ class StaffDetailScreen extends ConsumerWidget {
     BuildContext context,
     StaffProfile profile,
     DesignTokens tokens,
+    AppLocalizations l,
   ) {
     final m = profile.member;
     return ListView(
@@ -74,25 +77,25 @@ class StaffDetailScreen extends ConsumerWidget {
       children: [
         _IdentityCard(member: m, tokens: tokens),
         SizedBox(height: tokens.space.md),
-        _SectionHeader(title: 'Role & branch', tokens: tokens),
+        _SectionHeader(title: l.staffDetailRoleBranchHeader, tokens: tokens),
         _KeyValueCard(
           entries: [
-            _Entry('Role', m.staffRole),
-            _Entry('Branch', m.branch),
-            _Entry('Status', m.status),
-            _Entry('Date of joining', m.dateOfJoining),
-            _Entry('User account', m.user),
+            _Entry(l.staffDetailRoleLabel, m.staffRole),
+            _Entry(l.staffDetailBranchLabel, m.branch),
+            _Entry(l.staffDetailStatusLabel, m.status),
+            _Entry(l.staffDetailDateOfJoiningLabel, m.dateOfJoining),
+            _Entry(l.staffDetailUserAccountLabel, m.user),
           ],
           tokens: tokens,
         ),
         SizedBox(height: tokens.space.md),
-        _SectionHeader(title: 'Identity & contact', tokens: tokens),
+        _SectionHeader(title: l.staffDetailIdentityHeader, tokens: tokens),
         _KeyValueCard(
           entries: [
-            _Entry('Gender', m.gender),
-            _Entry('Nationality', m.nationality),
-            _Entry('Country', m.country),
-            _Entry('ERPNext employee', m.erpnextEmployee),
+            _Entry(l.staffDetailGenderLabel, m.gender),
+            _Entry(l.staffDetailNationalityLabel, m.nationality),
+            _Entry(l.staffDetailCountryLabel, m.country),
+            _Entry(l.staffDetailErpnextEmployeeLabel, m.erpnextEmployee),
           ],
           tokens: tokens,
         ),
@@ -220,6 +223,7 @@ class _KeyValueCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     final visible = entries
         .where((e) => e.value != null && e.value!.isNotEmpty)
         .toList(growable: false);
@@ -232,7 +236,7 @@ class _KeyValueCard extends StatelessWidget {
           border: Border.all(color: tokens.surface.outlineVariant),
         ),
         child: Text(
-          'No data on file.',
+          l.staffDetailNoDataLabel,
           style: tokens.typography.bodyMedium.copyWith(
             color: tokens.text.tertiary,
           ),
@@ -250,7 +254,7 @@ class _KeyValueCard extends StatelessWidget {
           for (var i = 0; i < visible.length; i++) ...[
             if (i > 0) Divider(height: 1, color: tokens.surface.outlineVariant),
             Padding(
-              padding: EdgeInsets.symmetric(
+              padding: EdgeInsetsDirectional.symmetric(
                 horizontal: tokens.space.md,
                 vertical: tokens.space.sm,
               ),

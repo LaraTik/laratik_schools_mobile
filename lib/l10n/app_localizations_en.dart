@@ -1886,4 +1886,202 @@ class AppLocalizationsEn extends AppLocalizations {
   String teacherExamQuestionErrorSnack(String message) {
     return 'Save failed: $message';
   }
+
+  @override
+  String get staffListScreenTitle => 'Staff';
+
+  @override
+  String get staffListSearchHint => 'Search by name or role';
+
+  @override
+  String get staffListNewStaffAction => 'New staff';
+
+  @override
+  String get staffListLoadingTitle => 'Loading staff';
+
+  @override
+  String get staffListLoadingMessage =>
+      'Fetching the latest roster from the server.';
+
+  @override
+  String get staffListEmptyTitle => 'No staff yet';
+
+  @override
+  String get staffListEmptyFilterTitle => 'No staff match the current filter';
+
+  @override
+  String get staffListEmptyMessage =>
+      'Add the first staff member to get started.';
+
+  @override
+  String get staffListEmptyFilterMessage =>
+      'Try clearing the search or the role filter.';
+
+  @override
+  String get staffListAddStaffAction => 'Add staff';
+
+  @override
+  String get staffListErrorTitle => 'Could not load staff';
+
+  @override
+  String get staffListFilterRole => 'Role';
+
+  @override
+  String get staffListFilterClear => 'Clear';
+
+  @override
+  String get staffListFilterRoleTitle => 'Filter by role';
+
+  @override
+  String get staffListFilterRoleTeacher => 'Teacher';
+
+  @override
+  String get staffListFilterRolePrincipal => 'Principal';
+
+  @override
+  String get staffListFilterRoleVicePrincipal => 'Vice Principal';
+
+  @override
+  String get staffListFilterRoleCounselor => 'Counselor';
+
+  @override
+  String get staffListFilterRoleLibrarian => 'Librarian';
+
+  @override
+  String get staffListFilterRoleAdmin => 'Admin';
+
+  @override
+  String get staffDetailScreenTitle => 'Staff';
+
+  @override
+  String get staffDetailLoadingTitle => 'Loading staff';
+
+  @override
+  String get staffDetailErrorTitle => 'Could not load staff';
+
+  @override
+  String get staffDetailRoleBranchHeader => 'Role & branch';
+
+  @override
+  String get staffDetailRoleLabel => 'Role';
+
+  @override
+  String get staffDetailBranchLabel => 'Branch';
+
+  @override
+  String get staffDetailStatusLabel => 'Status';
+
+  @override
+  String get staffDetailDateOfJoiningLabel => 'Date of joining';
+
+  @override
+  String get staffDetailUserAccountLabel => 'User account';
+
+  @override
+  String get staffDetailIdentityHeader => 'Identity & contact';
+
+  @override
+  String get staffDetailGenderLabel => 'Gender';
+
+  @override
+  String get staffDetailNationalityLabel => 'Nationality';
+
+  @override
+  String get staffDetailCountryLabel => 'Country';
+
+  @override
+  String get staffDetailErpnextEmployeeLabel => 'ERPNext employee';
+
+  @override
+  String get staffDetailNoDataLabel => 'No data on file.';
+
+  @override
+  String get staffStatusActive => 'Active';
+
+  @override
+  String get staffCreateScreenTitle => 'New staff';
+
+  @override
+  String get staffCreateLoadingTitle => 'Loading form';
+
+  @override
+  String get staffCreateLoadingMessage =>
+      'Fetching the school staff setup context.';
+
+  @override
+  String get staffCreateErrorTitle => 'Could not load the form schema';
+
+  @override
+  String get staffCreateIdentityHeader => 'Identity';
+
+  @override
+  String get staffCreateFirstNameLabel => 'First name';
+
+  @override
+  String get staffCreateLastNameLabel => 'Last name';
+
+  @override
+  String get staffCreateRoleHeader => 'Role';
+
+  @override
+  String get staffCreateRoleLabel => 'Role';
+
+  @override
+  String get staffCreateRoleHint => 'Teacher';
+
+  @override
+  String get staffCreateContactHeader => 'Contact';
+
+  @override
+  String get staffCreateEmailLabel => 'Email';
+
+  @override
+  String get staffCreatePhoneLabel => 'Phone';
+
+  @override
+  String get staffCreateCountryHeader => 'Country & nationality';
+
+  @override
+  String get staffCreateNationalityLabel => 'Nationality';
+
+  @override
+  String get staffCreateCountryLabel => 'Country of residence';
+
+  @override
+  String get staffCreateDateHeader => 'Joining date';
+
+  @override
+  String get staffCreateDateOfJoiningLabel => 'Date of joining';
+
+  @override
+  String get staffCreateDateOfJoiningHint => 'YYYY-MM-DD';
+
+  @override
+  String get staffCreateNotesHeader => 'Notes';
+
+  @override
+  String get staffCreateNotesLabel => 'Notes';
+
+  @override
+  String get staffCreateSuccessTitle => 'Staff member created';
+
+  @override
+  String get staffCreateSuccessFallback => 'The staff record is on file.';
+
+  @override
+  String staffCreateEmployeeChip(String id) {
+    return 'Employee: $id';
+  }
+
+  @override
+  String get staffCreateAnotherAction => 'Create another';
+
+  @override
+  String get staffCreateOpenRecordAction => 'Open record';
+
+  @override
+  String get staffCreateSubmitAction => 'Create staff';
+
+  @override
+  String get staffCreateSubmitLoading => 'Creating…';
 }
