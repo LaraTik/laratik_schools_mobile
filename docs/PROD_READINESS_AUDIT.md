@@ -1,7 +1,7 @@
 # PROD-readiness audit — Laratik Schools Mobile
 
-> Snapshot: 2026-08-02. The mobile is at `2acb8b5` (Phase 0–6 surface
-> realignment + UI/UX polish). "PROD-ready" here means: every user
+> Snapshot: 2026-08-03. The mobile is at the next commit after
+> `38a092f` (locale release). "PROD-ready" here means: every user
 > role can do the things their role implies, the build is green, and
 > the app degrades gracefully on the major failure modes (offline,
 > expired token, capability not granted, version-policy block).
@@ -48,6 +48,26 @@
 > flipped to "shipped (locale framework + bottom-nav
 > labels; home-surface string extraction + RTL pass +
 > a11y audit deferred)"). The mobile is at `0cfd72e`.
+>
+> Update 2026-08-03 (home surface localization + RTL pass):
+> the home surfaces (parent / student / teacher / admin
+> dashboard) + the family picker + the per-child detail +
+> the "Switch student" picker + the teacher "My classes"
+> + the per-class detail + the fees surfaces (plans + per-
+> plan detail + admin "Fee operations") are fully
+> localized (English source + Modern Standard Arabic
+> with the six ICU plural categories where the strings
+> carry counts). The literal `right: -2` notification
+> badge dot is replaced with `Positioned.directional(...)`,
+> the literal `Icons.chevron_right` in every list row
+> mirrors itself under RTL, and the AppBar date hugs the
+> trailing edge in both directions. The locale test
+> suite grew from 6 to 11 tests (covers English + Arabic
+> copy, pluralization rules, and the per-surface
+> key-pinning). See §4 (the "Arabic locale partial" note
+> is replaced with "Arabic locale shipped end-to-end") and
+> §5 (item #11 → fully shipped). The mobile is at the
+> next commit after `38a092f`.
 
 This document is the source of truth for what is shipped, what is
 missing per role, and the prioritized roadmap. It supersedes the
@@ -253,14 +273,22 @@ feature above were built:
 - **5 pre-existing test failures** in `test/platform/transport_test.dart`
   (2) and `test/features/assessment/current_student_provider_test.dart`
   (3, in the user's in-flight work). Not from the latest commit.
-- **Arabic locale partial** — the framework + the bottom-nav
-  tab labels are localized (see the locale release in the
-  CHANGELOG). The home surfaces + the family / classes /
-  child-detail / fee-plans surfaces still carry ~150
-  hardcoded English strings; the per-screen surface text
-  + state-view titles + KPI labels land in the next turn.
-  RTL-aware layout pass + a11y audit also deferred to the
-  same follow-up.
+- **Arabic locale partial** — ~~the framework + the bottom-nav
+  tab labels are localized; the home surfaces + the family
+  / classes / child-detail / fee-plans surfaces still carry
+  ~150 hardcoded English strings.~~ **Shipped** in the home
+  surface localization turn. Every user-facing string on the
+  parent / student / teacher / admin home, the family picker,
+  the per-child detail, the "Switch student" picker, the
+  teacher "My classes" + per-class detail, and the fees
+  surfaces (plans + per-plan detail + admin "Fee operations")
+  is now locale-aware. RTL pass landed: the notification
+  badge dot uses `Positioned.directional` so it stays in the
+  top-trailing corner in both LTR and RTL, every list-tile
+  chevron mirrors itself under RTL, and the AppBar date
+  uses `EdgeInsetsDirectional.only(end:)`. The locale test
+  suite grew from 6 to 11 tests (pluralization + non-English
+  Arabic guards).
 - **No offline support** — explicitly deferred per the AGENTS.md.
   The v1 SDK has `get_school_offline_pull` + `submit_school_offline_mutation`
   for the offline queue; the mobile doesn't read either.
@@ -286,7 +314,7 @@ surface. The rest is feature work.
 | 8 | **Admin enhancements** | Governance (privacy + retention) + Grading (admin side) | 1 turn | after #7 |
 | 9 | **Admin enhancements** | Data import wizard + Operations health | 2 turns | after #8 |
 | 10 | **Quality** | Hard-coded filter values → real `get_school_grades` | 0.5 turn | **shipped (picker release, derived from loaded students — backend follow-up: add `get_school_grades` + `get_school_class_groups`)** |
-| 11 | **Quality** | Arabic locale + a11y audit | 1 turn | **shipped (locale framework + bottom-nav labels; home-surface string extraction + RTL pass + a11y audit deferred to the next turn)** |
+| 11 | **Quality** | Arabic locale + a11y audit | 1 turn | **shipped (locale framework + bottom-nav labels + home-surface string extraction + RTL pass; locale test suite grew from 6 to 11 tests covering English + Arabic copy, pluralization, and per-surface pinning)** |
 
 The estimate is "one focused coding turn" (~30–60 min of focused
 work plus tests + commit). Total to "PROD-ready" by the strict
@@ -320,11 +348,15 @@ for role X?" is:
   Grades / Attendance / Report cards). Fee invoices for
   their children are still on the desktop.
 - **Locale** — *En + Ar.* The mobile now supports both
-  English and Arabic (Modern Standard). The bottom-nav
-  tabs are fully localized; the home surfaces still carry
-  ~150 hardcoded English strings that the next turn
-  extracts. RTL-aware layout pass + a11y audit also
-  deferred to the same follow-up.
+  English and Arabic (Modern Standard) end-to-end. The
+  bottom-nav tabs + every per-role home surface + the
+  family / child-detail / picker / classes / fees
+  surfaces are all locale-aware. The chevron in every
+  list row mirrors itself under RTL and the notification
+  badge dot stays in the top-trailing corner in both
+  directions. The locale test suite covers English +
+  Arabic copy, the six ICU plural categories for Arabic,
+  and the per-surface key-pinning.
 
 The source bar is met (the team can scaffold against the v1 Dart
 SDK and the foundation features work). The production bar is not.

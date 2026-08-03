@@ -26,12 +26,18 @@
 //     chip. Sorted newest-first.
 //   * Report cards: term-summary cards with academic year, term,
 //     average score, and the published date.
+//
+// All user-facing copy is locale-aware via
+// [AppLocalizations.of(context)]; the overview summary text shifts
+// voice between "your records" (student) and "this child's records"
+// (parent) per the [isOwnRecords] flag.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/result.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../ui/app_theme.dart';
 import '../../../ui/design_tokens.dart';
 import '../../../ui/widgets/ls_button.dart';
@@ -70,6 +76,7 @@ class ChildDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     final async = ref.watch(childRecordsProvider(studentId));
     return DefaultTabController(
       length: 4,
@@ -83,7 +90,10 @@ class ChildDetailScreen extends ConsumerWidget {
             onPressed: () => _onBack(context, isOwnRecords),
           ),
           title: Text(
-            title ?? (isOwnRecords ? 'My records' : 'Child'),
+            title ??
+                (isOwnRecords
+                    ? l.childDetailTitleOwn
+                    : l.childDetailTitleOther),
             style: tokens.typography.titleLarge.copyWith(
               color: tokens.text.primary,
             ),
@@ -99,11 +109,11 @@ class ChildDetailScreen extends ConsumerWidget {
                 labelColor: tokens.brand.primary,
                 unselectedLabelColor: tokens.text.secondary,
                 labelStyle: tokens.typography.labelLarge,
-                tabs: const [
-                  Tab(text: 'Overview'),
-                  Tab(text: 'Grades'),
-                  Tab(text: 'Attendance'),
-                  Tab(text: 'Report cards'),
+                tabs: [
+                  Tab(text: l.childDetailTabOverview),
+                  Tab(text: l.childDetailTabGrades),
+                  Tab(text: l.childDetailTabAttendance),
+                  Tab(text: l.childDetailTabReports),
                 ],
               ),
             ),
@@ -124,16 +134,16 @@ class ChildDetailScreen extends ConsumerWidget {
                 onRetry: () => ref.invalidate(childRecordsProvider(studentId)),
               ),
           },
-          loading: () => const LsStateView.loading(
-            title: 'Loading records',
-            message: 'Pulling grades, attendance, and report cards.',
+          loading: () => LsStateView.loading(
+            title: l.childDetailLoadingTitle,
+            message: l.childDetailLoadingMessage,
           ),
           error: (err, _) => LsStateView.error(
             icon: Icons.error_outline,
-            title: 'Could not load records',
+            title: l.childDetailEmptyStateFallback,
             message: err.toString(),
             action: LsButton.primary(
-              label: 'Try again',
+              label: l.commonTryAgain,
               expand: false,
               onPressed: () => ref.invalidate(childRecordsProvider(studentId)),
             ),
@@ -165,12 +175,13 @@ class _ErrorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     return LsStateView.error(
       icon: Icons.error_outline,
-      title: 'Could not load records',
+      title: l.childDetailEmptyStateFallback,
       message: error.message,
       action: LsButton.primary(
-        label: 'Try again',
+        label: l.commonTryAgain,
         expand: false,
         onPressed: onRetry,
       ),
@@ -190,6 +201,7 @@ class _OverviewTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     final grades = page.grades.items;
     final attendance = page.attendance.items;
     final reportCards = page.reportCards.items;
@@ -210,12 +222,12 @@ class _OverviewTab extends StatelessWidget {
         _SummaryCard(
           tokens: tokens,
           icon: Icons.school_outlined,
-          title: isOwnRecords ? 'Your records at a glance' : 'At a glance',
+          title: isOwnRecords
+              ? l.childDetailOverviewTitleOwn
+              : l.childDetailOverviewTitleOther,
           message: isOwnRecords
-              ? 'A quick summary of your grades, attendance, and '
-                  'report cards. Open a tab above for the full list.'
-              : "A quick summary of this child's grades, attendance, "
-                  'and report cards. Open a tab above for the full list.',
+              ? l.childDetailOverviewMessageOwn
+              : l.childDetailOverviewMessageOther,
         ),
         SizedBox(height: tokens.space.lg),
         _KpiRow(
@@ -223,45 +235,51 @@ class _OverviewTab extends StatelessWidget {
           items: [
             _KpiData(
               icon: Icons.assignment_turned_in_outlined,
-              label: 'Grades',
+              label: l.childDetailOverviewKpiGrades,
               value: grades.length.toString(),
-              sub: passed == grades.length
-                  ? 'All passed'
-                  : '$passed of ${grades.length} passed',
+              sub: grades.isEmpty
+                  ? l.childDetailAverageNoGrades
+                  : (passed == grades.length
+                      ? l.childDetailGradesAllPassed
+                      : l.childDetailGradesOfTotalPassed(
+                          passed, grades.length)),
               tone: LsChipTone.brand,
             ),
             _KpiData(
               icon: Icons.percent_outlined,
-              label: 'Average',
+              label: l.childDetailOverviewKpiAverage,
               value: avg == null ? '—' : '${avg.toStringAsFixed(0)}%',
               sub: avg == null
-                  ? 'No grades yet'
-                  : avg >= 70
-                      ? 'On track'
-                      : 'Below target',
+                  ? l.childDetailAverageNoGrades
+                  : (avg >= 70
+                      ? l.childDetailAverageOnTrack
+                      : l.childDetailAverageBelowTarget),
               tone: avg == null
                   ? LsChipTone.neutral
                   : (avg >= 70 ? LsChipTone.success : LsChipTone.warning),
             ),
             _KpiData(
               icon: Icons.fact_check_outlined,
-              label: 'Attendance',
+              label: l.childDetailOverviewKpiAttendance,
               value: attendance.length.toString(),
               sub: absent == 0
-                  ? 'No absences'
-                  : '$present present · $absent absent'
-                      '${late > 0 ? ' · $late late' : ''}',
+                  ? l.childDetailAttendanceNoAbsences
+                  : (late > 0
+                      ? l.childDetailAttendanceKpiSubLate(present, absent, late)
+                      : l.childDetailAttendanceKpiSub(present, absent)),
               tone: absent == 0
                   ? LsChipTone.success
                   : (absent > present ? LsChipTone.error : LsChipTone.warning),
             ),
             _KpiData(
               icon: Icons.summarize_outlined,
-              label: 'Report cards',
+              label: l.childDetailOverviewKpiReports,
               value: reportCards.length.toString(),
               sub: reportCards.isEmpty
-                  ? 'No cards yet'
-                  : 'Latest: ${_latestReportLabel(reportCards)}',
+                  ? l.childDetailReportCardNoCards
+                  : l.childDetailReportCardLatest(
+                      _latestReportLabel(reportCards),
+                    ),
               tone: LsChipTone.info,
             ),
           ],
@@ -288,7 +306,7 @@ class _OverviewTab extends StatelessWidget {
     final parts = <String>[];
     if (latest.term.isNotEmpty) parts.add(latest.term);
     if (latest.academicYear.isNotEmpty) parts.add(latest.academicYear);
-    return parts.isEmpty ? 'Published' : parts.join(' · ');
+    return parts.isEmpty ? '—' : parts.join(' · ');
   }
 }
 
@@ -496,12 +514,12 @@ class _GradesTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     if (records.isEmpty) {
-      return const LsStateView.empty(
+      return LsStateView.empty(
         icon: Icons.assignment_outlined,
-        title: 'No grades yet',
-        message: "No published grades for this student yet. New grades appear "
-            "here as soon as teachers release them.",
+        title: l.childDetailGradesEmptyTitle,
+        message: l.childDetailGradesEmptyMessage,
       );
     }
     // Newest first; fallback to the wire order if a row has no date.
@@ -535,6 +553,7 @@ class _GradeRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     final pct = record.percentage;
     return Container(
       padding: EdgeInsets.all(tokens.space.md),
@@ -554,7 +573,7 @@ class _GradeRow extends StatelessWidget {
                   children: [
                     Text(
                       record.assessmentName.isEmpty
-                          ? 'Assessment'
+                          ? l.childDetailGradeAssessmentFallback
                           : record.assessmentName,
                       style: tokens.typography.titleSmall.copyWith(
                         color: tokens.text.primary,
@@ -582,7 +601,9 @@ class _GradeRow extends StatelessWidget {
                 )
               else if (record.passStatus.isNotEmpty)
                 LsStatusChip(
-                  label: record.passed ? 'Pass' : 'Fail',
+                  label: record.passed
+                      ? l.childDetailGradePass
+                      : l.childDetailGradeFail,
                   tone: record.passed ? LsChipTone.success : LsChipTone.error,
                 ),
             ],
@@ -592,7 +613,7 @@ class _GradeRow extends StatelessWidget {
           if (record.publishedOn != null && record.publishedOn!.isNotEmpty) ...[
             SizedBox(height: tokens.space.xs),
             Text(
-              'Published ${record.publishedOn}',
+              l.childDetailGradePublishedOn(record.publishedOn!),
               style: tokens.typography.bodySmall.copyWith(
                 color: tokens.text.tertiary,
               ),
@@ -678,12 +699,12 @@ class _AttendanceTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     if (records.isEmpty) {
-      return const LsStateView.empty(
+      return LsStateView.empty(
         icon: Icons.fact_check_outlined,
-        title: 'No attendance recorded',
-        message: "No attendance has been recorded for this student yet. "
-            "Daily attendance will appear here as it's captured.",
+        title: l.childDetailAttendanceEmptyTitle,
+        message: l.childDetailAttendanceEmptyMessage,
       );
     }
     final tokens = context.laratik;
@@ -814,12 +835,12 @@ class _ReportCardsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     if (records.isEmpty) {
-      return const LsStateView.empty(
+      return LsStateView.empty(
         icon: Icons.summarize_outlined,
-        title: 'No report cards yet',
-        message: "No report cards have been published for this student yet. "
-            "Term summaries appear here once the school releases them.",
+        title: l.childDetailReportsEmptyTitle,
+        message: l.childDetailReportsEmptyMessage,
       );
     }
     final tokens = context.laratik;
@@ -852,6 +873,7 @@ class _ReportCardRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     return Container(
       padding: EdgeInsets.all(tokens.space.md),
       decoration: BoxDecoration(
@@ -872,7 +894,7 @@ class _ReportCardRow extends StatelessWidget {
               SizedBox(width: tokens.space.xs),
               Expanded(
                 child: Text(
-                  _title(),
+                  _title(context),
                   style: tokens.typography.titleSmall.copyWith(
                     color: tokens.text.primary,
                   ),
@@ -890,7 +912,7 @@ class _ReportCardRow extends StatelessWidget {
           SizedBox(height: tokens.space.xs),
           if (record.publishedOn != null && record.publishedOn!.isNotEmpty)
             Text(
-              'Published ${record.publishedOn}',
+              l.childDetailGradePublishedOn(record.publishedOn!),
               style: tokens.typography.bodySmall.copyWith(
                 color: tokens.text.tertiary,
               ),
@@ -900,10 +922,11 @@ class _ReportCardRow extends StatelessWidget {
     );
   }
 
-  String _title() {
+  String _title(BuildContext context) {
+    final l = AppLocalizations.of(context);
     final parts = <String>[];
     if (record.term.isNotEmpty) parts.add(record.term);
     if (record.academicYear.isNotEmpty) parts.add(record.academicYear);
-    return parts.isEmpty ? 'Report card' : parts.join(' · ');
+    return parts.isEmpty ? l.childDetailReportCardFallback : parts.join(' · ');
   }
 }

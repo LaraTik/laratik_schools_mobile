@@ -6,6 +6,7 @@ import '../features/assessment/data/assessment_providers.dart';
 import '../features/assessment/data/current_student_provider.dart';
 import '../features/assessment/data/exam.dart';
 import '../features/communication/data/communication_providers.dart';
+import '../l10n/app_localizations.dart';
 import '../ui/app_theme.dart';
 import '../ui/design_tokens.dart';
 import '../ui/widgets/ls_button.dart';
@@ -21,6 +22,7 @@ class StudentHomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     final currentStudentAsync = ref.watch(currentStudentProvider);
     // Pull the resolved CurrentStudent out of the AsyncValue so
     // the "My records" tile can decide whether to enable its tap
@@ -45,22 +47,23 @@ class StudentHomeScreen extends ConsumerWidget {
         backgroundColor: tokens.surface.surface,
         elevation: 0,
         title: Text(
-          'My school',
+          l.homeStudentMySchool,
           style: tokens.typography.titleLarge.copyWith(
             color: tokens.text.primary,
           ),
         ),
         actions: [
           IconButton(
-            tooltip: 'Notifications',
+            tooltip: l.a11yNotificationsTooltip,
             icon: Stack(
               clipBehavior: Clip.none,
               children: [
                 const Icon(Icons.notifications_outlined),
                 if (unread > 0)
-                  Positioned(
-                    right: -2,
+                  Positioned.directional(
+                    textDirection: Directionality.of(context),
                     top: -2,
+                    end: -2,
                     child: Container(
                       width: 8,
                       height: 8,
@@ -79,28 +82,22 @@ class StudentHomeScreen extends ConsumerWidget {
       body: ListView(
         padding: EdgeInsets.all(tokens.space.md),
         children: [
-          // "Acting as" — surfaces the active student so the user
-          // can verify the exam attempt will be filed against the
-          // right person. The mobile session is pinned to a single
-          // student by the dev seed; a future "switch student"
-          // surface (operator or self for older students) will let
-          // the user change it.
           currentStudentAsync.when(
             data: (current) => _ActingAsCard(tokens: tokens, current: current),
             loading: () => _LoadingCard(
               tokens: tokens,
-              title: 'Resolving student…',
-              message: 'Looking up the active student for this device.',
+              title: l.homeStudentResolving,
+              message: l.homeStudentResolvingMessage,
             ),
             error: (err, _) => _ErrorCard(
               tokens: tokens,
-              title: 'Student resolution failed',
+              title: l.homeStudentResolvingFailed,
               message: err.toString(),
             ),
           ),
           SizedBox(height: tokens.space.lg),
           Text(
-            'Today',
+            l.homeStudentToday,
             style: tokens.typography.titleSmall.copyWith(
               color: tokens.text.secondary,
             ),
@@ -112,9 +109,8 @@ class StudentHomeScreen extends ConsumerWidget {
                 return _PlaceholderCard(
                   tokens: tokens,
                   icon: Icons.assignment_outlined,
-                  title: 'No exams today',
-                  message: 'You have no published exam plans waiting for you. '
-                      'New exams will appear here as teachers publish them.',
+                  title: l.homeStudentNoExamsTitle,
+                  message: l.homeStudentNoExamsMessage,
                 );
               }
               final next = page.plans.first;
@@ -122,18 +118,18 @@ class StudentHomeScreen extends ConsumerWidget {
             },
             loading: () => _LoadingCard(
               tokens: tokens,
-              title: 'Loading exams',
-              message: 'Fetching your published exam catalog.',
+              title: l.homeStudentLoadingExamsTitle,
+              message: l.homeStudentLoadingExamsMessage,
             ),
             error: (err, _) => _ErrorCard(
               tokens: tokens,
-              title: 'Could not load exams',
+              title: l.homeStudentCouldNotLoadExams,
               message: err.toString(),
             ),
           ),
           SizedBox(height: tokens.space.lg),
           Text(
-            'More',
+            l.homeStudentMore,
             style: tokens.typography.titleSmall.copyWith(
               color: tokens.text.secondary,
             ),
@@ -142,18 +138,18 @@ class StudentHomeScreen extends ConsumerWidget {
           _SurfaceTile(
             tokens: tokens,
             icon: Icons.assignment_outlined,
-            title: 'All exams',
-            subtitle: 'Browse every published exam',
+            title: l.homeStudentAllExams,
+            subtitle: l.homeStudentAllExamsSubtitle,
             onTap: () => context.go('/shell/academics/exams'),
           ),
           SizedBox(height: tokens.space.sm),
           _SurfaceTile(
             tokens: tokens,
             icon: Icons.summarize_outlined,
-            title: 'My records',
+            title: l.homeStudentMyRecords,
             subtitle: current == null
-                ? 'Resolving student…'
-                : 'Grades, attendance, and report cards',
+                ? l.homeStudentResolving
+                : l.homeStudentMyRecordsSubtitle,
             onTap:
                 current == null ? null : () => context.go('/shell/me/records'),
           ),
@@ -161,10 +157,10 @@ class StudentHomeScreen extends ConsumerWidget {
           _SurfaceTile(
             tokens: tokens,
             icon: Icons.notifications_outlined,
-            title: 'Notifications',
+            title: l.shellNotifications,
             subtitle: unread == 0
-                ? 'Inbox + announcements'
-                : '$unread unread message${unread == 1 ? '' : 's'}',
+                ? l.homeStudentInboxSubtitle
+                : l.a11yUnreadNotifications(unread),
             onTap: () => context.go('/shell/notifications'),
           ),
         ],
@@ -180,13 +176,17 @@ class _ActingAsCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final icon = Icons.person_outline;
+    final l = AppLocalizations.of(context);
     final label = current == null
-        ? 'No student resolved'
-        : 'Hi, ${current!.person.fullName.isEmpty ? current!.studentId : current!.person.fullName}';
+        ? l.homeStudentNoStudent
+        : l.homeStudentGreeting(
+            current!.person.fullName.isEmpty
+                ? current!.studentId
+                : current!.person.fullName,
+          );
     final sub = current == null
-        ? 'No students are seeded on this site yet.'
-        : 'Student ID: ${current!.studentId}';
+        ? l.homeStudentNoStudentMessage
+        : l.homeStudentStudentId(current!.studentId);
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: tokens.space.md,
@@ -199,7 +199,7 @@ class _ActingAsCard extends ConsumerWidget {
       ),
       child: Row(
         children: [
-          Icon(icon, color: tokens.brand.primary, size: 18),
+          Icon(Icons.person_outline, color: tokens.brand.primary, size: 18),
           SizedBox(width: tokens.space.xs),
           Expanded(
             child: Column(
@@ -223,7 +223,7 @@ class _ActingAsCard extends ConsumerWidget {
             ),
           ),
           IconButton(
-            tooltip: 'Switch student',
+            tooltip: l.a11ySwitchStudentTooltip,
             icon: const Icon(Icons.swap_horiz),
             onPressed: () => context.go('/shell/me/switch-student'),
           ),
@@ -240,6 +240,7 @@ class _NextExamCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     return Container(
       padding: EdgeInsets.all(tokens.space.md),
       decoration: BoxDecoration(
@@ -259,7 +260,7 @@ class _NextExamCard extends StatelessWidget {
               ),
               SizedBox(width: tokens.space.xs),
               Text(
-                'Take your next exam',
+                l.homeStudentTakeNextExam,
                 style: tokens.typography.titleSmall.copyWith(
                   color: tokens.text.primary,
                 ),
@@ -283,7 +284,7 @@ class _NextExamCard extends StatelessWidget {
           ],
           SizedBox(height: tokens.space.md),
           LsButton.primary(
-            label: 'Open exam',
+            label: l.homeStudentOpenExam,
             icon: Icons.play_arrow,
             expand: false,
             onPressed: exam.id.isEmpty
@@ -367,7 +368,12 @@ class _SurfaceTile extends StatelessWidget {
                     ],
                   ),
                 ),
-                Icon(Icons.chevron_right, color: chevronColor),
+                Icon(
+                  Directionality.of(context) == TextDirection.rtl
+                      ? Icons.chevron_left
+                      : Icons.chevron_right,
+                  color: chevronColor,
+                ),
               ],
             ),
           ),

@@ -103,6 +103,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeStudentMySchool => 'مدرستي';
 
   @override
+  String homeStudentGreeting(String name) {
+    return 'مرحبًا، $name';
+  }
+
+  @override
+  String homeStudentStudentId(String id) {
+    return 'رقم الطالب: $id';
+  }
+
+  @override
   String get homeStudentResolving => 'جارٍ تحديد الطالب…';
 
   @override
@@ -140,6 +150,88 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeStudentMyRecordsSubtitle => 'الدرجات والحضور وكشوف العلامات';
 
   @override
+  String get homeStudentNoExamsTitle => 'لا توجد اختبارات اليوم';
+
+  @override
+  String get homeStudentNoExamsMessage =>
+      'لا توجد خطط اختبارات منشورة في انتظارك. ستظهر الاختبارات الجديدة هنا بمجرد أن ينشرها المعلمون.';
+
+  @override
+  String get homeStudentLoadingExamsTitle => 'جارٍ تحميل الاختبارات';
+
+  @override
+  String get homeStudentLoadingExamsMessage =>
+      'نجلب كتالوج الاختبارات المنشورة.';
+
+  @override
+  String get homeStudentCouldNotLoadExams => 'تعذّر تحميل الاختبارات';
+
+  @override
+  String get homeStudentTakeNextExam => 'اعقد امتحانك التالي';
+
+  @override
+  String get homeStudentOpenExam => 'افتح الاختبار';
+
+  @override
+  String get homeStudentInboxSubtitle => 'صندوق الوارد + الإعلانات';
+
+  @override
+  String get homeParentMyFamily => 'عائلتي';
+
+  @override
+  String get homeParentFeeInvoicesTitle => 'فواتير الرسوم';
+
+  @override
+  String get homeParentFeeInvoicesSubtitle =>
+      'راجع خطط الرسوم لطفلك وحالة الدفع.';
+
+  @override
+  String get homeParentHeroLoadingMessage => 'نبحث عن الطلاب المرتبطين بك.';
+
+  @override
+  String get homeParentHeroLoadingChip => 'جارٍ التحميل…';
+
+  @override
+  String get homeParentHeroErrorMessage =>
+      'تعذّر تحميل أطفالك الآن. انقر لإعادة المحاولة.';
+
+  @override
+  String get homeParentHeroErrorChip => 'إعادة المحاولة';
+
+  @override
+  String homeParentLinkedChildren(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count طفل مرتبط',
+      many: '$count طفلاً مرتبطاً',
+      few: '$count أطفال مرتبطون',
+      two: 'طفلان مرتبطان',
+      one: 'طفل واحد مرتبط',
+      zero: 'لا يوجد أطفال مرتبطون',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String homeParentLinkedChildrenActive(int count, int active) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count طفل مرتبط · $active نشط. انقر لرؤية الدرجات والحضور وكشوف العلامات.',
+      many:
+          '$count طفلاً مرتبطاً · $active نشط. انقر لرؤية الدرجات والحضور وكشوف العلامات.',
+      few:
+          '$count أطفال مرتبطون · $active نشط. انقر لرؤية الدرجات والحضور وكشوف العلامات.',
+      two:
+          'طفلان مرتبطان · $active نشط. انقر لرؤية الدرجات والحضور وكشوف العلامات.',
+      one: 'طفل واحد مرتبط · انقر لرؤية الدرجات والحضور وكشوف العلامات.',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get homeTeacherMySchool => 'مدرستي';
 
   @override
@@ -150,6 +242,61 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get homeTeacherCaptureAttendanceSubtitle => 'سجل لمجموعة صفية';
+
+  @override
+  String get homeTeacherInboxSubtitle => 'صندوق الوارد + الإعلانات';
+
+  @override
+  String get homeTeacherQuickStart => 'بدء سريع';
+
+  @override
+  String get homeTeacherHeroLoadingMessage =>
+      'نبحث عن أزواج (الصف، المادة) التي تدرّسها.';
+
+  @override
+  String get homeTeacherHeroLoadingChip => 'جارٍ التحميل…';
+
+  @override
+  String get homeTeacherHeroErrorMessage =>
+      'تعذّر تحميل صفوفك الآن. انقر لإعادة المحاولة.';
+
+  @override
+  String get homeTeacherHeroErrorChip => 'إعادة المحاولة';
+
+  @override
+  String homeTeacherHeroActive(int count, int active) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count تعيين · $active نشط. انقر لرؤية قائمتك + اختباراتك في تلك المادة.',
+      many:
+          '$count تعييناً · $active نشط. انقر لرؤية قائمتك + اختباراتك في تلك المادة.',
+      few:
+          '$count تعيينات · $active نشط. انقر لرؤية قائمتك + اختباراتك في تلك المادة.',
+      two:
+          'تعيينان · $active نشط. انقر لرؤية قائمتك + اختباراتك في تلك المادة.',
+      one: 'تعيين تدريس واحد · انقر لرؤية قائمتك + اختباراتك في تلك المادة.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeTeacherHeroEmpty =>
+      'عندما يعينك قسم القبول على (صف، مادة)، سيظهر الصف هنا.';
+
+  @override
+  String get homeAdminMyHome => 'الرئيسية';
+
+  @override
+  String homeAdminActingAs(String name) {
+    return 'تتصرف باسم: $name';
+  }
+
+  @override
+  String homeAdminSignedInAs(String role) {
+    return 'مسجّل الدخول باسم: $role';
+  }
 
   @override
   String get homeAdminQuickStart => 'بدء سريع';
@@ -179,6 +326,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeAdminNewSubjectSubtitle => 'أضف مادة إلى الكتالوج';
 
   @override
+  String get homeAdminCaptureAttendance => 'تسجيل الحضور';
+
+  @override
+  String get homeAdminCaptureAttendanceSubtitle => 'سجل لمجموعة صفية';
+
+  @override
   String get homeAdminFeePlans => 'خطط الرسوم';
 
   @override
@@ -189,6 +342,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get homeAdminFeeOperationsSubtitle => 'مُصدرة / محصلة / مستحقة';
+
+  @override
+  String get homeAdminNotificationsSubtitle => 'صندوق الوارد + الإعلانات';
 
   @override
   String myChildrenHeaderTotal(int count) {
@@ -438,4 +594,315 @@ class AppLocalizationsAr extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get familyHomeLoadingTitle => 'جارٍ تحميل أطفالك';
+
+  @override
+  String get familyHomeErrorTitle => 'تعذّر تحميل أطفالك';
+
+  @override
+  String familyChildRowRelation(String relation) {
+    return 'بصفة $relation';
+  }
+
+  @override
+  String familyChildRowId(String code) {
+    return 'الرقم $code';
+  }
+
+  @override
+  String get childDetailLoadingTitle => 'جارٍ تحميل السجلات';
+
+  @override
+  String get childDetailLoadingMessage =>
+      'نجلب الدرجات والحضور وكشوف العلامات.';
+
+  @override
+  String get childDetailGradeAssessmentFallback => 'التقييم';
+
+  @override
+  String get childDetailGradePass => 'ناجح';
+
+  @override
+  String get childDetailGradeFail => 'راسب';
+
+  @override
+  String childDetailGradePublishedOn(String date) {
+    return 'نُشر في $date';
+  }
+
+  @override
+  String get childDetailReportCardFallback => 'كشف العلامات';
+
+  @override
+  String get childDetailAverageOnTrack => 'ضمن المعدل';
+
+  @override
+  String get childDetailAverageBelowTarget => 'أقل من الهدف';
+
+  @override
+  String get childDetailAverageNoGrades => 'لا توجد درجات بعد';
+
+  @override
+  String get childDetailGradesAllPassed => 'نجح الجميع';
+
+  @override
+  String childDetailGradesOfTotalPassed(int passed, int total) {
+    return '$passed من $total ناجح';
+  }
+
+  @override
+  String get childDetailAttendanceNoAbsences => 'لا توجد غيابات';
+
+  @override
+  String childDetailAttendanceKpiSub(int present, int absent) {
+    return '$present حاضر · $absent غائب';
+  }
+
+  @override
+  String childDetailAttendanceKpiSubLate(int present, int absent, int late) {
+    return '$present حاضر · $absent غائب · $late متأخر';
+  }
+
+  @override
+  String get childDetailReportCardNoCards => 'لا توجد كشوف بعد';
+
+  @override
+  String childDetailReportCardLatest(String label) {
+    return 'الأخير: $label';
+  }
+
+  @override
+  String get meSwitchStudentErrorTitle => 'تعذّر تحميل الطلاب';
+
+  @override
+  String get meSwitchStudentNoResultsMessage =>
+      'جرّب بحثًا أقصر، أو امسح البحث لرؤية القائمة الكاملة.';
+
+  @override
+  String get myClassesErrorTitle => 'تعذّر تحميل صفوفك';
+
+  @override
+  String myClassesAcademicYear(String year) {
+    return 'العام الدراسي $year';
+  }
+
+  @override
+  String get classDetailTitle => 'الصف';
+
+  @override
+  String get classDetailErrorTitle => 'تعذّر تحميل القائمة';
+
+  @override
+  String classDetailStudentCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count طالب',
+      many: '$count طالباً',
+      few: '$count طلاب',
+      two: 'طالبان',
+      one: 'طالب واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get feePlansScreenTitle => 'خطط الرسوم';
+
+  @override
+  String get feePlansErrorTitle => 'تعذّر تحميل خطط الرسوم';
+
+  @override
+  String feePlansOverdueChip(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count متأخر',
+      many: '$count متأخراً',
+      few: '$count متأخرون',
+      two: 'متأخران',
+      one: 'متأخر واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String feePlansPartialChip(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count دفعة جزئية',
+      many: '$count دفعة جزئية',
+      few: '$count دفعات جزئية',
+      two: 'دفعان جزئيان',
+      one: 'دفع جزئي واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String feePlansPaidChip(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count مدفوعة',
+      many: '$count مدفوعة',
+      few: '$count مدفوعات',
+      two: 'مدفوعتان',
+      one: 'مدفوعة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String feePlansAmountLine(String currency, String total, String outstanding) {
+    return '$currency $total الإجمالي · مستحقة $currency $outstanding';
+  }
+
+  @override
+  String feePlansAmountOnly(String currency, String total) {
+    return '$currency $total';
+  }
+
+  @override
+  String get feePlanDetailTitle => 'خطة الرسوم';
+
+  @override
+  String get feePlanLoadingTitle => 'جارٍ تحميل خطة الرسوم';
+
+  @override
+  String get feePlanLoadingMessage => 'نبحث عن تفصيل البنود وحالة الدفع.';
+
+  @override
+  String get feePlanErrorTitle => 'تعذّر تحميل خطة الرسوم';
+
+  @override
+  String get feePlanNotFoundTitle => 'خطة الرسوم غير موجودة';
+
+  @override
+  String get feePlanNotFoundMessage =>
+      'لم نعثر على خطة الرسوم هذه في الكتالوج الحالي. ربما أُلغيت أو نُقلت إلى عام دراسي مختلف؛ ارجع إلى القائمة لرؤية آخر الخطط.';
+
+  @override
+  String get feePlanNotFoundAction => 'العودة إلى خطط الرسوم';
+
+  @override
+  String get feePlanNoBreakdownMessage =>
+      'لم يُرجع الخادم تفصيل البنود لهذه الخطة. المبلغ الإجمالي ظاهر أعلاه؛ ستظهر قائمة البنود عند إضافة التفصيل على الخادم.';
+
+  @override
+  String feePlanIdentitySubtitle(String id) {
+    return 'خطة الرسوم $id';
+  }
+
+  @override
+  String feePlanDueDateChip(String date) {
+    return 'الاستحقاق $date';
+  }
+
+  @override
+  String get feePlanTotalLabel => 'الإجمالي';
+
+  @override
+  String get feePlanPaidLabel => 'المدفوع';
+
+  @override
+  String get feePlanOutstandingLabel => 'المستحق';
+
+  @override
+  String get feeOperationsScreenTitle => 'عمليات الرسوم';
+
+  @override
+  String get feeOperationsLoadingTitle => 'جارٍ تحميل العمليات';
+
+  @override
+  String get feeOperationsLoadingMessage =>
+      'نجمع أحدث إجماليات الفواتير والمدفوعات.';
+
+  @override
+  String get feeOperationsErrorTitle => 'تعذّر تحميل العمليات';
+
+  @override
+  String get feeOperationsCollectionRate => 'معدل التحصيل';
+
+  @override
+  String get feeOperationsNoInvoices => 'لا توجد فواتير بعد';
+
+  @override
+  String get feeOperationsNoInvoicesMessage =>
+      'لم تُصدر المدرسة أي فواتير بعد. سيظهر المعدل بمجرد نشر الخطة الأولى.';
+
+  @override
+  String feeOperationsCollectedOfTotal(String collectedCurrency,
+      String collectedAmount, String totalCurrency, String totalAmount) {
+    return 'تم تحصيل $collectedCurrency $collectedAmount من $totalCurrency $totalAmount حتى الآن.';
+  }
+
+  @override
+  String get feeOperationsInvoiced => 'مُصدرة';
+
+  @override
+  String get feeOperationsInvoicedSub => 'إجمالي المُصدَر في هذه الفترة';
+
+  @override
+  String get feeOperationsCollected => 'محصلة';
+
+  @override
+  String get feeOperationsCollectedSub => 'إجمالي المُحصَّل حتى الآن';
+
+  @override
+  String get feeOperationsOutstanding => 'مستحقة';
+
+  @override
+  String get feeOperationsOutstandingSub => 'لا تزال مستحقة';
+
+  @override
+  String get feeOperationsByStatus => 'حسب الحالة';
+
+  @override
+  String feeOperationsPaidCountChip(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count مدفوعة',
+      many: '$count مدفوعة',
+      few: '$count مدفوعات',
+      two: 'مدفوعتان',
+      one: 'مدفوعة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String feeOperationsOverdueCountChip(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count متأخرة',
+      many: '$count متأخرة',
+      few: '$count متأخرات',
+      two: 'متأخرتان',
+      one: 'متأخرة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String feeOperationsDraftCountChip(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count مسودة',
+      many: '$count مسودة',
+      few: '$count مسودات',
+      two: 'مسودتان',
+      one: 'مسودة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get feeOperationsViewPlansAction => 'عرض خطط الرسوم';
 }

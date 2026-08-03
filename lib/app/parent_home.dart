@@ -19,6 +19,7 @@ import 'package:go_router/go_router.dart';
 import '../features/boot/boot_provider.dart';
 import '../features/communication/data/communication_providers.dart';
 import '../features/family/data/family_providers.dart';
+import '../l10n/app_localizations.dart';
 import '../ui/app_theme.dart';
 import '../ui/design_tokens.dart';
 import '../ui/widgets/ls_status_chip.dart';
@@ -29,6 +30,7 @@ class ParentHomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     final unread = ref
             .watch(notificationsListProvider)
             .value
@@ -48,22 +50,29 @@ class ParentHomeScreen extends ConsumerWidget {
         backgroundColor: tokens.surface.surface,
         elevation: 0,
         title: Text(
-          'My family',
+          l.homeParentMyFamily,
           style: tokens.typography.titleLarge.copyWith(
             color: tokens.text.primary,
           ),
         ),
         actions: [
           IconButton(
-            tooltip: 'Notifications',
+            tooltip: l.a11yNotificationsTooltip,
             icon: Stack(
               clipBehavior: Clip.none,
               children: [
                 const Icon(Icons.notifications_outlined),
                 if (unread > 0)
-                  Positioned(
-                    right: -2,
+                  // PositionedDirectional so the badge stays in
+                  // the top-trailing corner in both LTR (top-right)
+                  // and RTL (top-left) layouts. The literal
+                  // `right: -2` would have left the badge in the
+                  // top-right under RTL, which reads wrong for
+                  // users who expect a mirrored UI.
+                  Positioned.directional(
+                    textDirection: Directionality.of(context),
                     top: -2,
+                    end: -2,
                     child: Container(
                       width: 8,
                       height: 8,
@@ -98,7 +107,7 @@ class ParentHomeScreen extends ConsumerWidget {
             SizedBox(height: tokens.space.lg),
           ],
           Text(
-            'Inbox',
+            l.homeParentInbox,
             style: tokens.typography.titleSmall.copyWith(
               color: tokens.text.secondary,
             ),
@@ -126,6 +135,7 @@ class _FeeInvoicesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     return Material(
       color: tokens.surface.surface,
       shape: RoundedRectangleBorder(
@@ -158,14 +168,14 @@ class _FeeInvoicesCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Fee invoices',
+                      l.homeParentFeeInvoicesTitle,
                       style: tokens.typography.titleSmall.copyWith(
                         color: tokens.text.primary,
                       ),
                     ),
                     SizedBox(height: tokens.space.xxs),
                     Text(
-                      "Review your children's fee plans and payment status.",
+                      l.homeParentFeeInvoicesSubtitle,
                       style: tokens.typography.bodySmall.copyWith(
                         color: tokens.text.secondary,
                       ),
@@ -173,7 +183,18 @@ class _FeeInvoicesCard extends StatelessWidget {
                   ],
                 ),
               ),
-              Icon(Icons.chevron_right, color: tokens.text.tertiary),
+              Icon(
+                // Chevron points the same way as the text flow
+                // in both LTR and RTL. `chevron_right` is the
+                // canonical Material 3 chevron for list rows; in
+                // RTL layouts Material's `ListTile` mirrors it
+                // automatically, but a raw Icon doesn't, so we
+                // pick the right one per direction.
+                Directionality.of(context) == TextDirection.rtl
+                    ? Icons.chevron_left
+                    : Icons.chevron_right,
+                color: tokens.text.tertiary,
+              ),
             ],
           ),
         ),
@@ -192,7 +213,8 @@ class _HeroFamilyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final summary = _summaryFor(familyAsync);
+    final l = AppLocalizations.of(context);
+    final summary = _summaryFor(familyAsync, l);
     return Material(
       color: tokens.brand.primaryContainer,
       shape: RoundedRectangleBorder(
@@ -224,7 +246,7 @@ class _HeroFamilyCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'My children',
+                      l.homeParentMyChildren,
                       style: tokens.typography.titleMedium.copyWith(
                         color: tokens.brand.onPrimaryContainer,
                       ),
@@ -248,7 +270,9 @@ class _HeroFamilyCard extends StatelessWidget {
                 ),
               ),
               Icon(
-                Icons.chevron_right,
+                Directionality.of(context) == TextDirection.rtl
+                    ? Icons.chevron_left
+                    : Icons.chevron_right,
                 color: tokens.brand.onPrimaryContainer,
               ),
             ],
@@ -258,15 +282,13 @@ class _HeroFamilyCard extends StatelessWidget {
     );
   }
 
-  _HeroSummary _summaryFor(AsyncValue<dynamic> async) {
+  _HeroSummary _summaryFor(AsyncValue<dynamic> async, AppLocalizations l) {
     return async.when(
       data: (page) {
         final members = (page as dynamic).members as List<dynamic>? ?? const [];
         if (members.isEmpty) {
-          return const _HeroSummary(
-            message: "When the school links you as a guardian, your "
-                "children's grades, attendance, and report cards "
-                'will appear here.',
+          return _HeroSummary(
+            message: l.homeParentNoChildrenMessage,
             chip: null,
           );
         }
@@ -274,22 +296,21 @@ class _HeroFamilyCard extends StatelessWidget {
             members.where((m) => (m as dynamic).isActive as bool).length;
         final count = members.length;
         return _HeroSummary(
-          message: count == 1
-              ? '1 linked child · tap to see grades, attendance, and '
-                  'report cards.'
-              : '$count linked children · $active active. Tap to see '
-                  'grades, attendance, and report cards.',
-          chip: count == 1 ? '1 child' : '$count children',
+          message: count == 0
+              ? l.homeParentLinkedChildren(0)
+              : (active == count
+                  ? l.homeParentLinkedChildrenActive(count, active)
+                  : l.homeParentLinkedChildrenActive(count, active)),
+          chip: l.homeParentLinkedChildren(count),
         );
       },
-      loading: () => const _HeroSummary(
-        message: 'Looking up the students you are linked to.',
-        chip: 'Loading…',
+      loading: () => _HeroSummary(
+        message: l.homeParentHeroLoadingMessage,
+        chip: l.homeParentHeroLoadingChip,
       ),
-      error: (_, __) => const _HeroSummary(
-        message: "We couldn't load your children just now. "
-            'Tap to retry.',
-        chip: 'Try again',
+      error: (_, __) => _HeroSummary(
+        message: l.homeParentHeroErrorMessage,
+        chip: l.homeParentHeroErrorChip,
       ),
     );
   }
@@ -313,6 +334,7 @@ class _InboxCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     return Material(
       color: tokens.surface.surface,
       shape: RoundedRectangleBorder(
@@ -347,16 +369,14 @@ class _InboxCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Inbox',
+                      l.homeParentInbox,
                       style: tokens.typography.titleSmall.copyWith(
                         color: tokens.text.primary,
                       ),
                     ),
                     SizedBox(height: tokens.space.xxs),
                     Text(
-                      unread == 0
-                          ? 'No new messages'
-                          : '$unread unread message${unread == 1 ? '' : 's'}',
+                      l.homeParentInboxUnread(unread),
                       style: tokens.typography.bodySmall.copyWith(
                         color: tokens.text.secondary,
                       ),
@@ -364,7 +384,12 @@ class _InboxCard extends StatelessWidget {
                   ],
                 ),
               ),
-              Icon(Icons.chevron_right, color: tokens.text.tertiary),
+              Icon(
+                Directionality.of(context) == TextDirection.rtl
+                    ? Icons.chevron_left
+                    : Icons.chevron_right,
+                color: tokens.text.tertiary,
+              ),
             ],
           ),
         ),

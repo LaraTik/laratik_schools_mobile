@@ -18,11 +18,16 @@
 //     faded so the teacher sees the history.
 //   * Empty / loading / error / retry paths use [LsStateView] for
 //     consistency with every other list in the app.
+//   * Every user-facing string is locale-aware via
+//     [AppLocalizations.of(context)]; the chevron mirrors itself
+//     under RTL so the visual flow stays consistent with the text
+//     direction.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../ui/app_theme.dart';
 import '../../../ui/design_tokens.dart';
 import '../../../ui/widgets/ls_button.dart';
@@ -37,6 +42,7 @@ class MyClassesScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     final async = ref.watch(myClassesProvider);
     return Scaffold(
       backgroundColor: tokens.surface.canvas,
@@ -44,14 +50,14 @@ class MyClassesScreen extends ConsumerWidget {
         backgroundColor: tokens.surface.surface,
         elevation: 0,
         title: Text(
-          'My classes',
+          l.navMyClasses,
           style: tokens.typography.titleLarge.copyWith(
             color: tokens.text.primary,
           ),
         ),
         actions: [
           IconButton(
-            tooltip: 'Refresh',
+            tooltip: l.commonRefresh,
             icon: const Icon(Icons.refresh),
             onPressed: () => ref.read(myClassesProvider.notifier).refresh(),
           ),
@@ -59,16 +65,16 @@ class MyClassesScreen extends ConsumerWidget {
       ),
       body: async.when(
         data: (page) => _buildBody(context, ref, tokens, page),
-        loading: () => const LsStateView.loading(
-          title: 'Loading your classes',
-          message: 'Looking up the (class, subject) pairs you teach.',
+        loading: () => LsStateView.loading(
+          title: l.myClassesLoadingTitle,
+          message: l.myClassesLoadingMessage,
         ),
         error: (err, _) => LsStateView.error(
           icon: Icons.error_outline,
-          title: 'Could not load your classes',
+          title: l.myClassesErrorTitle,
           message: err.toString(),
           action: LsButton.primary(
-            label: 'Try again',
+            label: l.commonTryAgain,
             expand: false,
             onPressed: () => ref.read(myClassesProvider.notifier).refresh(),
           ),
@@ -86,10 +92,8 @@ class MyClassesScreen extends ConsumerWidget {
     if (page.assignments.isEmpty) {
       return LsStateView.empty(
         icon: Icons.class_outlined,
-        title: 'No classes assigned',
-        message: "You don't have any active teaching assignments yet. "
-            "When the registrar assigns you to a (class, subject) "
-            "pair, the class will appear here.",
+        title: l_empty(context),
+        message: l_empty_msg(context),
       );
     }
     // Active assignments first; the inactive tail is still
@@ -133,6 +137,15 @@ class MyClassesScreen extends ConsumerWidget {
   }
 }
 
+// Forwarders so the empty-state LsStateView can stay inline without
+// a long conditional in the call site. They pull the latest
+// AppLocalizations off the BuildContext; cheap because the picker
+// rebuild is rare and the localisation class is cached.
+String l_empty(BuildContext context) =>
+    AppLocalizations.of(context).myClassesEmptyTitle;
+String l_empty_msg(BuildContext context) =>
+    AppLocalizations.of(context).myClassesEmptyMessage;
+
 class _Header extends StatelessWidget {
   const _Header(
       {required this.tokens, required this.total, required this.active});
@@ -142,6 +155,7 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     final inactive = total - active;
     return Container(
       padding: EdgeInsets.all(tokens.space.md),
@@ -159,9 +173,7 @@ class _Header extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  total == 1
-                      ? '1 active assignment'
-                      : '$total active assignments',
+                  l.myClassesHeaderTotal(total),
                   style: tokens.typography.titleSmall.copyWith(
                     color: tokens.text.primary,
                   ),
@@ -169,10 +181,8 @@ class _Header extends StatelessWidget {
                 SizedBox(height: tokens.space.xxs),
                 Text(
                   inactive == 0
-                      ? 'Tap a class to see your roster + '
-                          'exams for that subject.'
-                      : '$active active · $inactive inactive. '
-                          'Inactive assignments are kept for reference.',
+                      ? l.myClassesHeaderAllActive
+                      : l.myClassesHeaderActive(active, inactive),
                   style: tokens.typography.bodySmall.copyWith(
                     color: tokens.text.secondary,
                   ),
@@ -193,6 +203,7 @@ class _AssignmentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     final active = assignment.isActive;
     return Opacity(
       opacity: active ? 1.0 : 0.62,
@@ -209,71 +220,79 @@ class _AssignmentCard extends StatelessWidget {
                     '/shell/teachers/classes/${Uri.encodeComponent(assignment.classGroup)}',
                   ),
           borderRadius: BorderRadius.circular(tokens.radius.md),
-          child: Padding(
-            padding: EdgeInsets.all(tokens.space.md),
-            child: Row(
-              children: [
-                _ClassAvatar(
-                  tokens: tokens,
-                  label: assignment.classLabel,
-                  active: active,
-                ),
-                SizedBox(width: tokens.space.md),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        assignment.classLabel,
-                        style: tokens.typography.titleSmall.copyWith(
-                          color: tokens.text.primary,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      SizedBox(height: tokens.space.xxs),
-                      Wrap(
-                        spacing: tokens.space.xs,
-                        runSpacing: tokens.space.xxs,
-                        children: [
-                          if (assignment.subjectLabel.isNotEmpty)
-                            LsStatusChip(
-                              label: assignment.subjectLabel,
-                              tone: LsChipTone.brand,
-                              icon: Icons.menu_book_outlined,
-                            ),
-                          if (assignment.isPrimary)
-                            const LsStatusChip(
-                              label: 'Homeroom',
-                              tone: LsChipTone.info,
-                              icon: Icons.home_outlined,
-                            ),
-                          if (!active)
-                            LsStatusChip(
-                              label: assignment.status,
-                              tone: LsChipTone.neutral,
-                              icon: Icons.archive_outlined,
-                            ),
-                        ],
-                      ),
-                      if (assignment.academicYear.isNotEmpty) ...[
-                        SizedBox(height: tokens.space.xxs),
-                        Text(
-                          'Academic year ${assignment.academicYear}',
-                          style: tokens.typography.bodySmall.copyWith(
-                            color: tokens.text.secondary,
-                          ),
-                        ),
-                      ],
-                    ],
+          child: Semantics(
+            button: true,
+            label: assignment.classLabel,
+            child: Padding(
+              padding: EdgeInsets.all(tokens.space.md),
+              child: Row(
+                children: [
+                  _ClassAvatar(
+                    tokens: tokens,
+                    label: assignment.classLabel,
+                    active: active,
                   ),
-                ),
-                Icon(
-                  Icons.chevron_right,
-                  color: tokens.text.tertiary,
-                ),
-              ],
+                  SizedBox(width: tokens.space.md),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          assignment.classLabel,
+                          style: tokens.typography.titleSmall.copyWith(
+                            color: tokens.text.primary,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(height: tokens.space.xxs),
+                        Wrap(
+                          spacing: tokens.space.xs,
+                          runSpacing: tokens.space.xxs,
+                          children: [
+                            if (assignment.subjectLabel.isNotEmpty)
+                              LsStatusChip(
+                                label: assignment.subjectLabel,
+                                tone: LsChipTone.brand,
+                                icon: Icons.menu_book_outlined,
+                              ),
+                            if (assignment.isPrimary)
+                              LsStatusChip(
+                                label: l.myClassesChipHomeroom,
+                                tone: LsChipTone.info,
+                                icon: Icons.home_outlined,
+                              ),
+                            if (!active)
+                              LsStatusChip(
+                                label: assignment.status,
+                                tone: LsChipTone.neutral,
+                                icon: Icons.archive_outlined,
+                              ),
+                          ],
+                        ),
+                        if (assignment.academicYear.isNotEmpty) ...[
+                          SizedBox(height: tokens.space.xxs),
+                          Text(
+                            l.myClassesAcademicYear(assignment.academicYear),
+                            style: tokens.typography.bodySmall.copyWith(
+                              color: tokens.text.secondary,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                  Icon(
+                    // Mirror the chevron under RTL so the visual
+                    // "next →" stays consistent with the text flow.
+                    Directionality.of(context) == TextDirection.rtl
+                        ? Icons.chevron_left
+                        : Icons.chevron_right,
+                    color: tokens.text.tertiary,
+                  ),
+                ],
+              ),
             ),
           ),
         ),

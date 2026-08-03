@@ -6,12 +6,16 @@
 //
 // Reachable via the "Operations" tile on the admin home or
 // directly from the "Fee plans" app bar.
+//
+// Every user-facing string is locale-aware via
+// [AppLocalizations.of(context)].
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/result.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../ui/app_theme.dart';
 import '../../../ui/design_tokens.dart';
 import '../../../ui/widgets/ls_button.dart';
@@ -27,6 +31,7 @@ class FeeOperationsOverviewScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     // The yearKey family parameter is reserved for the future
     // "filter to a single academic year" affordance; today we
     // pass `''` so the provider returns the all-years aggregate.
@@ -43,14 +48,14 @@ class FeeOperationsOverviewScreen extends ConsumerWidget {
               : context.go('/shell/fees/plans'),
         ),
         title: Text(
-          'Fee operations',
+          l.feeOperationsScreenTitle,
           style: tokens.typography.titleLarge.copyWith(
             color: tokens.text.primary,
           ),
         ),
         actions: [
           IconButton(
-            tooltip: 'Refresh',
+            tooltip: l.commonRefresh,
             icon: const Icon(Icons.refresh),
             onPressed: () => ref.invalidate(feeOperationsOverviewProvider('')),
           ),
@@ -61,26 +66,26 @@ class FeeOperationsOverviewScreen extends ConsumerWidget {
           Ok(:final value) => _buildBody(context, tokens, value),
           Err(:final error) => LsStateView.error(
               icon: Icons.error_outline,
-              title: 'Could not load operations',
+              title: l.feeOperationsErrorTitle,
               message: error.message,
               action: LsButton.primary(
-                label: 'Try again',
+                label: l.commonTryAgain,
                 expand: false,
                 onPressed: () =>
                     ref.invalidate(feeOperationsOverviewProvider('')),
               ),
             ),
         },
-        loading: () => const LsStateView.loading(
-          title: 'Loading operations',
-          message: 'Aggregating the latest invoice + payment totals.',
+        loading: () => LsStateView.loading(
+          title: l.feeOperationsLoadingTitle,
+          message: l.feeOperationsLoadingMessage,
         ),
         error: (err, _) => LsStateView.error(
           icon: Icons.error_outline,
-          title: 'Could not load operations',
+          title: l.feeOperationsErrorTitle,
           message: err is FeesFailure ? err.message : err.toString(),
           action: LsButton.primary(
-            label: 'Try again',
+            label: l.commonTryAgain,
             expand: false,
             onPressed: () => ref.invalidate(feeOperationsOverviewProvider('')),
           ),
@@ -94,6 +99,7 @@ class FeeOperationsOverviewScreen extends ConsumerWidget {
     DesignTokens tokens,
     FeeOperationsOverview overview,
   ) {
+    final l = AppLocalizations.of(context);
     return ListView(
       padding: EdgeInsets.fromLTRB(
         tokens.space.md,
@@ -109,7 +115,7 @@ class FeeOperationsOverviewScreen extends ConsumerWidget {
         _StatusChipsRow(tokens: tokens, overview: overview),
         SizedBox(height: tokens.space.lg),
         LsButton.secondary(
-          label: 'View fee plans',
+          label: l.feeOperationsViewPlansAction,
           icon: Icons.receipt_long_outlined,
           expand: false,
           onPressed: () => context.go('/shell/fees/plans'),
@@ -126,6 +132,7 @@ class _CollectionRateCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     final rate = overview.collectionRate;
     final color = rate == null
         ? tokens.text.tertiary
@@ -147,7 +154,7 @@ class _CollectionRateCard extends StatelessWidget {
               Icon(Icons.percent_outlined, color: tokens.brand.primary),
               SizedBox(width: tokens.space.md),
               Text(
-                'Collection rate',
+                l.feeOperationsCollectionRate,
                 style: tokens.typography.titleSmall.copyWith(
                   color: tokens.text.primary,
                 ),
@@ -156,7 +163,9 @@ class _CollectionRateCard extends StatelessWidget {
           ),
           SizedBox(height: tokens.space.sm),
           Text(
-            rate == null ? 'No invoices yet' : '${rate.toStringAsFixed(0)}%',
+            rate == null
+                ? l.feeOperationsNoInvoices
+                : '${rate.toStringAsFixed(0)}%',
             style: tokens.typography.displayMedium.copyWith(
               color: color,
             ),
@@ -164,11 +173,13 @@ class _CollectionRateCard extends StatelessWidget {
           SizedBox(height: tokens.space.xxs),
           Text(
             rate == null
-                ? "The school hasn't issued any invoices yet. The rate "
-                    'will appear as soon as the first plan is published.'
-                : '${overview.currency} ${_format(overview.totalCollected)} '
-                    'of ${overview.currency} ${_format(overview.totalInvoiced)} '
-                    'collected so far.',
+                ? l.feeOperationsNoInvoicesMessage
+                : l.feeOperationsCollectedOfTotal(
+                    overview.currency,
+                    _format(overview.totalCollected),
+                    overview.currency,
+                    _format(overview.totalInvoiced),
+                  ),
             style: tokens.typography.bodySmall.copyWith(
               color: tokens.text.secondary,
             ),
@@ -208,25 +219,26 @@ class _KpiRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     final items = <_KpiData>[
       _KpiData(
-        label: 'Invoiced',
+        label: l.feeOperationsInvoiced,
         value: '${overview.currency} ${_format(overview.totalInvoiced)}',
-        sub: 'Total issued this period',
+        sub: l.feeOperationsInvoicedSub,
         icon: Icons.outgoing_mail,
         tone: LsChipTone.info,
       ),
       _KpiData(
-        label: 'Collected',
+        label: l.feeOperationsCollected,
         value: '${overview.currency} ${_format(overview.totalCollected)}',
-        sub: 'Total received so far',
+        sub: l.feeOperationsCollectedSub,
         icon: Icons.payments_outlined,
         tone: LsChipTone.success,
       ),
       _KpiData(
-        label: 'Outstanding',
+        label: l.feeOperationsOutstanding,
         value: '${overview.currency} ${_format(overview.totalOutstanding)}',
-        sub: 'Still due',
+        sub: l.feeOperationsOutstandingSub,
         icon: Icons.account_balance_wallet_outlined,
         tone: overview.totalOutstanding > 0
             ? LsChipTone.warning
@@ -353,6 +365,7 @@ class _StatusChipsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     return Container(
       padding: EdgeInsets.all(tokens.space.md),
       decoration: BoxDecoration(
@@ -364,7 +377,7 @@ class _StatusChipsRow extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'By status',
+            l.feeOperationsByStatus,
             style: tokens.typography.titleSmall.copyWith(
               color: tokens.text.primary,
             ),
@@ -375,19 +388,19 @@ class _StatusChipsRow extends StatelessWidget {
             runSpacing: tokens.space.xxs,
             children: [
               LsStatusChip(
-                label: '${overview.paidCount} paid',
+                label: l.feeOperationsPaidCountChip(overview.paidCount),
                 tone: LsChipTone.success,
                 icon: Icons.check_circle_outline,
               ),
               LsStatusChip(
-                label: '${overview.overdueCount} overdue',
+                label: l.feeOperationsOverdueCountChip(overview.overdueCount),
                 tone: overview.overdueCount > 0
                     ? LsChipTone.error
                     : LsChipTone.neutral,
                 icon: Icons.warning_amber_outlined,
               ),
               LsStatusChip(
-                label: '${overview.draftCount} draft',
+                label: l.feeOperationsDraftCountChip(overview.draftCount),
                 tone: LsChipTone.neutral,
                 icon: Icons.edit_outlined,
               ),

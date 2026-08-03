@@ -39,6 +39,18 @@
   },
 
   "homeStudentMySchool": "My school",
+  "homeStudentGreeting": "Hi, {name}",
+  "@homeStudentGreeting": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "homeStudentStudentId": "Student ID: {id}",
+  "@homeStudentStudentId": {
+    "placeholders": {
+      "id": { "type": "String" }
+    }
+  },
   "homeStudentResolving": "Resolving student…",
   "homeStudentResolvingMessage": "Looking up the active student for this device.",
   "homeStudentResolvingFailed": "Student resolution failed",
@@ -51,12 +63,68 @@
   "homeStudentAllExamsSubtitle": "Browse every published exam",
   "homeStudentMyRecords": "My records",
   "homeStudentMyRecordsSubtitle": "Grades, attendance, and report cards",
+  "homeStudentNoExamsTitle": "No exams today",
+  "homeStudentNoExamsMessage": "You have no published exam plans waiting for you. New exams will appear here as teachers publish them.",
+  "homeStudentLoadingExamsTitle": "Loading exams",
+  "homeStudentLoadingExamsMessage": "Fetching your published exam catalog.",
+  "homeStudentCouldNotLoadExams": "Could not load exams",
+  "homeStudentTakeNextExam": "Take your next exam",
+  "homeStudentOpenExam": "Open exam",
+  "homeStudentInboxSubtitle": "Inbox + announcements",
+
+  "homeParentMyFamily": "My family",
+  "homeParentFeeInvoicesTitle": "Fee invoices",
+  "homeParentFeeInvoicesSubtitle": "Review your children's fee plans and payment status.",
+  "homeParentHeroLoadingMessage": "Looking up the students you are linked to.",
+  "homeParentHeroLoadingChip": "Loading…",
+  "homeParentHeroErrorMessage": "We couldn't load your children just now. Tap to retry.",
+  "homeParentHeroErrorChip": "Try again",
+  "homeParentLinkedChildren": "{count, plural, =0{No linked children} =1{1 linked child} other{{count} linked children}}",
+  "@homeParentLinkedChildren": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "homeParentLinkedChildrenActive": "{count, plural, =1{1 linked child · tap to see grades, attendance, and report cards.} other{{count} linked children · {active} active. Tap to see grades, attendance, and report cards.}}",
+  "@homeParentLinkedChildrenActive": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "active": { "type": "int" }
+    }
+  },
 
   "homeTeacherMySchool": "My school",
   "homeTeacherMyClasses": "My classes",
   "homeTeacherCaptureAttendance": "Capture attendance",
   "homeTeacherCaptureAttendanceSubtitle": "Mark a class group",
+  "homeTeacherInboxSubtitle": "Inbox + announcements",
+  "homeTeacherQuickStart": "Quick start",
+  "homeTeacherHeroLoadingMessage": "Looking up the (class, subject) pairs you teach.",
+  "homeTeacherHeroLoadingChip": "Loading…",
+  "homeTeacherHeroErrorMessage": "We couldn't load your classes just now. Tap to retry.",
+  "homeTeacherHeroErrorChip": "Try again",
+  "homeTeacherHeroActive": "{count, plural, =1{1 teaching assignment · tap to see your roster + exams for that subject.} other{{count} teaching assignments · {active} active. Tap to see your roster + exams for that subject.}}",
+  "@homeTeacherHeroActive": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "active": { "type": "int" }
+    }
+  },
+  "homeTeacherHeroEmpty": "When the registrar assigns you to a (class, subject) pair, the class will appear here.",
 
+  "homeAdminMyHome": "Home",
+  "homeAdminActingAs": "Acting as: {name}",
+  "@homeAdminActingAs": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "homeAdminSignedInAs": "Signed in as: {role}",
+  "@homeAdminSignedInAs": {
+    "placeholders": {
+      "role": { "type": "String" }
+    }
+  },
   "homeAdminQuickStart": "Quick start",
   "homeAdminPracticeQuiz": "Practice quiz",
   "homeAdminPracticeQuizSubtitle": "Take a published exam",
@@ -66,10 +134,13 @@
   "homeAdminNewStaffSubtitle": "Add a teacher or admin",
   "homeAdminNewSubject": "New subject",
   "homeAdminNewSubjectSubtitle": "Add a subject to the catalog",
+  "homeAdminCaptureAttendance": "Capture attendance",
+  "homeAdminCaptureAttendanceSubtitle": "Mark a class group",
   "homeAdminFeePlans": "Fee plans",
   "homeAdminFeePlansSubtitle": "Review issued + outstanding plans",
   "homeAdminFeeOperations": "Fee operations",
   "homeAdminFeeOperationsSubtitle": "Invoiced / collected / outstanding",
+  "homeAdminNotificationsSubtitle": "Inbox + announcements",
 
   "myChildrenHeaderTotal": "{count, plural, =0{No linked children} =1{1 linked child} other{{count} linked children}}",
   "@myChildrenHeaderTotal": {
@@ -183,5 +254,190 @@
     "placeholders": {
       "count": { "type": "int" }
     }
-  }
+  },
+
+  "familyHomeLoadingTitle": "Loading your children",
+  "familyHomeErrorTitle": "Could not load your children",
+  "familyChildRowRelation": "as {relation}",
+  "@familyChildRowRelation": {
+    "placeholders": {
+      "relation": { "type": "String" }
+    }
+  },
+  "familyChildRowId": "ID {code}",
+  "@familyChildRowId": {
+    "placeholders": {
+      "code": { "type": "String" }
+    }
+  },
+
+  "childDetailLoadingTitle": "Loading records",
+  "childDetailLoadingMessage": "Pulling grades, attendance, and report cards.",
+  "childDetailGradeAssessmentFallback": "Assessment",
+  "childDetailGradePass": "Pass",
+  "childDetailGradeFail": "Fail",
+  "childDetailGradePublishedOn": "Published {date}",
+  "@childDetailGradePublishedOn": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "childDetailReportCardFallback": "Report card",
+  "childDetailAverageOnTrack": "On track",
+  "childDetailAverageBelowTarget": "Below target",
+  "childDetailAverageNoGrades": "No grades yet",
+  "childDetailGradesAllPassed": "All passed",
+  "childDetailGradesOfTotalPassed": "{passed} of {total} passed",
+  "@childDetailGradesOfTotalPassed": {
+    "placeholders": {
+      "passed": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "childDetailAttendanceNoAbsences": "No absences",
+  "childDetailAttendanceKpiSub": "{present} present · {absent} absent",
+  "@childDetailAttendanceKpiSub": {
+    "placeholders": {
+      "present": { "type": "int" },
+      "absent": { "type": "int" }
+    }
+  },
+  "childDetailAttendanceKpiSubLate": "{present} present · {absent} absent · {late} late",
+  "@childDetailAttendanceKpiSubLate": {
+    "placeholders": {
+      "present": { "type": "int" },
+      "absent": { "type": "int" },
+      "late": { "type": "int" }
+    }
+  },
+  "childDetailReportCardNoCards": "No cards yet",
+  "childDetailReportCardLatest": "Latest: {label}",
+  "@childDetailReportCardLatest": {
+    "placeholders": {
+      "label": { "type": "String" }
+    }
+  },
+
+  "meSwitchStudentErrorTitle": "Could not load students",
+  "meSwitchStudentNoResultsMessage": "Try a shorter search, or clear the search to see the full roster.",
+
+  "myClassesErrorTitle": "Could not load your classes",
+  "myClassesAcademicYear": "Academic year {year}",
+  "@myClassesAcademicYear": {
+    "placeholders": {
+      "year": { "type": "String" }
+    }
+  },
+
+  "classDetailTitle": "Class",
+  "classDetailErrorTitle": "Could not load roster",
+  "classDetailStudentCount": "{count, plural, =1{1 student} other{{count} students}}",
+  "@classDetailStudentCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "feePlansScreenTitle": "Fee plans",
+  "feePlansErrorTitle": "Could not load fee plans",
+  "feePlansOverdueChip": "{count, plural, =1{1 overdue} other{{count} overdue}}",
+  "@feePlansOverdueChip": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "feePlansPartialChip": "{count, plural, =1{1 partial} other{{count} partial}}",
+  "@feePlansPartialChip": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "feePlansPaidChip": "{count, plural, =1{1 paid} other{{count} paid}}",
+  "@feePlansPaidChip": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "feePlansAmountLine": "{currency} {total} total · outstanding {currency} {outstanding}",
+  "@feePlansAmountLine": {
+    "placeholders": {
+      "currency": { "type": "String" },
+      "total": { "type": "String" },
+      "outstanding": { "type": "String" }
+    }
+  },
+  "feePlansAmountOnly": "{currency} {total}",
+  "@feePlansAmountOnly": {
+    "placeholders": {
+      "currency": { "type": "String" },
+      "total": { "type": "String" }
+    }
+  },
+
+  "feePlanDetailTitle": "Fee plan",
+  "feePlanLoadingTitle": "Loading fee plan",
+  "feePlanLoadingMessage": "Looking up the per-line breakdown and payment status.",
+  "feePlanErrorTitle": "Could not load fee plan",
+  "feePlanNotFoundTitle": "Fee plan not found",
+  "feePlanNotFoundMessage": "We couldn't find this fee plan in the current catalog. It may have been cancelled or moved to a different academic year; head back to the list to see the latest plans.",
+  "feePlanNotFoundAction": "Back to fee plans",
+  "feePlanNoBreakdownMessage": "The server didn't return a per-line breakdown for this plan. The total amount is shown above; the itemized list lands when the plan is itemized on the server side.",
+  "feePlanIdentitySubtitle": "Fee plan {id}",
+  "@feePlanIdentitySubtitle": {
+    "placeholders": {
+      "id": { "type": "String" }
+    }
+  },
+  "feePlanDueDateChip": "Due {date}",
+  "@feePlanDueDateChip": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "feePlanTotalLabel": "Total",
+  "feePlanPaidLabel": "Paid",
+  "feePlanOutstandingLabel": "Outstanding",
+
+  "feeOperationsScreenTitle": "Fee operations",
+  "feeOperationsLoadingTitle": "Loading operations",
+  "feeOperationsLoadingMessage": "Aggregating the latest invoice + payment totals.",
+  "feeOperationsErrorTitle": "Could not load operations",
+  "feeOperationsCollectionRate": "Collection rate",
+  "feeOperationsNoInvoices": "No invoices yet",
+  "feeOperationsNoInvoicesMessage": "The school hasn't issued any invoices yet. The rate will appear as soon as the first plan is published.",
+  "feeOperationsCollectedOfTotal": "{collectedCurrency} {collectedAmount} of {totalCurrency} {totalAmount} collected so far.",
+  "@feeOperationsCollectedOfTotal": {
+    "placeholders": {
+      "collectedCurrency": { "type": "String" },
+      "collectedAmount": { "type": "String" },
+      "totalCurrency": { "type": "String" },
+      "totalAmount": { "type": "String" }
+    }
+  },
+  "feeOperationsInvoiced": "Invoiced",
+  "feeOperationsInvoicedSub": "Total issued this period",
+  "feeOperationsCollected": "Collected",
+  "feeOperationsCollectedSub": "Total received so far",
+  "feeOperationsOutstanding": "Outstanding",
+  "feeOperationsOutstandingSub": "Still due",
+  "feeOperationsByStatus": "By status",
+  "feeOperationsPaidCountChip": "{count, plural, =1{1 paid} other{{count} paid}}",
+  "@feeOperationsPaidCountChip": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "feeOperationsOverdueCountChip": "{count, plural, =1{1 overdue} other{{count} overdue}}",
+  "@feeOperationsOverdueCountChip": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "feeOperationsDraftCountChip": "{count, plural, =1{1 draft} other{{count} draft}}",
+  "@feeOperationsDraftCountChip": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "feeOperationsViewPlansAction": "View fee plans"
 }

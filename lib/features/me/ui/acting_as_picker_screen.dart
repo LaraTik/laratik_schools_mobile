@@ -17,6 +17,10 @@
 //     the operator gets the same shape as every other list.
 //   * The currently-acting student is rendered with a "Current"
 //     chip so the user can see what they're switching away from.
+//   * Every user-facing string is locale-aware via
+//     [AppLocalizations.of(context)]; the chevron mirrors itself
+//     under RTL so the visual "next →" stays consistent with the
+//     text direction.
 
 import 'dart:async';
 
@@ -25,8 +29,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/login_screen.dart' show sessionProvider;
-import '../../../auth/session.dart';
 import '../../../core/result.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../ui/app_theme.dart';
 import '../../../ui/design_tokens.dart';
 import '../../../ui/widgets/ls_button.dart';
@@ -112,12 +116,15 @@ class _ActingAsPickerScreenState extends ConsumerState<ActingAsPickerScreen> {
     // Riverpod watchers on its own.
     ref.invalidate(currentStudentProvider);
     if (!mounted) return;
+    final l = AppLocalizations.of(context);
     // Brief snackbar confirmation; the popping surface already
     // re-renders the new "Acting as: …" on next frame.
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          'Now acting as ${person.fullName.isEmpty ? person.id : person.fullName}',
+          l.meSwitchStudentNowActingAs(
+            person.fullName.isEmpty ? person.id : person.fullName,
+          ),
         ),
         duration: const Duration(seconds: 2),
       ),
@@ -128,6 +135,7 @@ class _ActingAsPickerScreenState extends ConsumerState<ActingAsPickerScreen> {
   @override
   Widget build(BuildContext context) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: tokens.surface.canvas,
       appBar: AppBar(
@@ -139,7 +147,7 @@ class _ActingAsPickerScreenState extends ConsumerState<ActingAsPickerScreen> {
           onPressed: () => context.pop(),
         ),
         title: Text(
-          'Switch student',
+          l.meSwitchStudentTitle,
           style: tokens.typography.titleLarge.copyWith(
             color: tokens.text.primary,
           ),
@@ -155,7 +163,7 @@ class _ActingAsPickerScreenState extends ConsumerState<ActingAsPickerScreen> {
               tokens.space.sm,
             ),
             child: LsSearchBar(
-              placeholder: 'Search by name or student number',
+              placeholder: l.meSwitchStudentSearch,
               onChanged: _onSearchChanged,
             ),
           ),
@@ -179,19 +187,20 @@ class _ActingAsPickerScreenState extends ConsumerState<ActingAsPickerScreen> {
       key: ValueKey(_query),
       future: _fetchPage(_query),
       builder: (context, snapshot) {
+        final l = AppLocalizations.of(context);
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const LsStateView.loading(
-            title: 'Searching students',
-            message: 'Looking up the roster.',
+          return LsStateView.loading(
+            title: l.meSwitchStudentSearchingTitle,
+            message: l.meSwitchStudentSearchingMessage,
           );
         }
         if (snapshot.hasError) {
           return LsStateView.error(
             icon: Icons.error_outline,
-            title: 'Could not load students',
+            title: l.meSwitchStudentErrorTitle,
             message: snapshot.error.toString(),
             action: LsButton.primary(
-              label: 'Try again',
+              label: l.commonTryAgain,
               expand: false,
               onPressed: () => setState(() {}),
             ),
@@ -205,10 +214,10 @@ class _ActingAsPickerScreenState extends ConsumerState<ActingAsPickerScreen> {
           Ok(:final value) => _buildList(value, tokens),
           Err(:final error) => LsStateView.error(
               icon: Icons.error_outline,
-              title: 'Could not load students',
+              title: l.meSwitchStudentErrorTitle,
               message: error.toString(),
               action: LsButton.primary(
-                label: 'Try again',
+                label: l.commonTryAgain,
                 expand: false,
                 onPressed: () => setState(() {}),
               ),
@@ -227,21 +236,21 @@ class _ActingAsPickerScreenState extends ConsumerState<ActingAsPickerScreen> {
   }
 
   Widget _buildList(PersonPage page, DesignTokens tokens) {
+    final l = AppLocalizations.of(context);
     final people = page.people;
     if (people.isEmpty) {
       return LsStateView.empty(
         icon: Icons.school_outlined,
-        title:
-            _query.isEmpty ? 'No students yet' : 'No students match "$_query"',
+        title: _query.isEmpty
+            ? l.meSwitchStudentEmptyTitle
+            : l.meSwitchStudentNoResultsTitle(_query),
         message: _query.isEmpty
-            ? 'Add a student to the roster, then come back here to '
-                'pick one.'
-            : 'Try a shorter search, or clear the search to see the '
-                'full roster.',
+            ? l.meSwitchStudentEmptyMessage
+            : l.meSwitchStudentNoResultsMessage,
         action: _query.isEmpty
             ? null
             : LsButton.secondary(
-                label: 'Clear search',
+                label: l.commonClearSearch,
                 expand: false,
                 icon: Icons.close,
                 onPressed: () => setState(() => _query = ''),
@@ -288,67 +297,82 @@ class _StudentRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final subtitle = _subtitle();
+    final l = AppLocalizations.of(context);
+    final subtitle = _subtitle(context);
     return Material(
       color: tokens.surface.surface,
       child: InkWell(
         onTap: onTap,
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: tokens.space.xs,
-            vertical: tokens.space.sm,
-          ),
-          child: Row(
-            children: [
-              _Avatar(tokens: tokens, name: person.fullName),
-              SizedBox(width: tokens.space.md),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      person.fullName.isEmpty ? person.id : person.fullName,
-                      style: tokens.typography.titleSmall.copyWith(
-                        color: tokens.text.primary,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    if (subtitle.isNotEmpty) ...[
-                      SizedBox(height: tokens.space.xxs),
+        child: Semantics(
+          button: true,
+          label: person.fullName.isEmpty ? person.id : person.fullName,
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: tokens.space.xs,
+              vertical: tokens.space.sm,
+            ),
+            child: Row(
+              children: [
+                _Avatar(tokens: tokens, name: person.fullName),
+                SizedBox(width: tokens.space.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
                       Text(
-                        subtitle,
-                        style: tokens.typography.bodySmall.copyWith(
-                          color: tokens.text.secondary,
+                        person.fullName.isEmpty ? person.id : person.fullName,
+                        style: tokens.typography.titleSmall.copyWith(
+                          color: tokens.text.primary,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
+                      if (subtitle.isNotEmpty) ...[
+                        SizedBox(height: tokens.space.xxs),
+                        Text(
+                          subtitle,
+                          style: tokens.typography.bodySmall.copyWith(
+                            color: tokens.text.secondary,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
-              ),
-              SizedBox(width: tokens.space.sm),
-              if (isActive)
-                LsStatusChip(
-                  label: 'Current',
-                  tone: LsChipTone.brand,
-                  icon: Icons.check_circle_outline,
-                )
-              else
-                Icon(Icons.chevron_right, color: tokens.text.tertiary),
-            ],
+                SizedBox(width: tokens.space.sm),
+                if (isActive)
+                  LsStatusChip(
+                    label: l.myChildrenChildCurrent,
+                    tone: LsChipTone.brand,
+                    icon: Icons.check_circle_outline,
+                  )
+                else
+                  Icon(
+                    // Mirror the chevron under RTL so the visual
+                    // "next →" stays consistent with the text flow.
+                    Directionality.of(context) == TextDirection.rtl
+                        ? Icons.chevron_left
+                        : Icons.chevron_right,
+                    color: tokens.text.tertiary,
+                  ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  String _subtitle() {
+  String _subtitle(BuildContext context) {
+    final l = AppLocalizations.of(context);
     final parts = <String>[];
     final number = person.schoolStudentNumber;
-    if (number != null && number.isNotEmpty) parts.add('ID $number');
+    if (number != null && number.isNotEmpty) {
+      parts.add(l.familyChildRowId(number));
+    }
     if (person.grade != null && person.grade!.isNotEmpty) {
       parts.add(person.grade!);
     }

@@ -13,12 +13,15 @@
 //   * Empty / loading / error / retry paths reuse [LsStateView].
 //   * "Record a payment" tile is reserved for the future
 //     teller / cashier surface (deferred to a follow-up turn).
+//   * Every user-facing string is locale-aware via
+//     [AppLocalizations.of(context)].
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/result.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../ui/app_theme.dart';
 import '../../../ui/design_tokens.dart';
 import '../../../ui/widgets/ls_button.dart';
@@ -35,6 +38,7 @@ class FeePlanDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     final async = ref.watch(feePlanDetailProvider(planId));
     return Scaffold(
       backgroundColor: tokens.surface.canvas,
@@ -48,7 +52,7 @@ class FeePlanDetailScreen extends ConsumerWidget {
               : context.go('/shell/fees/plans'),
         ),
         title: Text(
-          'Fee plan',
+          l.feePlanDetailTitle,
           style: tokens.typography.titleLarge.copyWith(
             color: tokens.text.primary,
           ),
@@ -60,29 +64,32 @@ class FeePlanDetailScreen extends ConsumerWidget {
               ? _buildNotFound(context, tokens)
               : _buildBody(context, tokens, value),
           Err(:final error) => _buildError(
+              context,
               tokens,
               ref,
               error,
-              'Could not load fee plan',
+              l.feePlanErrorTitle,
             ),
         },
-        loading: () => const LsStateView.loading(
-          title: 'Loading fee plan',
-          message: 'Looking up the per-line breakdown and payment status.',
+        loading: () => LsStateView.loading(
+          title: l.feePlanLoadingTitle,
+          message: l.feePlanLoadingMessage,
         ),
         error: (err, _) => _buildError(
+          context,
           tokens,
           ref,
           err is FeesFailure
               ? err
               : FeesFailure(code: 'EXCEPTION', message: err.toString()),
-          'Could not load fee plan',
+          l.feePlanErrorTitle,
         ),
       ),
     );
   }
 
   Widget _buildBody(BuildContext context, DesignTokens tokens, FeePlan plan) {
+    final l = AppLocalizations.of(context);
     return ListView(
       padding: EdgeInsets.fromLTRB(
         tokens.space.md,
@@ -94,7 +101,7 @@ class FeePlanDetailScreen extends ConsumerWidget {
         _IdentityCard(tokens: tokens, plan: plan),
         SizedBox(height: tokens.space.lg),
         Text(
-          'Breakdown',
+          l.feePlansBreakdown,
           style: tokens.typography.titleSmall.copyWith(
             color: tokens.text.secondary,
           ),
@@ -118,10 +125,7 @@ class FeePlanDetailScreen extends ConsumerWidget {
                 SizedBox(width: tokens.space.md),
                 Expanded(
                   child: Text(
-                    "The server didn't return a per-line breakdown for "
-                    'this plan. The total amount is shown above; the '
-                    'itemized list lands when the plan is itemized on '
-                    'the server side.',
+                    l.feePlanNoBreakdownMessage,
                     style: tokens.typography.bodySmall.copyWith(
                       color: tokens.text.secondary,
                     ),
@@ -140,14 +144,13 @@ class FeePlanDetailScreen extends ConsumerWidget {
   }
 
   Widget _buildNotFound(BuildContext context, DesignTokens tokens) {
+    final l = AppLocalizations.of(context);
     return LsStateView.empty(
       icon: Icons.receipt_long_outlined,
-      title: 'Fee plan not found',
-      message: "We couldn't find this fee plan in the current catalog. It "
-          'may have been cancelled or moved to a different academic '
-          'year; head back to the list to see the latest plans.',
+      title: l.feePlanNotFoundTitle,
+      message: l.feePlanNotFoundMessage,
       action: LsButton.primary(
-        label: 'Back to fee plans',
+        label: l.feePlanNotFoundAction,
         icon: Icons.arrow_back,
         expand: false,
         onPressed: () => context.go('/shell/fees/plans'),
@@ -156,17 +159,19 @@ class FeePlanDetailScreen extends ConsumerWidget {
   }
 
   Widget _buildError(
+    BuildContext context,
     DesignTokens tokens,
     WidgetRef ref,
     FeesFailure error,
     String title,
   ) {
+    final l = AppLocalizations.of(context);
     return LsStateView.error(
       icon: Icons.error_outline,
       title: title,
       message: error.message,
       action: LsButton.primary(
-        label: 'Try again',
+        label: l.commonTryAgain,
         expand: false,
         onPressed: () => ref.invalidate(feePlanDetailProvider(planId)),
       ),
@@ -181,6 +186,7 @@ class _IdentityCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     return Container(
       padding: EdgeInsets.all(tokens.space.md),
       decoration: BoxDecoration(
@@ -225,7 +231,7 @@ class _IdentityCard extends StatelessWidget {
                     ),
                     SizedBox(height: tokens.space.xxs),
                     Text(
-                      'Fee plan ${plan.id}',
+                      l.feePlanIdentitySubtitle(plan.id),
                       style: tokens.typography.bodySmall.copyWith(
                         color: tokens.text.secondary,
                       ),
@@ -258,7 +264,7 @@ class _IdentityCard extends StatelessWidget {
                 ),
               if (plan.dueDate != null && plan.dueDate!.isNotEmpty)
                 LsStatusChip(
-                  label: 'Due ${plan.dueDate}',
+                  label: l.feePlanDueDateChip(plan.dueDate!),
                   tone: LsChipTone.warning,
                   icon: Icons.event_outlined,
                 ),
@@ -290,25 +296,6 @@ class _IdentityCard extends StatelessWidget {
     }
   }
 
-  IconData _iconForStatus(FeePlan p) {
-    switch (p.invoiceStatus.toLowerCase()) {
-      case 'paid':
-        return Icons.check_circle_outline;
-      case 'overdue':
-        return Icons.warning_amber_outlined;
-      case 'partially paid':
-        return Icons.pie_chart_outline;
-      case 'issued':
-        return Icons.outgoing_mail;
-      case 'draft':
-        return Icons.edit_outlined;
-      case 'cancelled':
-        return Icons.block_outlined;
-      default:
-        return Icons.help_outline;
-    }
-  }
-
   String _capitalize(String value) {
     if (value.isEmpty) return value;
     return value[0].toUpperCase() + value.substring(1);
@@ -322,12 +309,13 @@ class _TotalsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     return Row(
       children: [
         Expanded(
           child: _TotalCell(
             tokens: tokens,
-            label: 'Total',
+            label: l.feePlanTotalLabel,
             value: '${plan.currency} ${_format(plan.totalAmount)}',
             tone: LsChipTone.neutral,
           ),
@@ -336,7 +324,7 @@ class _TotalsRow extends StatelessWidget {
         Expanded(
           child: _TotalCell(
             tokens: tokens,
-            label: 'Paid',
+            label: l.feePlanPaidLabel,
             value: '${plan.currency} ${_format(plan.paidAmount)}',
             tone: LsChipTone.success,
           ),
@@ -345,7 +333,7 @@ class _TotalsRow extends StatelessWidget {
         Expanded(
           child: _TotalCell(
             tokens: tokens,
-            label: 'Outstanding',
+            label: l.feePlanOutstandingLabel,
             value: '${plan.currency} ${_format(plan.outstandingAmount)}',
             tone: plan.isPaid ? LsChipTone.neutral : LsChipTone.error,
           ),

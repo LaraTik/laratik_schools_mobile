@@ -100,6 +100,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeStudentMySchool => 'My school';
 
   @override
+  String homeStudentGreeting(String name) {
+    return 'Hi, $name';
+  }
+
+  @override
+  String homeStudentStudentId(String id) {
+    return 'Student ID: $id';
+  }
+
+  @override
   String get homeStudentResolving => 'Resolving student…';
 
   @override
@@ -139,6 +149,80 @@ class AppLocalizationsEn extends AppLocalizations {
       'Grades, attendance, and report cards';
 
   @override
+  String get homeStudentNoExamsTitle => 'No exams today';
+
+  @override
+  String get homeStudentNoExamsMessage =>
+      'You have no published exam plans waiting for you. New exams will appear here as teachers publish them.';
+
+  @override
+  String get homeStudentLoadingExamsTitle => 'Loading exams';
+
+  @override
+  String get homeStudentLoadingExamsMessage =>
+      'Fetching your published exam catalog.';
+
+  @override
+  String get homeStudentCouldNotLoadExams => 'Could not load exams';
+
+  @override
+  String get homeStudentTakeNextExam => 'Take your next exam';
+
+  @override
+  String get homeStudentOpenExam => 'Open exam';
+
+  @override
+  String get homeStudentInboxSubtitle => 'Inbox + announcements';
+
+  @override
+  String get homeParentMyFamily => 'My family';
+
+  @override
+  String get homeParentFeeInvoicesTitle => 'Fee invoices';
+
+  @override
+  String get homeParentFeeInvoicesSubtitle =>
+      'Review your children\'s fee plans and payment status.';
+
+  @override
+  String get homeParentHeroLoadingMessage =>
+      'Looking up the students you are linked to.';
+
+  @override
+  String get homeParentHeroLoadingChip => 'Loading…';
+
+  @override
+  String get homeParentHeroErrorMessage =>
+      'We couldn\'t load your children just now. Tap to retry.';
+
+  @override
+  String get homeParentHeroErrorChip => 'Try again';
+
+  @override
+  String homeParentLinkedChildren(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count linked children',
+      one: '1 linked child',
+      zero: 'No linked children',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String homeParentLinkedChildrenActive(int count, int active) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count linked children · $active active. Tap to see grades, attendance, and report cards.',
+      one: '1 linked child · tap to see grades, attendance, and report cards.',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get homeTeacherMySchool => 'My school';
 
   @override
@@ -149,6 +233,56 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeTeacherCaptureAttendanceSubtitle => 'Mark a class group';
+
+  @override
+  String get homeTeacherInboxSubtitle => 'Inbox + announcements';
+
+  @override
+  String get homeTeacherQuickStart => 'Quick start';
+
+  @override
+  String get homeTeacherHeroLoadingMessage =>
+      'Looking up the (class, subject) pairs you teach.';
+
+  @override
+  String get homeTeacherHeroLoadingChip => 'Loading…';
+
+  @override
+  String get homeTeacherHeroErrorMessage =>
+      'We couldn\'t load your classes just now. Tap to retry.';
+
+  @override
+  String get homeTeacherHeroErrorChip => 'Try again';
+
+  @override
+  String homeTeacherHeroActive(int count, int active) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count teaching assignments · $active active. Tap to see your roster + exams for that subject.',
+      one:
+          '1 teaching assignment · tap to see your roster + exams for that subject.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeTeacherHeroEmpty =>
+      'When the registrar assigns you to a (class, subject) pair, the class will appear here.';
+
+  @override
+  String get homeAdminMyHome => 'Home';
+
+  @override
+  String homeAdminActingAs(String name) {
+    return 'Acting as: $name';
+  }
+
+  @override
+  String homeAdminSignedInAs(String role) {
+    return 'Signed in as: $role';
+  }
 
   @override
   String get homeAdminQuickStart => 'Quick start';
@@ -178,6 +312,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeAdminNewSubjectSubtitle => 'Add a subject to the catalog';
 
   @override
+  String get homeAdminCaptureAttendance => 'Capture attendance';
+
+  @override
+  String get homeAdminCaptureAttendanceSubtitle => 'Mark a class group';
+
+  @override
   String get homeAdminFeePlans => 'Fee plans';
 
   @override
@@ -189,6 +329,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get homeAdminFeeOperationsSubtitle =>
       'Invoiced / collected / outstanding';
+
+  @override
+  String get homeAdminNotificationsSubtitle => 'Inbox + announcements';
 
   @override
   String myChildrenHeaderTotal(int count) {
@@ -430,4 +573,295 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get familyHomeLoadingTitle => 'Loading your children';
+
+  @override
+  String get familyHomeErrorTitle => 'Could not load your children';
+
+  @override
+  String familyChildRowRelation(String relation) {
+    return 'as $relation';
+  }
+
+  @override
+  String familyChildRowId(String code) {
+    return 'ID $code';
+  }
+
+  @override
+  String get childDetailLoadingTitle => 'Loading records';
+
+  @override
+  String get childDetailLoadingMessage =>
+      'Pulling grades, attendance, and report cards.';
+
+  @override
+  String get childDetailGradeAssessmentFallback => 'Assessment';
+
+  @override
+  String get childDetailGradePass => 'Pass';
+
+  @override
+  String get childDetailGradeFail => 'Fail';
+
+  @override
+  String childDetailGradePublishedOn(String date) {
+    return 'Published $date';
+  }
+
+  @override
+  String get childDetailReportCardFallback => 'Report card';
+
+  @override
+  String get childDetailAverageOnTrack => 'On track';
+
+  @override
+  String get childDetailAverageBelowTarget => 'Below target';
+
+  @override
+  String get childDetailAverageNoGrades => 'No grades yet';
+
+  @override
+  String get childDetailGradesAllPassed => 'All passed';
+
+  @override
+  String childDetailGradesOfTotalPassed(int passed, int total) {
+    return '$passed of $total passed';
+  }
+
+  @override
+  String get childDetailAttendanceNoAbsences => 'No absences';
+
+  @override
+  String childDetailAttendanceKpiSub(int present, int absent) {
+    return '$present present · $absent absent';
+  }
+
+  @override
+  String childDetailAttendanceKpiSubLate(int present, int absent, int late) {
+    return '$present present · $absent absent · $late late';
+  }
+
+  @override
+  String get childDetailReportCardNoCards => 'No cards yet';
+
+  @override
+  String childDetailReportCardLatest(String label) {
+    return 'Latest: $label';
+  }
+
+  @override
+  String get meSwitchStudentErrorTitle => 'Could not load students';
+
+  @override
+  String get meSwitchStudentNoResultsMessage =>
+      'Try a shorter search, or clear the search to see the full roster.';
+
+  @override
+  String get myClassesErrorTitle => 'Could not load your classes';
+
+  @override
+  String myClassesAcademicYear(String year) {
+    return 'Academic year $year';
+  }
+
+  @override
+  String get classDetailTitle => 'Class';
+
+  @override
+  String get classDetailErrorTitle => 'Could not load roster';
+
+  @override
+  String classDetailStudentCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count students',
+      one: '1 student',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get feePlansScreenTitle => 'Fee plans';
+
+  @override
+  String get feePlansErrorTitle => 'Could not load fee plans';
+
+  @override
+  String feePlansOverdueChip(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count overdue',
+      one: '1 overdue',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String feePlansPartialChip(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count partial',
+      one: '1 partial',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String feePlansPaidChip(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count paid',
+      one: '1 paid',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String feePlansAmountLine(String currency, String total, String outstanding) {
+    return '$currency $total total · outstanding $currency $outstanding';
+  }
+
+  @override
+  String feePlansAmountOnly(String currency, String total) {
+    return '$currency $total';
+  }
+
+  @override
+  String get feePlanDetailTitle => 'Fee plan';
+
+  @override
+  String get feePlanLoadingTitle => 'Loading fee plan';
+
+  @override
+  String get feePlanLoadingMessage =>
+      'Looking up the per-line breakdown and payment status.';
+
+  @override
+  String get feePlanErrorTitle => 'Could not load fee plan';
+
+  @override
+  String get feePlanNotFoundTitle => 'Fee plan not found';
+
+  @override
+  String get feePlanNotFoundMessage =>
+      'We couldn\'t find this fee plan in the current catalog. It may have been cancelled or moved to a different academic year; head back to the list to see the latest plans.';
+
+  @override
+  String get feePlanNotFoundAction => 'Back to fee plans';
+
+  @override
+  String get feePlanNoBreakdownMessage =>
+      'The server didn\'t return a per-line breakdown for this plan. The total amount is shown above; the itemized list lands when the plan is itemized on the server side.';
+
+  @override
+  String feePlanIdentitySubtitle(String id) {
+    return 'Fee plan $id';
+  }
+
+  @override
+  String feePlanDueDateChip(String date) {
+    return 'Due $date';
+  }
+
+  @override
+  String get feePlanTotalLabel => 'Total';
+
+  @override
+  String get feePlanPaidLabel => 'Paid';
+
+  @override
+  String get feePlanOutstandingLabel => 'Outstanding';
+
+  @override
+  String get feeOperationsScreenTitle => 'Fee operations';
+
+  @override
+  String get feeOperationsLoadingTitle => 'Loading operations';
+
+  @override
+  String get feeOperationsLoadingMessage =>
+      'Aggregating the latest invoice + payment totals.';
+
+  @override
+  String get feeOperationsErrorTitle => 'Could not load operations';
+
+  @override
+  String get feeOperationsCollectionRate => 'Collection rate';
+
+  @override
+  String get feeOperationsNoInvoices => 'No invoices yet';
+
+  @override
+  String get feeOperationsNoInvoicesMessage =>
+      'The school hasn\'t issued any invoices yet. The rate will appear as soon as the first plan is published.';
+
+  @override
+  String feeOperationsCollectedOfTotal(String collectedCurrency,
+      String collectedAmount, String totalCurrency, String totalAmount) {
+    return '$collectedCurrency $collectedAmount of $totalCurrency $totalAmount collected so far.';
+  }
+
+  @override
+  String get feeOperationsInvoiced => 'Invoiced';
+
+  @override
+  String get feeOperationsInvoicedSub => 'Total issued this period';
+
+  @override
+  String get feeOperationsCollected => 'Collected';
+
+  @override
+  String get feeOperationsCollectedSub => 'Total received so far';
+
+  @override
+  String get feeOperationsOutstanding => 'Outstanding';
+
+  @override
+  String get feeOperationsOutstandingSub => 'Still due';
+
+  @override
+  String get feeOperationsByStatus => 'By status';
+
+  @override
+  String feeOperationsPaidCountChip(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count paid',
+      one: '1 paid',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String feeOperationsOverdueCountChip(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count overdue',
+      one: '1 overdue',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String feeOperationsDraftCountChip(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count draft',
+      one: '1 draft',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get feeOperationsViewPlansAction => 'View fee plans';
 }

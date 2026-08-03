@@ -18,6 +18,7 @@ import 'package:go_router/go_router.dart';
 
 import '../features/communication/data/communication_providers.dart';
 import '../features/teachers/data/teachers_providers.dart';
+import '../l10n/app_localizations.dart';
 import '../ui/app_theme.dart';
 import '../ui/design_tokens.dart';
 import '../ui/widgets/ls_status_chip.dart';
@@ -28,6 +29,7 @@ class TeacherHomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     final unread = ref
             .watch(notificationsListProvider)
             .value
@@ -47,22 +49,23 @@ class TeacherHomeScreen extends ConsumerWidget {
         backgroundColor: tokens.surface.surface,
         elevation: 0,
         title: Text(
-          'My school',
+          l.homeTeacherMySchool,
           style: tokens.typography.titleLarge.copyWith(
             color: tokens.text.primary,
           ),
         ),
         actions: [
           IconButton(
-            tooltip: 'Notifications',
+            tooltip: l.a11yNotificationsTooltip,
             icon: Stack(
               clipBehavior: Clip.none,
               children: [
                 const Icon(Icons.notifications_outlined),
                 if (unread > 0)
-                  Positioned(
-                    right: -2,
+                  Positioned.directional(
+                    textDirection: Directionality.of(context),
                     top: -2,
+                    end: -2,
                     child: Container(
                       width: 8,
                       height: 8,
@@ -84,7 +87,7 @@ class TeacherHomeScreen extends ConsumerWidget {
           _HeroClassesCard(tokens: tokens, classesAsync: classesAsync),
           SizedBox(height: tokens.space.lg),
           Text(
-            'Quick start',
+            l.homeTeacherQuickStart,
             style: tokens.typography.titleSmall.copyWith(
               color: tokens.text.secondary,
             ),
@@ -93,18 +96,18 @@ class TeacherHomeScreen extends ConsumerWidget {
           _Tile(
             tokens: tokens,
             icon: Icons.fact_check_outlined,
-            title: 'Capture attendance',
-            subtitle: 'Mark a class group',
+            title: l.homeTeacherCaptureAttendance,
+            subtitle: l.homeTeacherCaptureAttendanceSubtitle,
             onTap: () => context.go('/shell/attendance'),
           ),
           SizedBox(height: tokens.space.sm),
           _Tile(
             tokens: tokens,
             icon: Icons.notifications_outlined,
-            title: 'Notifications',
+            title: l.shellNotifications,
             subtitle: unread == 0
-                ? 'Inbox + announcements'
-                : '$unread unread message${unread == 1 ? '' : 's'}',
+                ? l.homeTeacherInboxSubtitle
+                : l.a11yUnreadNotifications(unread),
             onTap: () => context.go('/shell/notifications'),
           ),
         ],
@@ -123,7 +126,8 @@ class _HeroClassesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final summary = _summaryFor(classesAsync);
+    final l = AppLocalizations.of(context);
+    final summary = _summaryFor(classesAsync, l);
     return Material(
       color: tokens.brand.primaryContainer,
       shape: RoundedRectangleBorder(
@@ -155,7 +159,7 @@ class _HeroClassesCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'My classes',
+                      l.homeTeacherMyClasses,
                       style: tokens.typography.titleMedium.copyWith(
                         color: tokens.brand.onPrimaryContainer,
                       ),
@@ -179,7 +183,9 @@ class _HeroClassesCard extends StatelessWidget {
                 ),
               ),
               Icon(
-                Icons.chevron_right,
+                Directionality.of(context) == TextDirection.rtl
+                    ? Icons.chevron_left
+                    : Icons.chevron_right,
                 color: tokens.brand.onPrimaryContainer,
               ),
             ],
@@ -189,15 +195,17 @@ class _HeroClassesCard extends StatelessWidget {
     );
   }
 
-  _HeroSummary _summaryFor(AsyncValue<dynamic> async) {
+  _HeroSummary _summaryFor(
+    AsyncValue<dynamic> async,
+    AppLocalizations l,
+  ) {
     return async.when(
       data: (page) {
         final assignments =
             (page as dynamic).assignments as List<dynamic>? ?? const [];
         if (assignments.isEmpty) {
-          return const _HeroSummary(
-            message: "When the registrar assigns you to a (class, subject) "
-                "pair, the class will appear here.",
+          return _HeroSummary(
+            message: l.homeTeacherHeroEmpty,
             chip: null,
           );
         }
@@ -205,22 +213,17 @@ class _HeroClassesCard extends StatelessWidget {
             assignments.where((a) => (a as dynamic).isActive as bool).length;
         final count = assignments.length;
         return _HeroSummary(
-          message: count == 1
-              ? '1 teaching assignment · tap to see your roster + '
-                  'exams for that subject.'
-              : '$count teaching assignments · $active active. Tap to '
-                  'see your roster + exams for that subject.',
-          chip: count == 1 ? '1 class' : '$count classes',
+          message: l.homeTeacherHeroActive(count, active),
+          chip: l.myClassesHeaderTotal(count),
         );
       },
-      loading: () => const _HeroSummary(
-        message: 'Looking up the (class, subject) pairs you teach.',
-        chip: 'Loading…',
+      loading: () => _HeroSummary(
+        message: l.homeTeacherHeroLoadingMessage,
+        chip: l.homeTeacherHeroLoadingChip,
       ),
-      error: (_, __) => const _HeroSummary(
-        message: "We couldn't load your classes just now. "
-            'Tap to retry.',
-        chip: 'Try again',
+      error: (_, __) => _HeroSummary(
+        message: l.homeTeacherHeroErrorMessage,
+        chip: l.homeTeacherHeroErrorChip,
       ),
     );
   }
@@ -292,7 +295,12 @@ class _Tile extends StatelessWidget {
                   ],
                 ),
               ),
-              Icon(Icons.chevron_right, color: tokens.text.tertiary),
+              Icon(
+                Directionality.of(context) == TextDirection.rtl
+                    ? Icons.chevron_left
+                    : Icons.chevron_right,
+                color: tokens.text.tertiary,
+              ),
             ],
           ),
         ),

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../features/assessment/data/current_student_provider.dart';
 import '../features/boot/boot_provider.dart';
 import '../features/communication/data/communication_providers.dart';
+import '../l10n/app_localizations.dart';
 import '../ui/app_theme.dart';
 import '../ui/design_tokens.dart';
 import '../ui/widgets/ls_status_chip.dart';
@@ -16,15 +17,15 @@ import 'teacher_home.dart';
 /// active [LaratikRole]:
 ///   * `Student` → [StudentHomeScreen]
 ///   * `Guardian` → [ParentHomeScreen]
+///   * `Teacher` → [TeacherHomeScreen]
 ///   * everyone else (admin / registrar / teacher / unknown) → the
-///     original "Quick start" surface (kept below for backward
-///     compat and as the default when the boot context hasn't
-///     resolved yet).
+///     "Quick start" surface (kept below for backward compat and
+///     as the default when the boot context hasn't resolved yet).
 ///
-/// The role branching is intentionally additive: the old surface
-/// still works for every role. The new surfaces are read-only
-/// placeholders that hint at what's coming; they don't replace
-/// the admin/registrar flow.
+/// The role branching is intentionally additive: the original
+/// operator surface still works for every role. The new surfaces
+/// are read-only placeholders that hint at what's coming; they
+/// don't replace the admin / registrar flow.
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
 
@@ -47,16 +48,19 @@ class DashboardScreen extends ConsumerWidget {
   }
 }
 
-/// The original operator home (renamed to [_AdminHomeScreen] for
-/// clarity once the role router was added). Quick-start grid of
-/// the most-used create / capture actions plus the resolved
-/// "acting as" student card.
+/// The operator home. Quick-start grid of the most-used create /
+/// capture actions plus the resolved "acting as" student card.
+/// Every user-facing string is locale-aware via
+/// [AppLocalizations.of(context)]; the chevron in the quick-start
+/// tiles mirrors itself under RTL so the visual flow stays
+/// consistent with the text direction.
 class _AdminHomeScreen extends ConsumerWidget {
   const _AdminHomeScreen();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     final today = _today();
     final currentStudentAsync = ref.watch(currentStudentProvider);
     final role = activeRole(ref);
@@ -66,19 +70,24 @@ class _AdminHomeScreen extends ConsumerWidget {
         backgroundColor: tokens.surface.surface,
         elevation: 0,
         title: Text(
-          'Home',
+          l.homeAdminMyHome,
           style: tokens.typography.titleLarge.copyWith(
             color: tokens.text.primary,
           ),
         ),
         actions: [
           IconButton(
-            tooltip: 'Notifications',
+            tooltip: l.a11yNotificationsTooltip,
             icon: const Icon(Icons.notifications_outlined),
             onPressed: () => context.go('/shell/notifications'),
           ),
           Padding(
-            padding: EdgeInsets.only(right: tokens.space.md),
+            // `start:` so the date hugs the leading edge under RTL
+            // and the trailing edge under LTR — the visual remains
+            // "title on the start side, date on the end side" in
+            // both directions. The literal `right:` would have
+            // glued the date to the left edge under RTL.
+            padding: EdgeInsetsDirectional.only(end: tokens.space.md),
             child: Center(
               child: Text(
                 today,
@@ -100,7 +109,7 @@ class _AdminHomeScreen extends ConsumerWidget {
               child: _RoleChip(tokens: tokens, role: role),
             ),
           Text(
-            'Quick start',
+            l.homeAdminQuickStart,
             style: tokens.typography.titleSmall.copyWith(
               color: tokens.text.secondary,
             ),
@@ -111,8 +120,8 @@ class _AdminHomeScreen extends ConsumerWidget {
           // "Acting as" — surfaces the resolved student so the
           // operator knows who they're taking the practice quiz as.
           // The mobile session is pinned to a single student by the
-          // dev seed; a future settings screen will let the user
-          // switch.
+          // dev seed; the "Switch student" icon button on the card
+          // opens the full-screen picker at /shell/me/switch-student.
           _ActingAsCard(
             tokens: tokens,
             studentAsync: currentStudentAsync,
@@ -138,10 +147,11 @@ class _RoleChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     return Align(
-      alignment: Alignment.centerLeft,
+      alignment: AlignmentDirectional.centerStart,
       child: LsStatusChip(
-        label: 'Signed in as: ${role.wire}',
+        label: l.homeAdminSignedInAs(role.wire),
         tone: LsChipTone.brand,
         icon: Icons.verified_user_outlined,
       ),
@@ -155,6 +165,7 @@ class _QuickStartGrid extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     final isWide = MediaQuery.sizeOf(context).width >= 720;
     // Watch the notifications list just to compute the unread count.
     final unread = ref
@@ -172,61 +183,61 @@ class _QuickStartGrid extends ConsumerWidget {
     final canViewFees = hasCapability(ref, 'can_view_fees');
     final items = <_QuickItem>[
       _QuickItem(
-        label: 'Practice quiz',
-        description: 'Take a published exam',
+        label: l.homeAdminPracticeQuiz,
+        description: l.homeAdminPracticeQuizSubtitle,
         icon: Icons.assignment_outlined,
         tone: LsChipTone.brand,
         onTap: () => context.go('/shell/academics/exams'),
       ),
       _QuickItem(
-        label: 'Capture attendance',
-        description: 'Mark a class group',
+        label: l.homeAdminCaptureAttendance,
+        description: l.homeAdminCaptureAttendanceSubtitle,
         icon: Icons.fact_check_outlined,
         tone: LsChipTone.success,
         onTap: () => context.go('/shell/attendance'),
       ),
       _QuickItem(
-        label: 'New student',
-        description: 'Enrol from the registrar',
+        label: l.homeAdminNewStudent,
+        description: l.homeAdminNewStudentSubtitle,
         icon: Icons.person_add_alt_1,
         tone: LsChipTone.brand,
         onTap: () => context.go('/shell/students/new'),
       ),
       _QuickItem(
-        label: 'New staff',
-        description: 'Add a teacher or admin',
+        label: l.homeAdminNewStaff,
+        description: l.homeAdminNewStaffSubtitle,
         icon: Icons.badge_outlined,
         tone: LsChipTone.brand,
         onTap: () => context.go('/shell/staff/new'),
       ),
       _QuickItem(
-        label: 'New subject',
-        description: 'Add a subject to the catalog',
+        label: l.homeAdminNewSubject,
+        description: l.homeAdminNewSubjectSubtitle,
         icon: Icons.menu_book_outlined,
         tone: LsChipTone.info,
         onTap: () => context.go('/shell/academics/subjects/new'),
       ),
       if (canViewFees)
         _QuickItem(
-          label: 'Fee plans',
-          description: 'Review issued + outstanding plans',
+          label: l.homeAdminFeePlans,
+          description: l.homeAdminFeePlansSubtitle,
           icon: Icons.receipt_long_outlined,
           tone: LsChipTone.warning,
           onTap: () => context.go('/shell/fees/plans'),
         ),
       if (canViewFees)
         _QuickItem(
-          label: 'Fee operations',
-          description: 'Invoiced / collected / outstanding',
+          label: l.homeAdminFeeOperations,
+          description: l.homeAdminFeeOperationsSubtitle,
           icon: Icons.insights_outlined,
           tone: LsChipTone.success,
           onTap: () => context.go('/shell/fees/operations'),
         ),
       _QuickItem(
-        label: 'Notifications',
+        label: l.shellNotifications,
         description: unread == 0
-            ? 'Inbox + announcements'
-            : '$unread unread message${unread == 1 ? '' : 's'}',
+            ? l.homeAdminNotificationsSubtitle
+            : l.a11yUnreadNotifications(unread),
         icon: Icons.notifications_outlined,
         tone: unread == 0 ? LsChipTone.warning : LsChipTone.error,
         badge: unread == 0 ? null : unread.toString(),
@@ -278,69 +289,79 @@ class _QuickCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: tokens.surface.surface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(tokens.radius.md),
-        side: BorderSide(color: tokens.surface.outlineVariant),
-      ),
-      child: InkWell(
-        onTap: item.onTap,
-        borderRadius: BorderRadius.circular(tokens.radius.md),
-        child: Padding(
-          padding: EdgeInsets.all(tokens.space.md),
-          child: Row(
-            children: [
-              Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(
-                  color: _toneContainer(tokens, item.tone),
-                  borderRadius: BorderRadius.circular(tokens.radius.sm),
+    return Semantics(
+      button: true,
+      label: item.label,
+      child: Material(
+        color: tokens.surface.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(tokens.radius.md),
+          side: BorderSide(color: tokens.surface.outlineVariant),
+        ),
+        child: InkWell(
+          onTap: item.onTap,
+          borderRadius: BorderRadius.circular(tokens.radius.md),
+          child: Padding(
+            padding: EdgeInsets.all(tokens.space.md),
+            child: Row(
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: _toneContainer(tokens, item.tone),
+                    borderRadius: BorderRadius.circular(tokens.radius.sm),
+                  ),
+                  child: Icon(
+                    item.icon,
+                    color: _toneFg(tokens, item.tone),
+                    size: 22,
+                  ),
                 ),
-                child: Icon(
-                  item.icon,
-                  color: _toneFg(tokens, item.tone),
-                  size: 22,
-                ),
-              ),
-              SizedBox(width: tokens.space.md),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Flexible(
-                          child: Text(
-                            item.label,
-                            style: tokens.typography.titleSmall.copyWith(
-                              color: tokens.text.primary,
+                SizedBox(width: tokens.space.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              item.label,
+                              style: tokens.typography.titleSmall.copyWith(
+                                color: tokens.text.primary,
+                              ),
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            overflow: TextOverflow.ellipsis,
                           ),
-                        ),
-                        if (item.badge != null) ...[
-                          SizedBox(width: tokens.space.xs),
-                          _Badge(label: item.badge!, tokens: tokens),
+                          if (item.badge != null) ...[
+                            SizedBox(width: tokens.space.xs),
+                            _Badge(label: item.badge!, tokens: tokens),
+                          ],
                         ],
-                      ],
-                    ),
-                    SizedBox(height: tokens.space.xxs),
-                    Text(
-                      item.description,
-                      style: tokens.typography.bodySmall.copyWith(
-                        color: tokens.text.secondary,
                       ),
-                    ),
-                  ],
+                      SizedBox(height: tokens.space.xxs),
+                      Text(
+                        item.description,
+                        style: tokens.typography.bodySmall.copyWith(
+                          color: tokens.text.secondary,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Icon(
-                Icons.chevron_right,
-                color: tokens.text.tertiary,
-              ),
-            ],
+                Icon(
+                  // Mirror the chevron under RTL so the visual
+                  // "next →" stays consistent with the text flow.
+                  // Material's `ListTile` does this for free; a raw
+                  // `Icon` does not.
+                  Directionality.of(context) == TextDirection.rtl
+                      ? Icons.chevron_left
+                      : Icons.chevron_right,
+                  color: tokens.text.tertiary,
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -370,10 +391,10 @@ class _QuickCard extends StatelessWidget {
   }
 }
 
-/// Compact pill used to surface a count next to a quick-action label
-/// (e.g. "Notifications · 3"). Always error-toned — only the unread
-/// notifications path uses it today, and "unread" is the only count
-/// worth surfacing on a dashboard quick card.
+/// Compact pill used to surface a count next to a quick-action
+/// label (e.g. "Notifications · 3"). Always error-toned — only the
+/// unread notifications path uses it today, and "unread" is the
+/// only count worth surfacing on a dashboard quick card.
 class _Badge extends StatelessWidget {
   const _Badge({required this.label, required this.tokens});
   final String label;
@@ -381,8 +402,9 @@ class _Badge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     return Semantics(
-      label: '$label unread',
+      label: l.a11yUnreadNotifications(int.parse(label)),
       child: Container(
         padding: EdgeInsets.symmetric(
           horizontal: tokens.space.xs,
@@ -408,8 +430,9 @@ class _Badge extends StatelessWidget {
 /// [currentStudentProvider] and surfaces their name + id so the
 /// operator can verify the practice-quiz attempt will be filed
 /// against the right person. The mobile session is pinned to a
-/// single student for the first slice; a future settings screen
-/// will let the operator switch.
+/// single student for the first slice; the "Switch" icon button
+/// on the card opens the full-screen picker at
+/// /shell/me/switch-student.
 class _ActingAsCard extends StatelessWidget {
   const _ActingAsCard({required this.tokens, required this.studentAsync});
   final DesignTokens tokens;
@@ -417,6 +440,7 @@ class _ActingAsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     final content = studentAsync.when(
       data: (current) {
         if (current == null) {
@@ -424,8 +448,8 @@ class _ActingAsCard extends StatelessWidget {
             context,
             tokens,
             icon: Icons.person_outline,
-            label: 'No student resolved',
-            sub: 'No students are seeded on this site yet.',
+            label: l.homeStudentNoStudent,
+            sub: l.homeStudentNoStudentMessage,
           );
         }
         final name = current.person.fullName;
@@ -433,7 +457,9 @@ class _ActingAsCard extends StatelessWidget {
           context,
           tokens,
           icon: Icons.person_outline,
-          label: 'Acting as: ${name.isEmpty ? current.studentId : name}',
+          label: l.homeAdminActingAs(
+            name.isEmpty ? current.studentId : name,
+          ),
           sub: current.studentId,
         );
       },
@@ -441,14 +467,14 @@ class _ActingAsCard extends StatelessWidget {
         context,
         tokens,
         icon: Icons.hourglass_top_outlined,
-        label: 'Resolving student…',
-        sub: 'Looking up the active student for this device.',
+        label: l.homeStudentResolving,
+        sub: l.homeStudentResolvingMessage,
       ),
       error: (err, _) => _row(
         context,
         tokens,
         icon: Icons.warning_amber_outlined,
-        label: 'Student resolution failed',
+        label: l.homeStudentResolvingFailed,
         sub: err.toString(),
       ),
     );
@@ -473,6 +499,7 @@ class _ActingAsCard extends StatelessWidget {
     required String label,
     required String sub,
   }) {
+    final l = AppLocalizations.of(context);
     return Row(
       children: [
         Icon(icon, color: tokens.brand.primary, size: 18),
@@ -499,7 +526,7 @@ class _ActingAsCard extends StatelessWidget {
           ),
         ),
         IconButton(
-          tooltip: 'Switch student',
+          tooltip: l.a11ySwitchStudentTooltip,
           icon: const Icon(Icons.swap_horiz),
           onPressed: () => context.go('/shell/me/switch-student'),
         ),

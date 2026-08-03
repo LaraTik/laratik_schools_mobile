@@ -8,6 +8,127 @@ and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ### Added
 
+- **Home + admin + family + child-detail + picker + classes +
+  fees surfaces fully localized.** Closes the "home surface
+  string extraction" half of roadmap #11. Every user-facing
+  string on:
+  * the role-routed home surfaces (parent / student / teacher /
+    admin dashboard),
+  * the family picker (`/shell/family`),
+  * the per-child detail (`/shell/family/:id` and the
+    student "My records" route),
+  * the "Switch student" picker (`/shell/me/switch-student`),
+  * the teacher "My classes" list + per-class detail, and
+  * the read-only fees surfaces (fee plans list + per-plan
+    detail + admin "Fee operations" overview)
+  is now locale-aware via `AppLocalizations.of(context)`. ~80
+  new ARB keys added to both `app_en.arb` (English source)
+  and `app_ar.arb` (Modern Standard Arabic, with proper
+  six-category ICU plurals where the strings carry counts).
+- **RTL pass on every list tile + AppBar.** The literal
+  `right: -2` on the notification badge dot was replaced with
+  `Positioned.directional(textDirection: Directionality.of(context), end: -2)`
+  so the badge stays in the top-trailing corner under both
+  LTR and RTL. The literal `Icons.chevron_right` in every list
+  row was replaced with a conditional per
+  `Directionality.of(context) == TextDirection.rtl`. The
+  AppBar date's literal `EdgeInsets.only(right:)` is now
+  `EdgeInsetsDirectional.only(end:)` so the date hugs the
+  trailing edge in both directions. The "Switch student" /
+  "Refresh" / "Notifications" icon buttons all carry localized
+  `tooltip:` strings via `commonRefresh` / `a11yNotificationsTooltip` /
+  `a11ySwitchStudentTooltip`.
+
+### Changed
+
+- `lib/app/dashboard_screen.dart` — every hardcoded string
+  in the admin quick-start grid (titles + descriptions +
+  tooltips + the "Acting as" / "Resolving student" / "No
+  student resolved" / "Student resolution failed" sub-states)
+  is now locale-aware. The role chip uses
+  `l.homeAdminSignedInAs(role.wire)`. The chevron in
+  `_QuickCard` mirrors itself under RTL. `Semantics(button:
+  true, label: item.label)` wraps the tile so screen readers
+  announce the right thing.
+- `lib/app/parent_home.dart` + `lib/app/student_home.dart` +
+  `lib/app/teacher_home.dart` — every string already migrated
+  to ARB in the prior turn; the chevron fix + a11y wrap
+  (`Semantics(button: !disabled, label: title)` on the
+  student `_SurfaceTile`) lands here.
+- `lib/features/family/ui/family_home_screen.dart` — full
+  localization pass: app-bar title, refresh tooltip, loading
+  / error / empty copy, "as {relation}" / "ID {code}" rows,
+  "Active" chip label. Chevron mirrors under RTL.
+  `Semantics(button: true, label: member.studentName)` wraps
+  the row.
+- `lib/features/family/ui/child_detail_screen.dart` — full
+  localization pass: app-bar title (own vs other voice), the
+  four tab labels, the overview summary + KPI sub-lines (all
+  six KPIs + the "All passed" / "X of Y passed" / "On track"
+  / "Below target" / "No grades yet" / "No absences" / "X
+  present · Y absent" / "No cards yet" / "Latest: …"
+  variants), the grades / attendance / report-cards empty
+  states, the grade row's "Assessment" / "Pass" / "Fail" /
+  "Published {date}" copy, and the report-card row's fallback
+  title + "Published {date}" copy.
+- `lib/features/me/ui/acting_as_picker_screen.dart` — full
+  localization pass: app-bar title, search placeholder, all
+  four state paths (loading / error / empty-roster / no-
+  results), the "Now acting as {name}" snackbar copy, the
+  "Clear search" action label, the row's "Current" chip, the
+  "ID {code}" subtitle, and the chevron mirror.
+- `lib/features/teachers/ui/my_classes_screen.dart` +
+  `lib/features/teachers/ui/class_detail_screen.dart` — full
+  localization pass: app-bar title, refresh tooltip, loading
+  / error / empty copy, the "Academic year {year}" sub-line,
+  the "Homeroom" chip, the "{count, plural, … student(s)}"
+  pill on the class detail, and the chevron mirror.
+- `lib/features/fees/ui/fee_plans_screen.dart` +
+  `lib/features/fees/ui/fee_plan_detail_screen.dart` +
+  `lib/features/fees/ui/fee_operations_overview_screen.dart`
+  — full localization pass: app-bar titles, refresh tooltips,
+  loading / error / empty / not-found copy, the
+  "{currency} {total} total · outstanding {currency}
+  {outstanding}" amount line, the "{count, plural, … overdue}"
+  / "partial" / "paid" status chips, the per-status
+  breakdown chips on the operations screen, the "View fee
+  plans" CTA, and the "Back to fee plans" not-found action.
+  All three surfaces carry chevron mirrors + a11y `Semantics`
+  wrappers.
+
+### Tests
+
+- `test/l10n/locale_test.dart` — expanded from 6 to 11 tests:
+  * `English home + admin surfaces resolve the right keys`
+    pins the exact English strings for the dashboard,
+    parent / student / teacher home surfaces, the family
+    picker, the "Acting as" + "Resolving student" copies.
+  * `Arabic home + admin surfaces are non-empty + non-English`
+    guards the "I forgot to translate" regression by
+    asserting every new key under `ar` is both non-empty
+    AND not equal to the English source.
+  * `English pluralization rules behave correctly (0 / 1 / 2 / 5)`
+    pins the singular / plural / zero shapes for
+    `homeParentLinkedChildren`, `a11yUnreadNotifications`,
+    `feePlansHeaderTotal`, `classDetailStudentCount`.
+  * `Arabic pluralization rules behave correctly across the
+    six ICU categories (zero / one / two / few / many /
+    other)` asserts the Arabic strings resolve to non-empty
+    values for counts 0, 1, 2, 5, 25, 101 — the six ICU
+    plural categories Arabic uses — and are not equal to the
+    English fallbacks.
+  * `English family + picker + class detail copy is present`
+    pins the new family / picker / class-detail strings.
+
+## [Unreleased]
+
+### Added
+
+- **Arabic + English locale support.** The mobile now supports
+  both `en` and `ar` via the standard Flutter ARB-driven
+
+### Added
+
 - **Arabic + English locale support.** The mobile now supports
   both `en` and `ar` via the standard Flutter ARB-driven
   localization pipeline. The `MaterialApp` resolves the locale

@@ -260,6 +260,18 @@ abstract class AppLocalizations {
   /// **'My school'**
   String get homeStudentMySchool;
 
+  /// No description provided for @homeStudentGreeting.
+  ///
+  /// In en, this message translates to:
+  /// **'Hi, {name}'**
+  String homeStudentGreeting(String name);
+
+  /// No description provided for @homeStudentStudentId.
+  ///
+  /// In en, this message translates to:
+  /// **'Student ID: {id}'**
+  String homeStudentStudentId(String id);
+
   /// No description provided for @homeStudentResolving.
   ///
   /// In en, this message translates to:
@@ -332,6 +344,108 @@ abstract class AppLocalizations {
   /// **'Grades, attendance, and report cards'**
   String get homeStudentMyRecordsSubtitle;
 
+  /// No description provided for @homeStudentNoExamsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No exams today'**
+  String get homeStudentNoExamsTitle;
+
+  /// No description provided for @homeStudentNoExamsMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You have no published exam plans waiting for you. New exams will appear here as teachers publish them.'**
+  String get homeStudentNoExamsMessage;
+
+  /// No description provided for @homeStudentLoadingExamsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading exams'**
+  String get homeStudentLoadingExamsTitle;
+
+  /// No description provided for @homeStudentLoadingExamsMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Fetching your published exam catalog.'**
+  String get homeStudentLoadingExamsMessage;
+
+  /// No description provided for @homeStudentCouldNotLoadExams.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load exams'**
+  String get homeStudentCouldNotLoadExams;
+
+  /// No description provided for @homeStudentTakeNextExam.
+  ///
+  /// In en, this message translates to:
+  /// **'Take your next exam'**
+  String get homeStudentTakeNextExam;
+
+  /// No description provided for @homeStudentOpenExam.
+  ///
+  /// In en, this message translates to:
+  /// **'Open exam'**
+  String get homeStudentOpenExam;
+
+  /// No description provided for @homeStudentInboxSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Inbox + announcements'**
+  String get homeStudentInboxSubtitle;
+
+  /// No description provided for @homeParentMyFamily.
+  ///
+  /// In en, this message translates to:
+  /// **'My family'**
+  String get homeParentMyFamily;
+
+  /// No description provided for @homeParentFeeInvoicesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fee invoices'**
+  String get homeParentFeeInvoicesTitle;
+
+  /// No description provided for @homeParentFeeInvoicesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Review your children\'s fee plans and payment status.'**
+  String get homeParentFeeInvoicesSubtitle;
+
+  /// No description provided for @homeParentHeroLoadingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking up the students you are linked to.'**
+  String get homeParentHeroLoadingMessage;
+
+  /// No description provided for @homeParentHeroLoadingChip.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading…'**
+  String get homeParentHeroLoadingChip;
+
+  /// No description provided for @homeParentHeroErrorMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t load your children just now. Tap to retry.'**
+  String get homeParentHeroErrorMessage;
+
+  /// No description provided for @homeParentHeroErrorChip.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get homeParentHeroErrorChip;
+
+  /// No description provided for @homeParentLinkedChildren.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No linked children} =1{1 linked child} other{{count} linked children}}'**
+  String homeParentLinkedChildren(int count);
+
+  /// No description provided for @homeParentLinkedChildrenActive.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 linked child · tap to see grades, attendance, and report cards.} other{{count} linked children · {active} active. Tap to see grades, attendance, and report cards.}}'**
+  String homeParentLinkedChildrenActive(int count, int active);
+
   /// No description provided for @homeTeacherMySchool.
   ///
   /// In en, this message translates to:
@@ -355,6 +469,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Mark a class group'**
   String get homeTeacherCaptureAttendanceSubtitle;
+
+  /// No description provided for @homeTeacherInboxSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Inbox + announcements'**
+  String get homeTeacherInboxSubtitle;
+
+  /// No description provided for @homeTeacherQuickStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick start'**
+  String get homeTeacherQuickStart;
+
+  /// No description provided for @homeTeacherHeroLoadingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking up the (class, subject) pairs you teach.'**
+  String get homeTeacherHeroLoadingMessage;
+
+  /// No description provided for @homeTeacherHeroLoadingChip.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading…'**
+  String get homeTeacherHeroLoadingChip;
+
+  /// No description provided for @homeTeacherHeroErrorMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t load your classes just now. Tap to retry.'**
+  String get homeTeacherHeroErrorMessage;
+
+  /// No description provided for @homeTeacherHeroErrorChip.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get homeTeacherHeroErrorChip;
+
+  /// No description provided for @homeTeacherHeroActive.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 teaching assignment · tap to see your roster + exams for that subject.} other{{count} teaching assignments · {active} active. Tap to see your roster + exams for that subject.}}'**
+  String homeTeacherHeroActive(int count, int active);
+
+  /// No description provided for @homeTeacherHeroEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'When the registrar assigns you to a (class, subject) pair, the class will appear here.'**
+  String get homeTeacherHeroEmpty;
+
+  /// No description provided for @homeAdminMyHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get homeAdminMyHome;
+
+  /// No description provided for @homeAdminActingAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Acting as: {name}'**
+  String homeAdminActingAs(String name);
+
+  /// No description provided for @homeAdminSignedInAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed in as: {role}'**
+  String homeAdminSignedInAs(String role);
 
   /// No description provided for @homeAdminQuickStart.
   ///
@@ -410,6 +590,18 @@ abstract class AppLocalizations {
   /// **'Add a subject to the catalog'**
   String get homeAdminNewSubjectSubtitle;
 
+  /// No description provided for @homeAdminCaptureAttendance.
+  ///
+  /// In en, this message translates to:
+  /// **'Capture attendance'**
+  String get homeAdminCaptureAttendance;
+
+  /// No description provided for @homeAdminCaptureAttendanceSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark a class group'**
+  String get homeAdminCaptureAttendanceSubtitle;
+
   /// No description provided for @homeAdminFeePlans.
   ///
   /// In en, this message translates to:
@@ -433,6 +625,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Invoiced / collected / outstanding'**
   String get homeAdminFeeOperationsSubtitle;
+
+  /// No description provided for @homeAdminNotificationsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Inbox + announcements'**
+  String get homeAdminNotificationsSubtitle;
 
   /// No description provided for @myChildrenHeaderTotal.
   ///
@@ -793,6 +991,409 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, =0{No unread messages} =1{1 unread message} other{{count} unread messages}}'**
   String a11yUnreadNotifications(int count);
+
+  /// No description provided for @familyHomeLoadingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading your children'**
+  String get familyHomeLoadingTitle;
+
+  /// No description provided for @familyHomeErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load your children'**
+  String get familyHomeErrorTitle;
+
+  /// No description provided for @familyChildRowRelation.
+  ///
+  /// In en, this message translates to:
+  /// **'as {relation}'**
+  String familyChildRowRelation(String relation);
+
+  /// No description provided for @familyChildRowId.
+  ///
+  /// In en, this message translates to:
+  /// **'ID {code}'**
+  String familyChildRowId(String code);
+
+  /// No description provided for @childDetailLoadingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading records'**
+  String get childDetailLoadingTitle;
+
+  /// No description provided for @childDetailLoadingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Pulling grades, attendance, and report cards.'**
+  String get childDetailLoadingMessage;
+
+  /// No description provided for @childDetailGradeAssessmentFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Assessment'**
+  String get childDetailGradeAssessmentFallback;
+
+  /// No description provided for @childDetailGradePass.
+  ///
+  /// In en, this message translates to:
+  /// **'Pass'**
+  String get childDetailGradePass;
+
+  /// No description provided for @childDetailGradeFail.
+  ///
+  /// In en, this message translates to:
+  /// **'Fail'**
+  String get childDetailGradeFail;
+
+  /// No description provided for @childDetailGradePublishedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Published {date}'**
+  String childDetailGradePublishedOn(String date);
+
+  /// No description provided for @childDetailReportCardFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Report card'**
+  String get childDetailReportCardFallback;
+
+  /// No description provided for @childDetailAverageOnTrack.
+  ///
+  /// In en, this message translates to:
+  /// **'On track'**
+  String get childDetailAverageOnTrack;
+
+  /// No description provided for @childDetailAverageBelowTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'Below target'**
+  String get childDetailAverageBelowTarget;
+
+  /// No description provided for @childDetailAverageNoGrades.
+  ///
+  /// In en, this message translates to:
+  /// **'No grades yet'**
+  String get childDetailAverageNoGrades;
+
+  /// No description provided for @childDetailGradesAllPassed.
+  ///
+  /// In en, this message translates to:
+  /// **'All passed'**
+  String get childDetailGradesAllPassed;
+
+  /// No description provided for @childDetailGradesOfTotalPassed.
+  ///
+  /// In en, this message translates to:
+  /// **'{passed} of {total} passed'**
+  String childDetailGradesOfTotalPassed(int passed, int total);
+
+  /// No description provided for @childDetailAttendanceNoAbsences.
+  ///
+  /// In en, this message translates to:
+  /// **'No absences'**
+  String get childDetailAttendanceNoAbsences;
+
+  /// No description provided for @childDetailAttendanceKpiSub.
+  ///
+  /// In en, this message translates to:
+  /// **'{present} present · {absent} absent'**
+  String childDetailAttendanceKpiSub(int present, int absent);
+
+  /// No description provided for @childDetailAttendanceKpiSubLate.
+  ///
+  /// In en, this message translates to:
+  /// **'{present} present · {absent} absent · {late} late'**
+  String childDetailAttendanceKpiSubLate(int present, int absent, int late);
+
+  /// No description provided for @childDetailReportCardNoCards.
+  ///
+  /// In en, this message translates to:
+  /// **'No cards yet'**
+  String get childDetailReportCardNoCards;
+
+  /// No description provided for @childDetailReportCardLatest.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest: {label}'**
+  String childDetailReportCardLatest(String label);
+
+  /// No description provided for @meSwitchStudentErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load students'**
+  String get meSwitchStudentErrorTitle;
+
+  /// No description provided for @meSwitchStudentNoResultsMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Try a shorter search, or clear the search to see the full roster.'**
+  String get meSwitchStudentNoResultsMessage;
+
+  /// No description provided for @myClassesErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load your classes'**
+  String get myClassesErrorTitle;
+
+  /// No description provided for @myClassesAcademicYear.
+  ///
+  /// In en, this message translates to:
+  /// **'Academic year {year}'**
+  String myClassesAcademicYear(String year);
+
+  /// No description provided for @classDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Class'**
+  String get classDetailTitle;
+
+  /// No description provided for @classDetailErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load roster'**
+  String get classDetailErrorTitle;
+
+  /// No description provided for @classDetailStudentCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 student} other{{count} students}}'**
+  String classDetailStudentCount(int count);
+
+  /// No description provided for @feePlansScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fee plans'**
+  String get feePlansScreenTitle;
+
+  /// No description provided for @feePlansErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load fee plans'**
+  String get feePlansErrorTitle;
+
+  /// No description provided for @feePlansOverdueChip.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 overdue} other{{count} overdue}}'**
+  String feePlansOverdueChip(int count);
+
+  /// No description provided for @feePlansPartialChip.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 partial} other{{count} partial}}'**
+  String feePlansPartialChip(int count);
+
+  /// No description provided for @feePlansPaidChip.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 paid} other{{count} paid}}'**
+  String feePlansPaidChip(int count);
+
+  /// No description provided for @feePlansAmountLine.
+  ///
+  /// In en, this message translates to:
+  /// **'{currency} {total} total · outstanding {currency} {outstanding}'**
+  String feePlansAmountLine(String currency, String total, String outstanding);
+
+  /// No description provided for @feePlansAmountOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'{currency} {total}'**
+  String feePlansAmountOnly(String currency, String total);
+
+  /// No description provided for @feePlanDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fee plan'**
+  String get feePlanDetailTitle;
+
+  /// No description provided for @feePlanLoadingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading fee plan'**
+  String get feePlanLoadingTitle;
+
+  /// No description provided for @feePlanLoadingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking up the per-line breakdown and payment status.'**
+  String get feePlanLoadingMessage;
+
+  /// No description provided for @feePlanErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load fee plan'**
+  String get feePlanErrorTitle;
+
+  /// No description provided for @feePlanNotFoundTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fee plan not found'**
+  String get feePlanNotFoundTitle;
+
+  /// No description provided for @feePlanNotFoundMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t find this fee plan in the current catalog. It may have been cancelled or moved to a different academic year; head back to the list to see the latest plans.'**
+  String get feePlanNotFoundMessage;
+
+  /// No description provided for @feePlanNotFoundAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to fee plans'**
+  String get feePlanNotFoundAction;
+
+  /// No description provided for @feePlanNoBreakdownMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The server didn\'t return a per-line breakdown for this plan. The total amount is shown above; the itemized list lands when the plan is itemized on the server side.'**
+  String get feePlanNoBreakdownMessage;
+
+  /// No description provided for @feePlanIdentitySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fee plan {id}'**
+  String feePlanIdentitySubtitle(String id);
+
+  /// No description provided for @feePlanDueDateChip.
+  ///
+  /// In en, this message translates to:
+  /// **'Due {date}'**
+  String feePlanDueDateChip(String date);
+
+  /// No description provided for @feePlanTotalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get feePlanTotalLabel;
+
+  /// No description provided for @feePlanPaidLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid'**
+  String get feePlanPaidLabel;
+
+  /// No description provided for @feePlanOutstandingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Outstanding'**
+  String get feePlanOutstandingLabel;
+
+  /// No description provided for @feeOperationsScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fee operations'**
+  String get feeOperationsScreenTitle;
+
+  /// No description provided for @feeOperationsLoadingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading operations'**
+  String get feeOperationsLoadingTitle;
+
+  /// No description provided for @feeOperationsLoadingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Aggregating the latest invoice + payment totals.'**
+  String get feeOperationsLoadingMessage;
+
+  /// No description provided for @feeOperationsErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load operations'**
+  String get feeOperationsErrorTitle;
+
+  /// No description provided for @feeOperationsCollectionRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Collection rate'**
+  String get feeOperationsCollectionRate;
+
+  /// No description provided for @feeOperationsNoInvoices.
+  ///
+  /// In en, this message translates to:
+  /// **'No invoices yet'**
+  String get feeOperationsNoInvoices;
+
+  /// No description provided for @feeOperationsNoInvoicesMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The school hasn\'t issued any invoices yet. The rate will appear as soon as the first plan is published.'**
+  String get feeOperationsNoInvoicesMessage;
+
+  /// No description provided for @feeOperationsCollectedOfTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{collectedCurrency} {collectedAmount} of {totalCurrency} {totalAmount} collected so far.'**
+  String feeOperationsCollectedOfTotal(String collectedCurrency,
+      String collectedAmount, String totalCurrency, String totalAmount);
+
+  /// No description provided for @feeOperationsInvoiced.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoiced'**
+  String get feeOperationsInvoiced;
+
+  /// No description provided for @feeOperationsInvoicedSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Total issued this period'**
+  String get feeOperationsInvoicedSub;
+
+  /// No description provided for @feeOperationsCollected.
+  ///
+  /// In en, this message translates to:
+  /// **'Collected'**
+  String get feeOperationsCollected;
+
+  /// No description provided for @feeOperationsCollectedSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Total received so far'**
+  String get feeOperationsCollectedSub;
+
+  /// No description provided for @feeOperationsOutstanding.
+  ///
+  /// In en, this message translates to:
+  /// **'Outstanding'**
+  String get feeOperationsOutstanding;
+
+  /// No description provided for @feeOperationsOutstandingSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Still due'**
+  String get feeOperationsOutstandingSub;
+
+  /// No description provided for @feeOperationsByStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'By status'**
+  String get feeOperationsByStatus;
+
+  /// No description provided for @feeOperationsPaidCountChip.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 paid} other{{count} paid}}'**
+  String feeOperationsPaidCountChip(int count);
+
+  /// No description provided for @feeOperationsOverdueCountChip.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 overdue} other{{count} overdue}}'**
+  String feeOperationsOverdueCountChip(int count);
+
+  /// No description provided for @feeOperationsDraftCountChip.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 draft} other{{count} draft}}'**
+  String feeOperationsDraftCountChip(int count);
+
+  /// No description provided for @feeOperationsViewPlansAction.
+  ///
+  /// In en, this message translates to:
+  /// **'View fee plans'**
+  String get feeOperationsViewPlansAction;
 }
 
 class _AppLocalizationsDelegate

@@ -14,11 +14,16 @@
 //     user knows the link is stale without hiding it entirely.
 //   * Empty / loading / error / retry paths are all LsStateView-based
 //     so the operator gets the same shape as every other list.
+//   * Every user-facing string is locale-aware via
+//     [AppLocalizations.of(context)]; the chevron mirrors itself
+//     under RTL so the visual flow stays consistent with the text
+//     direction.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../ui/app_theme.dart';
 import '../../../ui/design_tokens.dart';
 import '../../../ui/widgets/ls_button.dart';
@@ -37,6 +42,7 @@ class FamilyHomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     final async = ref.watch(familyListProvider);
     return Scaffold(
       backgroundColor: tokens.surface.canvas,
@@ -44,14 +50,14 @@ class FamilyHomeScreen extends ConsumerWidget {
         backgroundColor: tokens.surface.surface,
         elevation: 0,
         title: Text(
-          'My children',
+          l.homeParentMyChildren,
           style: tokens.typography.titleLarge.copyWith(
             color: tokens.text.primary,
           ),
         ),
         actions: [
           IconButton(
-            tooltip: 'Refresh',
+            tooltip: l.commonRefresh,
             icon: const Icon(Icons.refresh),
             onPressed: () => ref.read(familyListProvider.notifier).refresh(),
           ),
@@ -59,16 +65,16 @@ class FamilyHomeScreen extends ConsumerWidget {
       ),
       body: async.when(
         data: (page) => _buildBody(context, ref, tokens, page),
-        loading: () => const LsStateView.loading(
-          title: 'Loading your children',
-          message: 'Looking up the students you are linked to as a guardian.',
+        loading: () => LsStateView.loading(
+          title: l.familyHomeLoadingTitle,
+          message: l.homeParentHeroLoadingMessage,
         ),
         error: (err, _) => LsStateView.error(
           icon: Icons.error_outline,
-          title: 'Could not load your children',
+          title: l.familyHomeErrorTitle,
           message: err.toString(),
           action: LsButton.primary(
-            label: 'Try again',
+            label: l.commonTryAgain,
             expand: false,
             onPressed: () => ref.read(familyListProvider.notifier).refresh(),
           ),
@@ -83,6 +89,7 @@ class FamilyHomeScreen extends ConsumerWidget {
     DesignTokens tokens,
     FamilyPage page,
   ) {
+    final l = AppLocalizations.of(context);
     if (page.members.isEmpty) {
       return RefreshIndicator(
         color: tokens.brand.primary,
@@ -94,11 +101,8 @@ class FamilyHomeScreen extends ConsumerWidget {
               height: MediaQuery.sizeOf(context).height * 0.5,
               child: LsStateView.empty(
                 icon: Icons.family_restroom_outlined,
-                title: 'No children linked yet',
-                message: "When the school links you as a guardian, your "
-                    "children's names will appear here. If you expected "
-                    "to see a child and you don't, contact the school "
-                    "office to confirm the link is in place.",
+                title: l.homeParentNoChildrenTitle,
+                message: l.homeParentNoChildrenMessage,
               ),
             ),
           ],
@@ -157,6 +161,7 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     final inactive = total - active;
     return Container(
       padding: EdgeInsets.all(tokens.space.md),
@@ -174,7 +179,7 @@ class _Header extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  total == 1 ? '1 linked child' : '$total linked children',
+                  l.myChildrenHeaderTotal(total),
                   style: tokens.typography.titleSmall.copyWith(
                     color: tokens.text.primary,
                   ),
@@ -182,10 +187,8 @@ class _Header extends StatelessWidget {
                 SizedBox(height: tokens.space.xxs),
                 Text(
                   inactive == 0
-                      ? 'Tap a child to see their grades, attendance, and '
-                          'report cards.'
-                      : '$active active · $inactive withdrawn. '
-                          'Withdrawn links are kept for reference.',
+                      ? l.myChildrenHeaderAllActive
+                      : l.myChildrenHeaderActive(active, inactive),
                   style: tokens.typography.bodySmall.copyWith(
                     color: tokens.text.secondary,
                   ),
@@ -209,7 +212,8 @@ class _ChildCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final subtitle = _subtitle();
+    final l = AppLocalizations.of(context);
+    final subtitle = _subtitle(context);
     final active = member.isActive;
     return Opacity(
       opacity: active ? 1.0 : 0.62,
@@ -222,64 +226,75 @@ class _ChildCard extends StatelessWidget {
         child: InkWell(
           onTap: () => context.go('/shell/family/${member.studentId}'),
           borderRadius: BorderRadius.circular(tokens.radius.md),
-          child: Padding(
-            padding: EdgeInsets.all(tokens.space.md),
-            child: Row(
-              children: [
-                _Avatar(
-                    tokens: tokens, name: member.studentName, active: active),
-                SizedBox(width: tokens.space.md),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        member.studentName,
-                        style: tokens.typography.titleSmall.copyWith(
-                          color: tokens.text.primary,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      SizedBox(height: tokens.space.xxs),
-                      Row(
-                        children: [
-                          if (subtitle.isNotEmpty) ...[
-                            Flexible(
-                              child: Text(
-                                subtitle,
-                                style: tokens.typography.bodySmall.copyWith(
-                                  color: tokens.text.secondary,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                            SizedBox(width: tokens.space.xs),
-                          ],
-                          if (active)
-                            LsStatusChip(
-                              label: 'Active',
-                              tone: LsChipTone.success,
-                              icon: Icons.check_circle_outline,
-                            )
-                          else
-                            LsStatusChip(
-                              label: member.status,
-                              tone: LsChipTone.neutral,
-                              icon: Icons.archive_outlined,
-                            ),
-                        ],
-                      ),
-                    ],
+          child: Semantics(
+            button: true,
+            label: member.studentName,
+            child: Padding(
+              padding: EdgeInsets.all(tokens.space.md),
+              child: Row(
+                children: [
+                  _Avatar(
+                    tokens: tokens,
+                    name: member.studentName,
+                    active: active,
                   ),
-                ),
-                Icon(
-                  Icons.chevron_right,
-                  color: tokens.text.tertiary,
-                ),
-              ],
+                  SizedBox(width: tokens.space.md),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          member.studentName,
+                          style: tokens.typography.titleSmall.copyWith(
+                            color: tokens.text.primary,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(height: tokens.space.xxs),
+                        Row(
+                          children: [
+                            if (subtitle.isNotEmpty) ...[
+                              Flexible(
+                                child: Text(
+                                  subtitle,
+                                  style: tokens.typography.bodySmall.copyWith(
+                                    color: tokens.text.secondary,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              SizedBox(width: tokens.space.xs),
+                            ],
+                            if (active)
+                              LsStatusChip(
+                                label: l.myChildrenChildActive,
+                                tone: LsChipTone.success,
+                                icon: Icons.check_circle_outline,
+                              )
+                            else
+                              LsStatusChip(
+                                label: member.status,
+                                tone: LsChipTone.neutral,
+                                icon: Icons.archive_outlined,
+                              ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Icon(
+                    // Mirror the chevron under RTL so the visual
+                    // "next →" stays consistent with the text flow.
+                    Directionality.of(context) == TextDirection.rtl
+                        ? Icons.chevron_left
+                        : Icons.chevron_right,
+                    color: tokens.text.tertiary,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -287,18 +302,19 @@ class _ChildCard extends StatelessWidget {
     );
   }
 
-  String _subtitle() {
+  String _subtitle(BuildContext context) {
+    final l = AppLocalizations.of(context);
     final parts = <String>[];
     if (member.grade != null && member.grade!.isNotEmpty) {
       parts.add(member.grade!);
     }
     if (member.relation != null && member.relation!.isNotEmpty) {
-      parts.add('as ${member.relation}');
+      parts.add(l.familyChildRowRelation(member.relation!));
     }
     if (member.studentCode != null && member.studentCode!.isNotEmpty) {
-      parts.add('ID ${member.studentCode}');
+      parts.add(l.familyChildRowId(member.studentCode!));
     } else if (member.studentId.isNotEmpty) {
-      parts.add('ID ${member.studentId}');
+      parts.add(l.familyChildRowId(member.studentId));
     }
     return parts.join(' · ');
   }

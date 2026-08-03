@@ -18,12 +18,16 @@
 //     exam authoring surface).
 //   * "Grade exam attempts" tile (deep link to the manual
 //     grading surface).
+//
+// Every user-facing string is locale-aware via
+// [AppLocalizations.of(context)].
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/result.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../ui/app_theme.dart';
 import '../../../ui/design_tokens.dart';
 import '../../../ui/widgets/ls_button.dart';
@@ -45,6 +49,7 @@ class ClassDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     // Roster is keyed by class group id. The detail doesn't need
     // the teaching assignment row itself — the class group id is
     // enough to identify the surface.
@@ -61,7 +66,7 @@ class ClassDetailScreen extends ConsumerWidget {
               : context.go('/shell/teachers/classes'),
         ),
         title: Text(
-          'Class',
+          l.classDetailTitle,
           style: tokens.typography.titleLarge.copyWith(
             color: tokens.text.primary,
           ),
@@ -71,17 +76,19 @@ class ClassDetailScreen extends ConsumerWidget {
         data: (result) => switch (result) {
           Ok(:final value) => _buildBody(context, tokens, value.people),
           Err(:final error) => _buildError(
+              context,
               tokens,
               ref,
               error,
-              'Could not load roster',
+              l.classDetailErrorTitle,
             ),
         },
-        loading: () => const LsStateView.loading(
-          title: 'Loading roster',
-          message: 'Looking up the students assigned to this class group.',
+        loading: () => LsStateView.loading(
+          title: l.classDetailRosterTitle,
+          message: l.classDetailRosterMessage,
         ),
         error: (err, _) => _buildError(
+          context,
           tokens,
           ref,
           err is PersonFailure
@@ -90,7 +97,7 @@ class ClassDetailScreen extends ConsumerWidget {
                   code: 'EXCEPTION',
                   message: err.toString(),
                 ),
-          'Could not load roster',
+          l.classDetailErrorTitle,
         ),
       ),
     );
@@ -98,6 +105,7 @@ class ClassDetailScreen extends ConsumerWidget {
 
   Widget _buildBody(
       BuildContext context, DesignTokens tokens, List<Person> people) {
+    final l = AppLocalizations.of(context);
     return CustomScrollView(
       slivers: [
         SliverToBoxAdapter(
@@ -109,9 +117,10 @@ class ClassDetailScreen extends ConsumerWidget {
               tokens.space.sm,
             ),
             child: _IdentityCard(
-                tokens: tokens,
-                classGroupId: classGroupId,
-                count: people.length),
+              tokens: tokens,
+              classGroupId: classGroupId,
+              count: people.length,
+            ),
           ),
         ),
         if (people.isEmpty)
@@ -119,10 +128,8 @@ class ClassDetailScreen extends ConsumerWidget {
             hasScrollBody: false,
             child: LsStateView.empty(
               icon: Icons.group_off_outlined,
-              title: 'No students in this class yet',
-              message: "No students are assigned to this class group yet. "
-                  "When the registrar enrols students, they will "
-                  "appear here automatically.",
+              title: l.classDetailRosterEmptyTitle,
+              message: l.classDetailRosterEmptyMessage,
             ),
           )
         else
@@ -146,17 +153,19 @@ class ClassDetailScreen extends ConsumerWidget {
   }
 
   Widget _buildError(
+    BuildContext context,
     DesignTokens tokens,
     WidgetRef ref,
     PersonFailure error,
     String title,
   ) {
+    final l = AppLocalizations.of(context);
     return LsStateView.error(
       icon: Icons.error_outline,
       title: title,
       message: error.message,
       action: LsButton.primary(
-        label: 'Try again',
+        label: l.commonTryAgain,
         expand: false,
         onPressed: () => ref.invalidate(classRosterProvider(classGroupId)),
       ),
@@ -176,6 +185,7 @@ class _IdentityCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     return Container(
       padding: EdgeInsets.all(tokens.space.md),
       decoration: BoxDecoration(
@@ -204,7 +214,7 @@ class _IdentityCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Class group',
+                  l.classDetailHeaderClassGroup,
                   style: tokens.typography.labelMedium.copyWith(
                     color: tokens.text.secondary,
                   ),
@@ -222,7 +232,7 @@ class _IdentityCard extends StatelessWidget {
                   runSpacing: tokens.space.xxs,
                   children: [
                     LsStatusChip(
-                      label: count == 1 ? '1 student' : '$count students',
+                      label: l.classDetailStudentCount(count),
                       tone: count == 0 ? LsChipTone.neutral : LsChipTone.brand,
                       icon: Icons.group_outlined,
                     ),

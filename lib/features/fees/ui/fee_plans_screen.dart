@@ -15,11 +15,16 @@
 //   * Empty / loading / error / retry paths use [LsStateView].
 //   * Per-status summary header so the user doesn't have to
 //     count rows to know how many are overdue.
+//   * Every user-facing string is locale-aware via
+//     [AppLocalizations.of(context)]; the chevron mirrors itself
+//     under RTL so the visual "next →" stays consistent with the
+//     text direction.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../ui/app_theme.dart';
 import '../../../ui/design_tokens.dart';
 import '../../../ui/widgets/ls_button.dart';
@@ -34,6 +39,7 @@ class FeePlansScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     final async = ref.watch(feePlansProvider);
     return Scaffold(
       backgroundColor: tokens.surface.canvas,
@@ -41,14 +47,14 @@ class FeePlansScreen extends ConsumerWidget {
         backgroundColor: tokens.surface.surface,
         elevation: 0,
         title: Text(
-          'Fee plans',
+          l.feePlansScreenTitle,
           style: tokens.typography.titleLarge.copyWith(
             color: tokens.text.primary,
           ),
         ),
         actions: [
           IconButton(
-            tooltip: 'Refresh',
+            tooltip: l.commonRefresh,
             icon: const Icon(Icons.refresh),
             onPressed: () => ref.read(feePlansProvider.notifier).refresh(),
           ),
@@ -56,16 +62,16 @@ class FeePlansScreen extends ConsumerWidget {
       ),
       body: async.when(
         data: (page) => _buildBody(context, ref, tokens, page),
-        loading: () => const LsStateView.loading(
-          title: 'Loading fee plans',
-          message: 'Looking up the latest fee plans from the server.',
+        loading: () => LsStateView.loading(
+          title: l.feePlansLoadingTitle,
+          message: l.feePlansLoadingMessage,
         ),
         error: (err, _) => LsStateView.error(
           icon: Icons.error_outline,
-          title: 'Could not load fee plans',
+          title: l.feePlansErrorTitle,
           message: err.toString(),
           action: LsButton.primary(
-            label: 'Try again',
+            label: l.commonTryAgain,
             expand: false,
             onPressed: () => ref.read(feePlansProvider.notifier).refresh(),
           ),
@@ -83,10 +89,8 @@ class FeePlansScreen extends ConsumerWidget {
     if (page.plans.isEmpty) {
       return LsStateView.empty(
         icon: Icons.receipt_long_outlined,
-        title: 'No fee plans yet',
-        message: "You don't have any active fee plans yet. When the "
-            'school issues a plan for your child, it will appear '
-            'here with the per-line breakdown and a payment status.',
+        title: l_empty(context),
+        message: l_empty_msg(context),
       );
     }
     // Open first (overdue + partially paid), then draft, then
@@ -138,6 +142,13 @@ class FeePlansScreen extends ConsumerWidget {
   }
 }
 
+// Forwarders so the empty-state LsStateView can stay inline without
+// a long conditional in the call site.
+String l_empty(BuildContext context) =>
+    AppLocalizations.of(context).feePlansEmptyTitle;
+String l_empty_msg(BuildContext context) =>
+    AppLocalizations.of(context).feePlansEmptyMessage;
+
 class _Header extends StatelessWidget {
   const _Header({required this.tokens, required this.plans});
   final DesignTokens tokens;
@@ -145,6 +156,7 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     final overdue =
         plans.where((p) => p.invoiceStatus.toLowerCase() == 'overdue').length;
     final partiallyPaid = plans
@@ -168,7 +180,7 @@ class _Header extends StatelessWidget {
               SizedBox(width: tokens.space.md),
               Expanded(
                 child: Text(
-                  total == 1 ? '1 fee plan' : '$total fee plans',
+                  l.feePlansHeaderTotal(total),
                   style: tokens.typography.titleSmall.copyWith(
                     color: tokens.text.primary,
                   ),
@@ -183,19 +195,19 @@ class _Header extends StatelessWidget {
             children: [
               if (overdue > 0)
                 LsStatusChip(
-                  label: '$overdue overdue',
+                  label: l.feePlansOverdueChip(overdue),
                   tone: LsChipTone.error,
                   icon: Icons.warning_amber_outlined,
                 ),
               if (partiallyPaid > 0)
                 LsStatusChip(
-                  label: '$partiallyPaid partial',
+                  label: l.feePlansPartialChip(partiallyPaid),
                   tone: LsChipTone.warning,
                   icon: Icons.pie_chart_outline,
                 ),
               if (paid > 0)
                 LsStatusChip(
-                  label: '$paid paid',
+                  label: l.feePlansPaidChip(paid),
                   tone: LsChipTone.success,
                   icon: Icons.check_circle_outline,
                 ),
@@ -216,7 +228,7 @@ class _PlanCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final (LsChipTone tone, IconData icon) = _toneForStatus(plan);
     final paid = plan.isPaid;
-    final amountLine = _amountLine();
+    final amountLine = _amountLine(context);
     return Opacity(
       opacity: paid ? 0.62 : 1.0,
       child: Material(
@@ -232,58 +244,69 @@ class _PlanCard extends StatelessWidget {
                     '/shell/fees/plans/${Uri.encodeComponent(plan.id)}',
                   ),
           borderRadius: BorderRadius.circular(tokens.radius.md),
-          child: Padding(
-            padding: EdgeInsets.all(tokens.space.md),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _Avatar(tokens: tokens, plan: plan),
-                SizedBox(width: tokens.space.md),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        plan.studentName.isEmpty
-                            ? plan.student
-                            : plan.studentName,
-                        style: tokens.typography.titleSmall.copyWith(
-                          color: tokens.text.primary,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      SizedBox(height: tokens.space.xxs),
-                      Text(
-                        amountLine,
-                        style: tokens.typography.bodySmall.copyWith(
-                          color: tokens.text.secondary,
-                        ),
-                      ),
-                      SizedBox(height: tokens.space.xs),
-                      Wrap(
-                        spacing: tokens.space.xs,
-                        runSpacing: tokens.space.xxs,
-                        children: [
-                          LsStatusChip(
-                            label: _capitalize(plan.invoiceStatus),
-                            tone: tone,
-                            icon: icon,
+          child: Semantics(
+            button: true,
+            label: plan.studentName.isEmpty ? plan.student : plan.studentName,
+            child: Padding(
+              padding: EdgeInsets.all(tokens.space.md),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _Avatar(tokens: tokens, plan: plan),
+                  SizedBox(width: tokens.space.md),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          plan.studentName.isEmpty
+                              ? plan.student
+                              : plan.studentName,
+                          style: tokens.typography.titleSmall.copyWith(
+                            color: tokens.text.primary,
                           ),
-                          if (plan.academicYear.isNotEmpty)
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(height: tokens.space.xxs),
+                        Text(
+                          amountLine,
+                          style: tokens.typography.bodySmall.copyWith(
+                            color: tokens.text.secondary,
+                          ),
+                        ),
+                        SizedBox(height: tokens.space.xs),
+                        Wrap(
+                          spacing: tokens.space.xs,
+                          runSpacing: tokens.space.xxs,
+                          children: [
                             LsStatusChip(
-                              label: plan.academicYear,
-                              tone: LsChipTone.neutral,
-                              icon: Icons.calendar_today_outlined,
+                              label: _capitalize(plan.invoiceStatus),
+                              tone: tone,
+                              icon: icon,
                             ),
-                        ],
-                      ),
-                    ],
+                            if (plan.academicYear.isNotEmpty)
+                              LsStatusChip(
+                                label: plan.academicYear,
+                                tone: LsChipTone.neutral,
+                                icon: Icons.calendar_today_outlined,
+                              ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Icon(Icons.chevron_right, color: tokens.text.tertiary),
-              ],
+                  Icon(
+                    // Mirror the chevron under RTL so the visual
+                    // "next →" stays consistent with the text flow.
+                    Directionality.of(context) == TextDirection.rtl
+                        ? Icons.chevron_left
+                        : Icons.chevron_right,
+                    color: tokens.text.tertiary,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -291,18 +314,15 @@ class _PlanCard extends StatelessWidget {
     );
   }
 
-  String _amountLine() {
+  String _amountLine(BuildContext context) {
+    final l = AppLocalizations.of(context);
     final currency = plan.currency;
     final total = _formatAmount(plan.totalAmount);
     final outstanding = _formatAmount(plan.outstandingAmount);
-    final parts = <String>[];
     if (plan.paidAmount > 0 && !plan.isPaid) {
-      parts.add('$currency $total total');
-      parts.add('outstanding $currency $outstanding');
-    } else {
-      parts.add('$currency $total');
+      return l.feePlansAmountLine(currency, total, outstanding);
     }
-    return parts.join(' · ');
+    return l.feePlansAmountOnly(currency, total);
   }
 
   (LsChipTone, IconData) _toneForStatus(FeePlan p) {
