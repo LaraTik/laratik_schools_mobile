@@ -2856,4 +2856,79 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get gradingCorrectionPromptHint =>
       'أدخل معرّف الدرجة (مثال: GR-00001)';
+
+  @override
+  String get operationsReplayAction => 'إعادة تشغيل';
+
+  @override
+  String get operationsReceiveCallbackAction => 'استلام رد الاتصال';
+
+  @override
+  String get operationsReplayPromptTitle => 'إعادة تشغيل حدث تسليم';
+
+  @override
+  String get operationsReplayEventKeyLabel => 'مفتاح الحدث';
+
+  @override
+  String get operationsReplayEventKeyHint =>
+      'مثال: comm-delivery-2026-08-01-abc';
+
+  @override
+  String get operationsReplayReasonLabel => 'السبب (اختياري)';
+
+  @override
+  String get operationsReplayReasonHint => 'لماذا يلزم إعادة التشغيل؟';
+
+  @override
+  String operationsReplaySuccessSnack(String key) {
+    return 'تمت إعادة تشغيل الحدث $key.';
+  }
+
+  @override
+  String operationsReplayStatusSnack(String status) {
+    return 'حالة إعادة التشغيل: $status.';
+  }
+
+  @override
+  String operationsReplayErrorSnack(String message) {
+    return 'فشلت إعادة التشغيل: $message';
+  }
+
+  @override
+  String get operationsReceiveCallbackPromptTitle => 'استلام رد اتصال تسليم';
+
+  @override
+  String get operationsReceiveCallbackProviderLabel => 'المزود';
+
+  @override
+  String get operationsReceiveCallbackProviderHint =>
+      'مثال: stripe / sendgrid / fcm';
+
+  @override
+  String get operationsReceiveCallbackSignatureLabel => 'التوقيع (اختياري)';
+
+  @override
+  String get operationsReceiveCallbackSignatureHint => 'قيمة رأس X-Signature';
+
+  @override
+  String get operationsReceiveCallbackBodyLabel => 'المحتوى (اختياري)';
+
+  @override
+  String get operationsReceiveCallbackBodyHint =>
+      'محتوى رد الاتصال (JSON / نموذج)';
+
+  @override
+  String operationsReceiveCallbackSuccessSnack(String key) {
+    return 'تم استلام رد الاتصال لـ $key.';
+  }
+
+  @override
+  String operationsReceiveCallbackStatusSnack(String status) {
+    return 'حالة رد الاتصال: $status.';
+  }
+
+  @override
+  String operationsReceiveCallbackErrorSnack(String message) {
+    return 'فشل رد الاتصال: $message';
+  }
 }

@@ -4718,6 +4718,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter the grade ID (e.g. GR-00001)'**
   String get gradingCorrectionPromptHint;
+
+  /// No description provided for @operationsReplayAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Replay'**
+  String get operationsReplayAction;
+
+  /// No description provided for @operationsReceiveCallbackAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive callback'**
+  String get operationsReceiveCallbackAction;
+
+  /// No description provided for @operationsReplayPromptTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Replay a delivery event'**
+  String get operationsReplayPromptTitle;
+
+  /// No description provided for @operationsReplayEventKeyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Event key'**
+  String get operationsReplayEventKeyLabel;
+
+  /// No description provided for @operationsReplayEventKeyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. comm-delivery-2026-08-01-abc'**
+  String get operationsReplayEventKeyHint;
+
+  /// No description provided for @operationsReplayReasonLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason (optional)'**
+  String get operationsReplayReasonLabel;
+
+  /// No description provided for @operationsReplayReasonHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Why is the replay needed?'**
+  String get operationsReplayReasonHint;
+
+  /// No description provided for @operationsReplaySuccessSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Replayed event {key}.'**
+  String operationsReplaySuccessSnack(String key);
+
+  /// No description provided for @operationsReplayStatusSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Replay status: {status}.'**
+  String operationsReplayStatusSnack(String status);
+
+  /// No description provided for @operationsReplayErrorSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Replay failed: {message}'**
+  String operationsReplayErrorSnack(String message);
+
+  /// No description provided for @operationsReceiveCallbackPromptTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive a delivery callback'**
+  String get operationsReceiveCallbackPromptTitle;
+
+  /// No description provided for @operationsReceiveCallbackProviderLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Provider'**
+  String get operationsReceiveCallbackProviderLabel;
+
+  /// No description provided for @operationsReceiveCallbackProviderHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. stripe / sendgrid / fcm'**
+  String get operationsReceiveCallbackProviderHint;
+
+  /// No description provided for @operationsReceiveCallbackSignatureLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Signature (optional)'**
+  String get operationsReceiveCallbackSignatureLabel;
+
+  /// No description provided for @operationsReceiveCallbackSignatureHint.
+  ///
+  /// In en, this message translates to:
+  /// **'X-Signature header value'**
+  String get operationsReceiveCallbackSignatureHint;
+
+  /// No description provided for @operationsReceiveCallbackBodyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Body (optional)'**
+  String get operationsReceiveCallbackBodyLabel;
+
+  /// No description provided for @operationsReceiveCallbackBodyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Raw callback body (JSON / form)'**
+  String get operationsReceiveCallbackBodyHint;
+
+  /// No description provided for @operationsReceiveCallbackSuccessSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Callback received for {key}.'**
+  String operationsReceiveCallbackSuccessSnack(String key);
+
+  /// No description provided for @operationsReceiveCallbackStatusSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Callback status: {status}.'**
+  String operationsReceiveCallbackStatusSnack(String status);
+
+  /// No description provided for @operationsReceiveCallbackErrorSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Callback failed: {message}'**
+  String operationsReceiveCallbackErrorSnack(String message);
 }
 
 class _AppLocalizationsDelegate

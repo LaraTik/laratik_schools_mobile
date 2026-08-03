@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Proprietary
-// Tests for the Operations repository (read-only operations
+// Tests for the Operations repository (read + write operations
 // health + delivery health + auth audit events).
 //
 // The tests cover:
@@ -19,6 +19,10 @@
 //   * [AuthAuditEvent.family] maps the wire event type to a
 //     coarse family (login / logout / token_refresh /
 //     device_register / other) for the chip tone.
+//   * [replayDeliveryEvent] posts the canonical payload shape
+//     + mints a fresh UUID for the `Idempotency-Key` header.
+//   * [receiveDeliveryCallback] forwards the top-level
+//     provider + signature + body args.
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:laratik_schools_api/laratik_schools_api.dart';
@@ -26,6 +30,7 @@ import 'package:laratik_schools_mobile/core/result.dart';
 import 'package:laratik_schools_mobile/features/operations/data/operations_failure.dart';
 import 'package:laratik_schools_mobile/features/operations/data/operations_health.dart';
 import 'package:laratik_schools_mobile/features/operations/data/operations_repository.dart';
+import 'package:laratik_schools_mobile/features/operations/data/operations_write.dart';
 
 import '../../helpers/mock_api_client.dart';
 
@@ -220,6 +225,156 @@ void main() {
         });
         expect(event.family, entry.value, reason: entry.key);
       }
+    });
+  });
+
+  group('OperationsRepository.replayDeliveryEvent', () {
+    test('posts the canonical payload + mints a fresh idempotency key',
+        () async {
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondOnce(
+        LaratikSchoolsApiMethods.replaySchoolDeliveryEvent,
+        envelopeOk({
+          'event_key': 'comm-delivery-2026-08-01-abc',
+          'replay_count': 1,
+          'status': 'replayed',
+        }),
+      );
+      final repo = makeRepo(transport);
+      final result = await repo.replayDeliveryEvent(
+        eventKey: 'comm-delivery-2026-08-01-abc',
+        reason: 'Webhook never arrived on first attempt.',
+      );
+      expect(result, isA<Ok<ReplayedDeliveryEvent, OperationsFailure>>());
+      final replayed = (result as Ok).value as ReplayedDeliveryEvent;
+      expect(replayed.eventKey, 'comm-delivery-2026-08-01-abc');
+      expect(replayed.replayCount, 1);
+      expect(replayed.status, 'replayed');
+      expect(replayed.isSuccess, isTrue);
+      // A fresh UUID v4 was minted for the Idempotency-Key
+      // header.
+      expect(transport.invokedIdempotencyKey, isNotNull);
+      expect(
+        transport.invokedIdempotencyKey!.length,
+        greaterThanOrEqualTo(8),
+      );
+      // The payload shape is `{event_key, reason?}`.
+      final payload =
+          (transport.invokedArguments.last['payload'] as JsonMap?) ?? const {};
+      expect(payload['event_key'], 'comm-delivery-2026-08-01-abc');
+      expect(payload['reason'], 'Webhook never arrived on first attempt.');
+    });
+
+    test('omits the reason key when reason is null or empty', () async {
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondOnce(
+        LaratikSchoolsApiMethods.replaySchoolDeliveryEvent,
+        envelopeOk({
+          'event_key': 'comm-delivery-2026-08-01-abc',
+          'status': 'replayed',
+        }),
+      );
+      final repo = makeRepo(transport);
+      final result = await repo.replayDeliveryEvent(
+        eventKey: 'comm-delivery-2026-08-01-abc',
+      );
+      expect(result, isA<Ok<ReplayedDeliveryEvent, OperationsFailure>>());
+      final payload =
+          (transport.invokedArguments.last['payload'] as JsonMap?) ?? const {};
+      expect(payload.containsKey('reason'), isFalse);
+    });
+
+    test('surfaces a typed failure when the server returns an error',
+        () async {
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondOnce(
+        LaratikSchoolsApiMethods.replaySchoolDeliveryEvent,
+        envelopeErr(const ApiError(
+          code: 'EVENT_NOT_FOUND',
+          message: 'No outbox event matches the supplied event_key.',
+        )),
+      );
+      final repo = makeRepo(transport);
+      final result = await repo.replayDeliveryEvent(
+        eventKey: 'comm-delivery-2026-08-01-abc',
+      );
+      expect(result, isA<Err<ReplayedDeliveryEvent, OperationsFailure>>());
+      final err = (result as Err).error as OperationsFailure;
+      expect(err.code, 'EVENT_NOT_FOUND');
+    });
+  });
+
+  group('OperationsRepository.receiveDeliveryCallback', () {
+    test('forwards the top-level provider + signature + body args',
+        () async {
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondOnce(
+        LaratikSchoolsApiMethods.receiveSchoolDeliveryCallback,
+        envelopeOk({
+          'delivery_identity': 'comm-delivery-2026-08-01-abc',
+          'status': 'accepted',
+        }),
+      );
+      final repo = makeRepo(transport);
+      final result = await repo.receiveDeliveryCallback(
+        provider: 'stripe',
+        signature: 't=12345,v1=abcdef',
+        body: '{"event":"payment_intent.succeeded"}',
+      );
+      expect(result,
+          isA<Ok<DeliveryCallbackReceipt, OperationsFailure>>());
+      final receipt = (result as Ok).value as DeliveryCallbackReceipt;
+      expect(receipt.deliveryIdentity, 'comm-delivery-2026-08-01-abc');
+      expect(receipt.status, 'accepted');
+      expect(receipt.isAccepted, isTrue);
+      // The SDK puts the provider / signature / body at the
+      // top level (not inside a payload key).
+      expect(transport.invokedArguments.last['provider'], 'stripe');
+      expect(transport.invokedArguments.last['signature'],
+          't=12345,v1=abcdef');
+      expect(transport.invokedArguments.last['body'],
+          '{"event":"payment_intent.succeeded"}');
+    });
+
+    test('omits signature + body when they are null', () async {
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondOnce(
+        LaratikSchoolsApiMethods.receiveSchoolDeliveryCallback,
+        envelopeOk({
+          'delivery_identity': 'comm-delivery-2026-08-01-abc',
+          'status': 'received',
+        }),
+      );
+      final repo = makeRepo(transport);
+      final result = await repo.receiveDeliveryCallback(
+        provider: 'sendgrid',
+      );
+      expect(result,
+          isA<Ok<DeliveryCallbackReceipt, OperationsFailure>>());
+      final lastArgs = transport.invokedArguments.last;
+      expect(lastArgs.containsKey('signature'), isFalse);
+      expect(lastArgs.containsKey('body'), isFalse);
+    });
+
+    test('surfaces a typed failure when the server returns an error',
+        () async {
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondOnce(
+        LaratikSchoolsApiMethods.receiveSchoolDeliveryCallback,
+        envelopeErr(const ApiError(
+          code: 'INVALID_SIGNATURE',
+          message: 'The signature header failed verification.',
+        )),
+      );
+      final repo = makeRepo(transport);
+      final result = await repo.receiveDeliveryCallback(
+        provider: 'stripe',
+        signature: 'bad-signature',
+      );
+      expect(result,
+          isA<Err<DeliveryCallbackReceipt, OperationsFailure>>());
+      final err = (result as Err).error as OperationsFailure;
+      expect(err.code, 'INVALID_SIGNATURE');
     });
   });
 }

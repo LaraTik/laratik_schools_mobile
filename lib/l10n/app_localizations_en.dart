@@ -2790,4 +2790,81 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get gradingCorrectionPromptHint =>
       'Enter the grade ID (e.g. GR-00001)';
+
+  @override
+  String get operationsReplayAction => 'Replay';
+
+  @override
+  String get operationsReceiveCallbackAction => 'Receive callback';
+
+  @override
+  String get operationsReplayPromptTitle => 'Replay a delivery event';
+
+  @override
+  String get operationsReplayEventKeyLabel => 'Event key';
+
+  @override
+  String get operationsReplayEventKeyHint =>
+      'e.g. comm-delivery-2026-08-01-abc';
+
+  @override
+  String get operationsReplayReasonLabel => 'Reason (optional)';
+
+  @override
+  String get operationsReplayReasonHint => 'Why is the replay needed?';
+
+  @override
+  String operationsReplaySuccessSnack(String key) {
+    return 'Replayed event $key.';
+  }
+
+  @override
+  String operationsReplayStatusSnack(String status) {
+    return 'Replay status: $status.';
+  }
+
+  @override
+  String operationsReplayErrorSnack(String message) {
+    return 'Replay failed: $message';
+  }
+
+  @override
+  String get operationsReceiveCallbackPromptTitle =>
+      'Receive a delivery callback';
+
+  @override
+  String get operationsReceiveCallbackProviderLabel => 'Provider';
+
+  @override
+  String get operationsReceiveCallbackProviderHint =>
+      'e.g. stripe / sendgrid / fcm';
+
+  @override
+  String get operationsReceiveCallbackSignatureLabel => 'Signature (optional)';
+
+  @override
+  String get operationsReceiveCallbackSignatureHint =>
+      'X-Signature header value';
+
+  @override
+  String get operationsReceiveCallbackBodyLabel => 'Body (optional)';
+
+  @override
+  String get operationsReceiveCallbackBodyHint =>
+      'Raw callback body (JSON / form)';
+
+  @override
+  String operationsReceiveCallbackSuccessSnack(String key) {
+    return 'Callback received for $key.';
+  }
+
+  @override
+  String operationsReceiveCallbackStatusSnack(String status) {
+    return 'Callback status: $status.';
+  }
+
+  @override
+  String operationsReceiveCallbackErrorSnack(String message) {
+    return 'Callback failed: $message';
+  }
 }

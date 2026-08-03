@@ -825,5 +825,26 @@
   "gradingCorrectionBackAction": "العودة إلى الدرجات",
   "gradingCorrectionAction": "تصحيح درجة",
   "gradingCorrectionPromptTitle": "تصحيح درجة",
-  "gradingCorrectionPromptHint": "أدخل معرّف الدرجة (مثال: GR-00001)"
+  "gradingCorrectionPromptHint": "أدخل معرّف الدرجة (مثال: GR-00001)",
+
+  "operationsReplayAction": "إعادة تشغيل",
+  "operationsReceiveCallbackAction": "استلام رد الاتصال",
+  "operationsReplayPromptTitle": "إعادة تشغيل حدث تسليم",
+  "operationsReplayEventKeyLabel": "مفتاح الحدث",
+  "operationsReplayEventKeyHint": "مثال: comm-delivery-2026-08-01-abc",
+  "operationsReplayReasonLabel": "السبب (اختياري)",
+  "operationsReplayReasonHint": "لماذا يلزم إعادة التشغيل؟",
+  "operationsReplaySuccessSnack": "تمت إعادة تشغيل الحدث {key}.",
+  "operationsReplayStatusSnack": "حالة إعادة التشغيل: {status}.",
+  "operationsReplayErrorSnack": "فشلت إعادة التشغيل: {message}",
+  "operationsReceiveCallbackPromptTitle": "استلام رد اتصال تسليم",
+  "operationsReceiveCallbackProviderLabel": "المزود",
+  "operationsReceiveCallbackProviderHint": "مثال: stripe / sendgrid / fcm",
+  "operationsReceiveCallbackSignatureLabel": "التوقيع (اختياري)",
+  "operationsReceiveCallbackSignatureHint": "قيمة رأس X-Signature",
+  "operationsReceiveCallbackBodyLabel": "المحتوى (اختياري)",
+  "operationsReceiveCallbackBodyHint": "محتوى رد الاتصال (JSON / نموذج)",
+  "operationsReceiveCallbackSuccessSnack": "تم استلام رد الاتصال لـ {key}.",
+  "operationsReceiveCallbackStatusSnack": "حالة رد الاتصال: {status}.",
+  "operationsReceiveCallbackErrorSnack": "فشل رد الاتصال: {message}"
 }

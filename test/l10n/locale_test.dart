@@ -839,4 +839,46 @@ void main() {
       },
     );
   });
+
+  group('Operations write-flow surface localization', () {
+    test(
+      'operations write-flow ARB keys are pinned in both English and Arabic',
+      () async {
+        final en = await AppLocalizations.delegate.load(const Locale('en'));
+        final ar = await AppLocalizations.delegate.load(const Locale('ar'));
+        expect(en.operationsReplayAction, 'Replay');
+        expect(en.operationsReceiveCallbackAction, 'Receive callback');
+        expect(en.operationsReplayPromptTitle, 'Replay a delivery event');
+        expect(en.operationsReplayEventKeyLabel, 'Event key');
+        expect(en.operationsReplayReasonLabel, contains('Reason'));
+        expect(en.operationsReplaySuccessSnack('comm-1'),
+            contains('comm-1'));
+        expect(en.operationsReplayErrorSnack('boom'), contains('boom'));
+        expect(en.operationsReceiveCallbackPromptTitle,
+            'Receive a delivery callback');
+        expect(en.operationsReceiveCallbackProviderLabel, 'Provider');
+        expect(en.operationsReceiveCallbackSignatureLabel,
+            contains('Signature'));
+        expect(en.operationsReceiveCallbackBodyLabel, contains('Body'));
+        expect(en.operationsReceiveCallbackSuccessSnack('d-1'),
+            contains('d-1'));
+        for (final getter in [
+          () => ar.operationsReplayAction,
+          () => ar.operationsReceiveCallbackAction,
+          () => ar.operationsReplayPromptTitle,
+          () => ar.operationsReplayEventKeyLabel,
+          () => ar.operationsReplayReasonLabel,
+          () => ar.operationsReplaySuccessSnack('comm-1'),
+          () => ar.operationsReplayErrorSnack('boom'),
+          () => ar.operationsReceiveCallbackPromptTitle,
+          () => ar.operationsReceiveCallbackProviderLabel,
+          () => ar.operationsReceiveCallbackSignatureLabel,
+          () => ar.operationsReceiveCallbackBodyLabel,
+          () => ar.operationsReceiveCallbackSuccessSnack('d-1'),
+        ]) {
+          expect(getter(), isNotEmpty, reason: 'AR missing');
+        }
+      },
+    );
+  });
 }

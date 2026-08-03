@@ -1322,5 +1322,56 @@
   "gradingCorrectionBackAction": "Back to grading",
   "gradingCorrectionAction": "Correct a grade",
   "gradingCorrectionPromptTitle": "Correct a grade",
-  "gradingCorrectionPromptHint": "Enter the grade ID (e.g. GR-00001)"
+  "gradingCorrectionPromptHint": "Enter the grade ID (e.g. GR-00001)",
+
+  "operationsReplayAction": "Replay",
+  "operationsReceiveCallbackAction": "Receive callback",
+  "operationsReplayPromptTitle": "Replay a delivery event",
+  "operationsReplayEventKeyLabel": "Event key",
+  "operationsReplayEventKeyHint": "e.g. comm-delivery-2026-08-01-abc",
+  "operationsReplayReasonLabel": "Reason (optional)",
+  "operationsReplayReasonHint": "Why is the replay needed?",
+  "operationsReplaySuccessSnack": "Replayed event {key}.",
+  "@operationsReplaySuccessSnack": {
+    "placeholders": {
+      "key": { "type": "String" }
+    }
+  },
+  "operationsReplayStatusSnack": "Replay status: {status}.",
+  "@operationsReplayStatusSnack": {
+    "placeholders": {
+      "status": { "type": "String" }
+    }
+  },
+  "operationsReplayErrorSnack": "Replay failed: {message}",
+  "@operationsReplayErrorSnack": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
+  "operationsReceiveCallbackPromptTitle": "Receive a delivery callback",
+  "operationsReceiveCallbackProviderLabel": "Provider",
+  "operationsReceiveCallbackProviderHint": "e.g. stripe / sendgrid / fcm",
+  "operationsReceiveCallbackSignatureLabel": "Signature (optional)",
+  "operationsReceiveCallbackSignatureHint": "X-Signature header value",
+  "operationsReceiveCallbackBodyLabel": "Body (optional)",
+  "operationsReceiveCallbackBodyHint": "Raw callback body (JSON / form)",
+  "operationsReceiveCallbackSuccessSnack": "Callback received for {key}.",
+  "@operationsReceiveCallbackSuccessSnack": {
+    "placeholders": {
+      "key": { "type": "String" }
+    }
+  },
+  "operationsReceiveCallbackStatusSnack": "Callback status: {status}.",
+  "@operationsReceiveCallbackStatusSnack": {
+    "placeholders": {
+      "status": { "type": "String" }
+    }
+  },
+  "operationsReceiveCallbackErrorSnack": "Callback failed: {message}",
+  "@operationsReceiveCallbackErrorSnack": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  }
 }

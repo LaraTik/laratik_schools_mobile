@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Proprietary
-// Admin "Operations" surface — read-only operations health +
-// delivery health + auth audit events.
+// Admin "Operations" surface — read + write operations health +
+// delivery health + auth audit events + delivery write flows.
 //
 // The screen has three tabs:
 //   * **Health** — top-level status (healthy / degraded /
@@ -9,7 +9,8 @@
 //     grid so the operator can scan them at a glance.
 //   * **Delivery** — per-status counts of outbound events
 //     (pending / completed / failed) + a stacked bar +
-//     per-status chips.
+//     per-status chips + the **Replay** and **Receive
+//     callback** admin write actions.
 //   * **Audit** — recent auth audit events (login / logout /
 //     token refresh / device register) with the event
 //     family, user, timestamp, and source IP.
@@ -425,7 +426,7 @@ class _DeliveryTab extends ConsumerWidget {
     final async = ref.watch(deliveryHealthProvider);
     return async.when(
       data: (result) => switch (result) {
-        Ok(:final value) => _buildBody(context, tokens, value),
+        Ok(:final value) => _buildBody(context, ref, tokens, value),
         Err(:final error) => LsStateView.error(
             icon: Icons.error_outline,
             title: l.operationsErrorTitle,
@@ -456,6 +457,7 @@ class _DeliveryTab extends ConsumerWidget {
 
   Widget _buildBody(
     BuildContext context,
+    WidgetRef ref,
     DesignTokens tokens,
     DeliveryHealth health,
   ) {
@@ -470,6 +472,28 @@ class _DeliveryTab extends ConsumerWidget {
       ),
       children: [
         _DeliverySummaryCard(tokens: tokens, health: health),
+        SizedBox(height: tokens.space.md),
+        Row(
+          children: [
+            Expanded(
+              child: LsButton.secondary(
+                label: l.operationsReplayAction,
+                icon: Icons.refresh,
+                expand: false,
+                onPressed: () => _showReplayEventKeyPrompt(context, ref, l),
+              ),
+            ),
+            SizedBox(width: tokens.space.sm),
+            Expanded(
+              child: LsButton.secondary(
+                label: l.operationsReceiveCallbackAction,
+                icon: Icons.outgoing_mail,
+                expand: false,
+                onPressed: () => _showReceiveCallbackPrompt(context, ref, l),
+              ),
+            ),
+          ],
+        ),
         SizedBox(height: tokens.space.lg),
         Text(
           l.operationsDeliveryByStatus,
@@ -503,6 +527,192 @@ class _DeliveryTab extends ConsumerWidget {
         ],
       ],
     );
+  }
+
+  Future<void> _showReplayEventKeyPrompt(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l,
+  ) async {
+    final tokens = context.laratik;
+    final controller = TextEditingController();
+    final reasonController = TextEditingController();
+    final result = await showDialog<String>(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: Text(l.operationsReplayPromptTitle),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextField(
+                controller: controller,
+                autofocus: true,
+                decoration: InputDecoration(
+                  labelText: l.operationsReplayEventKeyLabel,
+                  hintText: l.operationsReplayEventKeyHint,
+                ),
+              ),
+              SizedBox(height: tokens.space.sm),
+              TextField(
+                controller: reasonController,
+                maxLines: 2,
+                decoration: InputDecoration(
+                  labelText: l.operationsReplayReasonLabel,
+                  hintText: l.operationsReplayReasonHint,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: Text(l.commonCancel),
+            ),
+            FilledButton.tonal(
+              onPressed: () {
+                final key = controller.text.trim();
+                if (key.isEmpty) return;
+                Navigator.of(ctx).pop(key);
+              },
+              child: Text(l.operationsReplayAction),
+            ),
+          ],
+        );
+      },
+    );
+    if (result == null || result.isEmpty || !context.mounted) return;
+    final reason = reasonController.text.trim();
+    final replayResult = await ref
+        .read(replayDeliveryEventProvider.notifier)
+        .submit(eventKey: result, reason: reason.isEmpty ? null : reason);
+    if (!context.mounted) return;
+    final messenger = ScaffoldMessenger.of(context);
+    switch (replayResult) {
+      case Ok(:final value):
+        if (value.isSuccess) {
+          messenger.showSnackBar(
+            SnackBar(content: Text(l.operationsReplaySuccessSnack(value.eventKey))),
+          );
+        } else {
+          messenger.showSnackBar(
+            SnackBar(
+              content: Text(l.operationsReplayStatusSnack(
+                value.status ?? 'unknown',
+              )),
+            ),
+          );
+        }
+      case Err(:final error):
+        messenger.showSnackBar(
+          SnackBar(content: Text(l.operationsReplayErrorSnack(error.message))),
+        );
+    }
+  }
+
+  Future<void> _showReceiveCallbackPrompt(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l,
+  ) async {
+    final tokens = context.laratik;
+    final providerController = TextEditingController();
+    final signatureController = TextEditingController();
+    final bodyController = TextEditingController();
+    final result = await showDialog<String>(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: Text(l.operationsReceiveCallbackPromptTitle),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                TextField(
+                  controller: providerController,
+                  autofocus: true,
+                  decoration: InputDecoration(
+                    labelText: l.operationsReceiveCallbackProviderLabel,
+                    hintText: l.operationsReceiveCallbackProviderHint,
+                  ),
+                ),
+                SizedBox(height: tokens.space.sm),
+                TextField(
+                  controller: signatureController,
+                  decoration: InputDecoration(
+                    labelText: l.operationsReceiveCallbackSignatureLabel,
+                    hintText: l.operationsReceiveCallbackSignatureHint,
+                  ),
+                ),
+                SizedBox(height: tokens.space.sm),
+                TextField(
+                  controller: bodyController,
+                  maxLines: 4,
+                  decoration: InputDecoration(
+                    labelText: l.operationsReceiveCallbackBodyLabel,
+                    hintText: l.operationsReceiveCallbackBodyHint,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: Text(l.commonCancel),
+            ),
+            FilledButton.tonal(
+              onPressed: () {
+                final provider = providerController.text.trim();
+                if (provider.isEmpty) return;
+                Navigator.of(ctx).pop(provider);
+              },
+              child: Text(l.operationsReceiveCallbackAction),
+            ),
+          ],
+        );
+      },
+    );
+    if (result == null || result.isEmpty || !context.mounted) return;
+    final signature = signatureController.text.trim();
+    final body = bodyController.text.trim();
+    final cbResult = await ref
+        .read(receiveDeliveryCallbackProvider.notifier)
+        .submit(
+          provider: result,
+          signature: signature.isEmpty ? null : signature,
+          body: body.isEmpty ? null : body,
+        );
+    if (!context.mounted) return;
+    final messenger = ScaffoldMessenger.of(context);
+    switch (cbResult) {
+      case Ok(:final value):
+        if (value.isAccepted) {
+          messenger.showSnackBar(
+            SnackBar(
+              content: Text(l.operationsReceiveCallbackSuccessSnack(
+                value.deliveryIdentity,
+              )),
+            ),
+          );
+        } else {
+          messenger.showSnackBar(
+            SnackBar(
+              content: Text(l.operationsReceiveCallbackStatusSnack(
+                value.status ?? 'unknown',
+              )),
+            ),
+          );
+        }
+      case Err(:final error):
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text(l.operationsReceiveCallbackErrorSnack(error.message)),
+          ),
+        );
+    }
   }
 
   IconData _iconForStatus(String status) {
