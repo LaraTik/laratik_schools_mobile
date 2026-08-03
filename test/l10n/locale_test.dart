@@ -720,4 +720,75 @@ void main() {
       },
     );
   });
+
+  group('Exam list + attempt surface localization', () {
+    test(
+      'exam list + attempt ARB keys are pinned in both English and Arabic',
+      () async {
+        final en = await AppLocalizations.delegate.load(const Locale('en'));
+        final ar = await AppLocalizations.delegate.load(const Locale('ar'));
+        // List
+        expect(en.examsListScreenTitle, 'Exams');
+        expect(en.examsListLoadingTitle, 'Loading exams');
+        expect(en.examsListEmptyTitle, 'No published exams');
+        expect(en.examsListErrorTitle, 'Could not load exams');
+        expect(en.examsListStatusOpen, 'Open');
+        expect(en.examsListStatusDraft, 'Draft');
+        expect(en.examsListDurationMinutesChip(1), '1 min');
+        expect(en.examsListDurationMinutesChip(45), '45 min');
+        // Attempt
+        expect(en.examAttemptScreenTitle, 'Exam attempt');
+        expect(en.examAttemptAutosaveArmed, 'Autosave armed');
+        expect(en.examAttemptAutosaveFailed, 'Autosave failed');
+        expect(en.examAttemptAutosaveSaved('10:30'), contains('10:30'));
+        expect(en.examAttemptEligibilityErrorTitle,
+            'Could not check eligibility');
+        expect(en.examAttemptIneligibleTitle, 'Not eligible');
+        expect(en.examAttemptAbandonedTitle, 'Attempt abandoned');
+        expect(en.examAttemptSubmittedTitle, 'Submitted');
+        expect(en.examAttemptStartErrorTitle, 'Could not start the attempt');
+        expect(en.examAttemptReadyTitle, 'Ready to start?');
+        expect(en.examAttemptAutosaveChip, 'Autosave every 15s');
+        expect(en.examAttemptStartAction, 'Start attempt');
+        expect(en.examAttemptAbandon, 'Abandon');
+        expect(en.examAttemptSubmit, 'Submit attempt');
+        expect(en.examAttemptSubmitting, 'Submitting…');
+        expect(en.examAttemptAbandonDialogTitle, 'Abandon attempt?');
+        expect(en.examAttemptMarksChip(1), '1 pt');
+        expect(en.examAttemptMarksChip(5), '5 pts');
+        expect(en.examAttemptAnswerHint, 'Type your answer…');
+        for (final getter in [
+          () => ar.examsListScreenTitle,
+          () => ar.examsListLoadingTitle,
+          () => ar.examsListEmptyTitle,
+          () => ar.examsListErrorTitle,
+          () => ar.examsListStatusOpen,
+          () => ar.examsListStatusDraft,
+          () => ar.examsListDurationMinutesChip(1),
+          () => ar.examsListDurationMinutesChip(45),
+          () => ar.examAttemptScreenTitle,
+          () => ar.examAttemptAutosaveArmed,
+          () => ar.examAttemptAutosaveFailed,
+          () => ar.examAttemptAutosaveSaved('10:30'),
+          () => ar.examAttemptEligibilityErrorTitle,
+          () => ar.examAttemptIneligibleTitle,
+          () => ar.examAttemptAbandonedTitle,
+          () => ar.examAttemptSubmittedTitle,
+          () => ar.examAttemptStartErrorTitle,
+          () => ar.examAttemptReadyTitle,
+          () => ar.examAttemptAutosaveChip,
+          () => ar.examAttemptStartAction,
+          () => ar.examAttemptAbandon,
+          () => ar.examAttemptSubmit,
+          () => ar.examAttemptSubmitting,
+          () => ar.examAttemptAbandonDialogTitle,
+          () => ar.examAttemptMarksChip(1),
+          () => ar.examAttemptMarksChip(5),
+          () => ar.examAttemptAnswerHint,
+        ]) {
+          expect(getter(), isNotEmpty, reason: 'AR missing');
+        }
+      },
+    );
+  });
 }

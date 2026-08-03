@@ -2539,4 +2539,156 @@ class AppLocalizationsEn extends AppLocalizations {
   String attendanceGuardianLabel(String name) {
     return 'Guardian: $name';
   }
+
+  @override
+  String get examsListScreenTitle => 'Exams';
+
+  @override
+  String get examsListLoadingTitle => 'Loading exams';
+
+  @override
+  String get examsListLoadingMessage => 'Fetching the published exam plans.';
+
+  @override
+  String get examsListEmptyTitle => 'No published exams';
+
+  @override
+  String get examsListEmptyMessage =>
+      'When a teacher publishes an exam, it shows up here.';
+
+  @override
+  String get examsListErrorTitle => 'Could not load exams';
+
+  @override
+  String get examsListStatusOpen => 'Open';
+
+  @override
+  String get examsListStatusDraft => 'Draft';
+
+  @override
+  String examsListDurationMinutesChip(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '$minutes min',
+      one: '1 min',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get examAttemptScreenTitle => 'Exam attempt';
+
+  @override
+  String get examAttemptAutosaveArmed => 'Autosave armed';
+
+  @override
+  String examAttemptAutosaveSaved(String time) {
+    return 'Saved at $time';
+  }
+
+  @override
+  String get examAttemptAutosaveFailed => 'Autosave failed';
+
+  @override
+  String get examAttemptEligibilityLoadingTitle => 'Checking eligibility';
+
+  @override
+  String get examAttemptEligibilityErrorTitle => 'Could not check eligibility';
+
+  @override
+  String get examAttemptIneligibleTitle => 'Not eligible';
+
+  @override
+  String get examAttemptIneligibleMessage =>
+      'The server says you cannot take this exam.';
+
+  @override
+  String get examAttemptBackToExams => 'Back to exams';
+
+  @override
+  String get examAttemptAbandonedTitle => 'Attempt abandoned';
+
+  @override
+  String get examAttemptAbandonedMessage =>
+      'You abandoned this attempt. The server marked it as abandoned.';
+
+  @override
+  String get examAttemptSubmittedTitle => 'Submitted';
+
+  @override
+  String get examAttemptSubmittedMessage =>
+      'Your answers are on the server. Check back when the result is published.';
+
+  @override
+  String get examAttemptStartErrorTitle => 'Could not start the attempt';
+
+  @override
+  String get examAttemptNoStudentError =>
+      'No student resolved. Sign in and retry.';
+
+  @override
+  String get examAttemptReadyTitle => 'Ready to start?';
+
+  @override
+  String get examAttemptResolvingStudent => 'Resolving student…';
+
+  @override
+  String examAttemptResolveStudentError(String error) {
+    return 'Could not resolve student: $error';
+  }
+
+  @override
+  String examAttemptStudentLabel(String name) {
+    return 'Student: $name';
+  }
+
+  @override
+  String get examAttemptAutosaveChip => 'Autosave every 15s';
+
+  @override
+  String get examAttemptResolvingLabel => 'Resolving…';
+
+  @override
+  String get examAttemptStartAction => 'Start attempt';
+
+  @override
+  String get examAttemptNoQuestionsTitle => 'No questions';
+
+  @override
+  String get examAttemptNoQuestionsMessage =>
+      'The server did not return any questions for this attempt.';
+
+  @override
+  String get examAttemptAbandon => 'Abandon';
+
+  @override
+  String get examAttemptAbandoning => 'Abandoning…';
+
+  @override
+  String get examAttemptSubmit => 'Submit attempt';
+
+  @override
+  String get examAttemptSubmitting => 'Submitting…';
+
+  @override
+  String get examAttemptAbandonDialogTitle => 'Abandon attempt?';
+
+  @override
+  String get examAttemptAbandonDialogMessage =>
+      'This will mark the attempt as abandoned on the server. You cannot resume it.';
+
+  @override
+  String examAttemptMarksChip(int marks) {
+    String _temp0 = intl.Intl.pluralLogic(
+      marks,
+      locale: localeName,
+      other: '$marks pts',
+      one: '1 pt',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get examAttemptAnswerHint => 'Type your answer…';
 }

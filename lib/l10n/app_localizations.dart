@@ -4298,6 +4298,252 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Guardian: {name}'**
   String attendanceGuardianLabel(String name);
+
+  /// No description provided for @examsListScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Exams'**
+  String get examsListScreenTitle;
+
+  /// No description provided for @examsListLoadingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading exams'**
+  String get examsListLoadingTitle;
+
+  /// No description provided for @examsListLoadingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Fetching the published exam plans.'**
+  String get examsListLoadingMessage;
+
+  /// No description provided for @examsListEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No published exams'**
+  String get examsListEmptyTitle;
+
+  /// No description provided for @examsListEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'When a teacher publishes an exam, it shows up here.'**
+  String get examsListEmptyMessage;
+
+  /// No description provided for @examsListErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load exams'**
+  String get examsListErrorTitle;
+
+  /// No description provided for @examsListStatusOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get examsListStatusOpen;
+
+  /// No description provided for @examsListStatusDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft'**
+  String get examsListStatusDraft;
+
+  /// No description provided for @examsListDurationMinutesChip.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes, plural, =1{1 min} other{{minutes} min}}'**
+  String examsListDurationMinutesChip(int minutes);
+
+  /// No description provided for @examAttemptScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Exam attempt'**
+  String get examAttemptScreenTitle;
+
+  /// No description provided for @examAttemptAutosaveArmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Autosave armed'**
+  String get examAttemptAutosaveArmed;
+
+  /// No description provided for @examAttemptAutosaveSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved at {time}'**
+  String examAttemptAutosaveSaved(String time);
+
+  /// No description provided for @examAttemptAutosaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Autosave failed'**
+  String get examAttemptAutosaveFailed;
+
+  /// No description provided for @examAttemptEligibilityLoadingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking eligibility'**
+  String get examAttemptEligibilityLoadingTitle;
+
+  /// No description provided for @examAttemptEligibilityErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not check eligibility'**
+  String get examAttemptEligibilityErrorTitle;
+
+  /// No description provided for @examAttemptIneligibleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Not eligible'**
+  String get examAttemptIneligibleTitle;
+
+  /// No description provided for @examAttemptIneligibleMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The server says you cannot take this exam.'**
+  String get examAttemptIneligibleMessage;
+
+  /// No description provided for @examAttemptBackToExams.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to exams'**
+  String get examAttemptBackToExams;
+
+  /// No description provided for @examAttemptAbandonedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Attempt abandoned'**
+  String get examAttemptAbandonedTitle;
+
+  /// No description provided for @examAttemptAbandonedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You abandoned this attempt. The server marked it as abandoned.'**
+  String get examAttemptAbandonedMessage;
+
+  /// No description provided for @examAttemptSubmittedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitted'**
+  String get examAttemptSubmittedTitle;
+
+  /// No description provided for @examAttemptSubmittedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your answers are on the server. Check back when the result is published.'**
+  String get examAttemptSubmittedMessage;
+
+  /// No description provided for @examAttemptStartErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not start the attempt'**
+  String get examAttemptStartErrorTitle;
+
+  /// No description provided for @examAttemptNoStudentError.
+  ///
+  /// In en, this message translates to:
+  /// **'No student resolved. Sign in and retry.'**
+  String get examAttemptNoStudentError;
+
+  /// No description provided for @examAttemptReadyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to start?'**
+  String get examAttemptReadyTitle;
+
+  /// No description provided for @examAttemptResolvingStudent.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolving student…'**
+  String get examAttemptResolvingStudent;
+
+  /// No description provided for @examAttemptResolveStudentError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not resolve student: {error}'**
+  String examAttemptResolveStudentError(String error);
+
+  /// No description provided for @examAttemptStudentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Student: {name}'**
+  String examAttemptStudentLabel(String name);
+
+  /// No description provided for @examAttemptAutosaveChip.
+  ///
+  /// In en, this message translates to:
+  /// **'Autosave every 15s'**
+  String get examAttemptAutosaveChip;
+
+  /// No description provided for @examAttemptResolvingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolving…'**
+  String get examAttemptResolvingLabel;
+
+  /// No description provided for @examAttemptStartAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Start attempt'**
+  String get examAttemptStartAction;
+
+  /// No description provided for @examAttemptNoQuestionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No questions'**
+  String get examAttemptNoQuestionsTitle;
+
+  /// No description provided for @examAttemptNoQuestionsMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The server did not return any questions for this attempt.'**
+  String get examAttemptNoQuestionsMessage;
+
+  /// No description provided for @examAttemptAbandon.
+  ///
+  /// In en, this message translates to:
+  /// **'Abandon'**
+  String get examAttemptAbandon;
+
+  /// No description provided for @examAttemptAbandoning.
+  ///
+  /// In en, this message translates to:
+  /// **'Abandoning…'**
+  String get examAttemptAbandoning;
+
+  /// No description provided for @examAttemptSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit attempt'**
+  String get examAttemptSubmit;
+
+  /// No description provided for @examAttemptSubmitting.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitting…'**
+  String get examAttemptSubmitting;
+
+  /// No description provided for @examAttemptAbandonDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Abandon attempt?'**
+  String get examAttemptAbandonDialogTitle;
+
+  /// No description provided for @examAttemptAbandonDialogMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This will mark the attempt as abandoned on the server. You cannot resume it.'**
+  String get examAttemptAbandonDialogMessage;
+
+  /// No description provided for @examAttemptMarksChip.
+  ///
+  /// In en, this message translates to:
+  /// **'{marks, plural, =1{1 pt} other{{marks} pts}}'**
+  String examAttemptMarksChip(int marks);
+
+  /// No description provided for @examAttemptAnswerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Type your answer…'**
+  String get examAttemptAnswerHint;
 }
 
 class _AppLocalizationsDelegate

@@ -2600,4 +2600,161 @@ class AppLocalizationsAr extends AppLocalizations {
   String attendanceGuardianLabel(String name) {
     return 'ولي الأمر: $name';
   }
+
+  @override
+  String get examsListScreenTitle => 'الاختبارات';
+
+  @override
+  String get examsListLoadingTitle => 'جارٍ تحميل الاختبارات';
+
+  @override
+  String get examsListLoadingMessage => 'يجري جلب خطط الاختبارات المنشورة.';
+
+  @override
+  String get examsListEmptyTitle => 'لا توجد اختبارات منشورة';
+
+  @override
+  String get examsListEmptyMessage => 'عندما ينشر المعلم اختبارًا، سيظهر هنا.';
+
+  @override
+  String get examsListErrorTitle => 'تعذّر تحميل الاختبارات';
+
+  @override
+  String get examsListStatusOpen => 'مفتوح';
+
+  @override
+  String get examsListStatusDraft => 'مسودة';
+
+  @override
+  String examsListDurationMinutesChip(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '$minutes دقيقة',
+      many: '$minutes دقيقة',
+      few: '$minutes دقائق',
+      two: 'دقيقتان',
+      one: 'دقيقة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get examAttemptScreenTitle => 'محاولة الاختبار';
+
+  @override
+  String get examAttemptAutosaveArmed => 'الحفظ التلقائي مفعّل';
+
+  @override
+  String examAttemptAutosaveSaved(String time) {
+    return 'تم الحفظ في $time';
+  }
+
+  @override
+  String get examAttemptAutosaveFailed => 'فشل الحفظ التلقائي';
+
+  @override
+  String get examAttemptEligibilityLoadingTitle => 'جارٍ التحقق من الأهلية';
+
+  @override
+  String get examAttemptEligibilityErrorTitle => 'تعذّر التحقق من الأهلية';
+
+  @override
+  String get examAttemptIneligibleTitle => 'غير مؤهل';
+
+  @override
+  String get examAttemptIneligibleMessage =>
+      'يقول الخادم إنه لا يمكنك إجراء هذا الاختبار.';
+
+  @override
+  String get examAttemptBackToExams => 'العودة إلى الاختبارات';
+
+  @override
+  String get examAttemptAbandonedTitle => 'تم التخلي عن المحاولة';
+
+  @override
+  String get examAttemptAbandonedMessage =>
+      'لقد تخليت عن هذه المحاولة. وسمها الخادم بأنها متروكة.';
+
+  @override
+  String get examAttemptSubmittedTitle => 'تم الإرسال';
+
+  @override
+  String get examAttemptSubmittedMessage =>
+      'إجاباتك على الخادم. تحقق لاحقًا عند نشر النتيجة.';
+
+  @override
+  String get examAttemptStartErrorTitle => 'تعذّر بدء المحاولة';
+
+  @override
+  String get examAttemptNoStudentError =>
+      'لم يتم تحديد طالب. سجّل الدخول وأعد المحاولة.';
+
+  @override
+  String get examAttemptReadyTitle => 'هل أنت مستعد للبدء؟';
+
+  @override
+  String get examAttemptResolvingStudent => 'جارٍ تحديد الطالب…';
+
+  @override
+  String examAttemptResolveStudentError(String error) {
+    return 'تعذّر تحديد الطالب: $error';
+  }
+
+  @override
+  String examAttemptStudentLabel(String name) {
+    return 'الطالب: $name';
+  }
+
+  @override
+  String get examAttemptAutosaveChip => 'حفظ تلقائي كل 15 ثانية';
+
+  @override
+  String get examAttemptResolvingLabel => 'جارٍ التحديد…';
+
+  @override
+  String get examAttemptStartAction => 'بدء المحاولة';
+
+  @override
+  String get examAttemptNoQuestionsTitle => 'لا توجد أسئلة';
+
+  @override
+  String get examAttemptNoQuestionsMessage =>
+      'لم يُعد الخادم أي أسئلة لهذه المحاولة.';
+
+  @override
+  String get examAttemptAbandon => 'التخلي';
+
+  @override
+  String get examAttemptAbandoning => 'جارٍ التخلي…';
+
+  @override
+  String get examAttemptSubmit => 'إرسال المحاولة';
+
+  @override
+  String get examAttemptSubmitting => 'جارٍ الإرسال…';
+
+  @override
+  String get examAttemptAbandonDialogTitle => 'هل تريد التخلي عن المحاولة؟';
+
+  @override
+  String get examAttemptAbandonDialogMessage =>
+      'سيؤدي ذلك إلى وسم المحاولة على الخادم بأنها متروكة. لا يمكنك استئنافها.';
+
+  @override
+  String examAttemptMarksChip(int marks) {
+    String _temp0 = intl.Intl.pluralLogic(
+      marks,
+      locale: localeName,
+      other: '$marks درجة',
+      many: '$marks درجة',
+      few: '$marks درجات',
+      two: 'درجتان',
+      one: 'درجة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get examAttemptAnswerHint => 'اكتب إجابتك…';
 }

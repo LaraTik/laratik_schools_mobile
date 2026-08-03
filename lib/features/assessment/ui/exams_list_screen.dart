@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../ui/design_tokens.dart';
 import '../../../ui/widgets/ls_button.dart';
 import '../../../ui/widgets/ls_empty_state.dart';
@@ -47,6 +48,7 @@ class _ExamsListScreenState extends ConsumerState<ExamsListScreen> {
   @override
   Widget build(BuildContext context) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     final asyncPage = ref.watch(examPlansListProvider);
     return Scaffold(
       backgroundColor: tokens.surface.canvas,
@@ -58,14 +60,14 @@ class _ExamsListScreenState extends ConsumerState<ExamsListScreen> {
           onPressed: () => context.go('/shell/academics'),
         ),
         title: Text(
-          'Exams',
+          l.examsListScreenTitle,
           style: tokens.typography.titleLarge.copyWith(
             color: tokens.text.primary,
           ),
         ),
         actions: [
           IconButton(
-            tooltip: 'Refresh',
+            tooltip: l.commonRefresh,
             icon: const Icon(Icons.refresh),
             onPressed: () => ref.read(examPlansListProvider.notifier).refresh(),
           ),
@@ -74,35 +76,39 @@ class _ExamsListScreenState extends ConsumerState<ExamsListScreen> {
       body: RefreshIndicator(
         onRefresh: () => ref.read(examPlansListProvider.notifier).refresh(),
         child: asyncPage.when(
-          data: (page) => _buildList(page, tokens),
-          loading: () => const LsStateView.loading(
-            title: 'Loading exams',
-            message: 'Fetching the published exam plans.',
+          data: (page) => _buildList(page, tokens, l),
+          loading: () => LsStateView.loading(
+            title: l.examsListLoadingTitle,
+            message: l.examsListLoadingMessage,
           ),
-          error: (err, _) => _buildError(err, tokens),
+          error: (err, _) => _buildError(err, tokens, l),
         ),
       ),
     );
   }
 
-  Widget _buildList(ExamPlanPage page, DesignTokens tokens) {
+  Widget _buildList(
+    ExamPlanPage page,
+    DesignTokens tokens,
+    AppLocalizations l,
+  ) {
     final plans = page.plans;
     if (plans.isEmpty) {
       return ListView(
         physics: const AlwaysScrollableScrollPhysics(),
         children: [
           SizedBox(height: tokens.space.xxxl * 2),
-          const LsStateView.empty(
+          LsStateView.empty(
             icon: Icons.assignment_outlined,
-            title: 'No published exams',
-            message: 'When a teacher publishes an exam, it shows up here.',
+            title: l.examsListEmptyTitle,
+            message: l.examsListEmptyMessage,
           ),
         ],
       );
     }
     return ListView.separated(
       controller: _scrollController,
-      padding: EdgeInsets.only(bottom: tokens.space.xl),
+      padding: EdgeInsetsDirectional.only(bottom: tokens.space.xl),
       itemCount: plans.length + (page.hasMore ? 1 : 0),
       separatorBuilder: (_, __) => Divider(
         height: 1,
@@ -126,7 +132,7 @@ class _ExamsListScreenState extends ConsumerState<ExamsListScreen> {
         }
         final plan = plans[index];
         return ListTile(
-          contentPadding: EdgeInsets.symmetric(
+          contentPadding: EdgeInsetsDirectional.symmetric(
             horizontal: tokens.space.md,
             vertical: tokens.space.sm,
           ),
@@ -149,14 +155,17 @@ class _ExamsListScreenState extends ConsumerState<ExamsListScreen> {
             [
               if ((plan.subject ?? '').isNotEmpty) plan.subject!,
               if ((plan.examDate ?? '').isNotEmpty) plan.examDate!,
-              if (plan.durationMinutes != null) '${plan.durationMinutes} min',
+              if (plan.durationMinutes != null)
+                l.examsListDurationMinutesChip(plan.durationMinutes!),
             ].join(' · '),
             style: tokens.typography.bodySmall.copyWith(
               color: tokens.text.secondary,
             ),
           ),
           trailing: LsStatusChip(
-            label: plan.published ? 'Open' : 'Draft',
+            label: plan.published
+                ? l.examsListStatusOpen
+                : l.examsListStatusDraft,
             tone: plan.published ? LsChipTone.success : LsChipTone.neutral,
             icon: plan.published
                 ? Icons.check_circle_outline
@@ -168,7 +177,7 @@ class _ExamsListScreenState extends ConsumerState<ExamsListScreen> {
     );
   }
 
-  Widget _buildError(Object err, DesignTokens tokens) {
+  Widget _buildError(Object err, DesignTokens tokens, AppLocalizations l) {
     final failure = err is PersonFailure ? err : null;
     return ListView(
       physics: const AlwaysScrollableScrollPhysics(),
@@ -176,10 +185,10 @@ class _ExamsListScreenState extends ConsumerState<ExamsListScreen> {
         SizedBox(height: tokens.space.xxxl * 2),
         LsStateView.error(
           icon: Icons.error_outline,
-          title: 'Could not load exams',
+          title: l.examsListErrorTitle,
           message: failure?.message ?? err.toString(),
           action: LsButton.primary(
-            label: 'Try again',
+            label: l.commonTryAgain,
             icon: Icons.refresh,
             expand: false,
             onPressed: () => ref.read(examPlansListProvider.notifier).refresh(),

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/result.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../ui/design_tokens.dart';
 import '../../../ui/widgets/ls_button.dart';
 import '../../../ui/widgets/ls_empty_state.dart';
@@ -84,7 +85,7 @@ class _ExamAttemptScreenState extends ConsumerState<ExamAttemptScreen> {
         : (current?.studentId ?? '');
     final enrollmentId = current?.enrollmentId ?? '';
     if (studentId.isEmpty) {
-      setState(() => _error = 'No student resolved. Sign in and retry.');
+      setState(() => _error = AppLocalizations.of(context).examAttemptNoStudentError);
       return;
     }
     final repo = ref.read(assessmentRepositoryProvider);
@@ -118,8 +119,9 @@ class _ExamAttemptScreenState extends ConsumerState<ExamAttemptScreen> {
     if (!mounted) return;
     setState(() {
       _autosaveStatus = switch (result) {
-        Ok() => 'Saved at ${TimeOfDay.now().format(context)}',
-        Err() => 'Autosave failed',
+        Ok() => AppLocalizations.of(context)
+            .examAttemptAutosaveSaved(TimeOfDay.now().format(context)),
+        Err() => AppLocalizations.of(context).examAttemptAutosaveFailed,
       };
     });
   }
@@ -184,6 +186,7 @@ class _ExamAttemptScreenState extends ConsumerState<ExamAttemptScreen> {
   @override
   Widget build(BuildContext context) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     // Resolve the student id from the deep-link query param when
     // present, otherwise from `currentStudentProvider`. We hold the
     // resolved id in [widget.studentId] only at construction; the
@@ -216,7 +219,7 @@ class _ExamAttemptScreenState extends ConsumerState<ExamAttemptScreen> {
           onPressed: () => context.go('/shell/assessment/exams'),
         ),
         title: Text(
-          'Exam attempt',
+          l.examAttemptScreenTitle,
           style: tokens.typography.titleLarge.copyWith(
             color: tokens.text.primary,
           ),
@@ -224,9 +227,9 @@ class _ExamAttemptScreenState extends ConsumerState<ExamAttemptScreen> {
         actions: [
           if (_started && !_submitted && !_abandoned)
             Padding(
-              padding: EdgeInsets.only(right: tokens.space.sm),
+              padding: EdgeInsetsDirectional.only(end: tokens.space.sm),
               child: Text(
-                _autosaveStatus ?? 'Autosave armed',
+                _autosaveStatus ?? l.examAttemptAutosaveArmed,
                 style: tokens.typography.bodySmall.copyWith(
                   color: tokens.text.tertiary,
                 ),
@@ -238,22 +241,22 @@ class _ExamAttemptScreenState extends ConsumerState<ExamAttemptScreen> {
         data: (result) {
           return switch (result) {
             Ok(:final value) => value.eligible
-                ? _buildAttempt(tokens)
-                : _buildIneligible(value, tokens),
+                ? _buildAttempt(tokens, l)
+                : _buildIneligible(value, tokens, l),
             Err(:final error) => LsStateView.error(
                 icon: Icons.error_outline,
-                title: 'Could not check eligibility',
+                title: l.examAttemptEligibilityErrorTitle,
                 message: error.message,
               ),
           };
         },
         loading: () {
-          return const LsStateView.loading(title: 'Checking eligibility');
+          return LsStateView.loading(title: l.examAttemptEligibilityLoadingTitle);
         },
         error: (err, _) {
           return LsStateView.error(
             icon: Icons.error_outline,
-            title: 'Could not check eligibility',
+            title: l.examAttemptEligibilityErrorTitle,
             message: err.toString(),
           );
         },
@@ -261,28 +264,31 @@ class _ExamAttemptScreenState extends ConsumerState<ExamAttemptScreen> {
     );
   }
 
-  Widget _buildIneligible(EligibilityResult value, DesignTokens tokens) {
+  Widget _buildIneligible(
+    EligibilityResult value,
+    DesignTokens tokens,
+    AppLocalizations l,
+  ) {
     return LsStateView.empty(
       icon: Icons.block,
-      title: 'Not eligible',
-      message: 'The server says you cannot take this exam.',
+      title: l.examAttemptIneligibleTitle,
+      message: l.examAttemptIneligibleMessage,
       action: LsButton.secondary(
-        label: 'Back to exams',
+        label: l.examAttemptBackToExams,
         icon: Icons.arrow_back,
         onPressed: () => context.go('/shell/assessment/exams'),
       ),
     );
   }
 
-  Widget _buildAttempt(DesignTokens tokens) {
+  Widget _buildAttempt(DesignTokens tokens, AppLocalizations l) {
     if (_abandoned) {
       return LsStateView.empty(
         icon: Icons.flag_outlined,
-        title: 'Attempt abandoned',
-        message:
-            'You abandoned this attempt. The server marked it as abandoned.',
+        title: l.examAttemptAbandonedTitle,
+        message: l.examAttemptAbandonedMessage,
         action: LsButton.primary(
-          label: 'Back to exams',
+          label: l.examAttemptBackToExams,
           icon: Icons.arrow_back,
           onPressed: () => context.go('/shell/assessment/exams'),
         ),
@@ -291,11 +297,10 @@ class _ExamAttemptScreenState extends ConsumerState<ExamAttemptScreen> {
     if (_submitted) {
       return LsStateView.empty(
         icon: Icons.check_circle_outline,
-        title: 'Submitted',
-        message:
-            'Your answers are on the server. Check back when the result is published.',
+        title: l.examAttemptSubmittedTitle,
+        message: l.examAttemptSubmittedMessage,
         action: LsButton.primary(
-          label: 'Back to exams',
+          label: l.examAttemptBackToExams,
           icon: Icons.arrow_back,
           onPressed: () => context.go('/shell/assessment/exams'),
         ),
@@ -306,22 +311,22 @@ class _ExamAttemptScreenState extends ConsumerState<ExamAttemptScreen> {
       if (_error != null) {
         return LsStateView.error(
           icon: Icons.error_outline,
-          title: 'Could not start the attempt',
+          title: l.examAttemptStartErrorTitle,
           message: _error!,
           action: LsButton.primary(
-            label: 'Try again',
+            label: l.commonTryAgain,
             icon: Icons.refresh,
             expand: false,
             onPressed: _start,
           ),
         );
       }
-      return _buildStart(tokens);
+      return _buildStart(tokens, l);
     }
-    return _buildQuestions(tokens);
+    return _buildQuestions(tokens, l);
   }
 
-  Widget _buildStart(DesignTokens tokens) {
+  Widget _buildStart(DesignTokens tokens, AppLocalizations l) {
     final currentStudentAsync = ref.watch(currentStudentProvider);
     final currentStudent = currentStudentAsync.valueOrNull;
     return Padding(
@@ -330,7 +335,7 @@ class _ExamAttemptScreenState extends ConsumerState<ExamAttemptScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Ready to start?',
+            l.examAttemptReadyTitle,
             style: tokens.typography.titleLarge.copyWith(
               color: tokens.text.primary,
             ),
@@ -339,27 +344,34 @@ class _ExamAttemptScreenState extends ConsumerState<ExamAttemptScreen> {
           currentStudent == null
               ? Text(
                   currentStudentAsync.hasError
-                      ? 'Could not resolve student: ${currentStudentAsync.error}'
-                      : 'Resolving student…',
+                      ? l.examAttemptResolveStudentError(
+                          currentStudentAsync.error.toString())
+                      : l.examAttemptResolvingStudent,
                   style: tokens.typography.bodyLarge.copyWith(
                     color: tokens.text.secondary,
                   ),
                 )
               : Text(
-                  'Student: ${currentStudent.person.fullName.isEmpty ? currentStudent.studentId : currentStudent.person.fullName}',
+                  l.examAttemptStudentLabel(
+                    currentStudent.person.fullName.isEmpty
+                        ? currentStudent.studentId
+                        : currentStudent.person.fullName,
+                  ),
                   style: tokens.typography.bodyLarge.copyWith(
                     color: tokens.text.secondary,
                   ),
                 ),
           SizedBox(height: tokens.space.lg),
-          const LsStatusChip(
-            label: 'Autosave every 15s',
+          LsStatusChip(
+            label: l.examAttemptAutosaveChip,
             icon: Icons.autorenew,
             tone: LsChipTone.info,
           ),
           SizedBox(height: tokens.space.lg),
           LsButton.primary(
-            label: currentStudent == null ? 'Resolving…' : 'Start attempt',
+            label: currentStudent == null
+                ? l.examAttemptResolvingLabel
+                : l.examAttemptStartAction,
             icon: Icons.play_arrow,
             onPressed: currentStudent == null ? null : _start,
           ),
@@ -368,12 +380,12 @@ class _ExamAttemptScreenState extends ConsumerState<ExamAttemptScreen> {
     );
   }
 
-  Widget _buildQuestions(DesignTokens tokens) {
+  Widget _buildQuestions(DesignTokens tokens, AppLocalizations l) {
     if (_questions.isEmpty) {
-      return const LsStateView.empty(
+      return LsStateView.empty(
         icon: Icons.help_outline,
-        title: 'No questions',
-        message: 'The server did not return any questions for this attempt.',
+        title: l.examAttemptNoQuestionsTitle,
+        message: l.examAttemptNoQuestionsMessage,
       );
     }
     return Column(
@@ -440,18 +452,22 @@ class _ExamAttemptScreenState extends ConsumerState<ExamAttemptScreen> {
                   children: [
                     Expanded(
                       child: LsButton.secondary(
-                        label: _abandoning ? 'Abandoning…' : 'Abandon',
+                        label: _abandoning
+                            ? l.examAttemptAbandoning
+                            : l.examAttemptAbandon,
                         icon: Icons.flag_outlined,
                         isLoading: _abandoning,
                         onPressed:
-                            _abandoning ? null : () => _confirmAbandon(tokens),
+                            _abandoning ? null : () => _confirmAbandon(l),
                       ),
                     ),
                     SizedBox(width: tokens.space.sm),
                     Expanded(
                       flex: 2,
                       child: LsButton.primary(
-                        label: _submitting ? 'Submitting…' : 'Submit attempt',
+                        label: _submitting
+                            ? l.examAttemptSubmitting
+                            : l.examAttemptSubmit,
                         icon: Icons.check,
                         isLoading: _submitting,
                         onPressed: _submitting ? null : _submit,
@@ -467,24 +483,21 @@ class _ExamAttemptScreenState extends ConsumerState<ExamAttemptScreen> {
     );
   }
 
-  Future<void> _confirmAbandon(DesignTokens tokens) async {
+  Future<void> _confirmAbandon(AppLocalizations l) async {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (ctx) {
         return AlertDialog(
-          title: const Text('Abandon attempt?'),
-          content: const Text(
-            'This will mark the attempt as abandoned on the server. '
-            'You cannot resume it.',
-          ),
+          title: Text(l.examAttemptAbandonDialogTitle),
+          content: Text(l.examAttemptAbandonDialogMessage),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(ctx).pop(false),
-              child: const Text('Cancel'),
+              child: Text(l.commonCancel),
             ),
             FilledButton.tonal(
               onPressed: () => Navigator.of(ctx).pop(true),
-              child: const Text('Abandon'),
+              child: Text(l.examAttemptAbandon),
             ),
           ],
         );
@@ -516,6 +529,7 @@ class _QuestionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.laratik;
+    final l = AppLocalizations.of(context);
     return Container(
       padding: EdgeInsets.all(tokens.space.md),
       decoration: BoxDecoration(
@@ -537,7 +551,7 @@ class _QuestionCard extends StatelessWidget {
                 ),
               ),
               LsStatusChip(
-                label: '${question.marks} pt${question.marks == 1 ? '' : 's'}',
+                label: l.examAttemptMarksChip(question.marks),
                 tone: LsChipTone.brand,
                 icon: Icons.star_outline,
               ),
@@ -555,7 +569,7 @@ class _QuestionCard extends StatelessWidget {
                 color: tokens.text.primary,
               ),
               decoration: InputDecoration(
-                hintText: 'Type your answer…',
+                hintText: l.examAttemptAnswerHint,
                 filled: true,
                 fillColor: tokens.surface.surfaceContainerLow,
                 border: OutlineInputBorder(

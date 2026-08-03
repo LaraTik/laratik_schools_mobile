@@ -1199,5 +1199,73 @@
     "placeholders": {
       "name": { "type": "String" }
     }
-  }
+  },
+
+  "examsListScreenTitle": "Exams",
+  "examsListLoadingTitle": "Loading exams",
+  "examsListLoadingMessage": "Fetching the published exam plans.",
+  "examsListEmptyTitle": "No published exams",
+  "examsListEmptyMessage": "When a teacher publishes an exam, it shows up here.",
+  "examsListErrorTitle": "Could not load exams",
+  "examsListStatusOpen": "Open",
+  "examsListStatusDraft": "Draft",
+  "examsListDurationMinutesChip": "{minutes, plural, =1{1 min} other{{minutes} min}}",
+  "@examsListDurationMinutesChip": {
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
+
+  "examAttemptScreenTitle": "Exam attempt",
+  "examAttemptAutosaveArmed": "Autosave armed",
+  "examAttemptAutosaveSaved": "Saved at {time}",
+  "@examAttemptAutosaveSaved": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "examAttemptAutosaveFailed": "Autosave failed",
+  "examAttemptEligibilityLoadingTitle": "Checking eligibility",
+  "examAttemptEligibilityErrorTitle": "Could not check eligibility",
+  "examAttemptIneligibleTitle": "Not eligible",
+  "examAttemptIneligibleMessage": "The server says you cannot take this exam.",
+  "examAttemptBackToExams": "Back to exams",
+  "examAttemptAbandonedTitle": "Attempt abandoned",
+  "examAttemptAbandonedMessage": "You abandoned this attempt. The server marked it as abandoned.",
+  "examAttemptSubmittedTitle": "Submitted",
+  "examAttemptSubmittedMessage": "Your answers are on the server. Check back when the result is published.",
+  "examAttemptStartErrorTitle": "Could not start the attempt",
+  "examAttemptNoStudentError": "No student resolved. Sign in and retry.",
+  "examAttemptReadyTitle": "Ready to start?",
+  "examAttemptResolvingStudent": "Resolving student…",
+  "examAttemptResolveStudentError": "Could not resolve student: {error}",
+  "@examAttemptResolveStudentError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "examAttemptStudentLabel": "Student: {name}",
+  "@examAttemptStudentLabel": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "examAttemptAutosaveChip": "Autosave every 15s",
+  "examAttemptResolvingLabel": "Resolving…",
+  "examAttemptStartAction": "Start attempt",
+  "examAttemptNoQuestionsTitle": "No questions",
+  "examAttemptNoQuestionsMessage": "The server did not return any questions for this attempt.",
+  "examAttemptAbandon": "Abandon",
+  "examAttemptAbandoning": "Abandoning…",
+  "examAttemptSubmit": "Submit attempt",
+  "examAttemptSubmitting": "Submitting…",
+  "examAttemptAbandonDialogTitle": "Abandon attempt?",
+  "examAttemptAbandonDialogMessage": "This will mark the attempt as abandoned on the server. You cannot resume it.",
+  "examAttemptMarksChip": "{marks, plural, =1{1 pt} other{{marks} pts}}",
+  "@examAttemptMarksChip": {
+    "placeholders": {
+      "marks": { "type": "int" }
+    }
+  },
+  "examAttemptAnswerHint": "Type your answer…"
 }
