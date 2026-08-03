@@ -344,6 +344,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeAdminFeeOperationsSubtitle => 'مُصدرة / محصلة / مستحقة';
 
   @override
+  String get homeAdminOperations => 'العمليات';
+
+  @override
+  String get homeAdminOperationsSubtitle => 'صحة النظام، التسليم، سجل التدقيق';
+
+  @override
   String get homeAdminNotificationsSubtitle => 'صندوق الوارد + الإعلانات';
 
   @override
@@ -905,4 +911,113 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get feeOperationsViewPlansAction => 'عرض خطط الرسوم';
+
+  @override
+  String get operationsScreenTitle => 'العمليات';
+
+  @override
+  String get operationsTabHealth => 'الصحة';
+
+  @override
+  String get operationsTabDelivery => 'التسليم';
+
+  @override
+  String get operationsTabAudit => 'التدقيق';
+
+  @override
+  String get operationsLoadingTitle => 'جارٍ تحميل صحة العمليات';
+
+  @override
+  String get operationsLoadingMessage =>
+      'نجمع أحدث لقطة لمؤشرات الأداء لكل وحدة.';
+
+  @override
+  String get operationsErrorTitle => 'تعذّر تحميل العمليات';
+
+  @override
+  String get operationsSystemHealth => 'صحة النظام';
+
+  @override
+  String get operationsStatusHealthy => 'سليم';
+
+  @override
+  String get operationsStatusDegraded => 'متراجع';
+
+  @override
+  String get operationsStatusUnhealthy => 'غير سليم';
+
+  @override
+  String operationsGeneratedAt(String timestamp) {
+    return 'أُنشئ في $timestamp';
+  }
+
+  @override
+  String get operationsModulesHeader => 'مؤشرات لكل وحدة';
+
+  @override
+  String get operationsModulesEmptyTitle => 'لا توجد مؤشرات بعد';
+
+  @override
+  String get operationsModulesEmptyMessage =>
+      'لم يُبلّغ الخادم عن أي مؤشرات لكل وحدة. ستظهر هنا بمجرد ورود أول لقطة.';
+
+  @override
+  String get operationsModuleAnalytics => 'التحليلات';
+
+  @override
+  String get operationsModuleAudit => 'التدقيق';
+
+  @override
+  String get operationsModuleDelivery => 'التسليم';
+
+  @override
+  String get operationsModuleImports => 'الاستيراد';
+
+  @override
+  String get operationsModuleOutbox => 'الصندوق الصادر';
+
+  @override
+  String get operationsDeliveryLoadingTitle => 'جارٍ تحميل صحة التسليم';
+
+  @override
+  String get operationsDeliveryLoadingMessage =>
+      'نجمع إحصائيات التسليم حسب الحالة.';
+
+  @override
+  String get operationsDeliveryByStatus => 'حسب الحالة';
+
+  @override
+  String get operationsDeliveryEmptyTitle => 'لا توجد عمليات تسليم بعد';
+
+  @override
+  String get operationsDeliveryEmptyMessage =>
+      'قائمة التسليم فارغة. ستظهر الإحصائيات هنا بمجرد أن يبدأ الخادم بإرسال الأحداث.';
+
+  @override
+  String get operationsDeliveryTotal => 'إجمالي عمليات التسليم';
+
+  @override
+  String get operationsDeliveryTotalSubtitle => 'عبر جميع الحالات لهذه الفترة';
+
+  @override
+  String get operationsAuditLoadingTitle => 'جارٍ تحميل أحداث التدقيق';
+
+  @override
+  String get operationsAuditLoadingMessage =>
+      'نجلب أحدث أحداث الدخول / الخروج / التحديث / الجهاز.';
+
+  @override
+  String get operationsAuditEmptyTitle => 'لا توجد أحداث تدقيق بعد';
+
+  @override
+  String get operationsAuditEmptyMessage =>
+      'سجل تدقيق المصادقة فارغ. ستظهر الأحداث هنا مع استخدام المدرسة للتطبيق.';
+
+  @override
+  String get operationsAuditUnknownUser => 'مستخدم غير معروف';
+
+  @override
+  String operationsAuditFromIp(String ip) {
+    return 'من $ip';
+  }
 }

@@ -626,6 +626,18 @@ abstract class AppLocalizations {
   /// **'Invoiced / collected / outstanding'**
   String get homeAdminFeeOperationsSubtitle;
 
+  /// No description provided for @homeAdminOperations.
+  ///
+  /// In en, this message translates to:
+  /// **'Operations'**
+  String get homeAdminOperations;
+
+  /// No description provided for @homeAdminOperationsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'System health, delivery, audit log'**
+  String get homeAdminOperationsSubtitle;
+
   /// No description provided for @homeAdminNotificationsSubtitle.
   ///
   /// In en, this message translates to:
@@ -1394,6 +1406,204 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'View fee plans'**
   String get feeOperationsViewPlansAction;
+
+  /// No description provided for @operationsScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Operations'**
+  String get operationsScreenTitle;
+
+  /// No description provided for @operationsTabHealth.
+  ///
+  /// In en, this message translates to:
+  /// **'Health'**
+  String get operationsTabHealth;
+
+  /// No description provided for @operationsTabDelivery.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery'**
+  String get operationsTabDelivery;
+
+  /// No description provided for @operationsTabAudit.
+  ///
+  /// In en, this message translates to:
+  /// **'Audit'**
+  String get operationsTabAudit;
+
+  /// No description provided for @operationsLoadingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading operations health'**
+  String get operationsLoadingTitle;
+
+  /// No description provided for @operationsLoadingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Aggregating the latest per-module KPI snapshot.'**
+  String get operationsLoadingMessage;
+
+  /// No description provided for @operationsErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load operations'**
+  String get operationsErrorTitle;
+
+  /// No description provided for @operationsSystemHealth.
+  ///
+  /// In en, this message translates to:
+  /// **'System health'**
+  String get operationsSystemHealth;
+
+  /// No description provided for @operationsStatusHealthy.
+  ///
+  /// In en, this message translates to:
+  /// **'Healthy'**
+  String get operationsStatusHealthy;
+
+  /// No description provided for @operationsStatusDegraded.
+  ///
+  /// In en, this message translates to:
+  /// **'Degraded'**
+  String get operationsStatusDegraded;
+
+  /// No description provided for @operationsStatusUnhealthy.
+  ///
+  /// In en, this message translates to:
+  /// **'Unhealthy'**
+  String get operationsStatusUnhealthy;
+
+  /// No description provided for @operationsGeneratedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Generated at {timestamp}'**
+  String operationsGeneratedAt(String timestamp);
+
+  /// No description provided for @operationsModulesHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Per-module KPIs'**
+  String get operationsModulesHeader;
+
+  /// No description provided for @operationsModulesEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No module KPIs yet'**
+  String get operationsModulesEmptyTitle;
+
+  /// No description provided for @operationsModulesEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The server hasn\'t reported any per-module metrics. They\'ll appear here as soon as the first snapshot lands.'**
+  String get operationsModulesEmptyMessage;
+
+  /// No description provided for @operationsModuleAnalytics.
+  ///
+  /// In en, this message translates to:
+  /// **'Analytics'**
+  String get operationsModuleAnalytics;
+
+  /// No description provided for @operationsModuleAudit.
+  ///
+  /// In en, this message translates to:
+  /// **'Audit'**
+  String get operationsModuleAudit;
+
+  /// No description provided for @operationsModuleDelivery.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery'**
+  String get operationsModuleDelivery;
+
+  /// No description provided for @operationsModuleImports.
+  ///
+  /// In en, this message translates to:
+  /// **'Imports'**
+  String get operationsModuleImports;
+
+  /// No description provided for @operationsModuleOutbox.
+  ///
+  /// In en, this message translates to:
+  /// **'Outbox'**
+  String get operationsModuleOutbox;
+
+  /// No description provided for @operationsDeliveryLoadingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading delivery health'**
+  String get operationsDeliveryLoadingTitle;
+
+  /// No description provided for @operationsDeliveryLoadingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Aggregating the per-status delivery counts.'**
+  String get operationsDeliveryLoadingMessage;
+
+  /// No description provided for @operationsDeliveryByStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'By status'**
+  String get operationsDeliveryByStatus;
+
+  /// No description provided for @operationsDeliveryEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No deliveries yet'**
+  String get operationsDeliveryEmptyTitle;
+
+  /// No description provided for @operationsDeliveryEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The delivery queue is empty. Counts will appear here as soon as the server starts dispatching events.'**
+  String get operationsDeliveryEmptyMessage;
+
+  /// No description provided for @operationsDeliveryTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total deliveries'**
+  String get operationsDeliveryTotal;
+
+  /// No description provided for @operationsDeliveryTotalSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Across all statuses for this period'**
+  String get operationsDeliveryTotalSubtitle;
+
+  /// No description provided for @operationsAuditLoadingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading audit events'**
+  String get operationsAuditLoadingTitle;
+
+  /// No description provided for @operationsAuditLoadingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Fetching the most recent login / logout / token / device events.'**
+  String get operationsAuditLoadingMessage;
+
+  /// No description provided for @operationsAuditEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No audit events yet'**
+  String get operationsAuditEmptyTitle;
+
+  /// No description provided for @operationsAuditEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The auth audit log is empty. Events will appear here as the school uses the mobile app.'**
+  String get operationsAuditEmptyMessage;
+
+  /// No description provided for @operationsAuditUnknownUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown user'**
+  String get operationsAuditUnknownUser;
+
+  /// No description provided for @operationsAuditFromIp.
+  ///
+  /// In en, this message translates to:
+  /// **'From {ip}'**
+  String operationsAuditFromIp(String ip);
 }
 
 class _AppLocalizationsDelegate

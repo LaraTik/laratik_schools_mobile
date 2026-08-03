@@ -68,6 +68,25 @@
 > is replaced with "Arabic locale shipped end-to-end") and
 > §5 (item #11 → fully shipped). The mobile is at the
 > next commit after `38a092f`.
+>
+> Update 2026-08-03 (admin Operations surface): the
+> read-only operations health + delivery health + auth
+> audit events surface ships at `/shell/operations`. The
+> Health tab renders the top-level status as a colored
+> chip + the per-module KPI grid (analytics / audit /
+> delivery / imports / outbox, each tile humanizes the
+> wire key). The Delivery tab renders the per-status
+> counts as a stacked bar + per-status chips with color
+> tones. The Audit tab renders each event with a 44dp
+> icon + user + timestamp + source IP. Reachable from a
+> new "Operations" tile on the admin home, capability-
+> gated on `can_manage_branches` (admin-only). The write
+> flows (`replay_school_delivery_event`,
+> `receive_school_delivery_callback`, governance / data
+> import) are deferred to follow-up turns. See §3
+> (Admin Operations → shipped for the read-only slice)
+> and §5 (item #9 → partially shipped; operations slice
+> done, data import slice deferred).
 
 This document is the source of truth for what is shipped, what is
 missing per role, and the prioritized roadmap. It supersedes the
@@ -181,10 +200,24 @@ shortcuts.
   (`upload_school_data_import_package`, `dry_run_school_data_import`,
   `review_school_data_import_records`, `approve_school_data_import`,
   `commit_school_data_import`). *(README only.)*
-- **Operations health** — no diagnostic surface. Backend has
-  `get_school_operations_health`, `get_school_delivery_health`,
-  `replay_school_delivery_event`, `get_school_auth_audit_events`,
-  `receive_school_delivery_callback`. *(README only.)*
+- **Operations health** — **shipped** for the read-only
+  slice. The new `OperationsHealthScreen` at
+  `/shell/operations` has three tabs (Health / Delivery /
+  Audit) backed by `get_school_operations_health`,
+  `get_school_delivery_health`, and
+  `get_school_auth_audit_events`. The Health tab renders
+  the top-level status (healthy / degraded / unhealthy)
+  + the per-module KPI maps (analytics / audit /
+  delivery / imports / outbox) flattened into a single
+  grid; the Delivery tab renders the per-status counts
+  as a stacked bar + per-status chips; the Audit tab
+  renders each event with a 44dp icon + user + timestamp
+  + source IP. Reachable from a new "Operations" tile on
+  the admin home, capability-gated on
+  `can_manage_branches` (admin-only on the v1 wire).
+  Write flows (`replay_school_delivery_event`,
+  `receive_school_delivery_callback`) are deferred to a
+  follow-up turn.
 - **"Acting as" picker** — shipped. The "Acting as" card on both
   the student home and the registrar dashboard now exposes a
   "Switch student" icon button that opens the full-screen
@@ -312,7 +345,7 @@ surface. The rest is feature work.
 | 6 | **Teacher surface** | "My classes" + exam authoring + manual grading | 2 turns | **shipped (read-only "My classes" + per-class roster in this turn; exam authoring + manual grading deferred — see audit #6 follow-up)** |
 | 7 | **Admin enhancements** | Fees (read invoices) + Analytics (KPIs) | 2 turns | **shipped (Fees slice — read-only fee plans + admin "Fee operations" KPI overview; Analytics slice deferred to a follow-up turn)** |
 | 8 | **Admin enhancements** | Governance (privacy + retention) + Grading (admin side) | 1 turn | after #7 |
-| 9 | **Admin enhancements** | Data import wizard + Operations health | 2 turns | after #8 |
+| 9 | **Admin enhancements** | Data import wizard + Operations health | 2 turns | **partially shipped (Operations read-only slice — health + delivery + audit — in this turn; data import wizard + the operations write flows deferred to a follow-up turn)** |
 | 10 | **Quality** | Hard-coded filter values → real `get_school_grades` | 0.5 turn | **shipped (picker release, derived from loaded students — backend follow-up: add `get_school_grades` + `get_school_class_groups`)** |
 | 11 | **Quality** | Arabic locale + a11y audit | 1 turn | **shipped (locale framework + bottom-nav labels + home-surface string extraction + RTL pass; locale test suite grew from 6 to 11 tests covering English + Arabic copy, pluralization, and per-surface pinning)** |
 
@@ -328,13 +361,17 @@ Until the items above land, the honest answer to "is this PROD-ready
 for role X?" is:
 
 - **Admin / Registrar** — *Partially.* They can run the daily
-  operations (roster, attendance, **read-only fees**) and the
-  role-aware bottom nav now renders correctly (after the
-  wire-name fix in the locale release). Cannot yet manage
-  imports, see the operations health, or respond to privacy
-  requests. The fee write flows (invoice preview + draft
-  creation + payment recording) and the Analytics KPI
-  surface are still on the desktop.
+  operations (roster, attendance, **read-only fees**,
+  **read-only operations health + delivery + audit**) and
+  the role-aware bottom nav now renders correctly. Cannot
+  yet manage imports, replay delivery events, or respond
+  to privacy requests. The fee write flows (invoice
+  preview + draft creation + payment recording) and the
+  Analytics KPI surface are still on the desktop. The
+  Operations tile on the admin home is capability-gated on
+  `can_manage_branches` (admin-only) — a future backend
+  pass should add a dedicated `can_view_operations`
+  capability so the gate can be more specific.
 - **Student** — *Partially.* They can take exams end-to-end
   and now see their grades / attendance / report cards under
   "My records" on the home screen. Fee invoices +

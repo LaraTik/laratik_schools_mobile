@@ -8,6 +8,96 @@ and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ### Added
 
+- **Admin "Operations" surface — read-only operations health +
+  delivery health + auth audit events.** Closes roadmap #9
+  for the operations slice. New files:
+  - `lib/features/operations/data/operations_health.dart` —
+    typed `OperationsHealth`, `DeliveryHealth`, and
+    `AuthAuditEvent` models that parse the v1 envelope
+    forward-compatibly (canonical keys AND the legacy
+    `event` / `user_email` / `ip` aliases). `OperationsHealth`
+    flattens the per-module KPI maps (`analytics` /
+    `audit` / `delivery` / `imports` / `outbox`) into a
+    single list of (module, key, value) triples for the
+    on-screen grid. `DeliveryHealth.sortedCounts()` returns
+    the per-status counts sorted by count (descending)
+    for the bar chart. `AuthAuditEvent.family` maps the
+    wire event type to a coarse family (login / logout /
+    token_refresh / device_register / other) for the chip
+    tone.
+  - `lib/features/operations/data/operations_failure.dart` —
+    typed `OperationsFailure` mirroring `FeesFailure` /
+    `FamilyFailure` so a future "replay" / "approve
+    privacy" / "set legal hold" write flow can drop in
+    without a model change.
+  - `lib/features/operations/data/operations_repository.dart` —
+    wraps the v1 endpoints `get_school_operations_health`,
+    `get_school_delivery_health`, and
+    `get_school_auth_audit_events` with the canonical
+    Result<T, E> + `_failureFromApi` + `_exceptionFailure`
+    pattern.
+  - `lib/features/operations/data/operations_providers.dart` —
+    `operationsRepositoryProvider` +
+    `operationsHealthProvider` +
+    `deliveryHealthProvider` +
+    `authAuditEventsController` (with manual `refresh`).
+  - `lib/features/operations/ui/operations_health_screen.dart` —
+    the three-tab surface (Health / Delivery / Audit).
+    Every user-facing string is locale-aware via
+    `AppLocalizations.of(context)`. The Health tab renders
+    the top-level status as a colored chip +
+    "Generated at {timestamp}" sub-line + the per-module
+    KPI grid (each tile humanizes the wire key from
+    `last_30d_failed` → `Last 30D Failed`). The Delivery
+    tab renders the per-status counts as a stacked bar +
+    per-status chips with color tones (success for
+    completed / delivered, warning for pending / retry,
+    error for failed / dead / dropped). The Audit tab
+    renders each event with a 44dp icon + user +
+    timestamp + source IP.
+  - `test/features/operations/operations_repository_test.dart` —
+    8 tests pinning the parse (per-module KPI flattening,
+    per-status count sort, event type → family mapping),
+    the EMPTY_RESPONSE path, the typed-error path, and
+    the limit-query forwarding.
+  - **~20 new ARB keys** for the operations surface
+    (titles, tabs, status labels, module labels, empty
+    states) in both `app_en.arb` (English source) and
+    `app_ar.arb` (Modern Standard Arabic).
+- **"Operations" tile** on the admin dashboard,
+  capability-gated on `can_manage_branches` (the v1
+  server does not yet expose a `can_view_operations`
+  capability; the operations surface is admin-only by
+  intent and `can_manage_branches` is already admin-only
+  on the wire — see the audit's §4 follow-up for the
+  future hardening).
+
+### Changed
+
+- `lib/app/router.dart` — added the `/shell/operations`
+  route inside the existing `ShellRoute` so it keeps
+  the chrome + the bottom nav.
+- `lib/app/dashboard_screen.dart` — the admin
+  quick-start now conditionally renders the "Operations"
+  tile when the user can manage branches.
+
+### Tests
+
+- 8 new operations repository tests (full coverage of the
+  parse, the empty / error paths, and the family mapping).
+  Total test count: **112 passed, 5 pre-existing failures**
+  (2 in `test/platform/transport_test.dart`, 3 in the
+  user's in-flight `test/features/assessment/current_student_provider_test.dart`).
+
+## [Unreleased]
+
+### Added
+
+- **Arabic + English locale support.** The mobile now supports
+  both `en` and `ar` via the standard Flutter ARB-driven
+
+### Added
+
 - **Home + admin + family + child-detail + picker + classes +
   fees surfaces fully localized.** Closes the "home surface
   string extraction" half of roadmap #11. Every user-facing

@@ -331,6 +331,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Invoiced / collected / outstanding';
 
   @override
+  String get homeAdminOperations => 'Operations';
+
+  @override
+  String get homeAdminOperationsSubtitle =>
+      'System health, delivery, audit log';
+
+  @override
   String get homeAdminNotificationsSubtitle => 'Inbox + announcements';
 
   @override
@@ -864,4 +871,114 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get feeOperationsViewPlansAction => 'View fee plans';
+
+  @override
+  String get operationsScreenTitle => 'Operations';
+
+  @override
+  String get operationsTabHealth => 'Health';
+
+  @override
+  String get operationsTabDelivery => 'Delivery';
+
+  @override
+  String get operationsTabAudit => 'Audit';
+
+  @override
+  String get operationsLoadingTitle => 'Loading operations health';
+
+  @override
+  String get operationsLoadingMessage =>
+      'Aggregating the latest per-module KPI snapshot.';
+
+  @override
+  String get operationsErrorTitle => 'Could not load operations';
+
+  @override
+  String get operationsSystemHealth => 'System health';
+
+  @override
+  String get operationsStatusHealthy => 'Healthy';
+
+  @override
+  String get operationsStatusDegraded => 'Degraded';
+
+  @override
+  String get operationsStatusUnhealthy => 'Unhealthy';
+
+  @override
+  String operationsGeneratedAt(String timestamp) {
+    return 'Generated at $timestamp';
+  }
+
+  @override
+  String get operationsModulesHeader => 'Per-module KPIs';
+
+  @override
+  String get operationsModulesEmptyTitle => 'No module KPIs yet';
+
+  @override
+  String get operationsModulesEmptyMessage =>
+      'The server hasn\'t reported any per-module metrics. They\'ll appear here as soon as the first snapshot lands.';
+
+  @override
+  String get operationsModuleAnalytics => 'Analytics';
+
+  @override
+  String get operationsModuleAudit => 'Audit';
+
+  @override
+  String get operationsModuleDelivery => 'Delivery';
+
+  @override
+  String get operationsModuleImports => 'Imports';
+
+  @override
+  String get operationsModuleOutbox => 'Outbox';
+
+  @override
+  String get operationsDeliveryLoadingTitle => 'Loading delivery health';
+
+  @override
+  String get operationsDeliveryLoadingMessage =>
+      'Aggregating the per-status delivery counts.';
+
+  @override
+  String get operationsDeliveryByStatus => 'By status';
+
+  @override
+  String get operationsDeliveryEmptyTitle => 'No deliveries yet';
+
+  @override
+  String get operationsDeliveryEmptyMessage =>
+      'The delivery queue is empty. Counts will appear here as soon as the server starts dispatching events.';
+
+  @override
+  String get operationsDeliveryTotal => 'Total deliveries';
+
+  @override
+  String get operationsDeliveryTotalSubtitle =>
+      'Across all statuses for this period';
+
+  @override
+  String get operationsAuditLoadingTitle => 'Loading audit events';
+
+  @override
+  String get operationsAuditLoadingMessage =>
+      'Fetching the most recent login / logout / token / device events.';
+
+  @override
+  String get operationsAuditEmptyTitle => 'No audit events yet';
+
+  @override
+  String get operationsAuditEmptyMessage =>
+      'The auth audit log is empty. Events will appear here as the school uses the mobile app.';
+
+  @override
+  String get operationsAuditUnknownUser => 'Unknown user';
+
+  @override
+  String operationsAuditFromIp(String ip) {
+    return 'From $ip';
+  }
 }

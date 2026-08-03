@@ -140,6 +140,8 @@
   "homeAdminFeePlansSubtitle": "Review issued + outstanding plans",
   "homeAdminFeeOperations": "Fee operations",
   "homeAdminFeeOperationsSubtitle": "Invoiced / collected / outstanding",
+  "homeAdminOperations": "Operations",
+  "homeAdminOperationsSubtitle": "System health, delivery, audit log",
   "homeAdminNotificationsSubtitle": "Inbox + announcements",
 
   "myChildrenHeaderTotal": "{count, plural, =0{No linked children} =1{1 linked child} other{{count} linked children}}",
@@ -439,5 +441,49 @@
       "count": { "type": "int" }
     }
   },
-  "feeOperationsViewPlansAction": "View fee plans"
+  "feeOperationsViewPlansAction": "View fee plans",
+
+  "operationsScreenTitle": "Operations",
+  "operationsTabHealth": "Health",
+  "operationsTabDelivery": "Delivery",
+  "operationsTabAudit": "Audit",
+  "operationsLoadingTitle": "Loading operations health",
+  "operationsLoadingMessage": "Aggregating the latest per-module KPI snapshot.",
+  "operationsErrorTitle": "Could not load operations",
+  "operationsSystemHealth": "System health",
+  "operationsStatusHealthy": "Healthy",
+  "operationsStatusDegraded": "Degraded",
+  "operationsStatusUnhealthy": "Unhealthy",
+  "operationsGeneratedAt": "Generated at {timestamp}",
+  "@operationsGeneratedAt": {
+    "placeholders": {
+      "timestamp": { "type": "String" }
+    }
+  },
+  "operationsModulesHeader": "Per-module KPIs",
+  "operationsModulesEmptyTitle": "No module KPIs yet",
+  "operationsModulesEmptyMessage": "The server hasn't reported any per-module metrics. They'll appear here as soon as the first snapshot lands.",
+  "operationsModuleAnalytics": "Analytics",
+  "operationsModuleAudit": "Audit",
+  "operationsModuleDelivery": "Delivery",
+  "operationsModuleImports": "Imports",
+  "operationsModuleOutbox": "Outbox",
+  "operationsDeliveryLoadingTitle": "Loading delivery health",
+  "operationsDeliveryLoadingMessage": "Aggregating the per-status delivery counts.",
+  "operationsDeliveryByStatus": "By status",
+  "operationsDeliveryEmptyTitle": "No deliveries yet",
+  "operationsDeliveryEmptyMessage": "The delivery queue is empty. Counts will appear here as soon as the server starts dispatching events.",
+  "operationsDeliveryTotal": "Total deliveries",
+  "operationsDeliveryTotalSubtitle": "Across all statuses for this period",
+  "operationsAuditLoadingTitle": "Loading audit events",
+  "operationsAuditLoadingMessage": "Fetching the most recent login / logout / token / device events.",
+  "operationsAuditEmptyTitle": "No audit events yet",
+  "operationsAuditEmptyMessage": "The auth audit log is empty. Events will appear here as the school uses the mobile app.",
+  "operationsAuditUnknownUser": "Unknown user",
+  "operationsAuditFromIp": "From {ip}",
+  "@operationsAuditFromIp": {
+    "placeholders": {
+      "ip": { "type": "String" }
+    }
+  }
 }

@@ -177,10 +177,17 @@ class _QuickStartGrid extends ConsumerWidget {
         0;
     // Capability-gated tiles: the "Fee plans" + "Fee operations"
     // tiles only render when the user has `can_view_fees`. The
-    // capability map is server-driven (see the boot context);
-    // a registrar without that capability won't see the tiles
-    // and the bottom-nav tab stays hidden.
+    // "Operations" tile only renders when the user can manage
+    // branches (the v1 server does not yet expose a
+    // `can_view_operations` capability; the operations surface
+    // is admin-only by intent and `can_manage_branches` is
+    // already admin-only on the wire — see the audit's §4
+    // follow-up for the future hardening). The capability
+    // map is server-driven (see the boot context); a user
+    // without the capability won't see the tile and the
+    // matching bottom-nav tab stays hidden.
     final canViewFees = hasCapability(ref, 'can_view_fees');
+    final canManageBranches = hasCapability(ref, 'can_manage_branches');
     final items = <_QuickItem>[
       _QuickItem(
         label: l.homeAdminPracticeQuiz,
@@ -232,6 +239,14 @@ class _QuickStartGrid extends ConsumerWidget {
           icon: Icons.insights_outlined,
           tone: LsChipTone.success,
           onTap: () => context.go('/shell/fees/operations'),
+        ),
+      if (canManageBranches)
+        _QuickItem(
+          label: l.homeAdminOperations,
+          description: l.homeAdminOperationsSubtitle,
+          icon: Icons.health_and_safety_outlined,
+          tone: LsChipTone.info,
+          onTap: () => context.go('/shell/operations'),
         ),
       _QuickItem(
         label: l.shellNotifications,

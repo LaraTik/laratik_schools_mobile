@@ -24,6 +24,7 @@ import '../features/guardians/ui/guardian_create_screen.dart';
 import '../features/guardians/ui/guardian_detail_screen.dart';
 import '../features/guardians/ui/guardians_list_screen.dart';
 import '../features/me/ui/acting_as_picker_screen.dart';
+import '../features/operations/ui/operations_health_screen.dart';
 import '../features/people/ui/student_create_screen.dart';
 import '../features/people/ui/student_detail_screen.dart';
 import '../features/people/ui/students_list_screen.dart';
@@ -398,6 +399,19 @@ GoRouter buildRouter({
             path: '/shell/fees/operations',
             name: 'fee_operations',
             builder: (context, state) => const FeeOperationsOverviewScreen(),
+          ),
+          // Operations surface — read-only operations health +
+          // delivery health + auth audit events. Reachable from
+          // the "Operations" tile on the admin home (gated on the
+          // operations capability; today the v1 server grants that
+          // to the school admin / operator role only). The surface
+          // is three tabs (Health / Delivery / Audit) so the admin
+          // gets a single place to see "is the system healthy,
+          // are deliveries flowing, who's been logging in".
+          GoRoute(
+            path: '/shell/operations',
+            name: 'operations',
+            builder: (context, state) => const OperationsHealthScreen(),
           ),
         ],
       ),
