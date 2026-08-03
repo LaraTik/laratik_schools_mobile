@@ -82,6 +82,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeParentInbox => 'صندوق الوارد';
 
   @override
+  String get homeStudentFeeInvoicesTitle => 'فواتيري';
+
+  @override
+  String get homeStudentFeeInvoicesSubtitle => 'المستحقة + المتأخرة';
+
+  @override
   String get homeParentInboxEmpty => 'لا توجد رسائل جديدة';
 
   @override

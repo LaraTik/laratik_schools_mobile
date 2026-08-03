@@ -29,6 +29,9 @@
   "homeParentNoChildrenTitle": "لا يوجد أطفال مرتبطون بعد",
   "homeParentNoChildrenMessage": "عندما تربطك المدرسة بصفة ولي أمر، ستظهر أسماء أطفالك هنا. إذا كنت تتوقع رؤية طفل ولا يظهر، فاتصل بمكتب المدرسة للتأكد من إتمام الربط.",
   "homeParentInbox": "صندوق الوارد",
+
+  "homeStudentFeeInvoicesTitle": "فواتيري",
+  "homeStudentFeeInvoicesSubtitle": "المستحقة + المتأخرة",
   "homeParentInboxEmpty": "لا توجد رسائل جديدة",
   "homeParentInboxUnread": "{count, plural, =0{لا توجد رسائل جديدة} =1{رسالة واحدة غير مقروءة} =2{رسالتان غير مقروءتان} few{{count} رسائل غير مقروءة} many{{count} رسالة غير مقروءة} other{{count} رسالة غير مقروءة}}",
 

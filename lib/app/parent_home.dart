@@ -16,7 +16,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../features/boot/boot_provider.dart';
 import '../features/communication/data/communication_providers.dart';
 import '../features/family/data/family_providers.dart';
 import '../l10n/app_localizations.dart';
@@ -93,19 +92,21 @@ class ParentHomeScreen extends ConsumerWidget {
         children: [
           _HeroFamilyCard(tokens: tokens, familyAsync: familyAsync),
           SizedBox(height: tokens.space.lg),
-          // Fee invoices for the parent's children. Capability-
-          // gated on `can_view_fees` — the v1 server only grants
-          // that capability to fee-management roles today, so
-          // most parents will not see this tile. When the
-          // backend grows a `can_view_own_fees` capability the
-          // tile can drop in for every parent; the read path
-          // (the v1 `get_school_student_fee_plans` endpoint,
-          // filtered to the current user on the server) is
-          // already in place.
-          if (hasCapability(ref, 'can_view_fees')) ...[
-            _FeeInvoicesCard(tokens: tokens),
-            SizedBox(height: tokens.space.lg),
-          ],
+          // Fee invoices for the parent's children. Shown to
+          // every parent — the v1 server is expected to filter
+          // `get_school_student_fee_plans` to the current user's
+          // children when the session is a parent role, so the
+          // tile is safe to render for all parents regardless
+          // of capability set. The "Fees" bottom-nav tab
+          // remains capability-gated on `can_view_fees`
+          // (admin-only) so the surface is launched from here
+          // for parents, not from the bottom nav.
+          _FeeInvoicesCard(
+            tokens: tokens,
+            title: l.homeParentFeeInvoicesTitle,
+            subtitle: l.homeParentFeeInvoicesSubtitle,
+          ),
+          SizedBox(height: tokens.space.lg),
           Text(
             l.homeParentInbox,
             style: tokens.typography.titleSmall.copyWith(
@@ -124,18 +125,24 @@ class ParentHomeScreen extends ConsumerWidget {
   }
 }
 
-/// Compact "Fee invoices" tile for the parent home. Capability-
-/// gated on `can_view_fees` by the parent home; the tap opens
-/// the same fee-plans list the admin uses (the v1 server is
-/// expected to filter to the current user's children when the
-/// session is a parent role).
+/// Compact "Fee invoices" tile. Reused by both the parent
+/// home and the student home — the v1 server filters
+/// `get_school_student_fee_plans` to the current user
+/// (parent's children / the student's own plans) so the
+/// tile is safe to render for any role that has its own
+/// server-side fee scope.
 class _FeeInvoicesCard extends StatelessWidget {
-  const _FeeInvoicesCard({required this.tokens});
+  const _FeeInvoicesCard({
+    required this.tokens,
+    required this.title,
+    required this.subtitle,
+  });
   final DesignTokens tokens;
+  final String title;
+  final String subtitle;
 
   @override
   Widget build(BuildContext context) {
-    final l = AppLocalizations.of(context);
     return Material(
       color: tokens.surface.surface,
       shape: RoundedRectangleBorder(
@@ -168,14 +175,14 @@ class _FeeInvoicesCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      l.homeParentFeeInvoicesTitle,
+                      title,
                       style: tokens.typography.titleSmall.copyWith(
                         color: tokens.text.primary,
                       ),
                     ),
                     SizedBox(height: tokens.space.xxs),
                     Text(
-                      l.homeParentFeeInvoicesSubtitle,
+                      subtitle,
                       style: tokens.typography.bodySmall.copyWith(
                         color: tokens.text.secondary,
                       ),

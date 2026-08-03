@@ -8,6 +8,17 @@ and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ### Added
 
+- **Student + parent "Fee invoices" tile.** New
+  `My fee invoices` (student) + `Fee invoices` (parent)
+  tile on the role home, both launching the read-only
+  fee plans list at `/shell/fees/plans`. The previous
+  capability gate (`can_view_fees`, admin-only) on
+  the parent tile was wrong — the v1 server is
+  expected to filter `get_school_student_fee_plans` to
+  the current user's children when the session is a
+  parent role, so the tile is now rendered for every
+  parent. Closes roadmap #7 for the student + parent
+  read-only fee surface.
 - **Teacher exam authoring + per-question publish +
   exam publish flow.** New question authoring form at
   `/shell/teachers/exams/:examPlanId/questions/new`

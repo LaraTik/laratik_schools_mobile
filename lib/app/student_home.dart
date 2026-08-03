@@ -156,6 +156,14 @@ class StudentHomeScreen extends ConsumerWidget {
           SizedBox(height: tokens.space.sm),
           _SurfaceTile(
             tokens: tokens,
+            icon: Icons.receipt_long_outlined,
+            title: l.homeStudentFeeInvoicesTitle,
+            subtitle: l.homeStudentFeeInvoicesSubtitle,
+            onTap: () => context.go('/shell/fees/plans'),
+          ),
+          SizedBox(height: tokens.space.sm),
+          _SurfaceTile(
+            tokens: tokens,
             icon: Icons.notifications_outlined,
             title: l.shellNotifications,
             subtitle: unread == 0

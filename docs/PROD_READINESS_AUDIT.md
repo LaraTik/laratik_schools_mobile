@@ -520,7 +520,7 @@ surface. The rest is feature work.
 | 4 | **Foundation** | "Acting as" picker for the registrar to switch the active student | 1 turn | **shipped (picker release)** |
 | 5 | **Student surface** | "My grades" + "My attendance" + "My report cards" | 1 turn | **shipped (family release, reuses the parent child-detail widget)** |
 | 6 | **Teacher surface** | "My classes" + exam authoring + manual grading | 2 turns | **shipped (read-only "My classes" + per-class roster in the teacher release; read-only exam catalog + per-plan detail + manual grade form + create-exam-plan shell in the teacher-exams turn; question authoring form + per-question publish + `publish_school_online_exam` + per-question "Publish" actions in this turn; `promote_school_exam_attempt` is the documented follow-up)** |
-| 7 | **Admin enhancements** | Fees (read invoices) + Analytics (KPIs) | 2 turns | **shipped (Fees slice — read-only fee plans + admin "Fee operations" KPI overview; Analytics slice deferred to a follow-up turn)** |
+| 7 | **Admin enhancements** | Fees (read invoices) + Analytics (KPIs) | 2 turns | **shipped (Fees slice — read-only fee plans + admin "Fee operations" KPI overview in the fees release; the student + parent home gained a "Fee invoices" / "My fee invoices" tile that launches the same read-only list — server filters to the current user so the tile is safe for every role)** |
 | 8 | **Admin enhancements** | Governance (privacy + retention) + Grading (admin side) | 1 turn | **shipped (Governance slice — privacy requests + approve / process / set-legal-hold / retention — + Grading read-only slice — overview + policies + permissions context — in two consecutive turns; write flows for grading deferred to a follow-up turn)** |
 | 9 | **Admin enhancements** | Data import wizard + Operations health | 2 turns | **shipped (Operations read-only slice in the operations turn; data import read-only catalog + score import validate/commit in this turn; the data import upload + dry-run + review + approve + commit wizard + the operations write flows remain as follow-ups)** |
 | 10 | **Quality** | Hard-coded filter values → real `get_school_grades` | 0.5 turn | **shipped (picker release, derived from loaded students — backend follow-up: add `get_school_grades` + `get_school_class_groups`)** |
@@ -557,10 +557,15 @@ for role X?" is:
   dedicated `can_view_operations` + `can_view_governance`
   + `can_view_grading` + `can_view_imports` capabilities
   so the gates can be more specific.
-- **Student** — *Partially.* They can take exams end-to-end
-  and now see their grades / attendance / report cards under
-  "My records" on the home screen. Fee invoices +
-  class-scoped notifications are still on the desktop.
+- **Student** — *Mostly.* They can take exams end-to-end
+  and see their grades / attendance / report cards
+  under "My records" on the home screen. The new "My
+  fee invoices" tile on the student home launches the
+  read-only fee plans list (the v1 server is expected
+  to filter to the current student when the session is
+  a student role; the read path
+  `get_school_student_fee_plans` is already in place).
+  Class-scoped notifications are still on the desktop.
 - **Teacher** — *Mostly.* They get a real "My classes"
   tab + per-class detail (student roster) + a new
   "Exams" tab with the full authoring flow: read-only
@@ -574,11 +579,18 @@ for role X?" is:
   expose a `list_school_exam_attempts` endpoint today,
   so the teacher enters the attempt ID from a
   notification or the desktop.
-- **Parent** — *Partially.* They get a real "My family" home
-  with a hero "My children" card, the family picker at
-  `/shell/family`, and the per-child detail (Overview /
-  Grades / Attendance / Report cards). Fee invoices for
-  their children are still on the desktop.
+- **Parent** — *Mostly.* They get a real "My family"
+  home with a hero "My children" card, the family picker
+  at `/shell/family`, the per-child detail (Overview /
+  Grades / Attendance / Report cards), and a "Fee
+  invoices" tile that launches the read-only fee plans
+  list (the v1 server is expected to filter to the
+  current user's children when the session is a parent
+  role). The tile is now rendered for every parent —
+  the previous `can_view_fees` capability gate was
+  wrong (admin-only) and was replaced with a role-based
+  "always show" since the server-side filter does the
+  actual row-level authorization.
 - **Locale** — *En + Ar.* The mobile now supports both
   English and Arabic (Modern Standard) end-to-end. The
   bottom-nav tabs + every per-role home surface + the

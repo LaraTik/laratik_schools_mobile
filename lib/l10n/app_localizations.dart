@@ -242,6 +242,18 @@ abstract class AppLocalizations {
   /// **'Inbox'**
   String get homeParentInbox;
 
+  /// No description provided for @homeStudentFeeInvoicesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My fee invoices'**
+  String get homeStudentFeeInvoicesTitle;
+
+  /// No description provided for @homeStudentFeeInvoicesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Issued + outstanding plans'**
+  String get homeStudentFeeInvoicesSubtitle;
+
   /// No description provided for @homeParentInboxEmpty.
   ///
   /// In en, this message translates to:

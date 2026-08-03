@@ -30,6 +30,9 @@
   "homeParentNoChildrenTitle": "No children linked yet",
   "homeParentNoChildrenMessage": "When the school links you as a guardian, your children's names will appear here. If you expected to see a child and you don't, contact the school office to confirm the link is in place.",
   "homeParentInbox": "Inbox",
+
+  "homeStudentFeeInvoicesTitle": "My fee invoices",
+  "homeStudentFeeInvoicesSubtitle": "Issued + outstanding plans",
   "homeParentInboxEmpty": "No new messages",
   "homeParentInboxUnread": "{count, plural, =0{No new messages} =1{1 unread message} other{{count} unread messages}}",
   "@homeParentInboxUnread": {

@@ -82,6 +82,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeParentInbox => 'Inbox';
 
   @override
+  String get homeStudentFeeInvoicesTitle => 'My fee invoices';
+
+  @override
+  String get homeStudentFeeInvoicesSubtitle => 'Issued + outstanding plans';
+
+  @override
   String get homeParentInboxEmpty => 'No new messages';
 
   @override
