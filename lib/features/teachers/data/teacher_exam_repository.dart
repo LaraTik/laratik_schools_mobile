@@ -41,6 +41,7 @@ import '../../../core/result.dart';
 import '../../assessment/data/assessment_repository.dart' show ExamPlanPage;
 import '../../assessment/data/exam.dart';
 import '../../people/data/person_failure.dart';
+import 'promoted_exam_attempt.dart';
 
 /// A flat row from `get_school_questions`. The v1 SDK
 /// doesn't expose a typed question class outside of
@@ -217,6 +218,40 @@ class TeacherExamRepository {
           status: data.status ?? 'Graded',
         ),
       );
+    } on Exception catch (e) {
+      return Err(error: _exceptionFailure(e));
+    }
+  }
+
+  /// Promote a graded exam attempt into a grade record.
+  /// The v1 server takes a `payload: { 'attempt': <id> }`
+  /// envelope + the mobile mints a fresh UUID v4 for the
+  /// `Idempotency-Key` header so a retry of the same
+  /// promote is safe to send again. The server returns
+  /// `{grade_record, status}` where `grade_record` is the
+  /// Frappe name of the new grade record.
+  Future<Result<PromotedExamAttempt, PersonFailure>>
+      promoteExamAttempt({
+    required String attempt,
+  }) async {
+    try {
+      final response = await _api.promoteSchoolExamAttempt(
+        payload: <String, Object?>{'attempt': attempt},
+        idempotencyKey: _uuid.v4(),
+      );
+      final data = response.data;
+      if (response.error != null) {
+        return Err(error: _failureFromApi(response.error));
+      }
+      if (data == null) {
+        return const Err(
+          error: PersonFailure(
+            code: 'EMPTY_RESPONSE',
+            message: 'The server returned no promotion data.',
+          ),
+        );
+      }
+      return Ok(value: PromotedExamAttempt.fromJson(data.toJson()));
     } on Exception catch (e) {
       return Err(error: _exceptionFailure(e));
     }

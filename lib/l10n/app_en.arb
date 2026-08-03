@@ -813,6 +813,23 @@
   },
 
   "teacherExamDetailTitle": "Exam plan",
+  "teacherPromoteAttemptAction": "Promote attempt",
+  "teacherPromoteAttemptPromptTitle": "Promote exam attempt",
+  "teacherPromoteAttemptLabel": "Attempt ID",
+  "teacherPromoteAttemptHint": "e.g. AT-00001",
+  "teacherPromoteAttemptSuccess": "Promoted to grade record {id}.",
+  "@teacherPromoteAttemptSuccess": {
+    "placeholders": {
+      "id": { "type": "String" }
+    }
+  },
+  "teacherPromoteAttemptSuccessFallback": "Attempt promoted.",
+  "teacherPromoteAttemptError": "Could not promote attempt: {message}",
+  "@teacherPromoteAttemptError": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
   "teacherExamNotFoundTitle": "Exam plan not found",
   "teacherExamNotFoundMessage": "This exam plan is no longer in the school's catalog.",
   "teacherExamStatusPublished": "Published",

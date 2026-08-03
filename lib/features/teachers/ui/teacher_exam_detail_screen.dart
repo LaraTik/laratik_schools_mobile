@@ -63,6 +63,11 @@ class TeacherExamDetailScreen extends ConsumerWidget {
         ),
         actions: [
           IconButton(
+            tooltip: l.teacherPromoteAttemptAction,
+            icon: const Icon(Icons.upgrade_outlined),
+            onPressed: () => _showPromoteAttemptPrompt(context, ref, l),
+          ),
+          IconButton(
             tooltip: l.commonRefresh,
             icon: const Icon(Icons.refresh),
             onPressed: () {
@@ -486,3 +491,74 @@ Color _toneFg(DesignTokens tokens, LsChipTone tone) {
     LsChipTone.neutral => tokens.text.secondary,
   };
 }
+
+
+/// Show a 1-field prompt that asks the teacher for the
+/// attempt id, then calls `promote_school_exam_attempt`
+/// on Continue. The v1 SDK does not expose a "list
+/// attempts" endpoint on the mobile SDK today, so the
+/// teacher enters the attempt id (the same pattern as
+/// the manual grade form + the admin "Correct a grade"
+/// + the admin "Promote assessment result" prompts).
+Future<void> _showPromoteAttemptPrompt(
+  BuildContext context,
+  WidgetRef ref,
+  AppLocalizations l,
+) async {
+  final controller = TextEditingController();
+  final result = await showDialog<String>(
+    context: context,
+    builder: (ctx) {
+      return AlertDialog(
+        title: Text(l.teacherPromoteAttemptPromptTitle),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          decoration: InputDecoration(
+            labelText: l.teacherPromoteAttemptLabel,
+            hintText: l.teacherPromoteAttemptHint,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text(l.commonCancel),
+          ),
+          FilledButton.tonal(
+            onPressed: () {
+              final id = controller.text.trim();
+              if (id.isEmpty) return;
+              Navigator.of(ctx).pop(id);
+            },
+            child: Text(l.commonContinue),
+          ),
+        ],
+      );
+    },
+  );
+  if (result == null || !context.mounted) return;
+  final messenger = ScaffoldMessenger.of(context);
+  final tokens = context.laratik;
+  final outcome = await promoteTeacherExamAttempt(
+    ref,
+    attempt: result,
+  );
+  messenger.showSnackBar(
+    SnackBar(
+      content: Text(
+        switch (outcome) {
+          Ok(:final value) => value.hasGradeRecord
+              ? l.teacherPromoteAttemptSuccess(value.gradeRecord)
+              : l.teacherPromoteAttemptSuccessFallback,
+          Err(:final error) => l.teacherPromoteAttemptError(error.message),
+        },
+      ),
+      duration: const Duration(seconds: 3),
+      backgroundColor: switch (outcome) {
+        Ok() => tokens.status.success,
+        Err() => tokens.status.error,
+      },
+    ),
+  );
+}
+

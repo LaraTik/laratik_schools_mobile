@@ -1687,6 +1687,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get teacherExamDetailTitle => 'Exam plan';
 
   @override
+  String get teacherPromoteAttemptAction => 'Promote attempt';
+
+  @override
+  String get teacherPromoteAttemptPromptTitle => 'Promote exam attempt';
+
+  @override
+  String get teacherPromoteAttemptLabel => 'Attempt ID';
+
+  @override
+  String get teacherPromoteAttemptHint => 'e.g. AT-00001';
+
+  @override
+  String teacherPromoteAttemptSuccess(String id) {
+    return 'Promoted to grade record $id.';
+  }
+
+  @override
+  String get teacherPromoteAttemptSuccessFallback => 'Attempt promoted.';
+
+  @override
+  String teacherPromoteAttemptError(String message) {
+    return 'Could not promote attempt: $message';
+  }
+
+  @override
   String get teacherExamNotFoundTitle => 'Exam plan not found';
 
   @override

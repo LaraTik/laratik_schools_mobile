@@ -484,6 +484,13 @@
   "teacherExamsMaxScoreChip": "الحد الأقصى {score}",
 
   "teacherExamDetailTitle": "خطة الاختبار",
+  "teacherPromoteAttemptAction": "ترقية المحاولة",
+  "teacherPromoteAttemptPromptTitle": "ترقية محاولة الاختبار",
+  "teacherPromoteAttemptLabel": "معرّف المحاولة",
+  "teacherPromoteAttemptHint": "مثال: AT-00001",
+  "teacherPromoteAttemptSuccess": "تمت الترقية إلى سجل درجة {id}.",
+  "teacherPromoteAttemptSuccessFallback": "تمت ترقية المحاولة.",
+  "teacherPromoteAttemptError": "تعذّرت ترقية المحاولة: {message}",
   "teacherExamNotFoundTitle": "خطة الاختبار غير موجودة",
   "teacherExamNotFoundMessage": "خطة الاختبار هذه لم تعد ضمن كتالوج المدرسة.",
   "teacherExamStatusPublished": "منشور",

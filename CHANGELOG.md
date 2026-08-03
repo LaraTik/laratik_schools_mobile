@@ -8,6 +8,25 @@ and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ### Added
 
+- **Teacher promote exam attempt write flow.** New
+  **Promote attempt** AppBar action on the teacher exam
+  plan detail screen at
+  `/shell/teachers/exams/:examPlanId`. Opens a 1-field
+  AlertDialog prompt (attempt id) and calls
+  `promote_school_exam_attempt` with a
+  `payload: { 'attempt': <id> }` envelope + a fresh
+  UUID v4 for the `Idempotency-Key` header. Snackbar
+  surfaces the new grade record id on success or the
+  typed failure message. The plans list provider is
+  invalidated on success so the next ref.watch
+  re-fetches the new state. A new forward-compat
+  result model (`PromotedExamAttempt`) walks the
+  canonical `grade_record` key first, then the legacy
+  `name` / `grade_name` aliases, so a future server
+  schema change doesn't break the parse. The locale
+  test grew from 25 to 26 to pin the new keys in both
+  English and Modern Standard Arabic. Closes the
+  remaining teacher write-flow gap.
 - **Privacy request submit form (parent + student write
   flow).** New 5-tab choice-chip form at
   `/shell/governance/submit/:requesterType/:subjectType/:subject`

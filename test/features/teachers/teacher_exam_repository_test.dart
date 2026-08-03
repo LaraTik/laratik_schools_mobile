@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: Proprietary
 // Tests for the Teacher exam repository (read-only exam
 // plans + per-subject question catalog + manual grade
-// submit + create exam plan shell).
+// submit + promote exam attempt + create exam plan
+// shell).
 //
 // The tests cover:
 //   * [listExamPlans] parses the canonical `plans` list
@@ -19,6 +20,11 @@
 //     + the per-question scores payload.
 //   * [gradeAttempt] surfaces a typed error code from
 //     the wire.
+//   * [promoteExamAttempt] mints a fresh UUID for the
+//     Idempotency-Key header and forwards the
+//     `{attempt: <id>}` payload.
+//   * [promoteExamAttempt] surfaces a typed error code
+//     from the wire.
 //   * [createExamPlan] mints a fresh UUID for the
 //     Idempotency-Key header and forwards the title +
 //     optional subject/branch/class/duration/max-score
@@ -33,6 +39,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:laratik_schools_api/laratik_schools_api.dart';
 import 'package:laratik_schools_mobile/core/result.dart';
 import 'package:laratik_schools_mobile/features/people/data/person_failure.dart';
+import 'package:laratik_schools_mobile/features/teachers/data/promoted_exam_attempt.dart';
 import 'package:laratik_schools_mobile/features/teachers/data/teacher_exam_repository.dart';
 
 import '../../helpers/mock_api_client.dart';
@@ -558,6 +565,52 @@ void main() {
       expect(result, isA<Err<JsonMap, PersonFailure>>());
       final err = (result as Err).error as PersonFailure;
       expect(err.code, 'EXAM_PLAN_NOT_FOUND');
+    });
+  });
+
+  group('TeacherExamRepository.promoteExamAttempt', () {
+    test('mints a fresh idempotency key + forwards the attempt id',
+        () async {
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondOnce(
+        LaratikSchoolsApiMethods.promoteSchoolExamAttempt,
+        envelopeOk({
+          'grade_record': 'GR-00042',
+          'status': 'promoted',
+        }),
+      );
+      final repo = makeRepo(transport);
+      final result = await repo.promoteExamAttempt(attempt: 'AT-00001');
+      expect(result, isA<Ok<PromotedExamAttempt, PersonFailure>>());
+      final promoted = (result as Ok).value as PromotedExamAttempt;
+      expect(promoted.gradeRecord, 'GR-00042');
+      expect(promoted.isPromoted, isTrue);
+      // The SDK wraps the caller's payload under a `payload`
+      // key, so the test inspects `arguments['payload']`.
+      final args = transport.invokedArguments.last;
+      final payload = args['payload'] as Map<String, Object?>;
+      expect(payload['attempt'], 'AT-00001');
+      // A fresh UUID v4 was minted for the Idempotency-Key
+      // header.
+      expect(transport.invokedIdempotencyKey, isNotNull);
+      expect(transport.invokedIdempotencyKey!.length,
+          greaterThanOrEqualTo(8));
+    });
+
+    test('surfaces a typed error code from the wire', () async {
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondError(
+        LaratikSchoolsApiMethods.promoteSchoolExamAttempt,
+        const ApiError(
+          code: 'EXAM_ATTEMPT_NOT_GRADED',
+          message: 'Only graded attempts can be promoted.',
+        ),
+      );
+      final repo = makeRepo(transport);
+      final result = await repo.promoteExamAttempt(attempt: 'AT-00001');
+      expect(result, isA<Err<PromotedExamAttempt, PersonFailure>>());
+      final err = (result as Err).error as PersonFailure;
+      expect(err.code, 'EXAM_ATTEMPT_NOT_GRADED');
     });
   });
 }

@@ -1052,4 +1052,34 @@ void main() {
       },
     );
   });
+
+  group('Teacher promote-attempt write flow localization', () {
+    test(
+      'teacher promote-attempt ARB keys are pinned in both English and Arabic',
+      () async {
+        final en = await AppLocalizations.delegate.load(const Locale('en'));
+        final ar = await AppLocalizations.delegate.load(const Locale('ar'));
+        expect(en.teacherPromoteAttemptAction, 'Promote attempt');
+        expect(en.teacherPromoteAttemptPromptTitle,
+            'Promote exam attempt');
+        expect(en.teacherPromoteAttemptLabel, 'Attempt ID');
+        expect(en.teacherPromoteAttemptHint, contains('AT-'));
+        expect(en.teacherPromoteAttemptSuccess('GR-00042'),
+            contains('GR-00042'));
+        expect(en.teacherPromoteAttemptSuccessFallback, isNotEmpty);
+        expect(en.teacherPromoteAttemptError('boom'), contains('boom'));
+        for (final getter in [
+          () => ar.teacherPromoteAttemptAction,
+          () => ar.teacherPromoteAttemptPromptTitle,
+          () => ar.teacherPromoteAttemptLabel,
+          () => ar.teacherPromoteAttemptHint,
+          () => ar.teacherPromoteAttemptSuccess('GR-00042'),
+          () => ar.teacherPromoteAttemptSuccessFallback,
+          () => ar.teacherPromoteAttemptError('boom'),
+        ]) {
+          expect(getter(), isNotEmpty, reason: 'AR missing');
+        }
+      },
+    );
+  });
 }

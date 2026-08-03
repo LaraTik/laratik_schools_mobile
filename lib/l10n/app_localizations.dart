@@ -2769,6 +2769,48 @@ abstract class AppLocalizations {
   /// **'Exam plan'**
   String get teacherExamDetailTitle;
 
+  /// No description provided for @teacherPromoteAttemptAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Promote attempt'**
+  String get teacherPromoteAttemptAction;
+
+  /// No description provided for @teacherPromoteAttemptPromptTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Promote exam attempt'**
+  String get teacherPromoteAttemptPromptTitle;
+
+  /// No description provided for @teacherPromoteAttemptLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Attempt ID'**
+  String get teacherPromoteAttemptLabel;
+
+  /// No description provided for @teacherPromoteAttemptHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. AT-00001'**
+  String get teacherPromoteAttemptHint;
+
+  /// No description provided for @teacherPromoteAttemptSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Promoted to grade record {id}.'**
+  String teacherPromoteAttemptSuccess(String id);
+
+  /// No description provided for @teacherPromoteAttemptSuccessFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Attempt promoted.'**
+  String get teacherPromoteAttemptSuccessFallback;
+
+  /// No description provided for @teacherPromoteAttemptError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not promote attempt: {message}'**
+  String teacherPromoteAttemptError(String message);
+
   /// No description provided for @teacherExamNotFoundTitle.
   ///
   /// In en, this message translates to:

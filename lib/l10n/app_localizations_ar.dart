@@ -1741,6 +1741,31 @@ class AppLocalizationsAr extends AppLocalizations {
   String get teacherExamDetailTitle => 'خطة الاختبار';
 
   @override
+  String get teacherPromoteAttemptAction => 'ترقية المحاولة';
+
+  @override
+  String get teacherPromoteAttemptPromptTitle => 'ترقية محاولة الاختبار';
+
+  @override
+  String get teacherPromoteAttemptLabel => 'معرّف المحاولة';
+
+  @override
+  String get teacherPromoteAttemptHint => 'مثال: AT-00001';
+
+  @override
+  String teacherPromoteAttemptSuccess(String id) {
+    return 'تمت الترقية إلى سجل درجة $id.';
+  }
+
+  @override
+  String get teacherPromoteAttemptSuccessFallback => 'تمت ترقية المحاولة.';
+
+  @override
+  String teacherPromoteAttemptError(String message) {
+    return 'تعذّرت ترقية المحاولة: $message';
+  }
+
+  @override
   String get teacherExamNotFoundTitle => 'خطة الاختبار غير موجودة';
 
   @override

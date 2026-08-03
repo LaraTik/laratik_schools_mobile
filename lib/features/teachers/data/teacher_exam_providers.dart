@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: Proprietary
 // Riverpod wiring for the Teacher exam surface.
 //
-// Today (teacher exam authoring + manual grading):
+// Today (teacher exam authoring + manual grading +
+// promote attempt):
 //   * `teacherExamRepositoryProvider` — single instance
 //     per app session.
 //   * `teacherExamPlansProvider` — AsyncNotifier for the
@@ -18,6 +19,11 @@
 //     [ManualGradeController.submit] which mints the
 //     idempotency key and invalidates the plan list on
 //     success.
+//   * `promoteTeacherExamAttempt(WidgetRef, ...)` — top-
+//     level widget helper for the
+//     `promote_school_exam_attempt` write flow. The
+//     repository mints a fresh UUID for the
+//     `Idempotency-Key` header.
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:laratik_schools_api/laratik_schools_api.dart';
@@ -27,6 +33,7 @@ import '../../assessment/data/assessment_repository.dart' show ExamPlanPage;
 import '../../assessment/data/exam.dart';
 import '../../people/data/person_failure.dart';
 import '../../people/data/person_providers.dart';
+import 'promoted_exam_attempt.dart';
 import 'teacher_exam_repository.dart';
 
 /// Single teacher exam repository per app session. All
@@ -348,4 +355,26 @@ ExamPlan? resolveTeacherExamPlan(
   return page.plans
       .where((p) => p.id == examPlanId)
       .firstOrNull;
+}
+
+/// Top-level widget helper for the
+/// `promote_school_exam_attempt` write flow. The
+/// repository mints a fresh UUID for the
+/// `Idempotency-Key` header. Takes a [WidgetRef] (not
+/// a [Ref]) because the only callers are widget-side
+/// helpers.
+///
+/// On success the plans list provider is invalidated
+/// so the next ref.watch re-fetches the new state.
+Future<Result<PromotedExamAttempt, PersonFailure>>
+    promoteTeacherExamAttempt(
+  WidgetRef ref, {
+  required String attempt,
+}) async {
+  final repo = ref.read(teacherExamRepositoryProvider);
+  final result = await repo.promoteExamAttempt(attempt: attempt);
+  if (result is Ok) {
+    ref.invalidate(teacherExamPlansProvider);
+  }
+  return result;
 }

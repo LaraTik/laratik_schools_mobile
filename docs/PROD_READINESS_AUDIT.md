@@ -425,6 +425,38 @@ Update 2026-08-03 (admin Grading surface): the
 > → all 4 write flows shipped) and §5
 > (item #8 → fully shipped across grading
 > + governance).
+>
+> Update 2026-08-03 (Teacher promote
+> exam attempt write flow): the new
+> **Promote attempt** AppBar action on
+> the teacher exam plan detail screen at
+> `/shell/teachers/exams/:examPlanId`
+> opens a 1-field AlertDialog prompt
+> (attempt id) and calls
+> `promote_school_exam_attempt` with a
+> `payload: { 'attempt': <id> }` envelope
+> + a fresh UUID v4 for the
+> `Idempotency-Key` header. Snackbar
+> surfaces the new grade record id on
+> success or the typed failure message.
+> The plans list provider is invalidated
+> on success so the next ref.watch
+> re-fetches the new state. A new
+> forward-compat result model
+> (`PromotedExamAttempt`) walks the
+> canonical `grade_record` key first,
+> then the legacy `name` /
+> `grade_name` aliases. The locale test
+> grew from 25 to 26 to pin the new
+> keys in both English and Modern
+> Standard Arabic. Closes the remaining
+> teacher write-flow gap. See §3
+> (Teacher — promote exam attempt
+> shipped) and §5 (item #6 → fully
+> shipped for the read-only catalog +
+> manual grading + per-question
+> authoring + per-question publish +
+> exam publish + promote attempt).
 
 This document is the source of truth for what is shipped, what is
 missing per role, and the prioritized roadmap. It supersedes the
