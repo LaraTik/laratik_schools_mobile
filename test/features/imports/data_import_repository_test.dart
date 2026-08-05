@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: Proprietary
 // Tests for the Data Imports repository (read-only data
 // imports + score imports, plus the score import validate
-// + commit write flows).
+// + commit write flows, plus the data import wizard
+// upload step).
 //
 // The tests cover:
 //   * [listBatches] parses a wire response that returns the
@@ -30,6 +31,11 @@
 //   * [commitScoreImport] mints a fresh UUID for the
 //     Idempotency-Key header and surfaces a typed error
 //     code from the wire.
+//   * [uploadDataImportPackage] mints a fresh UUID for the
+//     Idempotency-Key header and forwards the canonical
+//     `source` + `package_file` payload.
+//   * [uploadDataImportPackage] surfaces a typed error
+//     code from the wire.
 //   * [DataImportBatch.statusFamily] maps the wire status
 //     to a coarse family (success / error / info / warning
 //     / neutral) for the chip tone.
@@ -40,6 +46,7 @@ import 'package:laratik_schools_mobile/core/result.dart';
 import 'package:laratik_schools_mobile/features/imports/data/data_import.dart';
 import 'package:laratik_schools_mobile/features/imports/data/data_import_failure.dart';
 import 'package:laratik_schools_mobile/features/imports/data/data_import_repository.dart';
+import 'package:laratik_schools_mobile/features/imports/data/uploaded_data_import.dart';
 
 import '../../helpers/mock_api_client.dart';
 
@@ -383,6 +390,92 @@ void main() {
         });
         expect(s.statusFamily, entry.value, reason: entry.key);
       }
+    });
+  });
+
+  group('DataImportRepository.uploadDataImportPackage', () {
+    test('forwards the canonical payload + mints a fresh idempotency key',
+        () async {
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondOnce(
+        LaratikSchoolsApiMethods.uploadSchoolDataImportPackage,
+        envelopeOk({
+          'batch': 'EDU-IMP-2026-00001',
+          'counts': {'School Student': 120, 'School Guardian': 240},
+          'package_hash':
+              'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2',
+          'status': 'submitted',
+        }),
+      );
+      final repo = makeRepo(transport);
+      final result = await repo.uploadDataImportPackage(
+        source: 'spring-2026-enrollment',
+        packageFile: 'students_q3.csv',
+      );
+      expect(
+        result,
+        isA<Ok<UploadedDataImport, DataImportFailure>>(),
+      );
+      final uploaded = (result as Ok).value as UploadedDataImport;
+      expect(uploaded.batch, 'EDU-IMP-2026-00001');
+      expect(uploaded.isSubmitted, isTrue);
+      expect(uploaded.counts['School Student'], 120);
+      expect(uploaded.counts['School Guardian'], 240);
+      expect(uploaded.packageHash, startsWith('a1b2c3d4'));
+      // The SDK wraps the caller's payload under a
+      // `payload` key, so the test inspects
+      // `arguments['payload']`.
+      final args = transport.invokedArguments.last;
+      final payload = args['payload'] as Map<String, Object?>;
+      expect(payload['source'], 'spring-2026-enrollment');
+      expect(payload['package_file'], 'students_q3.csv');
+      // A fresh UUID v4 was minted for the
+      // Idempotency-Key header.
+      expect(transport.invokedIdempotencyKey, isNotNull);
+      expect(
+        transport.invokedIdempotencyKey!.length,
+        greaterThanOrEqualTo(8),
+      );
+    });
+
+    test('falls back to the legacy `name` alias for the batch id', () async {
+      // Pure model test — the v1 SDK's
+      // `UploadSchoolDataImportPackageData.fromJson`
+      // is strict-cast on the canonical `batch` key, so
+      // the wire path can only surface the legacy alias
+      // if the server grows it. The model still walks
+      // the alias walker so a future schema migration
+      // doesn't break the parse.
+      final parsed = UploadedDataImport.fromJson({
+        'name': 'EDU-IMP-2026-00002',
+        'status': 'submitted',
+      });
+      expect(parsed.batch, 'EDU-IMP-2026-00002');
+      expect(parsed.isSubmitted, isTrue);
+    });
+
+    test('surfaces a typed failure when the server returns an error',
+        () async {
+      final transport = FakeLaratikSchoolsTransport();
+      transport.respondError(
+        LaratikSchoolsApiMethods.uploadSchoolDataImportPackage,
+        const ApiError(
+          code: 'PACKAGE_FILE_REQUIRED',
+          message: 'A package_file reference is required.',
+        ),
+      );
+      final repo = makeRepo(transport);
+      final result = await repo.uploadDataImportPackage(
+        source: 'spring-2026-enrollment',
+        packageFile: '',
+      );
+      expect(
+        result,
+        isA<Err<UploadedDataImport, DataImportFailure>>(),
+      );
+      final err = (result as Err).error as DataImportFailure;
+      expect(err.code, 'PACKAGE_FILE_REQUIRED');
+      expect(err.isRetryable, isFalse);
     });
   });
 }

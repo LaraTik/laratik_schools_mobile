@@ -1096,4 +1096,61 @@ void main() {
       },
     );
   });
+
+  group('Data import wizard upload surface localization', () {
+    test(
+      'data import upload ARB keys are pinned in both English and Arabic',
+      () async {
+        final en = await AppLocalizations.delegate.load(const Locale('en'));
+        final ar = await AppLocalizations.delegate.load(const Locale('ar'));
+        // AppBar action.
+        expect(en.dataImportsNewAction, 'New import');
+        // Screen + form.
+        expect(en.dataImportsUploadScreenTitle,
+            'Upload a data import package');
+        expect(en.dataImportsUploadSourceLabel, 'Source label');
+        expect(en.dataImportsUploadSourceHint, isNotEmpty);
+        expect(en.dataImportsUploadSourceRequired, isNotEmpty);
+        expect(en.dataImportsUploadFileLabel, 'Package file');
+        expect(en.dataImportsUploadFilePickerAction, 'Choose a file');
+        expect(en.dataImportsUploadFileRequired, isNotEmpty);
+        expect(en.dataImportsUploadFilePicked('students_q3.csv'),
+            contains('students_q3.csv'));
+        expect(en.dataImportsUploadSubmitAction, 'Submit package');
+        expect(en.dataImportsUploadSubmitLoading, isNotEmpty);
+        // Success / error.
+        expect(en.dataImportsUploadSuccess('EDU-IMP-2026-00001'),
+            contains('EDU-IMP-2026-00001'));
+        expect(en.dataImportsUploadSuccessFallback, isNotEmpty);
+        expect(en.dataImportsUploadError('boom'), contains('boom'));
+        // File picker guard messages.
+        expect(en.dataImportsUploadFileTooLarge, isNotEmpty);
+        expect(en.dataImportsUploadFileMissingExtension, isNotEmpty);
+        expect(en.dataImportsUploadFileTypeUnsupported, isNotEmpty);
+        expect(en.dataImportsUploadFollowupNote, isNotEmpty);
+        for (final getter in [
+          () => ar.dataImportsNewAction,
+          () => ar.dataImportsUploadScreenTitle,
+          () => ar.dataImportsUploadSourceLabel,
+          () => ar.dataImportsUploadSourceHint,
+          () => ar.dataImportsUploadSourceRequired,
+          () => ar.dataImportsUploadFileLabel,
+          () => ar.dataImportsUploadFilePickerAction,
+          () => ar.dataImportsUploadFileRequired,
+          () => ar.dataImportsUploadFilePicked('students_q3.csv'),
+          () => ar.dataImportsUploadSubmitAction,
+          () => ar.dataImportsUploadSubmitLoading,
+          () => ar.dataImportsUploadSuccess('EDU-IMP-2026-00001'),
+          () => ar.dataImportsUploadSuccessFallback,
+          () => ar.dataImportsUploadError('boom'),
+          () => ar.dataImportsUploadFileTooLarge,
+          () => ar.dataImportsUploadFileMissingExtension,
+          () => ar.dataImportsUploadFileTypeUnsupported,
+          () => ar.dataImportsUploadFollowupNote,
+        ]) {
+          expect(getter(), isNotEmpty, reason: 'AR missing');
+        }
+      },
+    );
+  });
 }

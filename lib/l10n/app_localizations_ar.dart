@@ -1572,6 +1572,70 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String get dataImportsNewAction => 'استيراد جديد';
+
+  @override
+  String get dataImportsUploadScreenTitle => 'رفع حزمة استيراد بيانات';
+
+  @override
+  String get dataImportsUploadSourceLabel => 'مصدر';
+
+  @override
+  String get dataImportsUploadSourceHint => 'مثال: spring-2026-enrollment';
+
+  @override
+  String get dataImportsUploadSourceRequired => 'المصدر مطلوب.';
+
+  @override
+  String get dataImportsUploadFileLabel => 'ملف الحزمة';
+
+  @override
+  String get dataImportsUploadFilePickerAction => 'اختر ملفًا';
+
+  @override
+  String get dataImportsUploadFileRequired => 'ملف الحزمة مطلوب.';
+
+  @override
+  String dataImportsUploadFilePicked(String name) {
+    return 'تم الاختيار: $name';
+  }
+
+  @override
+  String get dataImportsUploadSubmitAction => 'إرسال الحزمة';
+
+  @override
+  String get dataImportsUploadSubmitLoading => 'جارٍ الإرسال…';
+
+  @override
+  String dataImportsUploadSuccess(String batch) {
+    return 'تم إرسال الحزمة. تم إنشاء الدفعة $batch.';
+  }
+
+  @override
+  String get dataImportsUploadSuccessFallback => 'تم إرسال الحزمة.';
+
+  @override
+  String dataImportsUploadError(String message) {
+    return 'تعذّر إرسال الحزمة: $message';
+  }
+
+  @override
+  String get dataImportsUploadFileTooLarge =>
+      'الملف المختار يتجاوز 25 ميغابايت. اختر حزمة أصغر أو استخدم الحاسوب.';
+
+  @override
+  String get dataImportsUploadFileMissingExtension =>
+      'الملف المختار ليس له امتداد. اختر ملفًا بامتداد .csv أو .xlsx أو .json.';
+
+  @override
+  String get dataImportsUploadFileTypeUnsupported =>
+      'يُدعم فقط ملفات .csv و .xlsx و .json.';
+
+  @override
+  String get dataImportsUploadFollowupNote =>
+      'ملاحظة: تطبيق الجوال v1 يمرّر اسم الملف كقيمة مؤقتة داخل حمولة JSON. الرفع الكامل متعدد الأجزاء إلى واجهة Frappe لملفات هو متابعة.';
+
+  @override
   String dataImportsScoreCreatedAt(String when) {
     return 'تاريخ الرفع $when';
   }

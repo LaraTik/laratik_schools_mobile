@@ -1530,6 +1530,70 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get dataImportsNewAction => 'New import';
+
+  @override
+  String get dataImportsUploadScreenTitle => 'Upload a data import package';
+
+  @override
+  String get dataImportsUploadSourceLabel => 'Source label';
+
+  @override
+  String get dataImportsUploadSourceHint => 'e.g. spring-2026-enrollment';
+
+  @override
+  String get dataImportsUploadSourceRequired => 'A source label is required.';
+
+  @override
+  String get dataImportsUploadFileLabel => 'Package file';
+
+  @override
+  String get dataImportsUploadFilePickerAction => 'Choose a file';
+
+  @override
+  String get dataImportsUploadFileRequired => 'A package file is required.';
+
+  @override
+  String dataImportsUploadFilePicked(String name) {
+    return 'Selected: $name';
+  }
+
+  @override
+  String get dataImportsUploadSubmitAction => 'Submit package';
+
+  @override
+  String get dataImportsUploadSubmitLoading => 'Submitting…';
+
+  @override
+  String dataImportsUploadSuccess(String batch) {
+    return 'Package submitted. Batch $batch created.';
+  }
+
+  @override
+  String get dataImportsUploadSuccessFallback => 'Package submitted.';
+
+  @override
+  String dataImportsUploadError(String message) {
+    return 'Could not submit package: $message';
+  }
+
+  @override
+  String get dataImportsUploadFileTooLarge =>
+      'The selected file is over 25 MB. Pick a smaller package or use the desktop.';
+
+  @override
+  String get dataImportsUploadFileMissingExtension =>
+      'The selected file has no extension. Pick a .csv, .xlsx, or .json file.';
+
+  @override
+  String get dataImportsUploadFileTypeUnsupported =>
+      'Only .csv, .xlsx, and .json files are supported.';
+
+  @override
+  String get dataImportsUploadFollowupNote =>
+      'Note: the v1 mobile passes the file name as a placeholder inside the JSON payload. The full multipart upload to Frappe\'s file API is a follow-up.';
+
+  @override
   String dataImportsScoreCreatedAt(String when) {
     return 'Submitted $when';
   }

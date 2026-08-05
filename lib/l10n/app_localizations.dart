@@ -2559,6 +2559,114 @@ abstract class AppLocalizations {
   /// **'Submitted {when}'**
   String dataImportsBatchCreatedAt(String when);
 
+  /// No description provided for @dataImportsNewAction.
+  ///
+  /// In en, this message translates to:
+  /// **'New import'**
+  String get dataImportsNewAction;
+
+  /// No description provided for @dataImportsUploadScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload a data import package'**
+  String get dataImportsUploadScreenTitle;
+
+  /// No description provided for @dataImportsUploadSourceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Source label'**
+  String get dataImportsUploadSourceLabel;
+
+  /// No description provided for @dataImportsUploadSourceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. spring-2026-enrollment'**
+  String get dataImportsUploadSourceHint;
+
+  /// No description provided for @dataImportsUploadSourceRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'A source label is required.'**
+  String get dataImportsUploadSourceRequired;
+
+  /// No description provided for @dataImportsUploadFileLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Package file'**
+  String get dataImportsUploadFileLabel;
+
+  /// No description provided for @dataImportsUploadFilePickerAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a file'**
+  String get dataImportsUploadFilePickerAction;
+
+  /// No description provided for @dataImportsUploadFileRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'A package file is required.'**
+  String get dataImportsUploadFileRequired;
+
+  /// No description provided for @dataImportsUploadFilePicked.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected: {name}'**
+  String dataImportsUploadFilePicked(String name);
+
+  /// No description provided for @dataImportsUploadSubmitAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit package'**
+  String get dataImportsUploadSubmitAction;
+
+  /// No description provided for @dataImportsUploadSubmitLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitting…'**
+  String get dataImportsUploadSubmitLoading;
+
+  /// No description provided for @dataImportsUploadSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Package submitted. Batch {batch} created.'**
+  String dataImportsUploadSuccess(String batch);
+
+  /// No description provided for @dataImportsUploadSuccessFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Package submitted.'**
+  String get dataImportsUploadSuccessFallback;
+
+  /// No description provided for @dataImportsUploadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not submit package: {message}'**
+  String dataImportsUploadError(String message);
+
+  /// No description provided for @dataImportsUploadFileTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'The selected file is over 25 MB. Pick a smaller package or use the desktop.'**
+  String get dataImportsUploadFileTooLarge;
+
+  /// No description provided for @dataImportsUploadFileMissingExtension.
+  ///
+  /// In en, this message translates to:
+  /// **'The selected file has no extension. Pick a .csv, .xlsx, or .json file.'**
+  String get dataImportsUploadFileMissingExtension;
+
+  /// No description provided for @dataImportsUploadFileTypeUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Only .csv, .xlsx, and .json files are supported.'**
+  String get dataImportsUploadFileTypeUnsupported;
+
+  /// No description provided for @dataImportsUploadFollowupNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Note: the v1 mobile passes the file name as a placeholder inside the JSON payload. The full multipart upload to Frappe\'s file API is a follow-up.'**
+  String get dataImportsUploadFollowupNote;
+
   /// No description provided for @dataImportsScoreCreatedAt.
   ///
   /// In en, this message translates to:

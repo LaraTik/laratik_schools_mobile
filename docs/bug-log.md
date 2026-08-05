@@ -483,3 +483,41 @@ rather than a raw `Icon`. The hardening grep
 `grep -r "Icons\.chevron_(right|left)" lib/`
 should be a CI step (or at least a pre-commit hook)
 so this drift is caught before merge.
+
+### 2026-08-05 — 20 `IconButton` instances were missing a `tooltip:` (screen-reader invisible)
+
+Symptom: a grep over `lib/` for
+`IconButton(...)` instances missing a `tooltip:`
+parameter (the canonical Material 3 a11y requirement
+for icon-only buttons) turned up 20 hits across 19
+files. Most were the back-button in screen `AppBar`s
+(`IconButton(icon: const Icon(Icons.arrow_back))`);
+the rest were close icons on the webview +
+acting-as-picker + the search clear button. Without
+a `tooltip:` the icon button is invisible to screen
+readers — the user hears "button" with no label or
+activation hint.
+
+Root cause: the directional-chevron sweep
+(`edddb6f`) and the locale + RTL passes
+(`6031c50`, `cb4d01b`, `4c2e84d`, `38f5b08`, `08a126a`,
+`6db64aa`) all focused on visual + i18n issues, not
+on the Material 3 a11y requirement. IconButton is
+the third-most-used widget in the codebase (after
+`Text` + `Container`) so the drift accumulated over
+multiple releases.
+
+Fix: added `tooltip: l.commonBack` to 14
+back-button instances, `tooltip: l.commonClose` to
+2 close-button instances, and a new
+`commonClearSearch` ARB key (en + ar) for the search
+clear button. The locale test grew from 25 to 26
+to pin the four common tooltip keys (`commonBack` +
+`commonClose` + `commonRefresh` + `commonClearSearch`)
+in both English and Arabic.
+
+Prevention: any new `IconButton(` in this repo
+should have a `tooltip:` line as the FIRST
+positional argument, or a CI / pre-commit check
+should grep for the `IconButton(` pattern and fail
+if any match doesn't have a `tooltip:` line.

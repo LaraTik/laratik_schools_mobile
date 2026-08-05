@@ -35,6 +35,7 @@ import 'package:uuid/uuid.dart';
 import '../../../core/result.dart';
 import 'data_import.dart';
 import 'data_import_failure.dart';
+import 'uploaded_data_import.dart';
 
 class DataImportRepository {
   DataImportRepository({required LaratikSchoolsApiClient api, Uuid? uuid})
@@ -164,6 +165,47 @@ class DataImportRepository {
         );
       }
       return Ok(value: Map<String, Object?>.from(data.toJson()));
+    } on Exception catch (e) {
+      return Err(error: _exceptionFailure(e));
+    }
+  }
+
+  /// Submit a new data import package to the server. The
+  /// v1 server's `upload_school_data_import_package` takes
+  /// a `payload: { 'package_file': <url-or-path>,
+  /// 'source': <label> }` envelope — the mobile passes
+  /// the file name as a placeholder for `package_file`
+  /// (the full multipart upload to Frappe's file API is
+  /// a follow-up; the server accepts a URL reference
+  /// today). The repository mints a fresh UUID v4 for
+  /// the `Idempotency-Key` header so a retry of the
+  /// same submit is safe to send again.
+  Future<Result<UploadedDataImport, DataImportFailure>>
+      uploadDataImportPackage({
+    required String source,
+    required String packageFile,
+  }) async {
+    try {
+      final response = await _api.uploadSchoolDataImportPackage(
+        payload: <String, Object?>{
+          'source': source,
+          'package_file': packageFile,
+        },
+        idempotencyKey: _uuid.v4(),
+      );
+      final data = response.data;
+      if (response.error != null) {
+        return Err(error: _failureFromApi(response.error));
+      }
+      if (data == null) {
+        return const Err(
+          error: DataImportFailure(
+            code: 'EMPTY_RESPONSE',
+            message: 'The server returned no upload data.',
+          ),
+        );
+      }
+      return Ok(value: UploadedDataImport.fromJson(data.toJson()));
     } on Exception catch (e) {
       return Err(error: _exceptionFailure(e));
     }

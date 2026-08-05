@@ -55,6 +55,18 @@ dependencies:
   # of this writing, so we re-evaluate when 5.0.0 lands.
   webview_flutter: ^4.13.1
 
+  # File picker for the data import wizard. Used to
+  # select a local CSV / Excel / JSON package file
+  # that the server then processes via
+  # `upload_school_data_import_package`. The mobile
+  # passes the selected file's path + name as a
+  # `package_file` placeholder inside the JSON
+  # payload (the actual upload-to-Frappe file API
+  # is a follow-up; the v1 server accepts a URL
+  # reference, not raw bytes). Android: scoped
+  # storage on API 29+; iOS: document picker.
+  file_picker: ^8.1.4
+
   # Internationalization.
   intl: 0.20.2 # direct pin required by project (Flutter 3.35.7 / flutter_localizations)
 

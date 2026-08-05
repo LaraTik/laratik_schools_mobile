@@ -717,6 +717,39 @@
       "when": { "type": "String" }
     }
   },
+  "dataImportsNewAction": "New import",
+  "dataImportsUploadScreenTitle": "Upload a data import package",
+  "dataImportsUploadSourceLabel": "Source label",
+  "dataImportsUploadSourceHint": "e.g. spring-2026-enrollment",
+  "dataImportsUploadSourceRequired": "A source label is required.",
+  "dataImportsUploadFileLabel": "Package file",
+  "dataImportsUploadFilePickerAction": "Choose a file",
+  "dataImportsUploadFileRequired": "A package file is required.",
+  "dataImportsUploadFilePicked": "Selected: {name}",
+  "@dataImportsUploadFilePicked": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "dataImportsUploadSubmitAction": "Submit package",
+  "dataImportsUploadSubmitLoading": "Submitting…",
+  "dataImportsUploadSuccess": "Package submitted. Batch {batch} created.",
+  "@dataImportsUploadSuccess": {
+    "placeholders": {
+      "batch": { "type": "String" }
+    }
+  },
+  "dataImportsUploadSuccessFallback": "Package submitted.",
+  "dataImportsUploadError": "Could not submit package: {message}",
+  "@dataImportsUploadError": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
+  "dataImportsUploadFileTooLarge": "The selected file is over 25 MB. Pick a smaller package or use the desktop.",
+  "dataImportsUploadFileMissingExtension": "The selected file has no extension. Pick a .csv, .xlsx, or .json file.",
+  "dataImportsUploadFileTypeUnsupported": "Only .csv, .xlsx, and .json files are supported.",
+  "dataImportsUploadFollowupNote": "Note: the v1 mobile passes the file name as a placeholder inside the JSON payload. The full multipart upload to Frappe's file API is a follow-up.",
   "dataImportsScoreCreatedAt": "Submitted {when}",
   "@dataImportsScoreCreatedAt": {
     "placeholders": {

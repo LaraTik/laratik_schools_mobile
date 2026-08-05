@@ -70,6 +70,11 @@ class DataImportsScreen extends ConsumerWidget {
           ),
           actions: [
             IconButton(
+              tooltip: l.dataImportsNewAction,
+              icon: const Icon(Icons.add),
+              onPressed: () => context.go('/shell/imports/upload'),
+            ),
+            IconButton(
               tooltip: l.commonRefresh,
               icon: const Icon(Icons.refresh),
               onPressed: () {

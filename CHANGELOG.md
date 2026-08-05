@@ -89,6 +89,51 @@ and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
   `hasCapability('(student|staff|guardian|academics|attendance).read')`
   shorthand, and no hard-coded grade filter
   literals.
+- **A11y tooltip audit on every IconButton.** A
+  grep over `lib/` for `IconButton(...)` instances
+  missing a `tooltip:` parameter (the canonical
+  Material 3 a11y requirement for icon-only buttons)
+  turned up 20 hits across 19 files. Most were the
+  back-button in screen `AppBar`s; the rest were
+  close icons on the webview + acting-as-picker +
+  the search clear button. Without a `tooltip:` the
+  icon button is invisible to screen readers. Each
+  back / close button now uses the shared
+  `commonBack` / `commonClose` ARB key; the search
+  clear button gets a new `commonClearSearch` key
+  (en + ar). The locale test grew from 25 to 26
+  (the existing nav-label test now also pins the
+  four common tooltip keys in both English +
+  Arabic).
+- **Data import wizard upload step.** Added the
+  `file_picker` pub dep + the
+  `DataImportUploadScreen` wizard at
+  `/shell/imports/upload`. The form collects a
+  required source label + a required package file
+  (selected via `file_picker` with a 25 MB cap +
+  a `.csv` / `.xlsx` / `.json` extension allowlist).
+  The submit handler calls
+  `upload_school_data_import_package` with a
+  `payload: { 'source': <label>, 'package_file':
+  <file-name> }` envelope + a fresh UUID v4 for
+  the `Idempotency-Key` header. A new forward-compat
+  result model (`UploadedDataImport`) walks the
+  canonical `batch` key first, then the legacy
+  `name` / `batch_name` aliases. The data imports
+  AppBar ships a new **+** AppBar action
+  (`dataImportsNewAction`) that deep-links to the
+  wizard. The success card surfaces the new batch
+  name + the per-doctype row-count chips + the
+  package hash. The locale test grew from 26 to 27
+  to pin the new keys in both English and Modern
+  Standard Arabic. 3 new repository tests
+  (canonical payload + legacy alias walker + typed
+  failure). The full multipart upload to Frappe's
+  file API is a documented follow-up — the v1
+  server's `package_file` field expects a URL
+  reference, not raw bytes, so the mobile passes
+  the file name as a placeholder today (a followup
+  note surfaces inside the form).
 - **Privacy request submit form (parent + student write
   flow).** New 5-tab choice-chip form at
   `/shell/governance/submit/:requesterType/:subjectType/:subject`

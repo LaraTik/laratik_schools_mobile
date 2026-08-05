@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: Proprietary
 // Riverpod wiring for the Data Imports feature.
 //
-// Today (read-only data imports + score imports):
+// Today (read-only data imports + score imports + the
+// data import wizard upload step):
 //   * `dataImportRepositoryProvider` — single instance per
 //     app session.
 //   * `dataImportBatchesProvider` — Async notifier for the
@@ -19,16 +20,26 @@
 //     keeps the detail surface forward-compat with the
 //     future per-score-import "preview" / "commit" write
 //     flows that grow the per-row payload.
+//   * `uploadDataImportPackage(WidgetRef, ...)` — top-level
+//     widget helper for the
+//     `upload_school_data_import_package` write flow. The
+//     repository mints a fresh UUID for the
+//     `Idempotency-Key` header. On success the
+//     `dataImportBatchesProvider` is invalidated so the
+//     next ref.watch re-fetches the new batch.
 //
 // Future (deferred to docs/PROD_READINESS_AUDIT.md #9
 // follow-up):
-//   * `uploadDataImportPackage` / `dryRunDataImport` /
-//     `reviewDataImportRecords` / `approveDataImport` /
-//     `commitDataImport` — the data import write flows.
-//     These are deferred because the underlying
-//     `upload_school_data_import_package` endpoint expects
-//     a pre-uploaded `package_file` (Frappe's file API)
-//     which is outside the v1 SDK scope today.
+//   * `dryRunDataImport` / `reviewDataImportRecords` /
+//     `approveDataImport` / `commitDataImport` — the
+//     data import write flows. These are deferred because
+//     the underlying endpoints take the full multipart
+//     package + the mobile's multipart upload plumbing
+//     is a follow-up (today the upload wizard passes
+//     the file name as a `package_file` placeholder
+//     inside the JSON payload — the server accepts a
+//     URL reference, not raw bytes, and the Frappe file
+//     API integration is the next step).
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:laratik_schools_api/laratik_schools_api.dart';
@@ -38,6 +49,7 @@ import '../../people/data/person_providers.dart';
 import 'data_import.dart';
 import 'data_import_failure.dart';
 import 'data_import_repository.dart';
+import 'uploaded_data_import.dart';
 
 /// Single data imports repository per app session. All Data
 /// Imports feature code reads it from this provider.
@@ -225,3 +237,30 @@ final scoreImportDetailProvider = AsyncNotifierProvider.autoDispose
     .family<ScoreImportDetailController, ScoreImport?, String>(
   ScoreImportDetailController.new,
 );
+
+/// Top-level widget helper for the
+/// `upload_school_data_import_package` write flow. The
+/// repository mints a fresh UUID for the
+/// `Idempotency-Key` header. Takes a [WidgetRef] (not a
+/// [Ref]) because the only callers are widget-side
+/// helpers — the Riverpod `Ref` type lives inside a
+/// provider closure, not in a widget's build method.
+///
+/// On success the batches provider is invalidated so the
+/// next ref.watch re-fetches the new batch row.
+Future<Result<UploadedDataImport, DataImportFailure>>
+    uploadDataImportPackage(
+  WidgetRef ref, {
+  required String source,
+  required String packageFile,
+}) async {
+  final repo = ref.read(dataImportRepositoryProvider);
+  final result = await repo.uploadDataImportPackage(
+    source: source,
+    packageFile: packageFile,
+  );
+  if (result is Ok) {
+    ref.invalidate(dataImportBatchesProvider);
+  }
+  return result;
+}

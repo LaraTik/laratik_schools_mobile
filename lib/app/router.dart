@@ -24,6 +24,7 @@ import '../features/guardians/ui/guardian_create_screen.dart';
 import '../features/guardians/ui/guardian_detail_screen.dart';
 import '../features/guardians/ui/guardians_list_screen.dart';
 import '../features/imports/ui/data_import_batch_detail_screen.dart';
+import '../features/imports/ui/data_import_upload_screen.dart';
 import '../features/imports/ui/data_imports_screen.dart';
 import '../features/imports/ui/score_import_detail_screen.dart';
 import '../features/me/ui/acting_as_picker_screen.dart';
@@ -567,6 +568,12 @@ GoRouter buildRouter({
             name: 'data_imports',
             builder: (context, state) => const DataImportsScreen(),
             routes: [
+              GoRoute(
+                path: 'upload',
+                name: 'data_import_upload',
+                builder: (context, state) =>
+                    const DataImportUploadScreen(),
+              ),
               GoRoute(
                 path: ':batchId',
                 name: 'data_import_batch',

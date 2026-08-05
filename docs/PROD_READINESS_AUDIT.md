@@ -458,6 +458,73 @@ Update 2026-08-03 (admin Grading surface): the
 > authoring + per-question publish +
 > exam publish + promote attempt).
 >
+> Update 2026-08-05 (A11y tooltip audit +
+> data import wizard upload step):
+> two more releases ship on top of the
+> v1 PROD-readiness sweep. (1) A11y
+> tooltip audit — every `IconButton`
+> in the codebase now has a `tooltip:`
+> line (the canonical Material 3
+> requirement for icon-only buttons).
+> 20 previously-unlabelled buttons now
+> use the shared `commonBack` /
+> `commonClose` / `commonClearSearch`
+> ARB keys; the locale test grew to
+> 26 to pin the four common tooltip
+> keys in both English and Arabic.
+> (2) Data import wizard upload step
+> — added the `file_picker` pub dep
+> + the `DataImportUploadScreen`
+> wizard at `/shell/imports/upload`.
+> The form collects a required source
+> label + a required package file
+> (selected via `file_picker` with a
+> 25 MB cap + a `.csv` / `.xlsx` /
+> `.json` extension allowlist). The
+> submit handler calls
+> `upload_school_data_import_package`
+> with a
+> `payload: { 'source': <label>, 'package_file': <file-name> }`
+> envelope + a fresh UUID v4 for the
+> `Idempotency-Key` header. A new
+> forward-compat result model
+> (`UploadedDataImport`) walks the
+> canonical `batch` key first, then
+> the legacy `name` / `batch_name`
+> aliases. The data imports AppBar
+> ships a new **+** AppBar action
+> (`dataImportsNewAction`) that
+> deep-links to the wizard. The
+> success card surfaces the new
+> batch name + the per-doctype
+> row-count chips + the package
+> hash. The locale test grew to 27
+> to pin the new keys in both
+> English and Modern Standard
+> Arabic. 3 new repository tests
+> (canonical payload + legacy alias
+> walker + typed failure). The full
+> multipart upload to Frappe's file
+> API is a documented follow-up —
+> the v1 server's `package_file`
+> field expects a URL reference, not
+> raw bytes, so the mobile passes
+> the file name as a placeholder
+> today (a followup note surfaces
+> inside the form). The mobile is
+> at the next commit (after this
+> docs entry). See §3 (Admin Data
+> imports — wizard upload step
+> shipped; the full upload +
+> dry-run + review + approve +
+> commit wizard remains as a
+> follow-up) and §5 (item #9 → fully
+> shipped for the wizard upload
+> step; the full multipart upload
+> + dry-run + review + approve +
+> commit wizard remains as a
+> follow-up).
+>
 > Update 2026-08-03 (Hardening pass —
 > RTL chevron on `PersonCard`): the
 > person / student / staff / guardian
