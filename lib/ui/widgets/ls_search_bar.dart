@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../design_tokens.dart';
 
 import '../../ui/app_theme.dart';
@@ -80,6 +81,7 @@ class _LsSearchBarState extends State<LsSearchBar> {
         suffixIcon: _controller.text.isEmpty
             ? null
             : IconButton(
+                tooltip: AppLocalizations.of(context).commonClearSearch,
                 icon: Icon(
                   Icons.close,
                   color: tokens.text.tertiary,

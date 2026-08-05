@@ -143,6 +143,7 @@ class _ActingAsPickerScreenState extends ConsumerState<ActingAsPickerScreen> {
         elevation: 0,
         scrolledUnderElevation: 1,
         leading: IconButton(
+          tooltip: l.commonClose,
           icon: const Icon(Icons.close),
           onPressed: () => context.pop(),
         ),

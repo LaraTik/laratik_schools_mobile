@@ -86,6 +86,7 @@ class ChildDetailScreen extends ConsumerWidget {
           backgroundColor: tokens.surface.surface,
           elevation: 0,
           leading: IconButton(
+            tooltip: l.commonBack,
             icon: const Icon(Icons.arrow_back),
             onPressed: () => _onBack(context, isOwnRecords),
           ),

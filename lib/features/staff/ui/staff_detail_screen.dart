@@ -31,6 +31,7 @@ class StaffDetailScreen extends ConsumerWidget {
         backgroundColor: tokens.surface.surface,
         elevation: 0,
         leading: IconButton(
+          tooltip: l.commonBack,
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.go('/shell/staff'),
         ),

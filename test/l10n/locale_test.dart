@@ -45,6 +45,14 @@ void main() {
       expect(en.navAttendance, 'Attendance');
       expect(en.navMyClasses, 'My classes');
       expect(en.navFees, 'Fees');
+      // The shared "common" ARB keys used by every
+      // IconButton tooltip (back, close, refresh, clear
+      // search) are pinned in both locales so the
+      // tooltip audit can rely on them.
+      expect(en.commonBack, 'Back');
+      expect(en.commonClose, 'Close');
+      expect(en.commonRefresh, 'Refresh');
+      expect(en.commonClearSearch, 'Clear search');
     });
 
     test('Arabic translations are non-empty for the nav labels', () async {
@@ -60,6 +68,12 @@ void main() {
       // (catches the "I forgot to translate" bug).
       expect(ar.navStudents, isNot(equals('Students')));
       expect(ar.navFees, isNot(equals('Fees')));
+      // The common IconButton tooltips are pinned in both
+      // locales so the tooltip audit can rely on them.
+      expect(ar.commonBack, isNotEmpty);
+      expect(ar.commonClose, isNotEmpty);
+      expect(ar.commonRefresh, isNotEmpty);
+      expect(ar.commonClearSearch, isNotEmpty);
     });
 
     test('Arabic home titles are non-empty + non-English', () async {

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../l10n/app_localizations.dart';
+
 /// In-app WebView that runs the OAuth PKCE round-trip end-to-end.
 ///
 /// Why not Chrome Custom Tabs (the previous `flutter_web_auth_2`
@@ -112,11 +114,13 @@ class _OauthWebViewScreenState extends State<OauthWebViewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     final error = _resourceError;
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
         leading: IconButton(
+          tooltip: l.commonClose,
           icon: const Icon(Icons.close),
           onPressed: () => Navigator.of(context).pop(),
         ),

@@ -176,6 +176,12 @@ abstract class AppLocalizations {
   /// **'Close'**
   String get commonClose;
 
+  /// No description provided for @commonClearSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get commonClearSearch;
+
   /// No description provided for @commonContinue.
   ///
   /// In en, this message translates to:
@@ -199,12 +205,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Try again'**
   String get commonTryAgain;
-
-  /// No description provided for @commonClearSearch.
-  ///
-  /// In en, this message translates to:
-  /// **'Clear search'**
-  String get commonClearSearch;
 
   /// No description provided for @commonNoResults.
   ///

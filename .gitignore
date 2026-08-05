@@ -89,3 +89,9 @@ firebase_options.dart
 
 # --- Android build noise that escapes android/.gitignore ---
 android/.kotlin/
+
+# --- Screenshot / artifact stash ---
+# `docs/_artifacts/` is a home for transient screenshots, dumps, and
+# diagnostic outputs. The directory itself is kept (so it shows up in
+# `ls` and people can use it), but its contents are not tracked.
+docs/_artifacts/*

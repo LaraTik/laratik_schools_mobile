@@ -48,6 +48,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonClose => 'Close';
 
   @override
+  String get commonClearSearch => 'Clear search';
+
+  @override
   String get commonContinue => 'Continue';
 
   @override
@@ -58,9 +61,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commonTryAgain => 'Try again';
-
-  @override
-  String get commonClearSearch => 'Clear search';
 
   @override
   String get commonNoResults => 'No results';
